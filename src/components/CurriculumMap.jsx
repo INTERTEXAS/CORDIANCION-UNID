@@ -73,9 +73,11 @@ export default function CurriculumMap({
               FORMANDO CON VALORES
             </span>
           </div>
-          <div className="w-10 h-10 bg-[#F2B705] rounded-lg flex items-center justify-center shadow-sm">
-            <span className="font-black text-black text-2xl tracking-tighter">U</span>
-          </div>
+          <img 
+            src="/unid-logo.png" 
+            alt="UNID" 
+            className="w-10 h-10 rounded-xl object-contain shadow-xs border border-slate-200/80 flex-shrink-0" 
+          />
         </div>
       </div>
 
