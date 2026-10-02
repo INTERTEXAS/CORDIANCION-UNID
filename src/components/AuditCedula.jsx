@@ -25,7 +25,7 @@ export default function AuditCedula({ auditData, forwardedRef }) {
   return (
     <div 
       ref={forwardedRef} 
-      className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5 max-w-[1360px] mx-auto print:p-2 print:shadow-none print:border-none"
+      className="bg-white rounded-md border border-slate-300 p-6 space-y-5 w-full max-w-[1380px] mx-auto box-border print:p-2 print:shadow-none print:border-none"
       id="hoja2-cedula-auditoria"
     >
       {/* 1. ENCABEZADO INSTITUCIONAL OFICIAL UNID */}
@@ -108,7 +108,7 @@ export default function AuditCedula({ auditData, forwardedRef }) {
               <span>Dictamen Normativo Institucional</span>
             </div>
 
-            <div className="text-sm font-black uppercase tracking-tight mt-1">
+            <div className="text-[13px] font-black uppercase tracking-tight mt-1 leading-snug break-words">
               {resumen.dictamenEstadia}
             </div>
 
@@ -240,8 +240,13 @@ export default function AuditCedula({ auditData, forwardedRef }) {
                         )}
                       </td>
                       <td className="py-2 px-3 text-center">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full inline-block ${badgeClass}`}>
-                          {inc.etiquetaCorta}
+                        <span 
+                          data-badge="true"
+                          className={`badge-pill inline-flex items-center justify-center px-3 h-[22px] rounded-full text-[10px] font-black tracking-wide leading-none whitespace-nowrap shadow-2xs ${badgeClass}`}
+                        >
+                          <span className="inline-block transform -translate-y-[1px] leading-none">
+                            {inc.etiquetaCorta}
+                          </span>
                         </span>
                       </td>
                       <td className="py-2 px-3 text-center font-mono font-bold text-slate-800">

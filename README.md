@@ -2,34 +2,36 @@
   <img src="./assets/unid-logo-full.png" alt="UNID - Universidad Interamericana para el Desarrollo" width="280" />
   <h1>Sistema de Auditoría Curricular y Validación de Estadía</h1>
   <p><strong>Universidad Interamericana para el Desarrollo &middot; Coordinación Académica</strong></p>
-  <p>Plataforma institucional para el procesamiento dinámico de kárdex, auditoría de trayectorias académicas y emisión automatizada de dictámenes normativos de Estadía Empresarial y Titulación.</p>
+  <p>Plataforma institucional de grado ERP para el procesamiento masivo de kárdex, auditoría de trayectorias académicas y emisión automatizada de dictámenes normativos.</p>
 </div>
 
 ---
 
 ## Resumen Ejecutivo
 
-El **Sistema de Auditoría Curricular y Validación de Estadía** es una solución web de nivel institucional concebida para automatizar la revisión de expedientes académicos a partir de los documentos oficiales emitidos por la institución (*Detalle de selección de cursos y estado de cuenta por alumno*).
+El **Sistema de Auditoría Curricular y Validación de Estadía** es una solución web de nivel corporativo concebida para automatizar la revisión de expedientes académicos a partir de los documentos oficiales emitidos por la institución (*Detalle de selección de cursos y estado de cuenta por alumno*).
 
-La herramienta elimina la captura manual, suprime discrepancias de criterio normativo y genera dictámenes inmediatos sobre la elegibilidad del estudiante para cursar su Estadía Empresarial (7.º y 9.º cuatrimestres), así como el cumplimiento de los requisitos de titulación y egreso del Plan 2018.
+La herramienta soporta tanto **auditoría individual** como procesamiento **masivo de generaciones (Batch Processing)**, eliminando la captura manual y suprimiendo discrepancias de criterio normativo. Genera reportes consolidados y dictámenes inmediatos sobre la elegibilidad para la Estadía Empresarial (7.º y 9.º cuatrimestres), requisitos de titulación y egreso del Plan 2018.
 
 ---
 
 ## Especificaciones Funcionales y de Ingeniería
 
-### 1. Motor de Extracción Dinámica de Kárdex (PDF.js)
-- **Procesamiento Espacial por Coordenadas**: Análisis directo de los operadores de texto mediante coordenadas horizontales ($X$) y verticales ($Y$), prescindiendo de plantillas rígidas o datos simulados.
-- **Segmentación Estricta de Columnas**:
-  - `CRN`: Identificador de registro institucional ($X \in [20, 68]$).
-  - `SUBJ`: Clave de disciplina académica ($X \in [63, 104]$).
-  - `CRSE`: Clave oficial de la asignatura ($X \in [98, 145]$).
-  - `PERIODO`: Ciclo lectivo de seis dígitos ($X \in [138, 185]$).
-  - `GRDE` / `MODALIDAD`: Calificación final real asociada de forma estricta a tokens de modalidad `RW` (Ordinario) o `RE` (Regularización).
-  - **Filtro de Ruido Institucional**: Exclusión automática de calificaciones parciales ($B1, B2, CF, B3, EX, PF$), créditos ($BH$) e identificadores de sede ($CAM$).
-- **Normalización de Caracteres OCR**: Corrección algorítmica de artefactos de renderizado del documento oficial (`CFTD8` $\rightarrow$ `CFT08`, `MT 02` $\rightarrow$ `MTS02`, `19/18/17/g/B` $\rightarrow$ `9/8/7/9/8`).
-- **Extracción de Identidad del Alumno**: Captura estructurada de Matrícula (8 dígitos), Nombre institucional completo, Sede, Programa académico oficial y Estatus de permanencia (`EG`, `AC`, `BA`, `IN`).
+### 1. Auditoría Consolidada de Grupo (Procesamiento Masivo)
+- **Extracción Múltiple**: Procesamiento de reportes masivos (sábanas de grupo) extrayendo la trayectoria de decenas de estudiantes simultáneamente.
+- **Directorio ERP Institucional**: Visualización de alta densidad basada en patrones de diseño corporativos (Cinta de Datos, indicadores de estatus planos, tipografía estructurada) para el control rápido del avance de la generación.
+- **Integración Neon DB**: Almacenamiento y gestión de los reportes consolidados en bases de datos PostgreSQL serverless, clasificados por ciclo escolar.
+- **Sábana Ejecutiva (PDF)**: Generación automática del reporte consolidado de grupo, limpio y adaptado formalmente para impresión.
 
-### 2. Matriz de Estados Curriculares
+### 2. Motor de Extracción Dinámica de Kárdex (PDF.js)
+- **Procesamiento Espacial por Coordenadas**: Análisis directo de los operadores de texto mediante coordenadas $X$ e $Y$.
+- **Segmentación Estricta de Columnas**:
+  - `CRN`, `SUBJ`, `CRSE`, `PERIODO`, `GRDE` / `MODALIDAD`.
+  - **Filtro de Ruido Institucional**: Exclusión automática de calificaciones parciales, créditos y sede.
+- **Normalización de Caracteres OCR**: Corrección algorítmica de artefactos de renderizado.
+- **Extracción de Identidad del Alumno**: Captura estructurada de Matrícula, Nombre, Sede, Programa y Estatus de permanencia.
+
+### 3. Matriz de Estados Curriculares
 El motor clasifica cada una de las asignaturas del mapa curricular oficial bajo los siguientes criterios normativos:
 
 | Código | Denominación Institucional | Criterio de Clasificación |
@@ -43,53 +45,35 @@ El motor clasifica cada una de las asignaturas del mapa curricular oficial bajo 
 | **OMITIDA** | Asignatura No Cursada | Materia perteneciente a ciclos anteriores al nivel actual que no registra inscripción. |
 | **PEND.** | Pendiente Curricular | Asignatura programada para cuatrimestres futuros. |
 
-### 3. Detección de Desfases y Trazabilidad de Intentos
-- Registro cronológico detallado de cada intento por ciclo lectivo, modalidad y calificación obtenida.
-- Detección de desfase temporal cuando asignaturas del primer cuatrimestre fueron inscritas de manera extemporánea en periodos posteriores.
-
-### 4. Requisitos de Egreso y Titulación
-- **Acreditación de Idioma Inglés**: Seguimiento de los 5 niveles curriculares obligatorios (`LENG-F001` a `LENG-P001`) o validación de exención oficial mediante acreditación global (`LENG-0008` con estatus `AC`).
-- **Requisitos Co-Curriculares Obligatorios**: Auditoría de las claves institucionales terminales:
-  - `MPD-CMS02`: Ortografía.
-  - `MPD-CMS03`: Comprensión Lectora.
-  - `CUPR-EGCF1`: Curso de Preparación EGEL I.
-  - `TPEG-0001`: Examen General de Egreso de Licenciatura (EGEL).
-- **Control de Bloqueo Terminal**: Toda omisión o adeudo en estos requisitos se refleja como causal de retención de titulación.
+### 4. Detección de Desfases y Requisitos de Titulación
+- Registro cronológico detallado de intentos y detección de desfases temporales.
+- **Acreditación de Inglés**: Seguimiento de los 5 niveles obligatorios o exención global (`LENG-0008`).
+- **Requisitos Co-Curriculares**: Auditoría de claves terminales (`MPD-CMS02`, `MPD-CMS03`, `CUPR-EGCF1`, `TPEG-0001`).
 
 ### 5. Dictamen Normativo de Estadía Empresarial
-- **Elegible para Estadía**: El estudiante tiene acreditadas en su totalidad las asignaturas correspondientes del 1.º al 6.º cuatrimestre y mantiene liberados sus prerrequisitos.
-- **No Elegible / Retenido**: Presencia de adeudos activos o asignaturas omitidas en el bloque básico o formativo (1.º al 6.º cuatrimestre), o adeudos vigentes en requisitos de titulación.
+- **Elegible para Estadía**: Asignaturas 1.º a 6.º acreditadas y prerrequisitos liberados.
+- **No Elegible / Retenido**: Presencia de adeudos o materias omitidas en bloque básico/formativo.
 
 ---
 
-## Módulos y Documentación Oficial
+## Módulos y Vistas Oficiales
 
-El sistema estructura la salida de auditoría en dos vistas oficiales preparadas para su exportación a PDF:
+El sistema estructura la salida de auditoría en interfaces modulares planas y estructuradas, optimizadas para impresión:
 
-1. **Hoja 1: Mapa Curricular de Ejecución**:
-   - Representación en cuadrícula de los 9 cuatrimestres de la carrera.
-   - Franja inferior con los 5 niveles de inglés y los 4 requisitos co-curriculares.
-   - Catálogo de electivas multidisciplinares cursadas y disponibles.
-   - Panel de trazabilidad interactivo al seleccionar cualquier materia.
-
-2. **Hoja 2: Cédula de Auditoría Académica y Dictamen Oficial**:
-   - Cabecera formal con sellos de control institucional y metadatos del estudiante.
-   - Banner de dictamen normativo con validez ejecutiva.
-   - Tarjetas de balance cuantitativo (asignaturas ordinarias, recursadas, regularizadas, adeudos y omitidas).
-   - Bitácora analítica de incidencias con desglose de causas y asignaturas prioritarias de regularización.
-   - Cuadro de firmas reglamentarias para Coordinación Académica, Dirección de Sede y Estudiante.
+1. **Auditoría de Grupo**: Directorio consolidado con indicadores de estado y gestión en la nube (Neon).
+2. **Hoja 1: Mapa Curricular de Ejecución**: Representación en cuadrícula de 9 cuatrimestres, inglés, requisitos y catálogo de electivas multidisciplinares.
+3. **Hoja 2: Cédula de Auditoría Académica**: Formato oficial para impresión con tarjetas de balance cuantitativo, bitácora analítica y cuadro de firmas.
 
 ---
 
 ## Arquitectura y Stack Tecnológico
 
-- **Interfaz de Usuario**: React 19, Tailwind CSS.
+- **Interfaz de Usuario**: React 19, Tailwind CSS (Patrones ERP / Estructurales).
 - **Herramientas de Compilación**: Vite 8.
 - **Motor de Renderizado PDF**: `pdfjs-dist` (configuración de worker local integrado).
 - **Generación de Reportes**: `html2canvas`, `jspdf`.
+- **Capa de Persistencia**: Neon Serverless PostgreSQL (`@neondatabase/serverless`).
 - **Iconografía Vectorial**: `lucide-react`.
-- **Capa de Persistencia**: Neon Serverless PostgreSQL (`@neondatabase/serverless`) con esquema de respaldo estático local.
-- **Análisis Estático y Calidad**: `oxlint`.
 
 ---
 

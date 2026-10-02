@@ -42,7 +42,7 @@ export default function CurriculumMap({
   return (
     <div 
       ref={forwardedRef} 
-      className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4 max-w-[1360px] mx-auto print:p-2 print:shadow-none print:border-none"
+      className="bg-white rounded-md border border-slate-300 p-6 space-y-4 w-full max-w-[1380px] mx-auto box-border print:p-2 print:shadow-none print:border-none"
       id="hoja1-mapa-ejecucion"
     >
       {/* 1. ENCABEZADO INSTITUCIONAL OFICIAL UNID */}
@@ -82,8 +82,8 @@ export default function CurriculumMap({
       </div>
 
       {/* 2. CINTILLA FORMAL DEL ESTUDIANTE */}
-      <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 flex items-center justify-between text-xs select-none">
-        <div className="flex items-center space-x-6">
+      <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 flex flex-wrap items-center justify-between gap-4 text-xs select-none">
+        <div className="flex flex-wrap items-center space-x-6 gap-y-1">
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Matrícula:</span>
             <span className="font-mono font-bold text-slate-900 text-xs">{estudiante.matricula}</span>
@@ -103,9 +103,9 @@ export default function CurriculumMap({
         </div>
 
         {/* Dictamen Compacto de Estadía */}
-        <div className="flex items-center space-x-2 pl-4 border-l border-slate-200">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Dictamen de Estadía:</span>
-          <span className={`px-2.5 py-1 rounded text-[11px] font-extrabold tracking-tight border flex items-center space-x-1.5 ${
+        <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 shrink-0">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">DICTAMEN DE ESTADÍA:</span>
+          <span className={`px-2.5 py-1 rounded text-[11px] font-extrabold tracking-tight border flex items-center space-x-1.5 whitespace-nowrap ${
             esElegible 
               ? 'bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]' 
               : 'bg-[#FEF2F2] text-[#991B1B] border-[#FECACA]'
@@ -310,82 +310,89 @@ export default function CurriculumMap({
       </div>
 
       {/* 5. PARTE INFERIOR: NOMENCLATURA (IZQ) Y ELECTIVAS MULTIDISCIPLINARES (DER) */}
-      <div className="grid grid-cols-12 gap-3 pt-2 border-t border-slate-200 select-none text-[10px]">
+      <div className="grid grid-cols-12 gap-3 pt-2.5 border-t border-slate-200 select-none text-xs" style={{ overflow: 'visible' }}>
         {/* Bloque Izquierdo: Descripción y Nomenclatura de Estados */}
-        <div className="col-span-5 bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-1.5">
-          <div className="text-[10px] font-black uppercase text-slate-800 tracking-wider border-b border-slate-200 pb-1 flex items-center justify-between">
-            <span>Nomenclatura y Estados de Asignatura</span>
-            <span className="text-[9px] font-normal text-slate-500">Criterio Institucional UNID</span>
+        <div className="col-span-5 bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+          <div className="text-[11px] font-bold uppercase text-slate-800 tracking-wide border-b border-slate-200 pb-1 flex items-center justify-between">
+            <span>Nomenclatura y Estados</span>
+            <span className="text-[10px] font-medium text-slate-500 normal-case">Criterio UNID</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-0.5">
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#059669] flex-shrink-0" />
-              <span className="font-bold text-slate-800">ORD:</span>
-              <span className="text-slate-600 truncate">1.ª Oportunidad (RW)</span>
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] leading-normal">
+            <div className="flex items-center space-x-1.5 py-1 leading-normal">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#059669] shrink-0" />
+              <span className="font-bold text-slate-800 leading-normal">ORD:</span>
+              <span className="text-slate-600 leading-normal">1.ª Oportunidad</span>
             </div>
 
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D97706] flex-shrink-0" />
-              <span className="font-bold text-slate-800">REC:</span>
-              <span className="text-slate-600 truncate">Recursamiento (≥2 Int)</span>
+            <div className="flex items-center space-x-1.5 py-1 leading-normal">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#D97706] shrink-0" />
+              <span className="font-bold text-slate-800 leading-normal">REC:</span>
+              <span className="text-slate-600 leading-normal">Recursamiento</span>
             </div>
 
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7] flex-shrink-0" />
-              <span className="font-bold text-slate-800">RE:</span>
-              <span className="text-slate-600 truncate">Regularización (Modo RE)</span>
+            <div className="flex items-center space-x-1.5 py-1 leading-normal">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7] shrink-0" />
+              <span className="font-bold text-slate-800 leading-normal">RE:</span>
+              <span className="text-slate-600 leading-normal">Regularización</span>
             </div>
 
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#4F46E5] flex-shrink-0" />
-              <span className="font-bold text-slate-800">CURS:</span>
-              <span className="text-slate-600 truncate">En Curso Activo</span>
+            <div className="flex items-center space-x-1.5 py-1 leading-normal">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#4F46E5] shrink-0" />
+              <span className="font-bold text-slate-800 leading-normal">CURS:</span>
+              <span className="text-slate-600 leading-normal">En Curso</span>
             </div>
 
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626] flex-shrink-0" />
-              <span className="font-bold text-slate-800">ADEUDO:</span>
-              <span className="text-slate-600 truncate">Reprobada Activa (5/NP)</span>
+            <div className="flex items-center space-x-1.5 py-1 leading-normal">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626] shrink-0" />
+              <span className="font-bold text-slate-800 leading-normal">ADEUDO:</span>
+              <span className="text-slate-600 leading-normal">Reprobada</span>
             </div>
 
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#EA580C] flex-shrink-0" />
-              <span className="font-bold text-slate-800">OMITIDA:</span>
-              <span className="text-slate-600 truncate">No cargada en su ciclo</span>
+            <div className="flex items-center space-x-1.5 py-1 leading-normal">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#EA580C] shrink-0" />
+              <span className="font-bold text-slate-800 leading-normal">OMITIDA:</span>
+              <span className="text-slate-600 leading-normal">No cargada</span>
             </div>
           </div>
 
-          <div className="pt-1 border-t border-slate-200/80 text-[9px] text-slate-500 leading-tight">
-            * <strong className="text-rose-600">CC</strong>: Clase Conecta obligatoria. Las materias en <strong className="text-red-700">ADEUDO</strong> u <strong className="text-orange-700">OMITIDAS</strong> entre el 1.º y 6.º cuatrimestre retienen automáticamente la inscripción a Estadía Empresarial.
+          <div className="pt-1.5 border-t border-slate-200/80 text-[10px] text-slate-500 leading-snug">
+            * <strong className="text-rose-600 font-bold">CC</strong>: Clase Conecta. Materias en <strong className="text-red-700 font-bold">ADEUDO</strong> u <strong className="text-orange-700 font-bold">OMITIDAS</strong> (1.º-6.º) bloquean Estadía.
           </div>
         </div>
 
         {/* Bloque Derecho: Asignaturas Electivas Multidisciplinares (10) */}
-        <div className="col-span-7 bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-1.5">
-          <div className="text-[10px] font-black uppercase text-slate-800 tracking-wider border-b border-slate-200 pb-1 flex items-center justify-between">
-            <span>Asignaturas Electivas Multidisciplinares (Catálogo Institucional)</span>
-            <span className="text-[9px] font-semibold text-slate-500">10 Opciones Oficiales</span>
+        <div className="col-span-7 bg-slate-50 border border-slate-300 rounded-md p-3 space-y-2">
+          <div className="text-[11px] font-bold uppercase text-slate-800 tracking-wide border-b border-slate-200 pb-1 flex items-center justify-between">
+            <span>Electivas Multidisciplinares</span>
+            <span className="text-[10px] font-semibold text-slate-500 normal-case">10 Opciones del Catálogo</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-0.5">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1">
             {electivas.map((elec) => (
               <div 
                 key={elec.clave} 
-                className={`flex items-center justify-between p-1 rounded border text-[9px] ${
+                className={`flex items-center justify-between px-2 py-1 rounded-md border text-[10.5px] leading-normal ${
                   elec.cursada 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-900 font-bold' 
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-950 font-bold' 
                     : elec.cursando
-                    ? 'bg-indigo-50 border-indigo-200 text-indigo-900 font-bold'
-                    : 'bg-white border-slate-200 text-slate-600'
+                    ? 'bg-indigo-50 border-indigo-200 text-indigo-950 font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 font-medium'
                 }`}
+                style={{ overflow: 'visible' }}
               >
-                <div className="truncate mr-1">
-                  <span className="font-mono font-bold mr-1">{elec.subj}-{elec.crse}:</span>
-                  <span className="truncate">{elec.nombre}</span>
+                <div className="flex items-center space-x-1 min-w-0 pr-1 leading-normal" style={{ overflow: 'visible' }}>
+                  <span className="font-mono font-bold text-slate-400 text-[9px] shrink-0 leading-normal">{elec.subj}-{elec.crse}:</span>
+                  <span className="leading-normal">{elec.nombre}</span>
                 </div>
-                <span className="flex-shrink-0 text-[8px] font-extrabold uppercase">
-                  {elec.cursada ? `Aprobada (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disponible'}
+                <span className={`shrink-0 text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded ml-1 leading-normal ${
+                  elec.cursada
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : elec.cursando
+                    ? 'bg-indigo-100 text-indigo-800'
+                    : 'bg-slate-100 text-slate-500'
+                }`}>
+                  {elec.cursada ? `AC (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disp.'}
                 </span>
               </div>
             ))}
@@ -400,7 +407,7 @@ export default function CurriculumMap({
           onClick={() => setSelectedMateriaModal(null)}
         >
           <div 
-            className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4 text-xs"
+            className="bg-white rounded-md shadow-2xl border border-slate-300 max-w-lg w-full p-5 space-y-4 text-xs"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between border-b border-slate-100 pb-3">

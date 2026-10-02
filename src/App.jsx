@@ -8,6 +8,7 @@ import AuditCedula from './components/AuditCedula';
 import CareerInactiveModal from './components/CareerInactiveModal';
 import ProgramMismatchModal from './components/ProgramMismatchModal';
 import UploadStudentCard from './components/UploadStudentCard';
+import BatchAuditView from './components/BatchAuditView';
 
 import { getCarreras } from './services/neonService';
 import { parsePdfKardex } from './services/pdfParser';
@@ -19,24 +20,30 @@ import {
   FileText, 
   Layers, 
   AlertCircle, 
-  CheckCircle2
+  CheckCircle2,
+  Users
 } from 'lucide-react';
+import NeonAuditManagerModal from './components/NeonAuditManagerModal';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   const [carreras, setCarreras] = useState(CARRERAS_LOCAL);
   const [carreraSeleccionada, setCarreraSeleccionada] = useState(CARRERAS_LOCAL[0]);
   const [dbStatus, setDbStatus] = useState({ fuente: 'local', mensaje: 'Iniciando conexión...' });
 
-  const [activeTab, setActiveTab] = useState('mapa'); // 'mapa' (Hoja 1) | 'cedula' (Hoja 2)
+  const [activeTab, setActiveTab] = useState('mapa'); // 'mapa' (Hoja 1) | 'cedula' (Hoja 2) | 'grupo' (Auditoría de Grupo)
   const [activeFilter, setActiveFilter] = useState('TODAS');
 
   const [auditData, setAuditData] = useState(null);
+  const [batchData, setBatchData] = useState(null); // { totalAlumnos, alumnos, carrera }
+  const [selectedBatchStudentAudit, setSelectedBatchStudentAudit] = useState(null);
   const [historialReciente, setHistorialReciente] = useState([]);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [mismatchModal, setMismatchModal] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [isGlobalNeonManagerOpen, setIsGlobalNeonManagerOpen] = useState(false);
 
   // Estados de visibilidad de paneles laterales
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -76,7 +83,7 @@ export default function App() {
     });
   };
 
-  // Manejador para subir PDF del estudiante
+  // Manejador para subir PDF (kárdex individual o reporte consolidado de grupo)
   const handleUploadPdf = async (file) => {
     setIsProcessing(true);
     setNotification(null);
@@ -84,8 +91,37 @@ export default function App() {
     try {
       const parsed = await parsePdfKardex(file);
 
+      // CASO A: Reporte consolidado de materias acreditadas (Grupo / Cuatrimestre)
+      if (parsed.isBatch) {
+        const auditarAlumnos = parsed.students.map(s => {
+          const matchingCarrera = carreras.find(c => c.codigo === s.programa || c.clave === s.programa) || carreraSeleccionada;
+          const audit = runAcademicAudit(s, s.registros, matchingCarrera);
+          return {
+            estudiante: s,
+            auditData: audit,
+            carrera: matchingCarrera
+          };
+        });
+
+        const newBatch = {
+          totalAlumnos: parsed.totalAlumnos,
+          alumnos: auditarAlumnos,
+          carrera: carreraSeleccionada
+        };
+
+        setBatchData(newBatch);
+        setActiveTab('grupo');
+        setNotification({
+          tipo: 'exito',
+          texto: `Reporte de grupo procesado exitosamente: ${parsed.totalAlumnos} alumnos auditados.`
+        });
+        setIsProcessing(false);
+        return;
+      }
+
+      // CASO B: Kárdex individual
       // Comprobar coincidencia del programa del PDF contra la carrera seleccionada
-      if (parsed.estudiante.programa && parsed.estudiante.programa !== carreraSeleccionada.codigo) {
+      if (parsed.estudiante?.programa && parsed.estudiante.programa !== carreraSeleccionada.codigo) {
         setMismatchModal({
           detectedProgram: parsed.estudiante.programa,
           currentProgram: carreraSeleccionada.codigo,
@@ -95,10 +131,11 @@ export default function App() {
         return;
       }
 
-      // Ejecutar motor de auditoría
+      // Ejecutar motor de auditoría individual
       const auditResult = runAcademicAudit(parsed.estudiante, parsed.registros, carreraSeleccionada);
       setAuditData(auditResult);
       addToHistorial(auditResult);
+      setActiveTab('mapa');
       setNotification({
         tipo: 'exito',
         texto: `Kárdex de ${parsed.estudiante.nombre} (${parsed.estudiante.matricula}) procesado con éxito.`
@@ -110,6 +147,26 @@ export default function App() {
         texto: `Error al leer el archivo PDF: ${error.message || 'Formato no reconocido'}`
       });
     } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Cargar demo de generación consolidada local (catalogo.pdf)
+  const handleLoadBatchDemo = async () => {
+    setIsProcessing(true);
+    setNotification(null);
+    try {
+      const response = await fetch('/catalogo.pdf');
+      if (!response.ok) throw new Error('No se pudo descargar catalogo.pdf');
+      const blob = await response.blob();
+      const file = new File([blob], 'catalogo.pdf', { type: 'application/pdf' });
+      await handleUploadPdf(file);
+    } catch (err) {
+      console.error('Error cargando demo de lote:', err);
+      setNotification({
+        tipo: 'error',
+        texto: 'No se pudo cargar el archivo catalogo.pdf local.'
+      });
       setIsProcessing(false);
     }
   };
@@ -147,6 +204,7 @@ export default function App() {
     );
     setAuditData(auditResult);
     addToHistorial(auditResult);
+    setActiveTab('mapa');
     setNotification({
       tipo: 'exito',
       texto: `Cargado: ${demo.label}`
@@ -156,16 +214,22 @@ export default function App() {
   // Limpiar / Nueva consulta
   const handleReset = () => {
     setAuditData(null);
+    setBatchData(null);
     setActiveFilter('TODAS');
+    setActiveTab('mapa');
     setNotification({
       tipo: 'info',
       texto: 'Consulta reiniciada. Cargue un nuevo kárdex para auditar.'
     });
   };
 
+  // Auditoría activa efectiva (individual o alumno seleccionado dentro de la generación)
+  const effectiveAuditData = activeTab === 'grupo' ? selectedBatchStudentAudit : auditData;
+
   // Exportar Dictamen Oficial de 2 Hojas en PDF (Horizontal)
   const handleExportPdf = async () => {
-    if (!auditData) return;
+    const currentToExport = activeTab === 'grupo' ? selectedBatchStudentAudit : auditData;
+    if (!currentToExport) return;
     setIsExporting(true);
 
     try {
@@ -173,11 +237,11 @@ export default function App() {
       const elHoja1 = document.getElementById('export-hoja1-container');
       const elHoja2 = document.getElementById('export-hoja2-container');
 
-      await exportarDictamenPdf(elHoja1, elHoja2, auditData.estudiante.matricula);
+      await exportarDictamenPdf(elHoja1, elHoja2, currentToExport.estudiante.matricula);
 
       setNotification({
         tipo: 'exito',
-        texto: 'Dictamen oficial de 2 hojas exportado exitosamente.'
+        texto: `Dictamen oficial de 2 hojas para ${currentToExport.estudiante.nombre} exportado exitosamente.`
       });
     } catch (error) {
       console.error('Error al exportar PDF:', error);
@@ -191,55 +255,61 @@ export default function App() {
   };
 
   // Conteos para los filtros de auditoría
-  const filterCounts = auditData?.resumen ? {
-    todas: auditData.resumen.totalMateriasMapa,
-    ord: auditData.resumen.aprobadasOrd,
-    rec: auditData.resumen.aprobadasRec,
-    re: auditData.resumen.aprobadasRe,
-    adeudo: auditData.resumen.adeudos,
-    omitida: auditData.resumen.omitidas
+  const filterCounts = effectiveAuditData?.resumen ? {
+    todas: effectiveAuditData.resumen.totalMateriasMapa,
+    ord: effectiveAuditData.resumen.aprobadasOrd,
+    rec: effectiveAuditData.resumen.aprobadasRec,
+    re: effectiveAuditData.resumen.aprobadasRe,
+    adeudo: effectiveAuditData.resumen.adeudos,
+    omitida: effectiveAuditData.resumen.omitidas
   } : undefined;
 
   return (
     <div className="flex min-h-screen bg-[#F4F6F9] text-[#1E293B]">
       {/* Menú Lateral Desplegable Oficial UNID */}
-      <Sidebar 
-        dbStatus={dbStatus} 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        isOpen={isSidebarOpen}
-        onToggle={() => setIsSidebarOpen(prev => !prev)}
-      />
+      <div className="no-print print:hidden">
+        <Sidebar 
+          dbStatus={dbStatus} 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          isOpen={isSidebarOpen}
+          onToggle={() => setIsSidebarOpen(prev => !prev)}
+          batchCount={batchData?.alumnos?.length || 0}
+        />
+      </div>
 
       {/* Contenedor Principal */}
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
         {/* Barra Superior con Selector de Carrera y Botones de Acción */}
-        <HeaderBar
-          carreras={carreras}
-          carreraSeleccionada={carreraSeleccionada}
-          onSelectCarrera={(carrera) => {
-            setCarreraSeleccionada(carrera);
-            if (auditData) {
-              const updated = runAcademicAudit(auditData.estudiante, [], carrera);
-              setAuditData(updated);
-            }
-          }}
-          onUploadPdf={handleUploadPdf}
-          onReset={handleReset}
-          onExportPdf={handleExportPdf}
-          onLoadDemo={handleLoadDemo}
-          isProcessing={isProcessing}
-          isExporting={isExporting}
-          hasAuditData={Boolean(auditData)}
-          isSidebarOpen={isSidebarOpen}
-          onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
-          isWidgetsOpen={isWidgetsOpen}
-          onToggleWidgets={() => setIsWidgetsOpen(prev => !prev)}
-        />
+        <div className="no-print print:hidden">
+          <HeaderBar
+            carreras={carreras}
+            carreraSeleccionada={carreraSeleccionada}
+            onSelectCarrera={(carrera) => {
+              setCarreraSeleccionada(carrera);
+              if (auditData) {
+                const updated = runAcademicAudit(auditData.estudiante, [], carrera);
+                setAuditData(updated);
+              }
+            }}
+            onUploadPdf={handleUploadPdf}
+            onReset={handleReset}
+            onExportPdf={handleExportPdf}
+            onLoadDemo={handleLoadDemo}
+            onLoadBatchDemo={handleLoadBatchDemo}
+            isProcessing={isProcessing}
+            isExporting={isExporting}
+            hasAuditData={Boolean(effectiveAuditData)}
+            isSidebarOpen={isSidebarOpen}
+            onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
+            isWidgetsOpen={isWidgetsOpen}
+            onToggleWidgets={() => setIsWidgetsOpen(prev => !prev)}
+          />
+        </div>
 
         {/* Notificaciones y Avisos del Sistema */}
         {notification && (
-          <div className={`mx-6 mt-3 px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-between border ${
+          <div className={`no-print print:hidden mx-6 mt-3 px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-between border ${
             notification.tipo === 'exito'
               ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
               : notification.tipo === 'error'
@@ -261,7 +331,8 @@ export default function App() {
         )}
 
         {/* Zona Central de Trabajo: Todo el ancho disponible para el Mapa Curricular */}
-        <main className="flex-1 p-6 overflow-x-hidden">
+        <main className="flex-1 p-6 overflow-x-hidden print:p-0 print:m-0 print:overflow-visible">
+          <ErrorBoundary onReset={handleReset}>
           {/* Contenedor Central de Contenido y Vistas */}
           <div className="w-full space-y-4">
             {/* Si la carrera no está activa, mostrar aviso de integración */}
@@ -273,16 +344,46 @@ export default function App() {
                   setCarreraSeleccionada(activa);
                 }}
               />
+            ) : activeTab === 'grupo' ? (
+              /* Vista de Auditoría de Grupo / Generación */
+              batchData ? (
+                <BatchAuditView 
+                  batchData={batchData}
+                  onClearBatch={() => {
+                    setBatchData(null);
+                    setSelectedBatchStudentAudit(null);
+                    setActiveTab('mapa');
+                  }}
+                  onUploadNewBatch={handleLoadBatchDemo}
+                  onActiveStudentAuditChange={setSelectedBatchStudentAudit}
+                  onExportPdf={handleExportPdf}
+                  isExporting={isExporting}
+                  onLoadBatchData={(loadedBatch) => {
+                    setBatchData(loadedBatch);
+                    setSelectedBatchStudentAudit(null);
+                    setActiveTab('grupo');
+                  }}
+                />
+              ) : (
+                <UploadStudentCard 
+                  carrera={carreraSeleccionada}
+                  onUploadPdf={handleUploadPdf}
+                  onLoadBatchDemo={handleLoadBatchDemo}
+                  onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
+                />
+              )
             ) : !auditData ? (
-              /* Tarjeta inicial centrada cuando no hay alumno cargado */
+              /* Tarjeta inicial centrada cuando no hay alumno individual cargado */
               <UploadStudentCard 
                 carrera={carreraSeleccionada}
                 onUploadPdf={handleUploadPdf}
+                onLoadBatchDemo={handleLoadBatchDemo}
+                onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
               />
             ) : (
               <>
                 {/* Selector de Pestañas y Barra Completa de Filtros en Dos Filas */}
-                <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
+                <div className="no-print print:hidden bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
                   {/* Fila superior: Selector de vista a la izquierda */}
                   <div className="flex items-center justify-between">
                     <div className="bg-[#181C24] p-1 rounded-lg inline-flex items-center space-x-1 select-none">
@@ -346,27 +447,52 @@ export default function App() {
               </>
             )}
           </div>
+          </ErrorBoundary>
 
           {/* Panel Deslizable (Drawer) con los 4 Widgets Oficiales del Portal UNID */}
-          <WidgetsColumn
-            auditData={auditData}
-            historialReciente={historialReciente}
-            onSelectHistorial={(item) => setAuditData(item)}
-            isOpen={isWidgetsOpen}
-            onClose={() => setIsWidgetsOpen(false)}
-          />
+          <div className="no-print print:hidden">
+            <WidgetsColumn
+              auditData={auditData}
+              historialReciente={historialReciente}
+              onSelectHistorial={(item) => setAuditData(item)}
+              isOpen={isWidgetsOpen}
+              onClose={() => setIsWidgetsOpen(false)}
+            />
+          </div>
         </main>
       </div>
 
-      {/* CONTENEDOR OCULTO PARA EXPORTACIÓN EN PDF DE ALTA RESOLUCIÓN */}
-      {/* Contiene ambas hojas con ancho landscape fijo (1160px) para html2canvas */}
-      {auditData && (
-        <div style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1200px' }}>
-          <div id="export-hoja1-container" className="p-6 bg-white">
-            <CurriculumMap auditData={auditData} activeFilter="TODAS" />
+      {/* CONTENEDOR PARA EXPORTACIÓN EN PDF DE ALTA RESOLUCIÓN */}
+      {/* Ubicado en coordenadas activas con 1440px exactos y márgenes simétricos para evitar desbordes */}
+      {effectiveAuditData && (
+        <div 
+          id="export-pdf-wrapper"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            width: '1440px', 
+            maxWidth: '1440px',
+            boxSizing: 'border-box',
+            zIndex: -9999, 
+            opacity: 0, 
+            pointerEvents: 'none',
+            overflow: 'visible'
+          }}
+        >
+          <div 
+            id="export-hoja1-container" 
+            className="p-6 bg-white min-h-[960px] w-[1440px] max-w-[1440px] box-border" 
+            style={{ width: '1440px', maxWidth: '1440px', boxSizing: 'border-box', overflow: 'hidden' }}
+          >
+            <CurriculumMap auditData={effectiveAuditData} activeFilter="TODAS" />
           </div>
-          <div id="export-hoja2-container" className="p-6 bg-white">
-            <AuditCedula auditData={auditData} />
+          <div 
+            id="export-hoja2-container" 
+            className="p-6 bg-white min-h-[960px] w-[1440px] max-w-[1440px] box-border" 
+            style={{ width: '1440px', maxWidth: '1440px', boxSizing: 'border-box', overflow: 'hidden' }}
+          >
+            <AuditCedula auditData={effectiveAuditData} />
           </div>
         </div>
       )}
@@ -386,6 +512,24 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Modal Global de Gestión de Ciclos en Neon Database */}
+      <NeonAuditManagerModal
+        isOpen={isGlobalNeonManagerOpen}
+        onClose={() => setIsGlobalNeonManagerOpen(false)}
+        initialMode="gestionar"
+        batchData={batchData}
+        onLoadBatchData={(loadedBatch) => {
+          setBatchData(loadedBatch);
+          setSelectedBatchStudentAudit(null);
+          setActiveTab('grupo');
+          setIsGlobalNeonManagerOpen(false);
+          setNotification({
+            tipo: 'exito',
+            texto: `Se cargaron ${loadedBatch.totalAlumnos} expedientes desde Neon Database correctamente.`
+          });
+        }}
+      />
     </div>
   );
 }

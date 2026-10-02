@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   GraduationCap, 
   ShieldCheck, 
@@ -7,7 +6,8 @@ import {
   Award,
   Building2,
   Server,
-  PanelLeftClose
+  PanelLeftClose,
+  Users
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -15,7 +15,8 @@ export default function Sidebar({
   activeTab, 
   setActiveTab, 
   isOpen = true, 
-  onToggle 
+  onToggle,
+  batchCount = 0
 }) {
   return (
     <aside 
@@ -61,9 +62,9 @@ export default function Sidebar({
           {/* Botón Activo: Validador Académico */}
           <button
             onClick={() => setActiveTab('mapa')}
-            className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
               activeTab === 'mapa' || activeTab === 'cedula'
-                ? 'bg-white text-[#111622] shadow-sm font-bold'
+                ? 'bg-white text-[#111622] shadow-none font-bold'
                 : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
             }`}
           >
@@ -73,7 +74,7 @@ export default function Sidebar({
 
           <button
             onClick={() => setActiveTab('mapa')}
-            className={`w-full flex items-center space-x-3 px-3.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            className={`w-full flex items-center space-x-3 px-3.5 py-2 rounded-md text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'mapa' ? 'text-[#F2B705] font-semibold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -83,7 +84,7 @@ export default function Sidebar({
 
           <button
             onClick={() => setActiveTab('cedula')}
-            className={`w-full flex items-center space-x-3 px-3.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            className={`w-full flex items-center space-x-3 px-3.5 py-2 rounded-md text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'cedula' ? 'text-[#F2B705] font-semibold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -91,16 +92,35 @@ export default function Sidebar({
             <span>Hoja 2: Cédula de Auditoría</span>
           </button>
 
+          <button
+            onClick={() => setActiveTab('grupo')}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              activeTab === 'grupo'
+                ? 'bg-white text-[#111622] shadow-none font-bold'
+                : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <Users className="w-4 h-4 flex-shrink-0 text-[#F2B705]" strokeWidth={1.5} />
+              <span>Auditoría de Grupo</span>
+            </div>
+            {batchCount > 0 && (
+              <span className="bg-[#F2B705] text-slate-950 font-mono font-bold text-[10px] px-1.5 py-0.5 rounded-full">
+                {batchCount}
+              </span>
+            )}
+          </button>
+
           <div className="pt-5 px-3 pb-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
             Auditoría de Egreso
           </div>
 
-          <div className="flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 cursor-default">
+          <div className="flex items-center space-x-3 px-3.5 py-2.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-200 cursor-default">
             <Award className="w-4 h-4 flex-shrink-0 text-slate-400" strokeWidth={1.5} />
             <span>Validación de Estadía</span>
           </div>
 
-          <div className="flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 cursor-default">
+          <div className="flex items-center space-x-3 px-3.5 py-2.5 rounded-md text-xs font-medium text-slate-400 hover:text-slate-200 cursor-default">
             <GraduationCap className="w-4 h-4 flex-shrink-0 text-slate-400" strokeWidth={1.5} />
             <span>Revisión de Kárdex</span>
           </div>

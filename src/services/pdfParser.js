@@ -33,9 +33,18 @@ export async function parsePdfKardex(fileOrBuffer) {
 
   const pdf = await loadingTask.promise;
 
-  // Leer exclusivamente la Página 1 del PDF
-  const page = await pdf.getPage(1);
-  const textContent = await page.getTextContent();
+  // Comprobar si es un reporte consolidado de grupo / cuatrimestre
+  const page1 = await pdf.getPage(1);
+  const textContent1 = await page1.getTextContent();
+  const page1Text = textContent1.items.map(it => it.str).join(' ');
+
+  if (/Reporte\s+de\s+materias\s+acreditadas/i.test(page1Text)) {
+    return await parseBatchGroupPdf(pdf);
+  }
+
+  // Leer exclusivamente la Página 1 del PDF para kardex individual
+  const page = page1;
+  const textContent = textContent1;
 
   const rawItems = textContent.items
     .filter(it => it.str && it.str.trim() !== '')
@@ -301,6 +310,7 @@ export async function parsePdfKardex(fileOrBuffer) {
   });
 
   return {
+    isBatch: false,
     rawText: fullText,
     estudiante,
     registros,
@@ -401,4 +411,97 @@ function isGradeFailing(calif) {
   if (s === 'NP' || s === 'NA') return true;
   const num = parseFloat(s);
   return !isNaN(num) && num < 6;
+}
+
+/**
+ * Procesa reportes consolidados oficiales ("Reporte de materias acreditadas")
+ * que contienen múltiples alumnos en 1, 5, 30 o 100+ páginas de forma totalmente dinámica.
+ */
+export async function parseBatchGroupPdf(pdf) {
+  const students = [];
+  let currentStudent = null;
+
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
+    const tc = await page.getTextContent();
+
+    const items = tc.items
+      .map(it => ({
+        str: it.str.trim(),
+        x: Math.round(it.transform[4]),
+        y: Math.round(it.transform[5])
+      }))
+      .filter(it => it.str.length > 0);
+
+    const rows = [];
+    for (const it of items) {
+      let r = rows.find(row => Math.abs(row.y - it.y) <= 4);
+      if (!r) {
+        r = { y: it.y, items: [] };
+        rows.push(r);
+      }
+      r.items.push(it);
+    }
+    rows.sort((a, b) => b.y - a.y);
+    rows.forEach(r => r.items.sort((a, b) => a.x - b.x));
+
+    for (const row of rows) {
+      const rowText = row.items.map(it => it.str).join(' ');
+      if (/Reporte\s+de\s+materias|Expediente.*Nombre|Subj.*Crse/i.test(rowText)) continue;
+
+      // Un alumno nuevo comienza cuando hay un expediente de 8 dígitos en x < 70
+      const expItem = row.items.find(it => it.x < 70 && /^\d{8}$/.test(it.str));
+      if (expItem) {
+        const nameItems = row.items.filter(it => it.x >= 70 && it.x < 215);
+        const name = nameItems.map(it => it.str).join(' ').trim();
+
+        currentStudent = {
+          matricula: expItem.str,
+          nombre: name || `Estudiante ${expItem.str}`,
+          programa: '',
+          sede: 'CAM',
+          estatus: 'EG',
+          registros: []
+        };
+        students.push(currentStudent);
+      }
+
+      if (!currentStudent) continue;
+
+      const periodoItem = row.items.find(it => it.x >= 200 && it.x < 255 && /^\d{6}$/.test(it.str));
+      const progItem = row.items.find(it => it.x >= 250 && it.x < 315 && /^LIC-[A-Z0-9-]+$/i.test(it.str));
+      const subjItem = row.items.find(it => it.x >= 310 && it.x < 365 && /^[A-Z]{3,4}$/i.test(it.str));
+      const crseItem = row.items.find(it => it.x >= 360 && it.x < 425 && /^[A-Z0-9-]{3,6}$/i.test(it.str));
+      const califItem = row.items.find(it => it.x >= 505 && /^(\d{1,2}|AC|NP|NA|VS)$/i.test(it.str));
+
+      if (progItem && !currentStudent.programa) {
+        currentStudent.programa = progItem.str.toUpperCase();
+      }
+
+      if (periodoItem && crseItem && califItem) {
+        const califStr = califItem.str.trim().toUpperCase();
+        const resolvedSubj = subjItem ? subjItem.str.toUpperCase() : getSubjFromCatalog(crseItem.str.toUpperCase());
+        const crseClean = crseItem.str.toUpperCase();
+
+        currentStudent.registros.push({
+          periodo: periodoItem.str,
+          crn: '00000',
+          subj: resolvedSubj,
+          crse: crseClean,
+          claveCompleta: `${resolvedSubj}-${crseClean}`,
+          modalidad: 'RW',
+          calificacion: califStr,
+          esAprobada: isGradePassing(califStr),
+          esReprobada: isGradeFailing(califStr),
+          estaCursando: !califStr
+        });
+      }
+    }
+  }
+
+  return {
+    isBatch: true,
+    totalAlumnos: students.length,
+    students
+  };
 }

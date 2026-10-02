@@ -9,7 +9,8 @@ import {
   Loader2,
   PanelLeftClose,
   PanelLeftOpen,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Users
 } from 'lucide-react';
 import { ALUMNOS_DEMO } from '../data/demoStudents';
 
@@ -21,6 +22,7 @@ export default function HeaderBar({
   onReset, 
   onExportPdf,
   onLoadDemo,
+  onLoadBatchDemo,
   isProcessing,
   isExporting,
   hasAuditData,
@@ -40,7 +42,7 @@ export default function HeaderBar({
   };
 
   return (
-    <header className="h-16 bg-white border-b border-[#E2E8F0] px-5 flex items-center justify-between shadow-sm sticky top-0 z-10 select-none">
+    <header className="h-16 bg-white border-b border-slate-300 px-5 flex items-center justify-between sticky top-0 z-10 select-none">
       {/* Selector de Licenciatura y Toggle de Menú Lateral */}
       <div className="flex items-center space-x-2">
         {/* Botón de alternancia de menú lateral izquierdo */}
@@ -113,6 +115,21 @@ export default function HeaderBar({
             <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
               Expedientes de Prueba
             </div>
+            {onLoadBatchDemo && (
+              <div className="p-1 border-b border-slate-100 bg-amber-50/60">
+                <button
+                  type="button"
+                  onClick={onLoadBatchDemo}
+                  className="w-full text-left px-2.5 py-1.5 text-xs text-amber-950 hover:bg-amber-100/80 rounded flex items-center space-x-2 transition-colors cursor-pointer"
+                >
+                  <Users className="w-4 h-4 text-amber-600 flex-shrink-0" strokeWidth={1.5} />
+                  <div>
+                    <span className="font-bold block text-slate-900">Generación Completa (36 Alumnos)</span>
+                    <span className="text-[10px] text-amber-800">Reporte oficial catalogo.pdf (LIC-COFI-18)</span>
+                  </div>
+                </button>
+              </div>
+            )}
             {ALUMNOS_DEMO.map((demo) => (
               <button
                 key={demo.id}
