@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import StudentStatusSelector from './StudentStatusSelector';
 
-export default function AuditCedula({ auditData, forwardedRef }) {
+export default function AuditCedula({ auditData, forwardedRef, onStatusChange }) {
   const [localEstatus, setLocalEstatus] = useState('AC');
 
   useEffect(() => {
@@ -17,10 +17,10 @@ export default function AuditCedula({ auditData, forwardedRef }) {
   }, [auditData]);
 
   const handleStatusUpdate = (newStatus) => {
-    if (auditData?.estudiante) {
-      auditData.estudiante.estatus = newStatus;
-    }
     setLocalEstatus(newStatus);
+    if (onStatusChange) {
+      onStatusChange(newStatus);
+    }
   };
 
   if (!auditData) {

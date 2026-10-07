@@ -79,18 +79,20 @@ export default function StudentStatusSelector({ estudiante, onStatusChange }) {
         onClick={() => setIsOpen(!isOpen)}
         disabled={isSaving}
         className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold rounded-md cursor-pointer transition-all border border-transparent shadow-sm 
-          ${currentStatusInfo.color} hover:ring-2 hover:ring-offset-1 dark:hover:ring-offset-slate-900 ${isOpen ? 'ring-2 ring-offset-1' : ''}`}
+          ${currentStatusInfo.color} hover:ring-2 hover:ring-offset-1 dark:hover:ring-offset-slate-900 
+          ${isOpen ? 'ring-2 ring-offset-1' : ''} 
+          print:shadow-none print:border-none print:bg-transparent print:text-black print:px-0`}
       >
         <span>{currentStatusInfo.codigo} - {currentStatusInfo.descripcion}</span>
         {isSaving ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin opacity-70" />
+          <Loader2 className="w-3.5 h-3.5 animate-spin opacity-70 print:hidden" />
         ) : (
-          <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+          <ChevronDown className="w-3.5 h-3.5 opacity-70 print:hidden" />
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-72 bg-surface-0 border border-border shadow-2xl rounded-xl z-50 overflow-hidden animate-slide-down">
+        <div className="absolute left-0 mt-2 w-72 bg-surface-0 border border-border shadow-2xl rounded-xl z-50 overflow-hidden animate-slide-down print:hidden">
           <div className="p-2 border-b border-border bg-surface-1">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />

@@ -11,7 +11,8 @@ import StudentStatusSelector from './StudentStatusSelector';
 export default function CurriculumMap({ 
   auditData, 
   activeFilter = 'TODAS',
-  forwardedRef
+  forwardedRef,
+  onStatusChange
 }) {
   const [selectedMateriaModal, setSelectedMateriaModal] = useState(null);
   
@@ -25,10 +26,10 @@ export default function CurriculumMap({
   }, [auditData]);
 
   const handleStatusUpdate = (newStatus) => {
-    if (auditData?.estudiante) {
-      auditData.estudiante.estatus = newStatus;
-    }
     setLocalEstatus(newStatus);
+    if (onStatusChange) {
+      onStatusChange(newStatus);
+    }
   };
 
   if (!auditData) {

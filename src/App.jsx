@@ -245,6 +245,42 @@ export default function App() {
   // Auditoría activa efectiva (individual o alumno seleccionado dentro de la generación)
   const effectiveAuditData = activeTab === 'grupo' ? selectedBatchStudentAudit : auditData;
 
+  // Actualización global del estatus
+  const handleUpdateStatus = (newStatus, matricula) => {
+    // Actualizar historial
+    setHistorialReciente(prev => prev.map(item => 
+      item.estudiante.matricula === matricula 
+        ? { ...item, estudiante: { ...item.estudiante, estatus: newStatus } }
+        : item
+    ));
+
+    // Actualizar auditData individual si coincide
+    if (auditData && auditData.estudiante.matricula === matricula) {
+      setAuditData(prev => ({
+        ...prev,
+        estudiante: { ...prev.estudiante, estatus: newStatus }
+      }));
+    }
+
+    // Actualizar lote y seleccionado si coincide
+    if (batchData) {
+      setBatchData(prev => ({
+        ...prev,
+        alumnos: prev.alumnos.map(item => 
+          item.estudiante.matricula === matricula 
+            ? { ...item, estudiante: { ...item.estudiante, estatus: newStatus } }
+            : item
+        )
+      }));
+      if (selectedBatchStudentAudit && selectedBatchStudentAudit.estudiante.matricula === matricula) {
+        setSelectedBatchStudentAudit(prev => ({
+          ...prev,
+          estudiante: { ...prev.estudiante, estatus: newStatus }
+        }));
+      }
+    }
+  };
+
   // Exportar Dictamen Oficial de 2 Hojas en PDF (Horizontal)
   const handleExportPdf = async () => {
     const currentToExport = activeTab === 'grupo' ? selectedBatchStudentAudit : auditData;
@@ -465,6 +501,7 @@ export default function App() {
                     auditData={auditData}
                     activeFilter={activeFilter}
                     forwardedRef={hoja1Ref}
+                    onStatusChange={(status) => handleUpdateStatus(status, auditData.estudiante.matricula)}
                   />
                 )}
 
@@ -472,6 +509,7 @@ export default function App() {
                   <AuditCedula 
                     auditData={auditData}
                     forwardedRef={hoja2Ref}
+                    onStatusChange={(status) => handleUpdateStatus(status, auditData.estudiante.matricula)}
                   />
                 )}
               </>
