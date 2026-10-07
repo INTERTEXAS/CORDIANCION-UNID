@@ -172,26 +172,28 @@ export default function App() {
     }
   };
 
-  // Confirmar cambio automático de carrera si el PDF pertenece a otra
   const handleConfirmMismatch = () => {
-    if (!mismatchModal) return;
-    const { parsedData, detectedProgram } = mismatchModal;
-    
-    // Normalizar códigos para evitar fallos por espacios o diferencias sutiles (0 vs O)
-    const normalizedDetected = detectedProgram.trim().replace(/0/g, 'O');
-    
-    // Buscar la carrera en el catálogo
-    const targetCarrera = carreras.find(c => c.codigo.replace(/0/g, 'O') === normalizedDetected) || {
-      ...carreraSeleccionada,
-      codigo: detectedProgram
-    };
-    
-    setCarreraSeleccionada(targetCarrera);
-    const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, targetCarrera);
-    setAuditData(auditResult);
-    addToHistorial(auditResult);
-    setActiveTab('mapa');
-    setMismatchModal(null);
+    try {
+      if (!mismatchModal) return;
+      const { parsedData, detectedProgram } = mismatchModal;
+      
+      const normalizedDetected = detectedProgram.trim().replace(/0/g, 'O');
+      
+      const targetCarrera = carreras.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected) || {
+        ...carreraSeleccionada,
+        codigo: detectedProgram
+      };
+      
+      setCarreraSeleccionada(targetCarrera);
+      const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, targetCarrera);
+      setAuditData(auditResult);
+      addToHistorial(auditResult);
+      setActiveTab('mapa');
+      setMismatchModal(null);
+    } catch (error) {
+      console.error("Error confirmando mismatch:", error);
+      alert("Error interno al cambiar mapa: " + error.message);
+    }
   };
 
   // Cargar caso demo institucional
@@ -519,12 +521,17 @@ export default function App() {
           currentProgram={mismatchModal.currentProgram}
           onConfirmSwitch={handleConfirmMismatch}
           onDismiss={() => {
-            const { parsedData } = mismatchModal;
-            const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, carreraSeleccionada);
-            setAuditData(auditResult);
-            addToHistorial(auditResult);
-            setActiveTab('mapa');
-            setMismatchModal(null);
+            try {
+              const { parsedData } = mismatchModal;
+              const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, carreraSeleccionada);
+              setAuditData(auditResult);
+              addToHistorial(auditResult);
+              setActiveTab('mapa');
+              setMismatchModal(null);
+            } catch (error) {
+              console.error(error);
+              alert("Error interno en Mantener mapa: " + error.message);
+            }
           }}
         />
       )}
