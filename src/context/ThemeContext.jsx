@@ -7,7 +7,7 @@ export function ThemeProvider({ children }) {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('unid-theme');
       if (saved) return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      return 'light';
     }
     return 'light';
   });
