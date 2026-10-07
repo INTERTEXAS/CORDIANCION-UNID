@@ -32,8 +32,8 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   }
 
   const mapa = carreraEfectiva.mapa_json || CARRERAS_LOCAL[0].mapa_json;
-  const cuatrimestresRaw = mapa.cuatrimestres || [];
-  const electivasRaw = mapa.electivas_multidisciplinares || [];
+  const cuatrimestresRaw = Array.isArray(mapa.cuatrimestres) ? mapa.cuatrimestres : [];
+  const electivasRaw = Array.isArray(mapa.electivas_multidisciplinares) ? mapa.electivas_multidisciplinares : [];
 
   // Normalizar la estructura del mapa (compatible tanto con Neon DB como con respaldo local)
   const cuatrimestres = cuatrimestresRaw.map(c => ({
@@ -217,15 +217,17 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     });
   }
 
-  // 5. Evaluar niveles de inglés (Cuatrimestres 1 a 5: F001, F002, F003, F004, P001)
   const auditedIngles = [];
-  const nivelesInglesArr = mapa.niveles_ingles === 0 ? [] : (mapa.niveles_ingles || [
+  const defaultNivelesIngles = [
     { nivel: 1, cuatrimestre: 1, claveSugerida: 'F001', nombre: 'INGLÉS I' },
     { nivel: 2, cuatrimestre: 2, claveSugerida: 'F002', nombre: 'INGLÉS II' },
     { nivel: 3, cuatrimestre: 3, claveSugerida: 'F003', nombre: 'INGLÉS III' },
     { nivel: 4, cuatrimestre: 4, claveSugerida: 'F004', nombre: 'INGLÉS IV' },
     { nivel: 5, cuatrimestre: 5, claveSugerida: 'P001', nombre: 'INGLÉS V' },
-  ]);
+  ];
+  const nivelesInglesArr = Array.isArray(mapa.niveles_ingles) 
+    ? mapa.niveles_ingles 
+    : (mapa.niveles_ingles === 0 ? [] : defaultNivelesIngles);
 
   let inglesAcreditados = 0;
   for (const item of nivelesInglesArr) {

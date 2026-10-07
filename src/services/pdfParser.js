@@ -517,7 +517,7 @@ export async function parseBatchGroupPdf(pdf) {
   };
 }
 
-export function detectarModalidad(estudiante, registros) {
+export function detectarModalidad(estudiante, registros = []) {
   let conteoEjecutivo = 0;
   let conteoEscolarizado = 0;
   
