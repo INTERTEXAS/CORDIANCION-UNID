@@ -256,3 +256,58 @@ export async function eliminarAuditoriasAntiguas(meses = 5) {
   }
 }
 
+/**
+ * Guarda o actualiza el estatus manual de un alumno en la base de datos Neon.
+ */
+export async function saveEstatusAlumno(matricula, nombre, estatusCodigo, estatusDescripcion) {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) {
+    console.warn('[NeonService] No hay conexión a Neon DB para guardar estatus. Simulación exitosa en modo local.');
+    return { success: true, localOnly: true };
+  }
+
+  const sql = neon(databaseUrl);
+  try {
+    // Requires a table `estatus_alumnos` with schema: 
+    // matricula (PK), nombre, estatus_codigo, estatus_descripcion, actualizado_en
+    await sql`
+      INSERT INTO estatus_alumnos (matricula, nombre, estatus_codigo, estatus_descripcion, actualizado_en)
+      VALUES (${matricula}, ${nombre || 'Desconocido'}, ${estatusCodigo}, ${estatusDescripcion}, NOW())
+      ON CONFLICT (matricula) 
+      DO UPDATE SET 
+        estatus_codigo = EXCLUDED.estatus_codigo,
+        estatus_descripcion = EXCLUDED.estatus_descripcion,
+        actualizado_en = NOW()
+    `;
+    return { success: true };
+  } catch (error) {
+    console.error('[NeonService] Error al guardar estatus del alumno:', error);
+    throw error;
+  }
+}
+
+/**
+ * Consulta todos los estatus manuales guardados.
+ * Devuelve un diccionario { [matricula]: { codigo, descripcion } }
+ */
+export async function fetchEstatusManuales() {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) return {};
+
+  const sql = neon(databaseUrl);
+  try {
+    const rows = await sql`SELECT matricula, estatus_codigo, estatus_descripcion FROM estatus_alumnos`;
+    const result = {};
+    for (const r of rows) {
+      result[r.matricula] = {
+        codigo: r.estatus_codigo,
+        descripcion: r.estatus_descripcion
+      };
+    }
+    return result;
+  } catch (error) {
+    // Si la tabla no existe o hay error, fallar en silencio y retornar {}
+    console.warn('[NeonService] Error o tabla estatus_alumnos inexistente:', error.message);
+    return {};
+  }
+}

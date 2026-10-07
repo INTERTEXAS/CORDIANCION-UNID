@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Building2, 
   UserCheck, 
@@ -9,6 +9,7 @@ import {
   SlidersHorizontal,
   X
 } from 'lucide-react';
+import { getEstatusInfo } from '../data/estatusAlumnosData';
 
 export default function WidgetsColumn({ 
   auditData, 
@@ -22,6 +23,9 @@ export default function WidgetsColumn({
   const materiasPrioritarias = auditData?.materiasPrioritarias || [];
 
   const esElegible = resumen?.esElegibleEstadia;
+
+  // Render dynamically based on catalog
+  const estatusInfo = estudiante ? getEstatusInfo(estudiante.estatus) : null;
 
   return (
     <>
@@ -108,15 +112,9 @@ export default function WidgetsColumn({
                   <p className="text-[11px] text-text-muted">Datos del Kárdex</p>
                 </div>
               </div>
-              {estudiante?.estatus && (
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-lg ${
-                  estudiante.estatus === 'AC' 
-                    ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' 
-                    : estudiante.estatus === 'EG'
-                    ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400'
-                    : 'bg-surface-2 text-text-secondary'
-                }`}>
-                  {estudiante.estatus === 'AC' ? 'ACTIVO' : estudiante.estatus === 'EG' ? 'EGRESADO' : estudiante.estatus}
+              {estatusInfo && (
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-lg ${estatusInfo.color.split(' ')[0]} ${estatusInfo.color.split(' ')[1]}`}>
+                  {estatusInfo.codigo} - {estatusInfo.descripcion}
                 </span>
               )}
             </div>

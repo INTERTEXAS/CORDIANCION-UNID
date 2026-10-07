@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck,
   ShieldAlert,
@@ -6,6 +6,7 @@ import {
   BookOpen,
   AlertTriangle
 } from 'lucide-react';
+import StudentStatusSelector from './StudentStatusSelector';
 
 export default function CurriculumMap({ 
   auditData, 
@@ -13,6 +14,22 @@ export default function CurriculumMap({
   forwardedRef
 }) {
   const [selectedMateriaModal, setSelectedMateriaModal] = useState(null);
+  
+  // Local state for immediate UI reaction when status changes
+  const [localEstatus, setLocalEstatus] = useState('AC');
+
+  useEffect(() => {
+    if (auditData?.estudiante?.estatus) {
+      setLocalEstatus(auditData.estudiante.estatus);
+    }
+  }, [auditData]);
+
+  const handleStatusUpdate = (newStatus) => {
+    if (auditData?.estudiante) {
+      auditData.estudiante.estatus = newStatus;
+    }
+    setLocalEstatus(newStatus);
+  };
 
   if (!auditData) {
     return (
@@ -111,20 +128,23 @@ export default function CurriculumMap({
       <div className="bg-surface-2 border border-border rounded-xl px-5 py-3 flex flex-wrap items-center justify-between gap-4 text-xs select-none transition-theme">
         <div className="flex flex-wrap items-center space-x-6 gap-y-2">
           <div>
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Matrícula:</span>
-            <span className="font-mono font-bold text-text-primary text-[13px]">{estudiante.matricula}</span>
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Matrícula:</span>
+            <span className="font-mono font-bold text-text-primary text-[13px] block mt-1">{estudiante.matricula}</span>
           </div>
           <div className="border-l border-border-subtle pl-5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Alumno:</span>
-            <span className="font-bold text-text-primary text-[13px]">{estudiante.nombre}</span>
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Alumno:</span>
+            <span className="font-bold text-text-primary text-[13px] block mt-1">{estudiante.nombre}</span>
           </div>
           <div className="border-l border-border-subtle pl-5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Sede:</span>
-            <span className="font-semibold text-text-secondary text-[13px]">{estudiante.sede || 'CAM'}</span>
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Sede:</span>
+            <span className="font-semibold text-text-secondary text-[13px] block mt-1">{estudiante.sede || 'CAM'}</span>
           </div>
           <div className="border-l border-border-subtle pl-5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Estatus:</span>
-            <span className="font-bold text-text-secondary text-[13px]">{estudiante.estatus || 'AC'}</span>
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Estatus Actual:</span>
+            <StudentStatusSelector 
+              estudiante={{ ...estudiante, estatus: localEstatus }} 
+              onStatusChange={handleStatusUpdate} 
+            />
           </div>
           {estudiante.modalidadDetectada && (
             <div className="border-l border-border-subtle pl-5">

@@ -45,6 +45,7 @@ export default function App() {
   const [mismatchModal, setMismatchModal] = useState(null);
   const [notification, setNotification] = useState(null);
   const [isGlobalNeonManagerOpen, setIsGlobalNeonManagerOpen] = useState(false);
+  const [estatusManuales, setEstatusManuales] = useState({});
 
   // Estados de visibilidad de paneles laterales
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -58,9 +59,13 @@ export default function App() {
   useEffect(() => {
     async function loadData() {
       try {
-        const res = await getCarreras();
+        const [res, estatusDict] = await Promise.all([
+          getCarreras(),
+          import('./services/neonService').then(m => m.fetchEstatusManuales())
+        ]);
         setCarreras(res.carreras || CARRERAS_LOCAL);
         setDbStatus({ fuente: res.fuente, mensaje: res.mensaje });
+        setEstatusManuales(estatusDict || {});
         
         // Seleccionar por defecto la carrera activa LIC-COFI-18
         const activa = (res.carreras || CARRERAS_LOCAL).find(c => c.activa) || CARRERAS_LOCAL[0];
@@ -70,7 +75,7 @@ export default function App() {
         setAuditData(null);
         setHistorialReciente([]);
       } catch (err) {
-        console.error('Error inicializando carreras:', err);
+        console.error('Error inicializando datos:', err);
       }
     }
     loadData();
@@ -95,6 +100,9 @@ export default function App() {
       // CASO A: Reporte consolidado de materias acreditadas (Grupo / Cuatrimestre)
       if (parsed.isBatch) {
         const auditarAlumnos = parsed.students.map(s => {
+          if (estatusManuales[s.matricula]) {
+            s.estatus = estatusManuales[s.matricula].codigo;
+          }
           const matchingCarrera = carreras.find(c => c.codigo === s.programa || c.clave === s.programa) || carreraSeleccionada;
           const audit = runAcademicAudit(s, s.registros, matchingCarrera);
           return {
@@ -121,6 +129,10 @@ export default function App() {
       }
 
       // CASO B: Kárdex individual
+      if (estatusManuales[parsed.estudiante?.matricula]) {
+        parsed.estudiante.estatus = estatusManuales[parsed.estudiante.matricula].codigo;
+      }
+
       // Comprobar coincidencia del programa del PDF contra la carrera seleccionada
       if (parsed.estudiante?.programa && parsed.estudiante.programa !== carreraSeleccionada.codigo) {
         setMismatchModal({
