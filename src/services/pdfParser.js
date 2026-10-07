@@ -38,14 +38,29 @@ export async function parsePdfKardex(fileOrBuffer) {
 
   const pdf = await loadingTask.promise;
 
-  // Comprobar si es un reporte consolidado de grupo / cuatrimestre
+  // Extraer texto completo de todas las páginas para validación estricta
+  let fullPdfText = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const textContent = await page.getTextContent();
+    fullPdfText += textContent.items.map(it => it.str).join(' ') + ' ';
+  }
+
+  // 1. VALIDACIÓN ESTRICTA: Buscar matrículas únicas en todo el PDF
+  const matMatches = [...fullPdfText.matchAll(/\b00\d{6}\b/g)];
+  const matriculasUnicas = new Set(matMatches.map(m => m[0]));
+
+  // 2. Comprobar palabras clave de reportes masivos
+  const hasGroupKeywords = /Reporte\s+de\s+materias\s+acreditadas|LISTA DE CALIFICACIONES|REPORTE GRUPAL|SÁBANA/i.test(fullPdfText);
+
+  // Si hay más de un alumno o se detectan palabras clave grupales, rechazar inmediatamente
+  if (matriculasUnicas.size > 1 || hasGroupKeywords) {
+    throw new Error("GROUP_PDF_DETECTED");
+  }
+
+  // Leer exclusivamente la Página 1 del PDF para procesar kardex individual
   const page1 = await pdf.getPage(1);
   const textContent1 = await page1.getTextContent();
-  const page1Text = textContent1.items.map(it => it.str).join(' ');
-
-  if (/Reporte\s+de\s+materias\s+acreditadas/i.test(page1Text)) {
-    return await parseBatchGroupPdf(pdf);
-  }
 
   // Leer exclusivamente la Página 1 del PDF para kardex individual
   const page = page1;

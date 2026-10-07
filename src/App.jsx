@@ -155,10 +155,17 @@ export default function App() {
       });
     } catch (error) {
       console.error('Error al procesar el archivo PDF:', error);
-      setNotification({
-        tipo: 'error',
-        texto: `Error al leer el archivo PDF: ${error.message || 'Formato no reconocido'}`
-      });
+      if (error.message === "GROUP_PDF_DETECTED") {
+        setNotification({
+          tipo: 'error',
+          texto: "Has intentado subir un reporte grupal (múltiples alumnos) en la sección de auditoría individual. Por favor, utiliza la sección de 'Auditoría Grupal' para procesar este archivo, o sube el Kárdex de un solo alumno."
+        });
+      } else {
+        setNotification({
+          tipo: 'error',
+          texto: `Error al leer el archivo PDF: ${error.message || 'Formato no reconocido'}`
+        });
+      }
     } finally {
       setIsProcessing(false);
     }

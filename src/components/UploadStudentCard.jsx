@@ -100,7 +100,7 @@ export default function UploadStudentCard({ carrera, onUploadPdf, onLoadBatchDem
                 Arrastre su archivo PDF aquí
               </p>
               <p className="text-[12px] text-text-muted leading-relaxed max-w-sm mx-auto">
-                Admite kárdex individual y reporte consolidado de grupo con cualquier cantidad de alumnos.
+                Admite Kárdex individual únicamente. Para reportes masivos, usa la Base de Datos.
               </p>
             </div>
 
