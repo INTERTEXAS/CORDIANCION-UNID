@@ -5,20 +5,25 @@ import { CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
-const VALID_CRSE_LIST = [
-  'HUS01', 'FIS01', 'HTS01', 'CFS01', 'EDS01',
-  'HUS02', 'CMS01', 'MTS06', 'ADS07', 'FIS02',
-  'HUS03', 'CFS02', 'FIS03', 'DES08', 'MTS02',
-  'HUS05', 'FIS04', 'IVS01', 'CFT01', 'DES12',
-  'HUS04', 'CFS03', 'FIS05', 'CFT05', 'CFS04',
-  'FIS06', 'EES01', 'FIS07', 'CFT08', 'ADS13',
-  'EES02', 'HUS06', 'CFS05', 'FIS08', 'FIT04', 'ADS02',
-  'EES03', '0008', 'F001', 'F002', 'F003', 'F004', 'P001',
-  'CMS02', 'CMS03', 'EGCF1', '0001',
-  'DES22', 'NES03', 'NES04', 'CFT07', 'FIT15', 'SIS01', 'NES01', 'ADS03', 'ADT15', 'NET06'
-];
+let dynamicCrses = [];
+for (const c of CARRERAS_LOCAL) {
+  if (c.mapa_json) {
+    for (const cuat of (c.mapa_json.cuatrimestres || [])) {
+      for (const mat of (cuat.materias || [])) {
+        if (mat.crse) dynamicCrses.push(mat.crse);
+      }
+    }
+    for (const el of (c.mapa_json.electivas_multidisciplinares || [])) {
+      if (el.crse) dynamicCrses.push(el.crse);
+    }
+  }
+}
+for (const req of REQUISITOS_EGRESO) {
+  if (req.crse) dynamicCrses.push(req.crse);
+}
 
-const CRSE_REGEX = new RegExp('\\b(' + VALID_CRSE_LIST.join('|') + ')\\b', 'gi');
+dynamicCrses = [...new Set(dynamicCrses)];
+const CRSE_REGEX = new RegExp('\\b(' + dynamicCrses.join('|') + '|[A-Z]{2,3}\\d{2}|F00[1-4]|P001|0008|CMS02|CMS03|EG[A-Z0-9]{3}|0001)\\b', 'gi');
 
 export async function parsePdfKardex(fileOrBuffer) {
   const arrayBuffer = fileOrBuffer instanceof File
@@ -309,6 +314,8 @@ export async function parsePdfKardex(fileOrBuffer) {
     };
   });
 
+  detectarModalidad(estudiante, registros);
+
   return {
     isBatch: false,
     rawText: fullText,
@@ -499,9 +506,49 @@ export async function parseBatchGroupPdf(pdf) {
     }
   }
 
+  for (const student of students) {
+    detectarModalidad(student, student.registros);
+  }
+
   return {
     isBatch: true,
     totalAlumnos: students.length,
     students
   };
+}
+
+export function detectarModalidad(estudiante, registros) {
+  let conteoEjecutivo = 0;
+  let conteoEscolarizado = 0;
+  
+  const dualClaves = ['ADS38', 'ADS39', 'ADS40', 'MKT26', 'MKS28', 'EES11', 'EES12'];
+  let tieneDual = false;
+
+  for (const r of registros) {
+    const subj = r.subj || '';
+    const crse = r.crse || '';
+    
+    if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
+      conteoEjecutivo++;
+    } else if (subj.startsWith('L') || /^[A-Z]{2}[ST]\d{2}$/.test(crse)) {
+      conteoEscolarizado++;
+    }
+    
+    if (dualClaves.includes(crse)) {
+      tieneDual = true;
+    }
+  }
+
+  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
+    estudiante.modalidadDetectada = 'EJECUTIVO';
+    estudiante.programa = 'LIC-EJCO-17';
+  } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
+    estudiante.modalidadDetectada = 'ESCOLARIZADO DUAL';
+    estudiante.programa = 'LIC-DAEM-18';
+  } else {
+    estudiante.modalidadDetectada = 'ESCOLARIZADO';
+    estudiante.programa = 'LIC-COFI-18';
+  }
+  
+  return estudiante;
 }

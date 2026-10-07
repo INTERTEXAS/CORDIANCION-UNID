@@ -21,7 +21,8 @@ import {
   Layers, 
   AlertCircle, 
   CheckCircle2,
-  Users
+  Users,
+  X
 } from 'lucide-react';
 import NeonAuditManagerModal from './components/NeonAuditManagerModal';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -176,8 +177,11 @@ export default function App() {
     if (!mismatchModal) return;
     const { parsedData, detectedProgram } = mismatchModal;
     
+    // Normalizar códigos para evitar fallos por espacios o diferencias sutiles (0 vs O)
+    const normalizedDetected = detectedProgram.trim().replace(/0/g, 'O');
+    
     // Buscar la carrera en el catálogo
-    const targetCarrera = carreras.find(c => c.codigo === detectedProgram) || {
+    const targetCarrera = carreras.find(c => c.codigo.replace(/0/g, 'O') === normalizedDetected) || {
       ...carreraSeleccionada,
       codigo: detectedProgram
     };
@@ -186,6 +190,7 @@ export default function App() {
     const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, targetCarrera);
     setAuditData(auditResult);
     addToHistorial(auditResult);
+    setActiveTab('mapa');
     setMismatchModal(null);
   };
 
@@ -264,9 +269,17 @@ export default function App() {
     omitida: effectiveAuditData.resumen.omitidas
   } : undefined;
 
+  // Auto-dismiss notifications after 6 seconds
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
   return (
-    <div className="flex min-h-screen bg-[#F4F6F9] text-[#1E293B]">
-      {/* Menú Lateral Desplegable Oficial UNID */}
+    <div className="flex min-h-screen bg-surface-0 text-text-primary transition-theme">
+      {/* Sidebar */}
       <div className="no-print print:hidden">
         <Sidebar 
           dbStatus={dbStatus} 
@@ -278,18 +291,23 @@ export default function App() {
         />
       </div>
 
-      {/* Contenedor Principal */}
+      {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
-        {/* Barra Superior con Selector de Carrera y Botones de Acción */}
+        {/* Header */}
         <div className="no-print print:hidden">
           <HeaderBar
             carreras={carreras}
             carreraSeleccionada={carreraSeleccionada}
             onSelectCarrera={(carrera) => {
               setCarreraSeleccionada(carrera);
-              if (auditData) {
-                const updated = runAcademicAudit(auditData.estudiante, [], carrera);
-                setAuditData(updated);
+              if (auditData || batchData) {
+                setAuditData(null);
+                setBatchData(null);
+                setActiveTab('mapa');
+                setNotification({
+                  tipo: 'info',
+                  texto: `Cambiado a ${carrera.codigo}. Listo para auditar.`
+                });
               }
             }}
             onUploadPdf={handleUploadPdf}
@@ -307,35 +325,34 @@ export default function App() {
           />
         </div>
 
-        {/* Notificaciones y Avisos del Sistema */}
+        {/* Notification Toast */}
         {notification && (
-          <div className={`no-print print:hidden mx-6 mt-3 px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-between border ${
+          <div className={`no-print print:hidden mx-4 mt-3 px-4 py-2.5 rounded-xl text-[12px] font-semibold flex items-center justify-between border animate-slide-down transition-theme ${
             notification.tipo === 'exito'
-              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20'
               : notification.tipo === 'error'
-              ? 'bg-rose-50 text-rose-800 border-rose-200'
-              : 'bg-blue-50 text-blue-800 border-blue-200'
+              ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-500/20'
+              : 'bg-blue-50 dark:bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-500/20'
           }`}>
             <span className="flex items-center space-x-2">
-              {notification.tipo === 'exito' && <CheckCircle2 className="w-4 h-4 text-emerald-600" strokeWidth={1.5} />}
-              {notification.tipo === 'error' && <AlertCircle className="w-4 h-4 text-rose-600" strokeWidth={1.5} />}
+              {notification.tipo === 'exito' && <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />}
+              {notification.tipo === 'error' && <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" strokeWidth={1.5} />}
               <span>{notification.texto}</span>
             </span>
             <button 
               onClick={() => setNotification(null)}
-              className="text-slate-400 hover:text-slate-700 ml-4 font-bold"
+              className="text-text-muted hover:text-text-primary ml-4 p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
             >
-              Cerrar
+              <X className="w-3.5 h-3.5" strokeWidth={2} />
             </button>
           </div>
         )}
 
-        {/* Zona Central de Trabajo: Todo el ancho disponible para el Mapa Curricular */}
-        <main className="flex-1 p-6 overflow-x-hidden print:p-0 print:m-0 print:overflow-visible">
+        {/* Main Content */}
+        <main className="flex-1 p-4 overflow-x-hidden print:p-0 print:m-0 print:overflow-visible">
           <ErrorBoundary onReset={handleReset}>
-          {/* Contenedor Central de Contenido y Vistas */}
           <div className="w-full space-y-4">
-            {/* Si la carrera no está activa, mostrar aviso de integración */}
+            {/* Career inactive */}
             {!carreraSeleccionada?.activa ? (
               <CareerInactiveModal 
                 carrera={carreraSeleccionada}
@@ -345,7 +362,7 @@ export default function App() {
                 }}
               />
             ) : activeTab === 'grupo' ? (
-              /* Vista de Auditoría de Grupo / Generación */
+              /* Group Audit View */
               batchData ? (
                 <BatchAuditView 
                   batchData={batchData}
@@ -373,7 +390,7 @@ export default function App() {
                 />
               )
             ) : !auditData ? (
-              /* Tarjeta inicial centrada cuando no hay alumno individual cargado */
+              /* Empty state */
               <UploadStudentCard 
                 carrera={carreraSeleccionada}
                 onUploadPdf={handleUploadPdf}
@@ -382,44 +399,43 @@ export default function App() {
               />
             ) : (
               <>
-                {/* Selector de Pestañas y Barra Completa de Filtros en Dos Filas */}
-                <div className="no-print print:hidden bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
-                  {/* Fila superior: Selector de vista a la izquierda */}
+                {/* Tab Switcher + Filters */}
+                <div className="no-print print:hidden bg-surface-1 p-3 rounded-2xl border border-border shadow-card space-y-2.5 transition-theme">
                   <div className="flex items-center justify-between">
-                    <div className="bg-[#181C24] p-1 rounded-lg inline-flex items-center space-x-1 select-none">
+                    <div className="bg-surface-2 dark:bg-white/[0.04] p-1 rounded-xl inline-flex items-center space-x-1 select-none">
                       <button
                         onClick={() => setActiveTab('mapa')}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
                           activeTab === 'mapa'
-                            ? 'bg-white text-[#181C24] shadow-sm'
-                            : 'text-slate-300 hover:text-white hover:bg-white/10'
+                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-card'
+                            : 'text-text-muted hover:text-text-secondary'
                         }`}
                       >
                         <Layers className="w-3.5 h-3.5" strokeWidth={1.5} />
-                        <span>Hoja 1: Mapa de Ejecución Oficial</span>
+                        <span>Mapa de Ejecución</span>
                       </button>
 
                       <button
                         onClick={() => setActiveTab('cedula')}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
                           activeTab === 'cedula'
-                            ? 'bg-white text-[#181C24] shadow-sm'
-                            : 'text-slate-300 hover:text-white hover:bg-white/10'
+                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-card'
+                            : 'text-text-muted hover:text-text-secondary'
                         }`}
                       >
                         <FileText className="w-3.5 h-3.5" strokeWidth={1.5} />
-                        <span>Hoja 2: Cédula de Auditoría y Trazabilidad</span>
+                        <span>Cédula de Auditoría</span>
                       </button>
                     </div>
 
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider hidden sm:block">
-                      {activeTab === 'mapa' ? 'Validación de Asignaturas' : 'Cédula Oficial y Trazabilidad'}
+                    <div className="text-[11px] font-medium text-text-muted uppercase tracking-wider hidden sm:block">
+                      {activeTab === 'mapa' ? 'Validación de Asignaturas' : 'Cédula Oficial'}
                     </div>
                   </div>
 
-                  {/* Fila inferior: Barra completa de Filtros ocupando todo el ancho sin scroll */}
+                  {/* Filters */}
                   {activeTab === 'mapa' && (
-                    <div className="border-t border-slate-100 pt-2.5">
+                    <div className="border-t border-border-subtle pt-2.5">
                       <FilterPills
                         activeFilter={activeFilter}
                         onFilterChange={setActiveFilter}
@@ -429,7 +445,7 @@ export default function App() {
                   )}
                 </div>
 
-                {/* Vistas Principales en Pantalla */}
+                {/* Main Views */}
                 {activeTab === 'mapa' && (
                   <CurriculumMap 
                     auditData={auditData}
@@ -449,7 +465,7 @@ export default function App() {
           </div>
           </ErrorBoundary>
 
-          {/* Panel Deslizable (Drawer) con los 4 Widgets Oficiales del Portal UNID */}
+          {/* Widgets Drawer */}
           <div className="no-print print:hidden">
             <WidgetsColumn
               auditData={auditData}
@@ -462,8 +478,7 @@ export default function App() {
         </main>
       </div>
 
-      {/* CONTENEDOR PARA EXPORTACIÓN EN PDF DE ALTA RESOLUCIÓN */}
-      {/* Ubicado en coordenadas activas con 1440px exactos y márgenes simétricos para evitar desbordes */}
+      {/* EXPORT PDF CONTAINER (hidden) */}
       {effectiveAuditData && (
         <div 
           id="export-pdf-wrapper"
@@ -497,7 +512,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Modal de Discrepancia de Programa Académico */}
+      {/* Program Mismatch Modal */}
       {mismatchModal && (
         <ProgramMismatchModal
           detectedProgram={mismatchModal.detectedProgram}
@@ -508,12 +523,13 @@ export default function App() {
             const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, carreraSeleccionada);
             setAuditData(auditResult);
             addToHistorial(auditResult);
+            setActiveTab('mapa');
             setMismatchModal(null);
           }}
         />
       )}
 
-      {/* Modal Global de Gestión de Ciclos en Neon Database */}
+      {/* Neon DB Manager Modal */}
       <NeonAuditManagerModal
         isOpen={isGlobalNeonManagerOpen}
         onClose={() => setIsGlobalNeonManagerOpen(false)}

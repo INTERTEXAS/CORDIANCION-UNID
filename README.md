@@ -17,7 +17,12 @@ La herramienta soporta tanto **auditoría individual** como procesamiento **masi
 
 ## Especificaciones Funcionales y de Ingeniería
 
-### 1. Auditoría Consolidada de Grupo (Procesamiento Masivo)
+### 1. Interfaz Gráfica Avanzada y Experiencia de Usuario (UX)
+- **Diseño Moderno y Dinámico**: Interfaz visual optimizada con tipografía `Inter`, paletas de colores armónicas y micro-animaciones para una experiencia fluida e intuitiva, especialmente pensada para personal no técnico.
+- **Soporte de Tema Oscuro (Dark Mode)**: Integración completa de modo oscuro dinámico en todas las pantallas.
+- **Detección y Manejo de Desfase de Programas**: Modal inteligente que detecta cuando el Kárdex subido pertenece a un mapa curricular distinto al seleccionado y reconfigura el entorno con un solo clic.
+
+### 2. Auditoría Consolidada de Grupo (Procesamiento Masivo)
 - **Extracción Múltiple**: Procesamiento de reportes masivos (sábanas de grupo) extrayendo la trayectoria de decenas de estudiantes simultáneamente.
 - **Directorio ERP Institucional**: Visualización de alta densidad basada en patrones de diseño corporativos (Cinta de Datos, indicadores de estatus planos, tipografía estructurada) para el control rápido del avance de la generación.
 - **Integración Neon DB**: Almacenamiento y gestión de los reportes consolidados en bases de datos PostgreSQL serverless, clasificados por ciclo escolar.

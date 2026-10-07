@@ -9,7 +9,7 @@ export const CARRERAS_LOCAL = [
     encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
     ultima_actualizacion_cpa: '31-julio-2026',
     sede: 'CAM',
-    coordinadora: 'Coordinación de Licenciaturas',
+    coordinadora: 'LAURA ANGELICA ARA ANGULO',
     activa: true,
     total_materias: 37,
     niveles_ingles: 5,
@@ -144,25 +144,932 @@ export const CARRERAS_LOCAL = [
   },
   {
     id: 2,
-    codigo: 'LIC-ADE-18',
-    nombre: 'LICENCIATURA EN ADMINISTRACIÓN Y DIRECCIÓN EMPRESARIAL (MIXTO) - FEDERAL',
+    codigo: 'LIC-DAEM-18',
+    nombre: 'LICENCIATURA EN ADMINISTRACIÓN Y DIRECCIÓN EMPRESARIAL - PLAN 2018 DUAL',
     encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
     ultima_actualizacion_cpa: '15-agosto-2026',
     sede: 'CAM',
-    coordinadora: 'Coordinación de Licenciaturas',
-    activa: false,
-    mapa_json: null
+    coordinadora: 'LAURA ANGELICA ARA ANGULO',
+    activa: true,
+    mapa_json: {
+        cuatrimestres: [
+            {
+                numero: 1,
+                nombre: '1.º Cuatrimestre',
+                con_ingles: true,
+                clave_ingles_sugerida: 'F001',
+                materias: [
+                    {
+                        clave: 'LMAD-HUS01',
+                        subj: 'LMAD',
+                        crse: 'HUS01',
+                        nombre: 'MATERIA HUS01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-HTS01',
+                        subj: 'LMAD',
+                        crse: 'HTS01',
+                        nombre: 'MATERIA HTS01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-CMT01',
+                        subj: 'LMAD',
+                        crse: 'CMT01',
+                        nombre: 'MATERIA CMT01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS38',
+                        subj: 'LMAD',
+                        crse: 'ADS38',
+                        nombre: 'MATERIA ADS38',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ECS01',
+                        subj: 'LMAD',
+                        crse: 'ECS01',
+                        nombre: 'MATERIA ECS01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-MKT26',
+                        subj: 'LMAD',
+                        crse: 'MKT26',
+                        nombre: 'MATERIA MKT26',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS07',
+                        subj: 'LMAD',
+                        crse: 'ADS07',
+                        nombre: 'MATERIA ADS07',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 2,
+                nombre: '2.º Cuatrimestre',
+                con_ingles: true,
+                clave_ingles_sugerida: 'F002',
+                materias: [
+                    {
+                        clave: 'LMAD-HUS02',
+                        subj: 'LMAD',
+                        crse: 'HUS02',
+                        nombre: 'MATERIA HUS02',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADT16',
+                        subj: 'LMAD',
+                        crse: 'ADT16',
+                        nombre: 'MATERIA ADT16',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS39',
+                        subj: 'LMAD',
+                        crse: 'ADS39',
+                        nombre: 'MATERIA ADS39',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS27',
+                        subj: 'LMAD',
+                        crse: 'ADS27',
+                        nombre: 'MATERIA ADS27',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS40',
+                        subj: 'LMAD',
+                        crse: 'ADS40',
+                        nombre: 'MATERIA ADS40',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-CFS01',
+                        subj: 'LMAD',
+                        crse: 'CFS01',
+                        nombre: 'MATERIA CFS01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-DET30',
+                        subj: 'LMAD',
+                        crse: 'DET30',
+                        nombre: 'MATERIA DET30',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 3,
+                nombre: '3.º Cuatrimestre',
+                con_ingles: true,
+                clave_ingles_sugerida: 'F003',
+                materias: [
+                    {
+                        clave: 'LMAD-HUT03',
+                        subj: 'LMAD',
+                        crse: 'HUT03',
+                        nombre: 'MATERIA HUT03',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-MTS02',
+                        subj: 'LMAD',
+                        crse: 'MTS02',
+                        nombre: 'MATERIA MTS02',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-MKS28',
+                        subj: 'LMAD',
+                        crse: 'MKS28',
+                        nombre: 'MATERIA MKS28',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-MKS29',
+                        subj: 'LMAD',
+                        crse: 'MKS29',
+                        nombre: 'MATERIA MKS29',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-MKT02',
+                        subj: 'LMAD',
+                        crse: 'MKT02',
+                        nombre: 'MATERIA MKT02',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS42',
+                        subj: 'LMAD',
+                        crse: 'ADS42',
+                        nombre: 'MATERIA ADS42',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS41',
+                        subj: 'LMAD',
+                        crse: 'ADS41',
+                        nombre: 'MATERIA ADS41',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 4,
+                nombre: '4.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'LMAD-EES11',
+                        subj: 'LMAD',
+                        crse: 'EES11',
+                        nombre: 'ESTADIA EES11',
+                        conecta: false,
+                        creditos: 5,
+                        es_estadia: true,
+                        bloque_completo: true
+                    }
+                ]
+            },
+            {
+                numero: 5,
+                nombre: '5.º Cuatrimestre',
+                con_ingles: true,
+                clave_ingles_sugerida: 'P001',
+                materias: [
+                    {
+                        clave: 'LMAD-HUT05',
+                        subj: 'LMAD',
+                        crse: 'HUT05',
+                        nombre: 'MATERIA HUT05',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS45',
+                        subj: 'LMAD',
+                        crse: 'ADS45',
+                        nombre: 'MATERIA ADS45',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS43',
+                        subj: 'LMAD',
+                        crse: 'ADS43',
+                        nombre: 'MATERIA ADS43',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS44',
+                        subj: 'LMAD',
+                        crse: 'ADS44',
+                        nombre: 'MATERIA ADS44',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-INT01',
+                        subj: 'LMAD',
+                        crse: 'INT01',
+                        nombre: 'MATERIA INT01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-CFS06',
+                        subj: 'LMAD',
+                        crse: 'CFS06',
+                        nombre: 'MATERIA CFS06',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-CFT08',
+                        subj: 'LMAD',
+                        crse: 'CFT08',
+                        nombre: 'MATERIA CFT08',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 6,
+                nombre: '6.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'LMAD-EES12',
+                        subj: 'LMAD',
+                        crse: 'EES12',
+                        nombre: 'ESTADIA EES12',
+                        conecta: false,
+                        creditos: 5,
+                        es_estadia: true,
+                        bloque_completo: true
+                    }
+                ]
+            },
+            {
+                numero: 7,
+                nombre: '7.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'LMAD-HUS04',
+                        subj: 'LMAD',
+                        crse: 'HUS04',
+                        nombre: 'MATERIA HUS04',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-IVT01',
+                        subj: 'LMAD',
+                        crse: 'IVT01',
+                        nombre: 'MATERIA IVT01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS47',
+                        subj: 'LMAD',
+                        crse: 'ADS47',
+                        nombre: 'MATERIA ADS47',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-FIS08',
+                        subj: 'LMAD',
+                        crse: 'FIS08',
+                        nombre: 'MATERIA FIS08',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-MTS06',
+                        subj: 'LMAD',
+                        crse: 'MTS06',
+                        nombre: 'MATERIA MTS06',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS46',
+                        subj: 'LMAD',
+                        crse: 'ADS46',
+                        nombre: 'MATERIA ADS46',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS48',
+                        subj: 'LMAD',
+                        crse: 'ADS48',
+                        nombre: 'MATERIA ADS48',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 8,
+                nombre: '8.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'LMAD-EES10',
+                        subj: 'LMAD',
+                        crse: 'EES10',
+                        nombre: 'ESTADIA EES10',
+                        conecta: false,
+                        creditos: 5,
+                        es_estadia: true,
+                        bloque_completo: true
+                    }
+                ]
+            },
+            {
+                numero: 9,
+                nombre: '9.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'LMAD-HUT06',
+                        subj: 'LMAD',
+                        crse: 'HUT06',
+                        nombre: 'MATERIA HUT06',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS52',
+                        subj: 'LMAD',
+                        crse: 'ADS52',
+                        nombre: 'MATERIA ADS52',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS50',
+                        subj: 'LMAD',
+                        crse: 'ADS50',
+                        nombre: 'MATERIA ADS50',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS34',
+                        subj: 'LMAD',
+                        crse: 'ADS34',
+                        nombre: 'MATERIA ADS34',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS49',
+                        subj: 'LMAD',
+                        crse: 'ADS49',
+                        nombre: 'MATERIA ADS49',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADS51',
+                        subj: 'LMAD',
+                        crse: 'ADS51',
+                        nombre: 'MATERIA ADS51',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'LMAD-ADT35',
+                        subj: 'LMAD',
+                        crse: 'ADT35',
+                        nombre: 'MATERIA ADT35',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 10,
+                nombre: '10.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'LMAD-EES09',
+                        subj: 'LMAD',
+                        crse: 'EES09',
+                        nombre: 'ESTADIA EES09',
+                        conecta: false,
+                        creditos: 5,
+                        es_estadia: true,
+                        bloque_completo: true
+                    }
+                ]
+            }
+        ],
+        niveles_ingles: [
+            {
+                cuatrimestre: 1,
+                nivel: 1,
+                clave_default: 'F001',
+                nombre: 'INGLÉS I'
+            },
+            {
+                cuatrimestre: 2,
+                nivel: 2,
+                clave_default: 'F002',
+                nombre: 'INGLÉS II'
+            },
+            {
+                cuatrimestre: 3,
+                nivel: 3,
+                clave_default: 'F003',
+                nombre: 'INGLÉS III'
+            },
+            {
+                cuatrimestre: 4,
+                nivel: 4,
+                clave_default: 'F004',
+                nombre: 'INGLÉS IV'
+            },
+            {
+                cuatrimestre: 5,
+                nivel: 5,
+                clave_default: 'P001',
+                nombre: 'INGLÉS V'
+            }
+        ],
+        electivas_multidisciplinares: []
+    }
   },
   {
     id: 3,
-    codigo: 'LIC-COF-18',
-    nombre: 'LICENCIATURA EN CONTABILIDAD FINANCIERA (MIXTO) - FEDERAL',
-    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    codigo: 'LIC-EJCO-17',
+    nombre: 'LICENCIATURA EN CONTABILIDAD FINANCIERA - PLAN 202160 EJECUTIVO MODULAR',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN EJECUTIVO MODULAR',
     ultima_actualizacion_cpa: '10-septiembre-2026',
     sede: 'CAM',
-    coordinadora: 'Coordinación de Licenciaturas',
-    activa: false,
-    mapa_json: null
+    coordinadora: 'LAURA ANGELICA ARA ANGULO',
+    activa: true,
+    mapa_json: {
+        cuatrimestres: [
+            {
+                numero: 1,
+                nombre: '1.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-HUR01',
+                        subj: 'EMAD',
+                        crse: 'HUR01',
+                        nombre: 'MATERIA HUR01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-DER01',
+                        subj: 'EMAD',
+                        crse: 'DER01',
+                        nombre: 'MATERIA DER01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-HTR01',
+                        subj: 'EMAD',
+                        crse: 'HTR01',
+                        nombre: 'MATERIA HTR01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-ADR05',
+                        subj: 'EMAD',
+                        crse: 'ADR05',
+                        nombre: 'MATERIA ADR05',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR02',
+                        subj: 'EMAD',
+                        crse: 'CFR02',
+                        nombre: 'MATERIA CFR02',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 2,
+                nombre: '2.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-HUR03',
+                        subj: 'EMAD',
+                        crse: 'HUR03',
+                        nombre: 'MATERIA HUR03',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR01',
+                        subj: 'EMAD',
+                        crse: 'CFR01',
+                        nombre: 'MATERIA CFR01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-MTR04',
+                        subj: 'EMAD',
+                        crse: 'MTR04',
+                        nombre: 'MATERIA MTR04',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-IVR01',
+                        subj: 'EMAD',
+                        crse: 'IVR01',
+                        nombre: 'MATERIA IVR01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CMR01',
+                        subj: 'EMAD',
+                        crse: 'CMR01',
+                        nombre: 'MATERIA CMR01',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 3,
+                nombre: '3.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-HUR02',
+                        subj: 'EMAD',
+                        crse: 'HUR02',
+                        nombre: 'MATERIA HUR02',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR12',
+                        subj: 'EMAD',
+                        crse: 'FIR12',
+                        nombre: 'MATERIA FIR12',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR02',
+                        subj: 'EMAD',
+                        crse: 'FIR02',
+                        nombre: 'MATERIA FIR02',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-ADR02',
+                        subj: 'EMAD',
+                        crse: 'ADR02',
+                        nombre: 'MATERIA ADR02',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-MTR02',
+                        subj: 'EMAD',
+                        crse: 'MTR02',
+                        nombre: 'MATERIA MTR02',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 4,
+                nombre: '4.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-HUR05',
+                        subj: 'EMAD',
+                        crse: 'HUR05',
+                        nombre: 'MATERIA HUR05',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-DER04',
+                        subj: 'EMAD',
+                        crse: 'DER04',
+                        nombre: 'MATERIA DER04',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-DER03',
+                        subj: 'EMAD',
+                        crse: 'DER03',
+                        nombre: 'MATERIA DER03',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR03',
+                        subj: 'EMAD',
+                        crse: 'FIR03',
+                        nombre: 'MATERIA FIR03',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-ECR01',
+                        subj: 'EMAD',
+                        crse: 'ECR01',
+                        nombre: 'MATERIA ECR01',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 5,
+                nombre: '5.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-HUR04',
+                        subj: 'EMAD',
+                        crse: 'HUR04',
+                        nombre: 'MATERIA HUR04',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR10',
+                        subj: 'EMAD',
+                        crse: 'CFR10',
+                        nombre: 'MATERIA CFR10',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR05',
+                        subj: 'EMAD',
+                        crse: 'CFR05',
+                        nombre: 'MATERIA CFR05',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR07',
+                        subj: 'EMAD',
+                        crse: 'FIR07',
+                        nombre: 'MATERIA FIR07',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR06',
+                        subj: 'EMAD',
+                        crse: 'CFR06',
+                        nombre: 'MATERIA CFR06',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 6,
+                nombre: '6.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-ADR03',
+                        subj: 'EMAD',
+                        crse: 'ADR03',
+                        nombre: 'MATERIA ADR03',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-EER01',
+                        subj: 'EMAD',
+                        crse: 'EER01',
+                        nombre: 'MATERIA EER01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR04',
+                        subj: 'EMAD',
+                        crse: 'CFR04',
+                        nombre: 'MATERIA CFR04',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR05',
+                        subj: 'EMAD',
+                        crse: 'FIR05',
+                        nombre: 'MATERIA FIR05',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR08',
+                        subj: 'EMAD',
+                        crse: 'CFR08',
+                        nombre: 'MATERIA CFR08',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 7,
+                nombre: '7.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-FIR06',
+                        subj: 'EMAD',
+                        crse: 'FIR06',
+                        nombre: 'MATERIA FIR06',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR04',
+                        subj: 'EMAD',
+                        crse: 'FIR04',
+                        nombre: 'MATERIA FIR04',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR11',
+                        subj: 'EMAD',
+                        crse: 'CFR11',
+                        nombre: 'MATERIA CFR11',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-EER02',
+                        subj: 'EMAD',
+                        crse: 'EER02',
+                        nombre: 'ESTADIA EER02',
+                        conecta: false,
+                        creditos: 5,
+                        es_estadia: true
+                    }
+                ]
+            },
+            {
+                numero: 8,
+                nombre: '8.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-HUR06',
+                        subj: 'EMAD',
+                        crse: 'HUR06',
+                        nombre: 'MATERIA HUR06',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR08',
+                        subj: 'EMAD',
+                        crse: 'FIR08',
+                        nombre: 'MATERIA FIR08',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR03',
+                        subj: 'EMAD',
+                        crse: 'CFR03',
+                        nombre: 'MATERIA CFR03',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR09',
+                        subj: 'EMAD',
+                        crse: 'FIR09',
+                        nombre: 'MATERIA FIR09',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR07',
+                        subj: 'EMAD',
+                        crse: 'CFR07',
+                        nombre: 'MATERIA CFR07',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            },
+            {
+                numero: 9,
+                nombre: '9.º Cuatrimestre',
+                con_ingles: false,
+                materias: [
+                    {
+                        clave: 'EMAD-FIR01',
+                        subj: 'EMAD',
+                        crse: 'FIR01',
+                        nombre: 'MATERIA FIR01',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-ADR06',
+                        subj: 'EMAD',
+                        crse: 'ADR06',
+                        nombre: 'MATERIA ADR06',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-CFR09',
+                        subj: 'EMAD',
+                        crse: 'CFR09',
+                        nombre: 'MATERIA CFR09',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-ADR04',
+                        subj: 'EMAD',
+                        crse: 'ADR04',
+                        nombre: 'MATERIA ADR04',
+                        conecta: false,
+                        creditos: 3
+                    },
+                    {
+                        clave: 'EMAD-FIR10',
+                        subj: 'EMAD',
+                        crse: 'FIR10',
+                        nombre: 'MATERIA FIR10',
+                        conecta: false,
+                        creditos: 3
+                    }
+                ]
+            }
+        ],
+        niveles_ingles: 0,
+        electivas_multidisciplinares: []
+    }
   }
 ];
 

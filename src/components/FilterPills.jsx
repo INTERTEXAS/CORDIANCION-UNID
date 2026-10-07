@@ -26,83 +26,85 @@ export default function FilterPills({
       label: 'Todas',
       count: counts.todas,
       icon: Layers,
-      activeClass: 'bg-slate-900 text-white shadow-sm border-slate-900',
-      inactiveClass: 'bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200'
+      activeClass: 'bg-text-primary text-surface-1 shadow-sm',
+      inactiveClass: 'bg-surface-2 text-text-secondary hover:bg-surface-3'
     },
     {
       id: 'ORD',
       label: '1.ª Oportunidad',
       count: counts.ord,
       icon: CheckCircle2,
-      activeClass: 'bg-[#059669] text-white shadow-sm border-[#059669]',
-      inactiveClass: 'bg-[#ECFDF5] text-[#065F46] hover:bg-[#D1FAE5] border-[#A7F3D0]'
+      color: 'emerald',
+      activeClass: 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-sm',
+      inactiveClass: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20'
     },
     {
       id: 'REC',
       label: 'Recursadas',
       count: counts.rec,
       icon: RotateCw,
-      activeClass: 'bg-[#D97706] text-white shadow-sm border-[#D97706]',
-      inactiveClass: 'bg-[#FFFBEB] text-[#92400E] hover:bg-[#FEF3C7] border-[#FDE68A]'
+      color: 'amber',
+      activeClass: 'bg-amber-600 dark:bg-amber-500 text-white shadow-sm',
+      inactiveClass: 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20'
     },
     {
       id: 'RE',
       label: 'Modo RE',
       count: counts.re,
       icon: FileCheck,
-      activeClass: 'bg-[#0284C7] text-white shadow-sm border-[#0284C7]',
-      inactiveClass: 'bg-[#F0F9FF] text-[#075985] hover:bg-[#E0F2FE] border-[#BAE6FD]'
+      color: 'sky',
+      activeClass: 'bg-sky-600 dark:bg-sky-500 text-white shadow-sm',
+      inactiveClass: 'bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-500/20'
     },
     {
       id: 'ADEUDO',
       label: 'Adeudos',
       count: counts.adeudo,
       icon: XCircle,
-      activeClass: 'bg-[#DC2626] text-white shadow-sm border-[#DC2626]',
-      inactiveClass: 'bg-[#FEF2F2] text-[#991B1B] hover:bg-[#FEE2E2] border-[#FECACA]'
+      color: 'rose',
+      activeClass: 'bg-rose-600 dark:bg-rose-500 text-white shadow-sm',
+      inactiveClass: 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20'
     },
     {
       id: 'OMITIDA',
       label: 'Omitidas',
       count: counts.omitida,
       icon: AlertTriangle,
-      activeClass: 'bg-[#EA580C] text-white shadow-sm border-[#EA580C]',
-      inactiveClass: 'bg-[#FFF7ED] text-[#9A3412] hover:bg-[#FFEDD5] border-[#FED7AA]'
+      color: 'orange',
+      activeClass: 'bg-orange-600 dark:bg-orange-500 text-white shadow-sm',
+      inactiveClass: 'bg-orange-50 dark:bg-orange-500/10 text-orange-700 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-500/20'
     }
   ];
 
   return (
     <div className="flex flex-wrap gap-2 items-center select-none w-full">
-      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1 whitespace-nowrap">
-        FILTROS DE AUDITORÍA:
+      <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider mr-1 whitespace-nowrap">
+        Filtros:
       </span>
       {filters.map((f) => {
         const Icon = f.icon;
         const isActive = activeFilter === f.id;
         const isZero = f.count === 0 && f.id !== 'TODAS';
 
-        // Estilo atenuado cuando el contador es 0 para no saturar visualmente
         let buttonStyle = f.inactiveClass;
         if (isActive) {
           buttonStyle = f.activeClass;
         } else if (isZero) {
-          buttonStyle = 'bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100 hover:text-slate-600 opacity-60 hover:opacity-100';
+          buttonStyle = 'bg-surface-2 text-text-muted opacity-50 hover:opacity-80';
         }
 
         return (
           <button
             key={f.id}
             onClick={() => onFilterChange(isActive ? 'TODAS' : f.id)}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-full inline-flex items-center gap-2 transition-all whitespace-nowrap border cursor-pointer ${buttonStyle}`}
+            className={`px-3 py-1.5 text-[12px] font-semibold rounded-xl inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${buttonStyle}`}
           >
             <Icon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} />
             <span>{f.label}</span>
-            <span className={`px-1.5 py-0.5 text-[10px] rounded-full font-bold leading-none inline-block ${
+            <span className={`px-1.5 py-0.5 text-[10px] rounded-lg font-bold leading-none inline-block ${
               isActive 
                 ? 'bg-white/25 text-white' 
-                : isZero
-                ? 'bg-slate-200/70 text-slate-400'
-                : 'bg-black/10 text-current'
+                : 'bg-black/5 dark:bg-white/10 text-current'
             }`}>
               {f.count}
             </span>

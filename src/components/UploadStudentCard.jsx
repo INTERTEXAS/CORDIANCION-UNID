@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Upload, Database } from 'lucide-react';
+import { Upload, Database, FileUp, Users, ArrowRight } from 'lucide-react';
 
 export default function UploadStudentCard({ carrera, onUploadPdf, onLoadBatchDemo, onOpenNeonManager }) {
   const fileInputRef = useRef(null);
@@ -33,92 +33,100 @@ export default function UploadStudentCard({ carrera, onUploadPdf, onLoadBatchDem
   };
 
   return (
-    <div
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      className={`bg-white rounded-lg border overflow-hidden transition-all duration-200 max-w-2xl mx-auto my-8 shadow-sm ${
-        isDragOver ? 'border-[#F2B705] ring-4 ring-[#F2B705]/20' : 'border-slate-200'
-      }`}
-    >
-      {/* Input de archivo oculto */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        accept="application/pdf"
-        className="hidden"
-      />
-
-      {/* Cabecera institucional oscura */}
-      <div className="bg-[#111622] px-6 py-4 flex items-center justify-between">
-        <div>
-          <div className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-            UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO
-          </div>
-          <div className="text-sm font-bold text-white tracking-tight mt-0.5">
-            Sistema de Auditoría Académica
-          </div>
-        </div>
-        <img 
-          src="/unid-logo.png" 
-          alt="UNID" 
-          className="w-9 h-9 rounded-lg object-contain flex-shrink-0 border border-slate-700" 
+    <div className="flex items-center justify-center min-h-[60vh] animate-fade-in">
+      <div className="w-full max-w-xl">
+        {/* Hidden file input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="application/pdf"
+          className="hidden"
         />
-      </div>
 
-      {/* Cuerpo del formulario */}
-      <div className={`px-6 py-6 space-y-4 ${isDragOver ? 'bg-amber-50/30' : ''}`}>
-        {/* Título y contexto */}
-        <div className="space-y-1">
-          <h3 className="text-sm font-black text-[#111622] uppercase tracking-tight">
-            Validador de Kárdex y Auditoría de Generación
-          </h3>
-          <p className="font-mono text-[10px] text-slate-500 font-semibold tracking-tight">
-            {carrera?.codigo || 'LIC-COFI-18'} · {carrera?.encabezado_plan || 'MAPA DE EJECUCIÓN PARA EL PLAN 2018'}
-          </p>
-        </div>
-
-        {/* Zona de drop */}
-        <div className={`border-2 border-dashed rounded-lg p-5 text-center transition-colors ${
-          isDragOver ? 'border-[#F2B705] bg-amber-50/50' : 'border-slate-200 bg-slate-50/50'
+        {/* Card */}
+        <div className={`bg-surface-1 rounded-3xl border overflow-hidden transition-all duration-300 shadow-card hover:shadow-card-hover ${
+          isDragOver ? 'border-accent ring-4 ring-accent/15 scale-[1.01]' : 'border-border'
         }`}>
-          <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" strokeWidth={1.5} />
-          <p className="text-xs text-slate-600 leading-relaxed max-w-md mx-auto">
-            Arrastre o seleccione el archivo PDF oficial: admite tanto el <strong>kárdex individual</strong> como el <strong>reporte consolidado de grupo</strong> (Reporte de materias acreditadas) de cualquier cantidad de alumnos.
-          </p>
-        </div>
+          {/* Header strip */}
+          <div className="bg-gradient-to-r from-[#0F1319] to-[#1a2030] px-6 py-5 flex items-center justify-between">
+            <div>
+              <div className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">
+                Universidad Interamericana para el Desarrollo
+              </div>
+              <div className="text-[15px] font-bold text-white tracking-tight mt-1">
+                Sistema de Auditoría Académica
+              </div>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-white/[0.08] border border-white/[0.08] flex items-center justify-center">
+              <img 
+                src="/unid-logo.png" 
+                alt="UNID" 
+                className="w-8 h-8 rounded-lg object-contain" 
+              />
+            </div>
+          </div>
 
-        {/* Botones principales */}
-        <div className="flex flex-wrap items-center gap-2.5 pt-1">
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#111622] hover:bg-black text-white text-xs font-bold rounded-lg shadow-sm transition-all cursor-pointer"
-          >
-            <Upload className="w-4 h-4 text-[#F2B705]" strokeWidth={1.5} />
-            <span>Subir Archivo PDF</span>
-          </button>
+          {/* Body */}
+          <div className={`px-6 py-6 space-y-5 transition-colors ${isDragOver ? 'bg-accent-soft' : ''}`}>
+            {/* Context */}
+            <div className="space-y-1">
+              <h3 className="text-[15px] font-bold text-text-primary">
+                Validador de Kárdex y Auditoría de Generación
+              </h3>
+              <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest">
+                {carrera?.codigo || 'LIC-COFI-18'} · {carrera?.encabezado_plan || 'Plan 2018'}
+              </p>
+            </div>
 
-          {onOpenNeonManager && (
-            <button
-              type="button"
-              onClick={onOpenNeonManager}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold rounded-lg transition-all cursor-pointer"
+            {/* Drop zone */}
+            <div 
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer group ${
+                isDragOver 
+                  ? 'border-accent bg-accent-soft scale-[1.01]' 
+                  : 'border-border hover:border-accent/40 bg-surface-2/50 hover:bg-accent-soft/30'
+              }`}
+              onClick={() => fileInputRef.current?.click()}
             >
-              <Database className="w-4 h-4 text-indigo-500" />
-              <span>Consultar BD (Neon)</span>
-            </button>
-          )}
+              <div className={`w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center transition-colors ${
+                isDragOver ? 'bg-accent/20 text-accent' : 'bg-surface-3/60 text-text-muted group-hover:bg-accent/10 group-hover:text-accent'
+              }`}>
+                <FileUp className="w-6 h-6" strokeWidth={1.5} />
+              </div>
+              <p className="text-[13px] font-semibold text-text-primary mb-1">
+                Arrastre su archivo PDF aquí
+              </p>
+              <p className="text-[12px] text-text-muted leading-relaxed max-w-sm mx-auto">
+                Admite kárdex individual y reporte consolidado de grupo con cualquier cantidad de alumnos.
+              </p>
+            </div>
 
-          {onLoadBatchDemo && (
-            <button
-              type="button"
-              onClick={onLoadBatchDemo}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold rounded-lg transition-all cursor-pointer"
-            >
-              <span>Probar con Reporte de Grupo (36 Alumnos)</span>
-            </button>
-          )}
+            {/* Action buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center justify-center space-x-2 px-4 py-3 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all cursor-pointer"
+              >
+                <Upload className="w-4 h-4" strokeWidth={2} />
+                <span>Subir PDF</span>
+              </button>
+
+              {onOpenNeonManager && (
+                <button
+                  type="button"
+                  onClick={onOpenNeonManager}
+                  className="flex items-center justify-center space-x-2 px-4 py-3 bg-surface-2 hover:bg-surface-3 text-text-primary border border-border text-[13px] font-semibold rounded-xl transition-all cursor-pointer"
+                >
+                  <Database className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                  <span>Base de datos</span>
+                </button>
+              )}
+
+            </div>
+          </div>
         </div>
       </div>
     </div>

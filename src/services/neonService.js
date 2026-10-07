@@ -35,7 +35,7 @@ export async function getCarreras() {
 
   try {
     const sql = neon(databaseUrl);
-    const rows = await sql`SELECT * FROM carreras ORDER BY id ASC`;
+    const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras WHERE codigo IN ('LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17') ORDER BY codigo ASC`;
     
     if (rows && rows.length > 0) {
       // Validamos que el mapa_json venga deserializado si venía como string
@@ -48,10 +48,13 @@ export async function getCarreras() {
             console.warn('[NeonService] Error al parsear mapa_json de carrera:', carrera.codigo, e);
           }
         }
+        
+        let localCarrera = CARRERAS_LOCAL.find(c => c.codigo === carrera.codigo);
+
         return {
           ...carrera,
-          activa: Boolean(carrera.activa),
-          mapa_json: mapa || (carrera.codigo === 'LIC-COFI-18' ? CARRERAS_LOCAL[0].mapa_json : null)
+          activa: ['LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17'].includes(carrera.codigo) ? true : Boolean(carrera.activa),
+          mapa_json: mapa || (localCarrera ? localCarrera.mapa_json : null)
         };
       });
 

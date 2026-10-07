@@ -16,9 +16,22 @@ function checkFailed(calif) {
   const n = parseFloat(s);
   return !isNaN(n) && n < 6;
 }
+import { detectarModalidad } from './pdfParser.js';
 
 export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_LOCAL[0]) {
-  const mapa = carrera.mapa_json || CARRERAS_LOCAL[0].mapa_json;
+  // Asegurarnos de detectar la modalidad si no viene calculada
+  if (!estudiante.modalidadDetectada) {
+    detectarModalidad(estudiante, registros);
+  }
+  
+  // Asignar dinámicamente la carrera basada en el programa detectado, si existe en local/neon
+  let carreraEfectiva = carrera;
+  if (estudiante.programa && carrera.codigo !== estudiante.programa) {
+    const c = CARRERAS_LOCAL.find(c => c.codigo === estudiante.programa);
+    if (c) carreraEfectiva = c;
+  }
+
+  const mapa = carreraEfectiva.mapa_json || CARRERAS_LOCAL[0].mapa_json;
   const cuatrimestresRaw = mapa.cuatrimestres || [];
   const electivasRaw = mapa.electivas_multidisciplinares || [];
 
@@ -111,7 +124,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     maxCuatrimestreAlcanzado = Math.max(maxCuatrimestreAlcanzado, 6);
   }
   if (estudiante.estatus === 'EG') {
-    maxCuatrimestreAlcanzado = 9;
+    maxCuatrimestreAlcanzado = cuatrimestres.length;
   }
 
   // 4. Evaluar cada asignatura del mapa curricular oficial
@@ -206,21 +219,22 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
 
   // 5. Evaluar niveles de inglés (Cuatrimestres 1 a 5: F001, F002, F003, F004, P001)
   const auditedIngles = [];
-  const clavesInglesPorNivel = [
+  const nivelesInglesArr = mapa.niveles_ingles === 0 ? [] : (mapa.niveles_ingles || [
     { nivel: 1, cuatrimestre: 1, claveSugerida: 'F001', nombre: 'INGLÉS I' },
     { nivel: 2, cuatrimestre: 2, claveSugerida: 'F002', nombre: 'INGLÉS II' },
     { nivel: 3, cuatrimestre: 3, claveSugerida: 'F003', nombre: 'INGLÉS III' },
     { nivel: 4, cuatrimestre: 4, claveSugerida: 'F004', nombre: 'INGLÉS IV' },
     { nivel: 5, cuatrimestre: 5, claveSugerida: 'P001', nombre: 'INGLÉS V' },
-  ];
+  ]);
 
   let inglesAcreditados = 0;
-  for (const item of clavesInglesPorNivel) {
+  for (const item of nivelesInglesArr) {
+    let claveSugerida = item.claveSugerida || item.clave_default;
     if (exentoIngles) {
       auditedIngles.push({
         nivel: item.nivel,
         cuatrimestre: item.cuatrimestre,
-        clave: item.claveSugerida,
+        clave: claveSugerida,
         nombre: item.nombre,
         estado: 'ORD',
         etiquetaCorta: 'EXENTO',
@@ -233,9 +247,9 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
       });
       inglesAcreditados++;
     } else {
-      const attempts = normalizedRecords.filter(r => r.crse === item.claveSugerida);
+      const attempts = normalizedRecords.filter(r => r.crse === claveSugerida);
       const evalIngles = evaluateSubjectAttempts(
-        { clave: `LENG-${item.claveSugerida}`, crse: item.claveSugerida, nombre: item.nombre },
+        { clave: `LENG-${claveSugerida}`, crse: claveSugerida, nombre: item.nombre },
         attempts,
         item.cuatrimestre,
         maxCuatrimestreAlcanzado,
@@ -246,7 +260,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         inglesAcreditados++;
       } else if (evalIngles.estado === 'ADEUDO') {
         adeudosQ1toQ6.push({
-          clave: `LENG-${item.claveSugerida}`,
+          clave: `LENG-${claveSugerida}`,
           nombre: item.nombre,
           cuatrimestre: item.cuatrimestre,
           ...evalIngles
@@ -256,7 +270,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
       if (['REC', 'RE', 'ADEUDO', 'OMITIDA'].includes(evalIngles.estado)) {
         incidencias.push({
           cuatrimestre: item.cuatrimestre,
-          clave: `LENG-${item.claveSugerida}`,
+          clave: `LENG-${claveSugerida}`,
           nombre: item.nombre,
           conecta: false,
           esEstadia: false,
@@ -274,7 +288,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
       auditedIngles.push({
         nivel: item.nivel,
         cuatrimestre: item.cuatrimestre,
-        clave: item.claveSugerida,
+        clave: claveSugerida,
         nombre: item.nombre,
         ...evalIngles
       });
@@ -430,6 +444,34 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     conecta: Boolean(m.conecta)
   }));
 
+  // === ANÁLISIS DE COHERENCIA CURRICULAR ===
+  const excludeClavesComunes = ['LENG', 'INHH', 'CIAN', 'PROP', 'TUPR', 'TPEG', 'HUS01', 'HUS02', 'HUS03', 'HUS04', 'HUS05', 'HUS06', 'HTS01', 'EDS01', 'CMS01', 'CMS02', 'CMS03'];
+  const clavesMapaActual = new Set();
+  cuatrimestres.forEach(c => c.materias.forEach(m => clavesMapaActual.add(m.crse)));
+  electivasMultidisciplinares.forEach(e => clavesMapaActual.add(e.crse));
+
+  let materiasCoincidentes = 0;
+  const materiasHuerfanas = [];
+
+  registros.forEach(r => {
+    if (excludeClavesComunes.includes(r.subj) || excludeClavesComunes.includes(r.crse)) return;
+    if (clavesMapaActual.has(r.crse)) {
+      materiasCoincidentes++;
+    } else {
+      materiasHuerfanas.push(r);
+    }
+  });
+
+  let alertaCarreraAjena = null;
+  const huerfanasCrse = materiasHuerfanas.map(m => m.crse);
+  
+  if (huerfanasCrse.some(c => c.startsWith('EDR') || c.startsWith('PER') || c.startsWith('PSR'))) alertaCarreraAjena = 'Educación';
+  else if (huerfanasCrse.some(c => c.startsWith('DES'))) alertaCarreraAjena = 'Derecho';
+  else if (huerfanasCrse.some(c => c.startsWith('MKS') || c.startsWith('MKT'))) alertaCarreraAjena = 'Mercadotecnia';
+
+  // carreraSugerida se infiere del programa detectado previamente
+  const carreraSugerida = estudiante.programa;
+
   return {
     estudiante,
     carrera,
@@ -439,8 +481,8 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     exentoIngles,
     electivas: auditedElectivas,
     resumen: {
-      totalMateriasMapa: 37,
-      nivelesIngles: 5,
+      totalMateriasMapa: cuatrimestres.reduce((acc, cuat) => acc + cuat.materias.length, 0),
+      nivelesIngles: mapa.niveles_ingles === 0 ? 0 : (mapa.niveles_ingles ? mapa.niveles_ingles.length : 5),
       inglesAcreditados,
       requisitosEgresoTotal: 4,
       coCurricularesAcreditados,
@@ -461,6 +503,12 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     },
     incidencias,
     materiasPrioritarias,
+    coherencia: {
+      materiasCoincidentes,
+      materiasHuerfanas,
+      alertaCarreraAjena,
+      carreraSugerida
+    },
     fechaConsulta: new Date().toLocaleDateString('es-MX', {
       day: '2-digit',
       month: 'long',

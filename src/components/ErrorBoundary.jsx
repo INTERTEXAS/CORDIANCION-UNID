@@ -25,29 +25,31 @@ export default class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="bg-white rounded-2xl border border-rose-200 p-8 max-w-xl mx-auto my-12 shadow-sm text-center space-y-4">
-          <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center mx-auto border border-rose-200">
-            <AlertTriangle className="w-6 h-6 text-rose-600" />
-          </div>
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold text-rose-700 bg-rose-100/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-block">
-              Aviso del Sistema
-            </span>
-            <h3 className="text-base font-extrabold text-slate-900 pt-1">
-              Ocurrió un error al procesar la vista
-            </h3>
-            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-              {this.state.error?.message || 'Error inesperado durante la carga del documento.'}
-            </p>
-          </div>
-          <div className="pt-2">
-            <button
-              onClick={this.handleReset}
-              className="inline-flex items-center space-x-2 px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Reiniciar y Reintentar</span>
-            </button>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="bg-surface-1 rounded-3xl border border-border p-8 max-w-xl mx-auto shadow-card text-center space-y-4 transition-theme animate-fade-in">
+            <div className="w-12 h-12 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-6 h-6" strokeWidth={1.5} />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-rose-700 dark:text-rose-400 bg-rose-100/80 dark:bg-rose-500/15 px-2.5 py-1 rounded-full uppercase tracking-wider inline-block">
+                Aviso del Sistema
+              </span>
+              <h3 className="text-[16px] font-extrabold text-text-primary pt-2">
+                Ocurrió un error al procesar la vista
+              </h3>
+              <p className="text-[13px] text-text-muted max-w-md mx-auto leading-relaxed">
+                {this.state.error?.message || 'Error inesperado durante la carga del documento.'}
+              </p>
+            </div>
+            <div className="pt-2">
+              <button
+                onClick={this.handleReset}
+                className="inline-flex items-center space-x-2 px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl transition-colors cursor-pointer shadow-sm hover:shadow-glow-gold"
+              >
+                <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
+                <span>Reiniciar y Reintentar</span>
+              </button>
+            </div>
           </div>
         </div>
       );

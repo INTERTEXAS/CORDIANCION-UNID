@@ -2,33 +2,118 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* === DESIGN SYSTEM: CSS Custom Properties (Light/Dark Theme) === */
+:root {
+  /* Surfaces */
+  --surface-0: #FAFBFD;
+  --surface-1: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --surface-3: #E2E8F0;
+
+  /* Borders */
+  --border-color: #E2E8F0;
+  --border-subtle: #F1F5F9;
+
+  /* Text */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+
+  /* Accent */
+  --accent: #F2B705;
+  --accent-hover: #dfa500;
+  --accent-soft: rgba(242, 183, 5, 0.1);
+  --accent-text: #92400E;
+
+  /* Sidebar */
+  --sidebar-bg: #0F1319;
+  --sidebar-border: rgba(255,255,255,0.06);
+
+  /* Scrollbar */
+  --scrollbar-track: #F1F5F9;
+  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-thumb-hover: #94A3B8;
+
+  color-scheme: light;
+}
+
+.dark {
+  --surface-0: #0B0F14;
+  --surface-1: #111827;
+  --surface-2: #1E293B;
+  --surface-3: #334155;
+
+  --border-color: #1E293B;
+  --border-subtle: #1E293B;
+
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  --accent: #FACC15;
+  --accent-hover: #EAB308;
+  --accent-soft: rgba(250, 204, 21, 0.1);
+  --accent-text: #FEF08A;
+
+  --sidebar-bg: #070A0E;
+  --sidebar-border: rgba(255,255,255,0.04);
+
+  --scrollbar-track: #1E293B;
+  --scrollbar-thumb: #334155;
+  --scrollbar-thumb-hover: #475569;
+
+  color-scheme: dark;
+}
+
 @layer base {
   body {
-    @apply bg-[#F4F6F9] text-[#1E293B] antialiased;
-    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Elegant typography defaults */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+
+  /* Tabular numbers for data-heavy views */
+  .font-mono, [class*="font-mono"] {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom scrollbars for clean UI */
+/* === SCROLLBARS === */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 3px;
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: var(--scrollbar-thumb-hover);
 }
 
-/* PDF & Physical Print Styling Oficial UNID */
+/* === TRANSITIONS === */
+@layer utilities {
+  .transition-theme {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+}
+
+/* === PDF & Physical Print Styling (unchanged for UNID compliance) === */
 @media print {
   @page {
     size: landscape;
@@ -47,6 +132,7 @@
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
+    color: #000 !important;
   }
 
   .no-print, [data-no-print], .print\:hidden {
@@ -66,11 +152,9 @@
     break-after: page;
   }
 
-  /* Evitar cortes indeseados dentro de tarjetas o bloques */
   .break-inside-avoid,
   [data-print-avoid-break] {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 }
-

@@ -144,29 +144,29 @@ export default function BatchAuditView({
     } : undefined;
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 animate-fade-in transition-theme">
         {/* Barra de Navegación de Alumno del Grupo */}
-        <div className="no-print print:hidden bg-white p-3 rounded-xl border border-slate-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3 select-none">
+        <div className="no-print print:hidden bg-surface-1 p-4 rounded-2xl border border-border shadow-sm flex flex-wrap items-center justify-between gap-4 select-none">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setSelectedStudentIndex(null)}
-              className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+              className="flex items-center space-x-1.5 px-4 py-2 bg-surface-2 hover:bg-surface-3 text-text-primary text-[13px] font-bold rounded-xl transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Volver a la Generación ({alumnos.length} alumnos)</span>
+              <ArrowLeft className="w-4 h-4" strokeWidth={2} />
+              <span>Volver al Grupo ({alumnos.length})</span>
             </button>
 
-            <span className="text-slate-300">|</span>
+            <span className="text-border-subtle hidden sm:inline">|</span>
 
             {/* Selector desplegable de alumnos del lote */}
             <div className="flex items-center space-x-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider hidden sm:inline">
+              <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider hidden sm:inline">
                 Expediente:
               </span>
               <select
                 value={selectedStudentIndex}
                 onChange={(e) => setSelectedStudentIndex(Number(e.target.value))}
-                className="bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-800 text-xs font-bold rounded-lg px-2.5 py-1.5 cursor-pointer focus:ring-2 focus:ring-[#F2B705] focus:outline-none"
+                className="bg-surface-2 border border-border hover:border-accent/50 text-text-primary text-[13px] font-bold rounded-xl px-3 py-2 cursor-pointer focus:ring-2 focus:ring-accent/50 focus:outline-none transition-all"
               >
                 {alumnos.map((item, idx) => (
                   <option key={item.estudiante.matricula} value={idx}>
@@ -178,37 +178,37 @@ export default function BatchAuditView({
           </div>
 
           {/* Flechas Anterior / Siguiente */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2.5">
             <button
               disabled={selectedStudentIndex <= 0}
               onClick={() => setSelectedStudentIndex(prev => Math.max(0, prev - 1))}
-              className="flex items-center space-x-1 px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              className="flex items-center justify-center p-2.5 bg-surface-2 hover:bg-surface-3 border border-border text-text-primary rounded-xl disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              title="Anterior"
             >
-              <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Anterior</span>
+              <ChevronLeft className="w-4 h-4" strokeWidth={2} />
             </button>
 
-            <span className="text-xs font-mono font-bold text-slate-600 px-1">
+            <span className="text-[13px] font-mono font-bold text-text-secondary px-1">
               {selectedStudentIndex + 1} / {alumnos.length}
             </span>
 
             <button
               disabled={selectedStudentIndex >= alumnos.length - 1}
               onClick={() => setSelectedStudentIndex(prev => Math.min(alumnos.length - 1, prev + 1))}
-              className="flex items-center space-x-1 px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              className="flex items-center justify-center p-2.5 bg-surface-2 hover:bg-surface-3 border border-border text-text-primary rounded-xl disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              title="Siguiente"
             >
-              <span className="hidden sm:inline">Siguiente</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4" strokeWidth={2} />
             </button>
 
             {onExportPdf && (
               <button
                 onClick={onExportPdf}
                 disabled={isExporting}
-                className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#181C24] hover:bg-black text-white text-xs font-bold rounded-lg shadow-sm transition-all disabled:opacity-50 cursor-pointer ml-1"
+                className="flex items-center space-x-2 px-4 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ml-2"
                 title="Exportar dictamen oficial de 2 hojas para este alumno"
               >
-                <Download className="w-3.5 h-3.5 text-[#F2B705]" />
+                <Download className="w-4 h-4" strokeWidth={2} />
                 <span className="hidden md:inline">Exportar Dictamen (PDF)</span>
               </button>
             )}
@@ -216,41 +216,41 @@ export default function BatchAuditView({
         </div>
 
         {/* Selector de Pestañas (Hoja 1 y Hoja 2) y Filtros */}
-        <div className="no-print print:hidden bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
-          <div className="flex items-center justify-between">
-            <div className="bg-[#181C24] p-1 rounded-lg inline-flex items-center space-x-1 select-none">
+        <div className="no-print print:hidden bg-surface-1 p-4 rounded-2xl border border-border shadow-sm space-y-3 transition-theme">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="bg-surface-2 p-1 rounded-xl inline-flex items-center space-x-1 select-none border border-border-subtle w-full sm:w-auto overflow-x-auto">
               <button
                 onClick={() => setActiveSheetTab('mapa')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer whitespace-nowrap ${
                   activeSheetTab === 'mapa'
-                    ? 'bg-white text-[#181C24] shadow-sm'
-                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    ? 'bg-surface-0 border border-border shadow-sm text-text-primary'
+                    : 'text-text-muted hover:text-text-primary hover:bg-surface-3'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5" strokeWidth={1.5} />
-                <span>Hoja 1: Mapa de Ejecución Oficial</span>
+                <Layers className="w-4 h-4" strokeWidth={1.5} />
+                <span>Hoja 1: Mapa de Ejecución</span>
               </button>
 
               <button
                 onClick={() => setActiveSheetTab('cedula')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer whitespace-nowrap ${
                   activeSheetTab === 'cedula'
-                    ? 'bg-white text-[#181C24] shadow-sm'
-                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    ? 'bg-surface-0 border border-border shadow-sm text-text-primary'
+                    : 'text-text-muted hover:text-text-primary hover:bg-surface-3'
                 }`}
               >
-                <FileText className="w-3.5 h-3.5" strokeWidth={1.5} />
-                <span>Hoja 2: Cédula de Auditoría y Trazabilidad</span>
+                <FileText className="w-4 h-4" strokeWidth={1.5} />
+                <span>Hoja 2: Cédula y Trazabilidad</span>
               </button>
             </div>
 
-            <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider hidden sm:block">
+            <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider hidden md:block">
               {activeSheetTab === 'mapa' ? 'Validación Cuatrimestral' : 'Cédula Oficial y Trazabilidad'}
             </div>
           </div>
 
           {activeSheetTab === 'mapa' && (
-            <div className="border-t border-slate-100 pt-2.5">
+            <div className="border-t border-border-subtle pt-3">
               <FilterPills
                 activeFilter={activeMapFilter}
                 onFilterChange={setActiveMapFilter}
@@ -261,55 +261,57 @@ export default function BatchAuditView({
         </div>
 
         {/* Vista del Mapa o Cédula */}
-        {activeSheetTab === 'mapa' ? (
-          <CurriculumMap 
-            auditData={currentAudit} 
-            activeFilter={activeMapFilter} 
-          />
-        ) : (
-          <AuditCedula 
-            auditData={currentAudit} 
-          />
-        )}
+        <div className="transition-all duration-300">
+          {activeSheetTab === 'mapa' ? (
+            <CurriculumMap 
+              auditData={currentAudit} 
+              activeFilter={activeMapFilter} 
+            />
+          ) : (
+            <AuditCedula 
+              auditData={currentAudit} 
+            />
+          )}
+        </div>
       </div>
     );
   }
 
   // Vista de Directorio de la Generación Completa
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-fade-in transition-theme">
       {/* 1. Tarjeta Cabecera de la Generación */}
-      <div className="bg-white rounded-md border border-slate-300 p-5 print:hidden">
-        <div className="flex flex-col gap-4">
+      <div className="bg-surface-1 rounded-2xl border border-border p-6 shadow-card print:hidden transition-theme">
+        <div className="flex flex-col gap-5">
           <div>
-            <div className="flex items-center space-x-2 text-xs font-bold text-[#F2B705]">
-              <Users className="w-4 h-4 text-slate-800" />
-              <span className="uppercase tracking-widest text-slate-600 font-black">
+            <div className="flex items-center space-x-2 text-[12px] font-bold text-accent">
+              <Users className="w-4 h-4 text-text-primary" strokeWidth={2} />
+              <span className="uppercase tracking-widest text-text-secondary font-black">
                 Auditoría Consolidada de Generación / Grupo
               </span>
             </div>
-            <h2 className="text-xl font-extrabold text-slate-900 mt-1 tracking-tight">
+            <h2 className="text-xl md:text-2xl font-extrabold text-text-primary mt-1.5 tracking-tight">
               {batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Programa: <span className="font-mono font-bold text-slate-700">{batchData.carrera?.clave || 'LIC-COFI-18'}</span> · 
+            <p className="text-[13px] text-text-muted mt-1">
+              Programa: <span className="font-mono font-bold text-text-secondary">{batchData.carrera?.clave || 'LIC-COFI-18'}</span> · 
               Reporte oficial de materias acreditadas (Banner UNID).
             </p>
           </div>
 
           {/* Grupo de Acciones Estructurado con Jerarquía */}
-          <div className="flex flex-wrap items-center gap-3 pt-1">
+          <div className="flex flex-wrap items-center gap-3 pt-2">
             {/* Base de Datos Neon */}
-            <div className="inline-flex items-center rounded-md border border-slate-300 bg-slate-50 p-0.5">
+            <div className="inline-flex items-center rounded-xl border border-indigo-200 dark:border-indigo-500/30 bg-indigo-50/50 dark:bg-indigo-500/10 p-1">
               <button
                 onClick={() => {
                   setNeonModalMode('guardar');
                   setIsNeonModalOpen(true);
                 }}
-                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded shadow-none transition-all cursor-pointer flex items-center space-x-1.5"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold rounded-lg shadow-sm transition-all cursor-pointer flex items-center space-x-2"
                 title="Guardar este grupo en Neon Database clasificándolo por ciclo escolar y cuatrimestre"
               >
-                <Database className="w-3.5 h-3.5 text-indigo-200" />
+                <Database className="w-4 h-4 text-indigo-200" strokeWidth={2} />
                 <span>Guardar en BD (Neon)</span>
               </button>
               <button
@@ -317,10 +319,10 @@ export default function BatchAuditView({
                   setNeonModalMode('gestionar');
                   setIsNeonModalOpen(true);
                 }}
-                className="px-3 py-1.5 hover:bg-slate-200/70 text-slate-700 text-xs font-semibold rounded transition-colors cursor-pointer flex items-center space-x-1.5"
+                className="px-4 py-2 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[13px] font-semibold rounded-lg transition-colors cursor-pointer flex items-center space-x-2 ml-1"
                 title="Ver grupos guardados en Neon, cargar otro cuatrimestre o depurar a 5 meses"
               >
-                <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <Calendar className="w-4 h-4" strokeWidth={2} />
                 <span>Gestionar Ciclos</span>
               </button>
             </div>
@@ -328,29 +330,29 @@ export default function BatchAuditView({
             {/* Acción Primaria: Imprimir Sábana */}
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 bg-[#F2B705] hover:bg-[#dfa500] text-slate-950 text-xs font-bold rounded-md transition-all cursor-pointer flex items-center space-x-1.5"
+              className="px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all cursor-pointer flex items-center space-x-2"
               title="Imprimir o guardar como PDF la sábana ejecutiva de toda la generación"
             >
-              <Printer className="w-4 h-4 text-slate-950" />
-              <span>Imprimir / Descargar Sábana</span>
+              <Printer className="w-4 h-4 text-slate-950" strokeWidth={2} />
+              <span>Imprimir Sábana</span>
             </button>
 
             {/* Divisor Visual */}
-            <div className="hidden sm:block w-px h-6 bg-slate-200 mx-1"></div>
+            <div className="hidden sm:block w-px h-8 bg-border-subtle mx-2"></div>
 
             {/* Acciones Secundarias */}
             <button
               onClick={onUploadNewBatch}
-              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-md transition-all cursor-pointer flex items-center space-x-1.5"
+              className="px-4 py-2.5 bg-surface-2 hover:bg-surface-3 border border-border text-text-primary text-[13px] font-bold rounded-xl transition-all cursor-pointer flex items-center space-x-2"
               title="Cargar un nuevo archivo PDF de grupo"
             >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#F2B705]" />
+              <SlidersHorizontal className="w-4 h-4 text-accent" strokeWidth={2} />
               <span>Subir otro Reporte</span>
             </button>
             
             <button
               onClick={onClearBatch}
-              className="px-3.5 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 text-xs font-bold rounded-md transition-colors cursor-pointer"
+              className="px-4 py-2.5 bg-surface-1 hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-border hover:border-rose-200 dark:hover:border-rose-500/30 text-text-secondary hover:text-rose-600 dark:hover:text-rose-400 text-[13px] font-bold rounded-xl transition-colors cursor-pointer"
               title="Cerrar la vista del grupo actual"
             >
               Cerrar Grupo
@@ -359,264 +361,284 @@ export default function BatchAuditView({
         </div>
 
         {/* Métricas Resumen de la Generación - Ribbon Estilo ERP */}
-        <div className="mt-5 grid grid-cols-2 lg:grid-cols-4 bg-slate-50/30 border-t border-slate-200 rounded-b-md">
+        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 bg-surface-2 border border-border rounded-xl overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-border">
           {/* Card 1: Total Alumnos */}
-          <div className="p-4 flex flex-col justify-center border-b lg:border-b-0 border-r border-slate-200">
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+          <div className="p-5 flex flex-col justify-center">
+            <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1.5">
               Total Alumnos
             </div>
             <div className="flex items-baseline space-x-2">
-              <span className="text-2xl font-black text-slate-900 font-mono tracking-tight">{stats.total}</span>
-              <span className="text-[10px] font-semibold text-slate-400">expedientes</span>
+              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.total}</span>
+              <span className="text-[11px] font-semibold text-text-muted">expedientes</span>
             </div>
           </div>
 
           {/* Card 2: Aptos para Estadía */}
-          <div className="p-4 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-slate-200">
-            <div className="flex items-center space-x-1.5 mb-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)]"></div>
-              <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+          <div className="p-5 flex flex-col justify-center">
+            <div className="flex items-center space-x-2 mb-1.5">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)] dark:shadow-[0_0_0_2px_rgba(16,185,129,0.4)]"></div>
+              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
                 Aptos para Estadía
               </div>
             </div>
             <div className="flex items-baseline space-x-2">
-              <span className="text-2xl font-black text-slate-900 font-mono tracking-tight">{stats.elegibles}</span>
-              <span className="text-[11px] font-bold text-emerald-600">{Math.round((stats.elegibles / Math.max(1, stats.total)) * 100)}%</span>
+              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.elegibles}</span>
+              <span className="text-[12px] font-bold text-emerald-600 dark:text-emerald-400">{Math.round((stats.elegibles / Math.max(1, stats.total)) * 100)}%</span>
             </div>
           </div>
 
           {/* Card 3: Adeudos Previos */}
-          <div className="p-4 flex flex-col justify-center border-r border-slate-200">
-            <div className="flex items-center space-x-1.5 mb-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_0_2px_rgba(244,63,94,0.2)]"></div>
-              <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+          <div className="p-5 flex flex-col justify-center">
+            <div className="flex items-center space-x-2 mb-1.5">
+              <div className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_0_2px_rgba(244,63,94,0.2)] dark:shadow-[0_0_0_2px_rgba(244,63,94,0.4)]"></div>
+              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
                 Adeudos (1.º - 6.º)
               </div>
             </div>
             <div className="flex items-baseline space-x-2">
-              <span className="text-2xl font-black text-slate-900 font-mono tracking-tight">{stats.conAdeudos}</span>
-              <span className="text-[11px] font-bold text-rose-600">en riesgo</span>
+              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.conAdeudos}</span>
+              <span className="text-[12px] font-bold text-rose-600 dark:text-rose-400">en riesgo</span>
             </div>
           </div>
 
           {/* Card 4: Omitidas / En Curso */}
-          <div className="p-4 flex flex-col justify-center">
-            <div className="flex items-center space-x-1.5 mb-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.2)]"></div>
-              <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+          <div className="p-5 flex flex-col justify-center">
+            <div className="flex items-center space-x-2 mb-1.5">
+              <div className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.2)] dark:shadow-[0_0_0_2px_rgba(251,191,36,0.4)]"></div>
+              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
                 Omitidas / Curso
               </div>
             </div>
             <div className="flex items-baseline space-x-2">
-              <span className="text-2xl font-black text-slate-900 font-mono tracking-tight">{stats.conOmitidas}</span>
-              <span className="text-[11px] font-bold text-amber-600">seguimiento</span>
+              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.conOmitidas}</span>
+              <span className="text-[12px] font-bold text-amber-600 dark:text-amber-400">seguimiento</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* 2. Barra de Búsqueda, Filtros y Ordenamiento */}
-      <div className="bg-white p-3.5 rounded-md border border-slate-300 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 print:hidden">
+      <div className="bg-surface-1 p-4 rounded-2xl border border-border flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 print:hidden transition-theme shadow-sm">
         {/* Input de Búsqueda */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={2} />
           <input
             type="text"
             placeholder="Buscar por nombre de alumno o matrícula..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F2B705] focus:border-transparent transition-all"
+            className="w-full bg-surface-2 border border-border rounded-xl pl-10 pr-4 py-2.5 text-[13px] text-text-primary placeholder-text-muted focus:bg-surface-0 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
           />
         </div>
 
-        {/* Filtros Rápidos */}
-        <div className="flex items-center space-x-1 overflow-x-auto pb-1 md:pb-0 select-none">
-          <button
-            onClick={() => setFilterStatus('TODOS')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-              filterStatus === 'TODOS'
-                ? 'bg-slate-900 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            Todos ({alumnos.length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('ELEGIBLE')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-              filterStatus === 'ELEGIBLE'
-                ? 'bg-emerald-600 text-white'
-                : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
-            }`}
-          >
-            Aptos ({stats.elegibles})
-          </button>
-          <button
-            onClick={() => setFilterStatus('ADEUDOS')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-              filterStatus === 'ADEUDOS'
-                ? 'bg-rose-600 text-white'
-                : 'bg-rose-50 text-rose-800 hover:bg-rose-100'
-            }`}
-          >
-            Con Adeudos ({stats.conAdeudos})
-          </button>
-          <button
-            onClick={() => setFilterStatus('OMITIDAS')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-              filterStatus === 'OMITIDAS'
-                ? 'bg-amber-600 text-white'
-                : 'bg-amber-50 text-amber-800 hover:bg-amber-100'
-            }`}
-          >
-            Omitidas ({stats.conOmitidas})
-          </button>
-        </div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          {/* Filtros Rápidos */}
+          <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 select-none w-full sm:w-auto">
+            <button
+              onClick={() => setFilterStatus('TODOS')}
+              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+                filterStatus === 'TODOS'
+                  ? 'bg-text-primary text-surface-1 shadow-sm'
+                  : 'bg-surface-2 text-text-secondary hover:bg-surface-3'
+              }`}
+            >
+              Todos ({alumnos.length})
+            </button>
+            <button
+              onClick={() => setFilterStatus('ELEGIBLE')}
+              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+                filterStatus === 'ELEGIBLE'
+                  ? 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-sm'
+                  : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20'
+              }`}
+            >
+              Aptos ({stats.elegibles})
+            </button>
+            <button
+              onClick={() => setFilterStatus('ADEUDOS')}
+              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+                filterStatus === 'ADEUDOS'
+                  ? 'bg-rose-600 dark:bg-rose-500 text-white shadow-sm'
+                  : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20'
+              }`}
+            >
+              Con Adeudos ({stats.conAdeudos})
+            </button>
+            <button
+              onClick={() => setFilterStatus('OMITIDAS')}
+              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+                filterStatus === 'OMITIDAS'
+                  ? 'bg-amber-600 dark:bg-amber-500 text-white shadow-sm'
+                  : 'bg-amber-50 dark:bg-amber-500/10 text-amber-800 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20'
+              }`}
+            >
+              Omitidas ({stats.conOmitidas})
+            </button>
+          </div>
 
-        {/* Ordenamiento */}
-        <div className="flex items-center space-x-1.5">
-          <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg px-2 py-1.5 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#F2B705]"
-          >
-            <option value="nombre">Orden: Alfabético (A-Z)</option>
-            <option value="matricula">Orden: Matrícula</option>
-            <option value="avance-desc">Mayor Avance %</option>
-            <option value="avance-asc">Menor Avance %</option>
-          </select>
+          {/* Ordenamiento */}
+          <div className="flex items-center space-x-2 shrink-0">
+            <ArrowUpDown className="w-4 h-4 text-text-muted" strokeWidth={2} />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-surface-2 border border-border text-text-primary text-[12px] font-bold rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="nombre">Orden: Alfabético (A-Z)</option>
+              <option value="matricula">Orden: Matrícula</option>
+              <option value="avance-desc">Mayor Avance %</option>
+              <option value="avance-asc">Menor Avance %</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {/* 3. Directorio de Expedientes de la Generación (Tabla Formal) */}
-      <div className="print:hidden mt-4">
+      <div className="print:hidden">
         {filteredAlumnos.length === 0 ? (
-          <div className="bg-white rounded-md border border-slate-300 p-12 text-center">
-            <Search className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-            <p className="text-sm font-bold text-slate-700">No se encontraron alumnos con ese criterio</p>
-            <p className="text-xs text-slate-400 mt-1">Prueba cambiando el término de búsqueda o el filtro seleccionado.</p>
+          <div className="bg-surface-1 rounded-3xl border border-border p-16 text-center shadow-card">
+            <Search className="w-10 h-10 text-text-muted/50 mx-auto mb-3" strokeWidth={1.5} />
+            <p className="text-[15px] font-bold text-text-primary">No se encontraron alumnos con ese criterio</p>
+            <p className="text-[13px] text-text-muted mt-1.5">Prueba cambiando el término de búsqueda o el filtro seleccionado.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-md border border-slate-300 overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="bg-[#181C24] text-slate-300 text-[10px] uppercase tracking-wider font-bold">
-                  <th className="py-2.5 px-4 w-10 text-center">#</th>
-                  <th className="py-2.5 px-3 w-28">Matrícula</th>
-                  <th className="py-2.5 px-3">Alumno</th>
-                  <th className="py-2.5 px-3 w-32 text-center">Dictamen</th>
-                  <th className="py-2.5 px-3 w-44">Avance Curricular</th>
-                  <th className="py-2.5 px-2 w-14 text-center">ORD</th>
-                  <th className="py-2.5 px-2 w-16 text-center">REC/RE</th>
-                  <th className="py-2.5 px-2 w-16 text-center">Inglés</th>
-                  <th className="py-2.5 px-3 w-28 text-center">Expediente</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredAlumnos.map(({ estudiante, auditData, originalIndex }, idx) => {
-                  const res = auditData?.resumen;
-                  const esElegible = res?.dictamenEstadia?.includes('APROBADO') || res?.dictamenEstadia?.includes('ELEGIBLE');
-                  const tieneAdeudos = (res?.adeudos || 0) > 0;
-                  const totalAprobadas = res?.totalAprobadas ?? ((res?.aprobadasOrd || 0) + (res?.aprobadasRec || 0) + (res?.aprobadasRe || 0));
-                  const porcentaje = Math.round((totalAprobadas / (res?.totalMateriasMapa || 37)) * 100);
+          <div className="bg-surface-1 rounded-2xl border border-border overflow-hidden shadow-card transition-theme">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[13px]">
+                <thead>
+                  <tr className="bg-surface-2 text-text-secondary text-[11px] uppercase tracking-wider font-bold border-b border-border">
+                    <th className="py-3.5 px-4 w-12 text-center">#</th>
+                    <th className="py-3.5 px-4 w-32">Matrícula</th>
+                    <th className="py-3.5 px-4">Alumno</th>
+                    <th className="py-3.5 px-4 w-36 text-center">Dictamen</th>
+                    <th className="py-3.5 px-4 w-48">Avance Curricular</th>
+                    <th className="py-3.5 px-3 w-16 text-center">ORD</th>
+                    <th className="py-3.5 px-3 w-20 text-center">REC/RE</th>
+                    <th className="py-3.5 px-3 w-20 text-center">Inglés</th>
+                    <th className="py-3.5 px-4 w-32 text-center">Expediente</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border-subtle bg-surface-1">
+                  {filteredAlumnos.map(({ estudiante, auditData, originalIndex }, idx) => {
+                    const res = auditData?.resumen;
+                    const esElegible = res?.dictamenEstadia?.includes('APROBADO') || res?.dictamenEstadia?.includes('ELEGIBLE');
+                    const tieneAdeudos = (res?.adeudos || 0) > 0;
+                    const totalAprobadas = res?.totalAprobadas ?? ((res?.aprobadasOrd || 0) + (res?.aprobadasRec || 0) + (res?.aprobadasRe || 0));
+                    const porcentaje = Math.round((totalAprobadas / (res?.totalMateriasMapa || 37)) * 100);
 
-                  return (
-                    <tr 
-                      key={estudiante.matricula} 
-                      className="hover:bg-slate-50/80 transition-colors group"
-                    >
-                      {/* # */}
-                      <td className="py-2.5 px-4 text-center text-[10px] font-mono font-bold text-slate-400">
-                        {idx + 1}
-                      </td>
+                    return (
+                      <tr 
+                        key={estudiante.matricula} 
+                        className="hover:bg-surface-2/50 transition-colors group"
+                      >
+                        {/* # */}
+                        <td className="py-3 px-4 text-center text-[11px] font-mono font-bold text-text-muted">
+                          {idx + 1}
+                        </td>
 
-                      {/* Matrícula */}
-                      <td className="py-2.5 px-3">
-                        <span className="font-mono text-[11px] font-black text-slate-900">{estudiante.matricula}</span>
-                      </td>
+                        {/* Matrícula */}
+                        <td className="py-3 px-4">
+                          <span className="font-mono text-[12px] font-black text-text-primary">{estudiante.matricula}</span>
+                        </td>
 
-                      {/* Nombre */}
-                      <td className="py-2.5 px-3">
-                        <span className="font-semibold text-slate-900 text-xs">{estudiante.nombre}</span>
-                      </td>
-
-                      {/* Dictamen Badge */}
-                      <td className="py-2.5 px-3 text-center">
-                        {esElegible ? (
-                          <div className="flex items-center justify-center space-x-1.5" title="Apto para Estadía">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)]"></div>
-                            <span className="text-[11px] font-semibold text-slate-700">Apto</span>
+                        {/* Nombre */}
+                        <td className="py-3 px-4">
+                          <span className="font-semibold text-text-primary text-[13px] block">{estudiante.nombre}</span>
+                          <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                            {estudiante.modalidadDetectada && (
+                              <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase border ${
+                                estudiante.modalidadDetectada === 'EJECUTIVO' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20' :
+                                estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20' :
+                                'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20'
+                              }`}>
+                                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'DUAL' : (estudiante.modalidadDetectada === 'EJECUTIVO' ? '🔄 Plan Ejecutivo (LIC-EJCO-17)' : estudiante.modalidadDetectada)}
+                              </span>
+                            )}
+                            {auditData?.coherencia?.alertaCarreraAjena && (
+                              <span className="inline-flex items-center space-x-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase">
+                                <span>⚠️ Materias de otra Lic. ({auditData.coherencia.alertaCarreraAjena})</span>
+                              </span>
+                            )}
                           </div>
-                        ) : tieneAdeudos ? (
-                          <div className="flex items-center justify-center space-x-1.5" title={`${res.adeudos} materia(s) en adeudo`}>
-                            <div className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_0_2px_rgba(244,63,94,0.2)]"></div>
-                            <span className="text-[11px] font-bold text-rose-700">{res.adeudos} Adeudo{res.adeudos !== 1 ? 's' : ''}</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center space-x-1.5" title="En seguimiento o con materias en curso">
-                            <div className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.2)]"></div>
-                            <span className="text-[11px] font-semibold text-slate-600">Seguimiento</span>
-                          </div>
-                        )}
-                      </td>
+                        </td>
 
-                      {/* Barra de Avance */}
-                      <td className="py-2.5 px-3">
-                        <div className="flex items-center space-x-2">
-                          <div className="flex-1 h-1.5 bg-slate-100 rounded overflow-hidden">
-                            <div 
-                              className={`h-full rounded transition-all ${
-                                esElegible ? 'bg-emerald-500' : tieneAdeudos ? 'bg-rose-500' : 'bg-[#F2B705]'
-                              }`}
-                              style={{ width: `${Math.min(100, porcentaje)}%` }}
-                            />
+                        {/* Dictamen Badge */}
+                        <td className="py-3 px-4 text-center">
+                          {esElegible ? (
+                            <div className="flex items-center justify-center space-x-2" title="Apto para Estadía">
+                              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)] dark:shadow-[0_0_0_2px_rgba(16,185,129,0.4)]"></div>
+                              <span className="text-[12px] font-semibold text-emerald-700 dark:text-emerald-400">Apto</span>
+                            </div>
+                          ) : tieneAdeudos ? (
+                            <div className="flex items-center justify-center space-x-2" title={`${res.adeudos} materia(s) en adeudo`}>
+                              <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_0_2px_rgba(244,63,94,0.2)] dark:shadow-[0_0_0_2px_rgba(244,63,94,0.4)]"></div>
+                              <span className="text-[12px] font-bold text-rose-700 dark:text-rose-400">{res.adeudos} Adeudo{res.adeudos !== 1 ? 's' : ''}</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-center space-x-2" title="En seguimiento o con materias en curso">
+                              <div className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.2)] dark:shadow-[0_0_0_2px_rgba(251,191,36,0.4)]"></div>
+                              <span className="text-[12px] font-semibold text-amber-700 dark:text-amber-400">Seguimiento</span>
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Barra de Avance */}
+                        <td className="py-3 px-4">
+                          <div className="flex items-center space-x-2.5">
+                            <div className="flex-1 h-2 bg-surface-3 rounded-full overflow-hidden">
+                              <div 
+                                className={`h-full rounded-full transition-all ${
+                                  esElegible ? 'bg-emerald-500' : tieneAdeudos ? 'bg-rose-500' : 'bg-accent'
+                                }`}
+                                style={{ width: `${Math.min(100, porcentaje)}%` }}
+                              />
+                            </div>
+                            <span className="font-mono text-[12px] font-bold text-text-primary w-12 text-right shrink-0">
+                              {porcentaje}%
+                            </span>
                           </div>
-                          <span className="font-mono text-[11px] font-bold text-slate-700 w-12 text-right shrink-0">
-                            {porcentaje}%
+                          <span className="text-[11px] text-text-muted font-medium mt-0.5 block">
+                            {totalAprobadas}/{res?.totalMateriasMapa || 37} materias
                           </span>
-                        </div>
-                        <span className="text-[10px] text-slate-400 font-medium">
-                          {totalAprobadas}/{res?.totalMateriasMapa || 37} materias
-                        </span>
-                      </td>
+                        </td>
 
-                      {/* ORD */}
-                      <td className="py-2.5 px-2 text-center font-mono font-black text-slate-800 text-xs">
-                        {res?.aprobadasOrd || 0}
-                      </td>
+                        {/* ORD */}
+                        <td className="py-3 px-3 text-center font-mono font-black text-text-primary text-[13px]">
+                          {res?.aprobadasOrd || 0}
+                        </td>
 
-                      {/* REC/RE */}
-                      <td className="py-2.5 px-2 text-center font-mono font-black text-slate-800 text-xs">
-                        {(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}
-                      </td>
+                        {/* REC/RE */}
+                        <td className="py-3 px-3 text-center font-mono font-black text-text-primary text-[13px]">
+                          {(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}
+                        </td>
 
-                      {/* Inglés */}
-                      <td className="py-2.5 px-2 text-center font-mono font-black text-slate-800 text-xs">
-                        {res?.inglesAcreditados || 0}/5
-                      </td>
+                        {/* Inglés */}
+                        <td className="py-3 px-3 text-center font-mono font-black text-text-primary text-[13px]">
+                          {res?.inglesAcreditados || 0}/5
+                        </td>
 
-                      {/* Acción */}
-                      <td className="py-2.5 px-3 text-center">
-                        <button
-                          onClick={() => {
-                            setSelectedStudentIndex(originalIndex);
-                            setActiveSheetTab('mapa');
-                          }}
-                          className="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-slate-900 hover:bg-black text-white text-[10px] font-bold rounded transition-colors cursor-pointer opacity-70 group-hover:opacity-100"
-                        >
-                          <Layers className="w-3 h-3 text-[#F2B705]" />
-                          <span>Auditar</span>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        {/* Acción */}
+                        <td className="py-3 px-4 text-center">
+                          <button
+                            onClick={() => {
+                              setSelectedStudentIndex(originalIndex);
+                              setActiveSheetTab('mapa');
+                            }}
+                            className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-surface-2 group-hover:bg-accent text-text-primary group-hover:text-slate-950 text-[11px] font-bold rounded-lg transition-all cursor-pointer border border-border group-hover:border-accent"
+                          >
+                            <Layers className="w-3.5 h-3.5 group-hover:text-slate-950 text-accent transition-colors" strokeWidth={2} />
+                            <span>Auditar</span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
 
             {/* Pie de tabla con conteo */}
-            <div className="px-4 py-2 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-medium">
+            <div className="px-5 py-3 bg-surface-2 border-t border-border flex items-center justify-between text-[11px] text-text-muted font-medium">
               <span>Mostrando {filteredAlumnos.length} de {alumnos.length} expedientes</span>
               <span className="font-mono">{batchData.carrera?.clave || 'LIC-COFI-18'}</span>
             </div>
@@ -625,16 +647,16 @@ export default function BatchAuditView({
       </div>
 
       {/* 4. SÁBANA EJECUTIVA INSTITUCIONAL (FORMATO FORMAL PARA IMPRESIÓN Y GUARDAR EN PDF) */}
-      <div className="hidden print:block print:w-full bg-white text-slate-900 font-sans p-2">
-        <div className="border-b-2 border-slate-900 pb-3 mb-3 flex items-center justify-between">
+      <div className="hidden print:block print:w-full bg-white text-black font-sans p-2">
+        <div className="border-b-2 border-black pb-3 mb-3 flex items-center justify-between">
           <div>
-            <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">
+            <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">
               UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO · SISTEMA DE AUDITORÍA ACADÉMICA
             </div>
-            <h1 className="text-lg font-black text-slate-900 uppercase tracking-tight mt-0.5">
+            <h1 className="text-lg font-black text-black uppercase tracking-tight mt-0.5">
               Sábana Ejecutiva de Auditoría y Dictamen de Generación
             </h1>
-            <p className="text-[11px] text-slate-600 mt-0.5">
+            <p className="text-[11px] text-gray-700 mt-0.5">
               Programa: <strong>{batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}</strong> ({batchData.carrera?.clave || 'LIC-COFI-18'}) · 
               Total de Alumnos: <strong>{alumnos.length}</strong> · Fecha: {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' })}
             </p>
@@ -644,19 +666,19 @@ export default function BatchAuditView({
 
         {/* Resumen Métricas */}
         <div className="grid grid-cols-4 gap-2 mb-3 text-xs">
-          <div className="border border-slate-300 p-2 rounded">
-            <span className="text-[8.5px] uppercase font-bold text-slate-500 block">Total Evaluados</span>
-            <span className="text-base font-black">{stats.total} alumnos</span>
+          <div className="border border-gray-400 p-2 rounded">
+            <span className="text-[8.5px] uppercase font-bold text-gray-600 block">Total Evaluados</span>
+            <span className="text-base font-black text-black">{stats.total} alumnos</span>
           </div>
-          <div className="border border-emerald-300 bg-emerald-50/50 p-2 rounded">
+          <div className="border border-emerald-500 bg-emerald-50 p-2 rounded">
             <span className="text-[8.5px] uppercase font-bold text-emerald-800 block">Aptos a Estadía</span>
             <span className="text-base font-black text-emerald-900">{stats.elegibles} ({Math.round((stats.elegibles / Math.max(1, stats.total)) * 100)}%)</span>
           </div>
-          <div className="border border-rose-300 bg-rose-50/50 p-2 rounded">
+          <div className="border border-rose-500 bg-rose-50 p-2 rounded">
             <span className="text-[8.5px] uppercase font-bold text-rose-800 block">Adeudos Previos a Estadía (1.º - 6.º)</span>
             <span className="text-base font-black text-rose-900">{stats.conAdeudos} alumnos</span>
           </div>
-          <div className="border border-amber-300 bg-amber-50/50 p-2 rounded">
+          <div className="border border-amber-500 bg-amber-50 p-2 rounded">
             <span className="text-[8.5px] uppercase font-bold text-amber-800 block">En Seguimiento</span>
             <span className="text-base font-black text-amber-900">{stats.conOmitidas} alumnos</span>
           </div>
@@ -665,16 +687,16 @@ export default function BatchAuditView({
         {/* Tabla Oficial de la Generación */}
         <table className="w-full text-left border-collapse text-[9.5px]">
           <thead>
-            <tr className="bg-slate-900 text-white font-bold uppercase text-[8.5px]">
-              <th className="p-1 border border-slate-900 text-center w-7">#</th>
-              <th className="p-1 border border-slate-900 w-16">Matrícula</th>
-              <th className="p-1 border border-slate-900">Nombre del Estudiante</th>
-              <th className="p-1 border border-slate-900 text-center w-10">ORD</th>
-              <th className="p-1 border border-slate-900 text-center w-12">REC/RE</th>
-              <th className="p-1 border border-slate-900 text-center w-12">Inglés</th>
-              <th className="p-1 border border-slate-900 text-center w-12">Adeudos</th>
-              <th className="p-1 border border-slate-900 text-center w-14">Avance %</th>
-              <th className="p-1 border border-slate-900 text-center w-36">Dictamen Oficial</th>
+            <tr className="bg-black text-white font-bold uppercase text-[8.5px]">
+              <th className="p-1 border border-black text-center w-7">#</th>
+              <th className="p-1 border border-black w-16">Matrícula</th>
+              <th className="p-1 border border-black">Nombre del Estudiante</th>
+              <th className="p-1 border border-black text-center w-10">ORD</th>
+              <th className="p-1 border border-black text-center w-12">REC/RE</th>
+              <th className="p-1 border border-black text-center w-12">Inglés</th>
+              <th className="p-1 border border-black text-center w-12">Adeudos</th>
+              <th className="p-1 border border-black text-center w-14">Avance %</th>
+              <th className="p-1 border border-black text-center w-36">Dictamen Oficial</th>
             </tr>
           </thead>
           <tbody>
@@ -686,16 +708,16 @@ export default function BatchAuditView({
               const tieneAd = (res?.adeudos || 0) > 0;
 
               return (
-                <tr key={item.estudiante.matricula} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                  <td className="p-1 border border-slate-200 text-center font-bold">{idx + 1}</td>
-                  <td className="p-1 border border-slate-200 font-mono font-bold">{item.estudiante.matricula}</td>
-                  <td className="p-1 border border-slate-200 font-bold">{item.estudiante.nombre}</td>
-                  <td className="p-1 border border-slate-200 text-center">{res?.aprobadasOrd || 0}</td>
-                  <td className="p-1 border border-slate-200 text-center">{(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}</td>
-                  <td className="p-1 border border-slate-200 text-center">{res?.inglesAcreditados || 0}/5</td>
-                  <td className="p-1 border border-slate-200 text-center font-bold text-rose-700">{res?.adeudos || 0}</td>
-                  <td className="p-1 border border-slate-200 text-center font-bold">{pct}%</td>
-                  <td className="p-1 border border-slate-200 text-center">
+                <tr key={item.estudiante.matricula} className={idx % 2 === 0 ? 'bg-white text-black' : 'bg-gray-100 text-black'}>
+                  <td className="p-1 border border-gray-400 text-center font-bold">{idx + 1}</td>
+                  <td className="p-1 border border-gray-400 font-mono font-bold">{item.estudiante.matricula}</td>
+                  <td className="p-1 border border-gray-400 font-bold">{item.estudiante.nombre}</td>
+                  <td className="p-1 border border-gray-400 text-center">{res?.aprobadasOrd || 0}</td>
+                  <td className="p-1 border border-gray-400 text-center">{(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}</td>
+                  <td className="p-1 border border-gray-400 text-center">{res?.inglesAcreditados || 0}/5</td>
+                  <td className="p-1 border border-gray-400 text-center font-bold text-rose-700">{res?.adeudos || 0}</td>
+                  <td className="p-1 border border-gray-400 text-center font-bold">{pct}%</td>
+                  <td className="p-1 border border-gray-400 text-center">
                     <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase ${
                       esApto ? 'bg-emerald-100 text-emerald-800' : tieneAd ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
                     }`}>
@@ -709,16 +731,16 @@ export default function BatchAuditView({
         </table>
 
         {/* Firmas Institucionales */}
-        <div className="mt-6 pt-4 border-t border-slate-300 grid grid-cols-2 text-center text-[10px]">
+        <div className="mt-6 pt-4 border-t border-gray-400 grid grid-cols-2 text-center text-[10px]">
           <div>
-            <div className="w-48 border-b border-slate-500 mx-auto mb-1"></div>
-            <span className="font-bold text-slate-800 block">Coordinación de Licenciatura</span>
-            <span className="text-[9px] text-slate-500">Dictamen Académico</span>
+            <div className="w-48 border-b border-gray-600 mx-auto mb-1"></div>
+            <span className="font-bold text-black block">Coordinación de Licenciatura</span>
+            <span className="text-[9px] text-gray-600">Dictamen Académico</span>
           </div>
           <div>
-            <div className="w-48 border-b border-slate-500 mx-auto mb-1"></div>
-            <span className="font-bold text-slate-800 block">Dirección de Campus</span>
-            <span className="text-[9px] text-slate-500">Validación Institucional</span>
+            <div className="w-48 border-b border-gray-600 mx-auto mb-1"></div>
+            <span className="font-bold text-black block">Dirección de Campus</span>
+            <span className="text-[9px] text-gray-600">Validación Institucional</span>
           </div>
         </div>
       </div>
