@@ -4,7 +4,12 @@ import {
   ShieldAlert,
   Award,
   BookOpen,
-  AlertTriangle
+  AlertTriangle,
+  CheckCircle2,
+  RotateCcw,
+  AlertCircle,
+  Clock,
+  Circle
 } from 'lucide-react';
 import StudentStatusSelector from './StudentStatusSelector';
 
@@ -58,6 +63,60 @@ export default function CurriculumMap({
     return true;
   };
 
+  const getMateriaVisuals = (estado) => {
+    switch (estado) {
+      case 'ORD':
+        return { 
+          cardBorder: 'border-emerald-300 dark:border-emerald-500/40', 
+          badgeBg: 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300', 
+          gradeColor: 'text-emerald-700 dark:text-emerald-400',
+          icon: CheckCircle2, 
+          label: 'Ordinario' 
+        };
+      case 'REC':
+      case 'RE':
+        return { 
+          cardBorder: 'border-blue-300 dark:border-blue-500/40', 
+          badgeBg: 'bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300', 
+          gradeColor: 'text-blue-700 dark:text-blue-400',
+          icon: RotateCcw, 
+          label: 'Recup.' 
+        };
+      case 'ADEUDO':
+        return { 
+          cardBorder: 'border-rose-300 dark:border-rose-500/40', 
+          badgeBg: 'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300', 
+          gradeColor: 'text-rose-700 dark:text-rose-400',
+          icon: AlertCircle, 
+          label: 'Adeudo' 
+        };
+      case 'OMITIDA':
+        return { 
+          cardBorder: 'border-slate-200 dark:border-slate-700', 
+          badgeBg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400', 
+          gradeColor: 'text-slate-500',
+          icon: Clock, 
+          label: 'Pendiente' 
+        };
+      case 'CURS':
+        return { 
+          cardBorder: 'border-indigo-300 dark:border-indigo-500/40', 
+          badgeBg: 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300', 
+          gradeColor: 'text-indigo-700 dark:text-indigo-400',
+          icon: BookOpen, 
+          label: 'En Curso' 
+        };
+      default:
+        return { 
+          cardBorder: 'border-border', 
+          badgeBg: 'bg-surface-2 text-text-secondary', 
+          gradeColor: 'text-text-primary',
+          icon: Circle, 
+          label: estado 
+        };
+    }
+  };
+
   return (
     <div 
       ref={forwardedRef} 
@@ -106,7 +165,7 @@ export default function CurriculumMap({
           <div className="flex items-start space-x-3">
             <AlertTriangle className="w-5 h-5 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
             <div>
-              <p className="font-bold uppercase tracking-wide text-rose-900 dark:text-rose-200">⚠️ Inconsistencia de Kárdex Detectada</p>
+              <p className="font-bold uppercase tracking-wide text-rose-900 dark:text-rose-200">Inconsistencia de Kárdex Detectada</p>
               <p className="mt-1 leading-relaxed text-rose-800 dark:text-rose-300">
                 Aunque el expediente indica {estudiante.programa}, el alumno registra <strong className="font-bold">{coherencia.materiasHuerfanas.length}</strong> asignaturas pertenecientes a <strong className="font-bold">Licenciatura en {coherencia.alertaCarreraAjena}</strong> que no corresponden a este mapa curricular.
               </p>
@@ -198,55 +257,57 @@ export default function CurriculumMap({
               {cuat.materias.map((materia) => {
                 const audit = materia.audit;
                 const dimmed = isMateriaDimmed(audit.estado);
+                const visual = getMateriaVisuals(audit.estado);
+
+                const Icon = visual.icon;
 
                 return (
                   <div
                     key={materia.clave}
                     onClick={() => setSelectedMateriaModal({ materia, audit })}
-                    style={{
-                      borderLeftColor: audit.color,
-                      backgroundColor: 'var(--surface-1)' // Se manejaba por audit.bgColor, ahora preferimos surface para dark mode y un ligero border
-                    }}
-                    className={`p-2 rounded-lg border border-border border-l-4 text-left transition-all duration-150 cursor-pointer hover:shadow-card hover:scale-[1.02] flex flex-col justify-between min-h-[96px] overflow-hidden box-border bg-surface-1 ${
+                    className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[110px] box-border bg-surface-1 ${visual.cardBorder} ${
                       dimmed ? 'opacity-30 grayscale' : 'opacity-100'
                     }`}
                     title="Haga clic para ver el historial detallado de intentos"
                   >
                     <div>
                       {/* Clave y Conecta */}
-                      <div className="flex items-center justify-between text-[9px] font-mono leading-none mb-1.5 gap-1">
-                        <span className="font-mono font-bold tracking-tight text-text-secondary whitespace-nowrap">
+                      <div className="flex items-start justify-between mb-2">
+                        <span className="font-mono font-bold text-[10px] text-text-muted tracking-widest uppercase">
                           {materia.subj}-{materia.crse}
                         </span>
                         {materia.conecta && (
-                          <span className="px-1.5 py-0.5 text-[8px] font-black text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-500/10 rounded shrink-0">
+                          <span className="px-1.5 py-0.5 text-[8px] font-black text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-500/10 rounded-sm shadow-sm" title="Clase Conecta">
                             CC
                           </span>
                         )}
                       </div>
 
                       {/* Nombre oficial */}
-                      <div className="text-[10px] leading-[1.25] font-bold tracking-tighter text-text-primary whitespace-normal break-normal">
+                      <div className="text-[11px] leading-tight font-black text-text-primary">
                         {materia.nombre}
                       </div>
                     </div>
 
                     {/* Calificación y Etiqueta corta de estado */}
-                    <div className="flex items-center justify-between gap-1 pt-1.5 mt-auto border-t border-border-subtle text-[9px] font-bold">
-                      <span className="font-mono font-bold text-text-secondary whitespace-nowrap">
-                        {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
-                          <>Cal: <strong className="text-text-primary font-black">{audit.calificacion}</strong></>
-                        ) : (
-                          <span className="text-text-muted font-normal">--</span>
-                        )}
-                      </span>
+                    <div className="flex items-end justify-between mt-3 pt-3 border-t border-border-subtle/50">
+                      <div className="flex flex-col">
+                        <span className="text-[8px] font-bold text-text-muted uppercase tracking-widest mb-0.5">Calif.</span>
+                        <span className={`font-mono text-[15px] font-black leading-none ${visual.gradeColor}`} title="Calificación final obtenida">
+                          {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
+                            audit.calificacion
+                          ) : (
+                            <span className="text-text-muted/40 font-medium text-[12px]">--</span>
+                          )}
+                        </span>
+                      </div>
 
-                      <span 
-                        style={{ color: audit.color, borderColor: audit.color }}
-                        className="text-[8px] px-1.5 py-0.5 rounded font-extrabold whitespace-nowrap shrink-0 bg-surface-1 shadow-sm text-center border opacity-90"
-                      >
-                        {audit.etiquetaCorta}
-                      </span>
+                      <div className={`flex items-center space-x-1 px-1.5 py-1 rounded-md min-w-0 ${visual.badgeBg}`} title={`Estado: ${audit.estado}`}>
+                        <Icon className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                        <span className="text-[8.5px] font-black uppercase tracking-wider truncate">
+                          {visual.label}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -285,37 +346,38 @@ export default function CurriculumMap({
           {/* Niveles de Inglés (1.º al 5.º Cuatrimestre) */}
           {ingles.length > 0 ? ingles.map((ing) => {
             const dimmed = isMateriaDimmed(ing.estado);
+            const visual = getMateriaVisuals(ing.estado);
+            const Icon = visual.icon;
             return (
               <div
                 key={`ing-${ing.nivel || ing.clave}`}
                 onClick={() => setSelectedMateriaModal({ materia: { clave: `LENG-${ing.clave}`, nombre: ing.nombre }, audit: ing })}
-                style={{
-                  borderLeftColor: ing.color || '#059669',
-                }}
-                className={`p-2 rounded-lg border border-border border-l-4 text-left min-h-[72px] overflow-hidden box-border flex flex-col justify-between cursor-pointer hover:shadow-card transition-shadow bg-surface-1 ${
+                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border bg-surface-1 ${visual.cardBorder} ${
                   dimmed ? 'opacity-30 grayscale' : 'opacity-100'
                 }`}
                 title="Haga clic para ver el detalle de intentos de inglés"
               >
                 <div>
-                  <div className="text-[9px] font-mono text-text-muted leading-none">
+                  <div className="font-mono font-bold text-[9px] text-text-muted tracking-widest uppercase mb-1">
                     LENG-{ing.clave}
                   </div>
-                  <div className="text-[10px] font-bold text-text-primary leading-tight mt-1 whitespace-normal break-normal">
+                  <div className="text-[10px] font-black text-text-primary leading-tight whitespace-normal break-normal">
                     {ing.nombre}
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-1 pt-1 mt-auto border-t border-border-subtle text-[9px] font-bold">
-                  <span className="font-mono font-bold text-text-secondary whitespace-nowrap">
-                    {ing.calificacion && ing.calificacion !== '--' ? `Cal: ${ing.calificacion}` : '--'}
-                  </span>
-                  <span 
-                    style={{ color: ing.color || '#059669', borderColor: ing.color || '#059669' }} 
-                    className="text-[8px] px-1.5 py-0.5 rounded font-extrabold whitespace-nowrap shrink-0 bg-surface-1 shadow-sm border text-center opacity-90"
-                  >
-                    {ing.etiquetaCorta}
-                  </span>
+                <div className="flex items-end justify-between mt-2 pt-2 border-t border-border-subtle/50">
+                  <div className="flex flex-col">
+                    <span className={`font-mono text-[13px] font-black leading-none ${visual.gradeColor}`}>
+                      {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-text-muted/40 text-[11px]">--</span>}
+                    </span>
+                  </div>
+                  <div className={`flex items-center space-x-1 px-1.5 py-0.5 rounded-md min-w-0 ${visual.badgeBg}`}>
+                    <Icon className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                    <span className="text-[8px] font-black uppercase tracking-wider truncate">
+                      {visual.label}
+                    </span>
+                  </div>
                 </div>
               </div>
             );
@@ -328,41 +390,42 @@ export default function CurriculumMap({
           {/* 4 Requisitos Co-Curriculares y de Titulación / Egreso (Cols 6 a 9) */}
           {coCurriculares.map((cocu, index) => {
             const dimmed = isMateriaDimmed(cocu.estado);
+            const visual = getMateriaVisuals(cocu.estado);
+            const Icon = visual.icon;
             return (
               <div
                 key={`cocu-${cocu.clave || index}`}
                 onClick={() => setSelectedMateriaModal({ materia: { clave: cocu.clave, nombre: cocu.nombre }, audit: cocu })}
-                style={{
-                  borderLeftColor: cocu.color || '#059669',
-                }}
-                className={`p-2 rounded-lg border border-border border-l-4 text-left min-h-[72px] overflow-hidden box-border flex flex-col justify-between cursor-pointer hover:shadow-card transition-shadow bg-surface-1 ${
+                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border bg-surface-1 ${visual.cardBorder} ${
                   dimmed ? 'opacity-30 grayscale' : 'opacity-100'
                 }`}
                 title="Haga clic para ver el detalle de este requisito"
               >
                 <div>
-                  <div className="text-[9px] font-mono text-text-muted leading-none">
+                  <div className="font-mono font-bold text-[9px] text-text-muted tracking-widest uppercase mb-1">
                     {cocu.clave}
                   </div>
-                  <div className="text-[10px] font-bold text-text-primary leading-tight mt-1 whitespace-normal break-normal">
+                  <div className="text-[10px] font-black text-text-primary leading-tight whitespace-normal break-normal">
                     {cocu.nombre}
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-1 pt-1 mt-auto border-t border-border-subtle text-[9px] font-bold">
-                  <span className="font-mono font-bold text-text-secondary whitespace-nowrap">
-                    {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
-                      ? `Cal: ${cocu.calificacion}` 
-                      : cocu.calificacion === 'NO CURSÓ' 
-                      ? 'No cursó' 
-                      : '--'}
-                  </span>
-                  <span 
-                    style={{ color: cocu.color || '#059669', borderColor: cocu.color || '#059669' }} 
-                    className="text-[8px] px-1.5 py-0.5 rounded font-extrabold whitespace-nowrap shrink-0 bg-surface-1 shadow-sm border text-center opacity-90"
-                  >
-                    {cocu.etiquetaCorta}
-                  </span>
+                <div className="flex items-end justify-between mt-2 pt-2 border-t border-border-subtle/50">
+                  <div className="flex flex-col">
+                    <span className={`font-mono text-[13px] font-black leading-none ${visual.gradeColor}`}>
+                      {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
+                        ? cocu.calificacion 
+                        : cocu.calificacion === 'NO CURSÓ' 
+                        ? <span className="text-[9px]">NC</span> 
+                        : <span className="text-text-muted/40 text-[11px]">--</span>}
+                    </span>
+                  </div>
+                  <div className={`flex items-center space-x-1 px-1.5 py-0.5 rounded-md min-w-0 ${visual.badgeBg}`}>
+                    <Icon className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                    <span className="text-[8px] font-black uppercase tracking-wider truncate">
+                      {visual.label}
+                    </span>
+                  </div>
                 </div>
               </div>
             );

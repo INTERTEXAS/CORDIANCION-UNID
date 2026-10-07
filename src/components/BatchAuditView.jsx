@@ -15,7 +15,8 @@ import {
   Calendar,
   ArrowUpDown,
   Download,
-  Clock
+  Clock,
+  RefreshCw
 } from 'lucide-react';
 import CurriculumMap from './CurriculumMap';
 import AuditCedula from './AuditCedula';
@@ -511,9 +512,8 @@ export default function BatchAuditView({
                     <th className="py-3.5 px-4 w-32">Matrícula</th>
                     <th className="py-3.5 px-4">Alumno</th>
                     <th className="py-3.5 px-4 w-36 text-center">Dictamen</th>
-                    <th className="py-3.5 px-4 w-48">Avance Curricular</th>
-                    <th className="py-3.5 px-3 w-16 text-center">ORD</th>
-                    <th className="py-3.5 px-3 w-20 text-center">REC/RE</th>
+                    <th className="py-3.5 px-4 w-32 text-center">Avance</th>
+                    <th className="py-3.5 px-4 text-center">Desempeño (Intentos)</th>
                     <th className="py-3.5 px-3 w-20 text-center">Inglés</th>
                     <th className="py-3.5 px-4 w-32 text-center">Expediente</th>
                   </tr>
@@ -551,12 +551,18 @@ export default function BatchAuditView({
                                 estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20' :
                                 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20'
                               }`}>
-                                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'DUAL' : (estudiante.modalidadDetectada === 'EJECUTIVO' ? '🔄 Plan Ejecutivo (LIC-EJCO-17)' : estudiante.modalidadDetectada)}
+                                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'DUAL' : (estudiante.modalidadDetectada === 'EJECUTIVO' ? (
+                                  <span className="flex items-center space-x-1">
+                                    <RefreshCw className="w-3 h-3" />
+                                    <span>Plan Ejecutivo (LIC-EJCO-17)</span>
+                                  </span>
+                                ) : estudiante.modalidadDetectada)}
                               </span>
                             )}
                             {auditData?.coherencia?.alertaCarreraAjena && (
                               <span className="inline-flex items-center space-x-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase">
-                                <span>⚠️ Materias de otra Lic. ({auditData.coherencia.alertaCarreraAjena})</span>
+                                <AlertTriangle className="w-3 h-3" strokeWidth={2.5} />
+                                <span>Materias de otra Lic. ({auditData.coherencia.alertaCarreraAjena})</span>
                               </span>
                             )}
                           </div>
@@ -582,34 +588,44 @@ export default function BatchAuditView({
                           )}
                         </td>
 
-                        {/* Barra de Avance */}
-                        <td className="py-3 px-4">
-                          <div className="flex items-center space-x-2.5">
-                            <div className="flex-1 h-2 bg-surface-3 rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full rounded-full transition-all ${
-                                  esElegible ? 'bg-emerald-500' : tieneAdeudos ? 'bg-rose-500' : 'bg-accent'
-                                }`}
-                                style={{ width: `${Math.min(100, porcentaje)}%` }}
-                              />
+                        {/* Avance Curricular Circular */}
+                        <td className="py-3 px-4 text-center">
+                          <div className="flex items-center justify-center space-x-3">
+                            {/* Circular Progress */}
+                            <div className="relative w-10 h-10 flex items-center justify-center">
+                              <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" fill="none" className="stroke-surface-3" strokeWidth="3" />
+                                <circle 
+                                  cx="18" cy="18" r="16" fill="none" 
+                                  className={`transition-all duration-500 ease-out ${esElegible ? 'stroke-emerald-500' : tieneAdeudos ? 'stroke-rose-500' : 'stroke-accent'}`}
+                                  strokeWidth="3" strokeDasharray="100" strokeDashoffset={100 - porcentaje} strokeLinecap="round" 
+                                />
+                              </svg>
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-[10px] font-black text-text-primary">{porcentaje}%</span>
+                              </div>
                             </div>
-                            <span className="font-mono text-[12px] font-bold text-text-primary w-12 text-right shrink-0">
-                              {porcentaje}%
-                            </span>
+                            <div className="text-left">
+                              <span className="text-[11px] font-bold text-text-secondary block leading-none">
+                                {totalAprobadas}/{res?.totalMateriasMapa || 37}
+                              </span>
+                              <span className="text-[9px] text-text-muted">Aprobadas</span>
+                            </div>
                           </div>
-                          <span className="text-[11px] text-text-muted font-medium mt-0.5 block">
-                            {totalAprobadas}/{res?.totalMateriasMapa || 37} materias
-                          </span>
                         </td>
 
-                        {/* ORD */}
-                        <td className="py-3 px-3 text-center font-mono font-black text-text-primary text-[13px]">
-                          {res?.aprobadasOrd || 0}
-                        </td>
-
-                        {/* REC/RE */}
-                        <td className="py-3 px-3 text-center font-mono font-black text-text-primary text-[13px]">
-                          {(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}
+                        {/* Desempeño Combinado (ORD / REC) */}
+                        <td className="py-3 px-4">
+                          <div className="flex justify-center space-x-3">
+                            <div className="flex flex-col items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-500/20" title="Materias aprobadas en 1er intento (Ordinario)">
+                              <span className="text-[12px] font-black text-emerald-700 dark:text-emerald-400 leading-none">{res?.aprobadasOrd || 0}</span>
+                              <span className="text-[8px] font-bold text-emerald-600/70 dark:text-emerald-500 uppercase mt-0.5">1er Intento</span>
+                            </div>
+                            <div className="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-100 dark:border-blue-500/20" title="Materias aprobadas en Recuperación">
+                              <span className="text-[12px] font-black text-blue-700 dark:text-blue-400 leading-none">{(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}</span>
+                              <span className="text-[8px] font-bold text-blue-600/70 dark:text-blue-500 uppercase mt-0.5">Recup.</span>
+                            </div>
+                          </div>
                         </td>
 
                         {/* Inglés */}

@@ -25,7 +25,7 @@ for (const req of REQUISITOS_EGRESO) {
 dynamicCrses = [...new Set(dynamicCrses)];
 const CRSE_REGEX = new RegExp('\\b(' + dynamicCrses.join('|') + '|[A-Z]{2,3}\\d{2}|F00[1-4]|P001|0008|CMS02|CMS03|EG[A-Z0-9]{3}|0001)\\b', 'gi');
 
-export async function parsePdfKardex(fileOrBuffer) {
+export async function parsePdfKardex(fileOrBuffer, allowGroup = false) {
   const arrayBuffer = fileOrBuffer instanceof File
     ? await fileOrBuffer.arrayBuffer()
     : fileOrBuffer;
@@ -53,8 +53,11 @@ export async function parsePdfKardex(fileOrBuffer) {
   // 2. Comprobar palabras clave de reportes masivos
   const hasGroupKeywords = /Reporte\s+de\s+materias\s+acreditadas|LISTA DE CALIFICACIONES|REPORTE GRUPAL|SÁBANA/i.test(fullPdfText);
 
-  // Si hay más de un alumno o se detectan palabras clave grupales, rechazar inmediatamente
+  // Si hay más de un alumno o se detectan palabras clave grupales, rechazar o procesar como lote
   if (matriculasUnicas.size > 1 || hasGroupKeywords) {
+    if (allowGroup) {
+      return parseBatchGroupPdf(pdf);
+    }
     throw new Error("GROUP_PDF_DETECTED");
   }
 

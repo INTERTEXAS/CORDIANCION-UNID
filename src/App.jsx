@@ -43,6 +43,7 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [mismatchModal, setMismatchModal] = useState(null);
+  const [errorModal, setErrorModal] = useState(null);
   const [notification, setNotification] = useState(null);
   const [isGlobalNeonManagerOpen, setIsGlobalNeonManagerOpen] = useState(false);
   const [estatusManuales, setEstatusManuales] = useState({});
@@ -94,8 +95,10 @@ export default function App() {
     setIsProcessing(true);
     setNotification(null);
 
+    const isGroupUpload = activeTab === 'grupo';
+
     try {
-      const parsed = await parsePdfKardex(file);
+      const parsed = await parsePdfKardex(file, isGroupUpload);
 
       // CASO A: Reporte consolidado de materias acreditadas (Grupo / Cuatrimestre)
       if (parsed.isBatch) {
@@ -156,9 +159,9 @@ export default function App() {
     } catch (error) {
       console.error('Error al procesar el archivo PDF:', error);
       if (error.message === "GROUP_PDF_DETECTED") {
-        setNotification({
-          tipo: 'error',
-          texto: "Has intentado subir un reporte grupal (múltiples alumnos) en la sección de auditoría individual. Por favor, utiliza la sección de 'Auditoría Grupal' para procesar este archivo, o sube el Kárdex de un solo alumno."
+        setErrorModal({
+          titulo: "Archivo Incorrecto",
+          mensaje: "Has intentado subir un reporte grupal (múltiples alumnos) en la sección de auditoría individual. Por favor, utiliza la sección de 'Auditoría Grupal' para procesar este archivo, o sube el Kárdex de un solo alumno."
         });
       } else {
         setNotification({
@@ -610,6 +613,33 @@ export default function App() {
           });
         }}
       />
+
+      {/* Error Modal */}
+      {errorModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-surface-1 w-full max-w-md rounded-2xl shadow-glass-xl border border-border overflow-hidden animate-scale-in">
+            <div className="p-6">
+              <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center mb-4 mx-auto">
+                <AlertCircle className="w-6 h-6 text-rose-600 dark:text-rose-400" strokeWidth={2} />
+              </div>
+              <h3 className="text-xl font-black text-text-primary text-center tracking-tight mb-2">
+                {errorModal.titulo}
+              </h3>
+              <p className="text-sm text-text-secondary text-center leading-relaxed">
+                {errorModal.mensaje}
+              </p>
+            </div>
+            <div className="p-4 bg-surface-2 border-t border-border flex justify-center">
+              <button
+                onClick={() => setErrorModal(null)}
+                className="px-6 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 font-bold rounded-xl shadow-sm transition-all cursor-pointer"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
