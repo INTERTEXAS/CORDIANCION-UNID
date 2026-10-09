@@ -5,27 +5,32 @@ import { CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
-let dynamicCrses = [];
-for (const c of CARRERAS_LOCAL) {
-  if (c.mapa_json) {
-    for (const cuat of (c.mapa_json.cuatrimestres || [])) {
-      for (const mat of (cuat.materias || [])) {
-        if (mat.crse) dynamicCrses.push(mat.crse);
+function createCrseRegex(carreras) {
+  const dynamicCrses = [];
+  for (const carrera of carreras) {
+    if (carrera.mapa_json) {
+      for (const cuat of (carrera.mapa_json.cuatrimestres || [])) {
+        for (const materia of (cuat.materias || [])) {
+          if (materia.crse) dynamicCrses.push(materia.crse);
+        }
+      }
+      for (const electiva of (carrera.mapa_json.electivas_multidisciplinares || [])) {
+        if (electiva.crse) dynamicCrses.push(electiva.crse);
       }
     }
-    for (const el of (c.mapa_json.electivas_multidisciplinares || [])) {
-      if (el.crse) dynamicCrses.push(el.crse);
-    }
   }
-}
-for (const req of REQUISITOS_EGRESO) {
-  if (req.crse) dynamicCrses.push(req.crse);
+  for (const requisito of REQUISITOS_EGRESO) {
+    if (requisito.crse) dynamicCrses.push(requisito.crse);
+  }
+
+  const catalogRegex = [...new Set(dynamicCrses)]
+    .map(crse => crse.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+  return new RegExp(`\\b(${catalogRegex ? `${catalogRegex}|` : ''}[A-Z]{2,3}\\d{2}|F00[1-4]|P001|000[1-8]|CMS02|CMS03|EG[A-Z0-9]{3})\\b`, 'gi');
 }
 
-dynamicCrses = [...new Set(dynamicCrses)];
-const CRSE_REGEX = new RegExp('\\b(' + dynamicCrses.join('|') + '|[A-Z]{2,3}\\d{2}|F00[1-4]|P001|0008|CMS02|CMS03|EG[A-Z0-9]{3}|0001)\\b', 'gi');
-
-export async function parsePdfKardex(fileOrBuffer, allowGroup = false) {
+export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras = CARRERAS_LOCAL) {
+  const crseRegex = createCrseRegex(carreras);
   const arrayBuffer = fileOrBuffer instanceof File
     ? await fileOrBuffer.arrayBuffer()
     : fileOrBuffer;
@@ -40,9 +45,11 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false) {
 
   // Extraer texto completo de todas las páginas para validación estricta
   let fullPdfText = '';
+  const pageItems = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
+    pageItems.push(textContent.items);
     fullPdfText += textContent.items.map(it => it.str).join(' ') + ' ';
   }
 
@@ -56,47 +63,43 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false) {
   // Si hay más de un alumno o se detectan palabras clave grupales, rechazar o procesar como lote
   if (matriculasUnicas.size > 1 || hasGroupKeywords) {
     if (allowGroup) {
-      return parseBatchGroupPdf(pdf);
+      return parseBatchGroupPdf(pdf, carreras);
     }
     throw new Error("GROUP_PDF_DETECTED");
   }
 
-  // Leer exclusivamente la Página 1 del PDF para procesar kardex individual
-  const page1 = await pdf.getPage(1);
-  const textContent1 = await page1.getTextContent();
-
-  // Leer exclusivamente la Página 1 del PDF para kardex individual
-  const page = page1;
-  const textContent = textContent1;
-
-  const rawItems = textContent.items
-    .filter(it => it.str && it.str.trim() !== '')
-    .map(it => {
-      const text = it.str
-        .replace(/CFTD8/gi, 'CFT08')
-        .replace(/MT\s+02/gi, 'MTS02')
-        .replace(/MT02/gi, 'MTS02')
-        .trim();
-      return {
+  const courseEndPage = pageItems.findIndex(items =>
+    /Num\.\s*Materias/i.test(items.map(it => it.str).join(' '))
+  );
+  const coursePages = courseEndPage >= 0
+    ? pageItems.slice(0, courseEndPage + 1)
+    : pageItems.slice(0, 1);
+  const validItems = coursePages.flatMap((items, pageIndex) => {
+    const pageRawItems = items
+      .filter(it => it.str && it.str.trim() !== '')
+      .map(it => ({
         x: it.transform[4],
         y: it.transform[5],
-        text
-      };
-    })
-    .sort((a, b) => b.y - a.y || a.x - b.x);
+        text: it.str
+          .replace(/CFTD8/gi, 'CFT08')
+          .replace(/MT\s+02/gi, 'MTS02')
+          .replace(/MT02/gi, 'MTS02')
+          .trim()
+      }))
+      .sort((a, b) => b.y - a.y || a.x - b.x);
 
-  // Cortar antes de "Movimientos", "Becas" o "Num."
-  let cutoffY = -Infinity;
-  for (const it of rawItems) {
-    if (/Movimientos|Becas|Beca\s+de\s+Inscripci[oó]n|^Num\.$/i.test(it.text)) {
-      cutoffY = it.y;
-      break;
-    }
-  }
+    const cutoff = pageRawItems.find(it =>
+      /Movimientos|Becas|Beca\s+de\s+Inscripci[oó]n|^Num\.$|^Num\.\s*Materias/i.test(it.text)
+    );
+    const pageValidItems = cutoff
+      ? pageRawItems.filter(it => it.y > cutoff.y + 2)
+      : pageRawItems;
 
-  const validItems = cutoffY === -Infinity
-    ? rawItems
-    : rawItems.filter(it => it.y > cutoffY + 2);
+    return pageValidItems.map(it => ({
+      ...it,
+      y: it.y - (pageIndex * 1000)
+    }));
+  });
 
   // Reconstruir renglones visuales por coordenada Y para leer el encabezado del alumno
   const visualRows = [];
@@ -128,7 +131,7 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false) {
   const crseList = [];
   for (const it of tableItems) {
     if (it.x > 230) continue;
-    const matches = [...it.text.matchAll(CRSE_REGEX)];
+    const matches = [...it.text.matchAll(crseRegex)];
     for (let i = 0; i < matches.length; i++) {
       crseList.push({
         crse: matches[i][1].toUpperCase(),
@@ -261,7 +264,7 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false) {
   const usedModos = new Set();
   const registros = crseList.map((cItem, idx) => {
     const crse = cItem.crse;
-    const subj = getSubjFromCatalog(crse);
+    const subj = getSubjFromCatalog(crse, carreras, estudiante.programa);
 
     let periodo = '202420';
     if (periodList.length === crseList.length && periodList[idx]) {
@@ -332,14 +335,14 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false) {
     };
   });
 
-  detectarModalidad(estudiante, registros);
+  detectarModalidad(estudiante, registros, carreras);
 
   return {
     isBatch: false,
     rawText: fullText,
     estudiante,
     registros,
-    totalPaginas: 1
+    totalPaginas: pdf.numPages
   };
 }
 
@@ -357,6 +360,7 @@ function cleanGradeToken(raw) {
   if (s === '10' || s === '10.0') return '10';
   if (/^[5-9]$/.test(s)) return s;
   if (/^(?:AC|NP|NA)$/i.test(s)) return s.toUpperCase();
+  if (s.toUpperCase() === 'OU') return 'OU';
 
   return null;
 }
@@ -365,7 +369,7 @@ function extractStudentMetadata(text) {
   let matricula = '00000000';
   let nombre = 'ALUMNO UNID';
   let sede = 'CAM';
-  let programa = 'LIC-COFI-18';
+  let programa = '';
   let estatus = 'AC';
 
   const matMatch = text.match(/\b(00\d{6}|\d{8})\b/);
@@ -396,11 +400,14 @@ function extractStudentMetadata(text) {
   return { matricula, nombre, programa, sede, estatus };
 }
 
-function getSubjFromCatalog(crse) {
+function getSubjFromCatalog(crse, carreras = CARRERAS_LOCAL, programa = '') {
   const req = REQUISITOS_EGRESO.find(r => r.crse === crse);
   if (req) return req.subj;
 
-  for (const carrera of CARRERAS_LOCAL) {
+  const carrerasOrdenadas = [...carreras].sort((a, b) =>
+    Number(b.codigo === programa) - Number(a.codigo === programa)
+  );
+  for (const carrera of carrerasOrdenadas) {
     if (!carrera.mapa_json) continue;
     const { cuatrimestres = [], electivas_multidisciplinares = [] } = carrera.mapa_json;
     for (const c of cuatrimestres) {
@@ -418,7 +425,7 @@ function getSubjFromCatalog(crse) {
   }
 
   if (['F001', 'F002', 'F003', 'F004', 'P001'].includes(crse)) return 'INHH';
-  if (crse === '0008') return 'LENG';
+  if (/^000[1-8]$/.test(crse)) return 'LENG';
   return 'LMAX';
 }
 
@@ -442,7 +449,7 @@ function isGradeFailing(calif) {
  * Procesa reportes consolidados oficiales ("Reporte de materias acreditadas")
  * que contienen múltiples alumnos en 1, 5, 30 o 100+ páginas de forma totalmente dinámica.
  */
-export async function parseBatchGroupPdf(pdf) {
+export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
   const students = [];
   let currentStudent = null;
 
@@ -497,7 +504,7 @@ export async function parseBatchGroupPdf(pdf) {
       const progItem = row.items.find(it => it.x >= 250 && it.x < 315 && /^LIC-[A-Z0-9-]+$/i.test(it.str));
       const subjItem = row.items.find(it => it.x >= 310 && it.x < 365 && /^[A-Z]{3,4}$/i.test(it.str));
       const crseItem = row.items.find(it => it.x >= 360 && it.x < 425 && /^[A-Z0-9-]{3,6}$/i.test(it.str));
-      const califItem = row.items.find(it => it.x >= 505 && /^(\d{1,2}|AC|NP|NA|VS)$/i.test(it.str));
+      const califItem = row.items.find(it => it.x >= 505 && /^(\d{1,2}|AC|NP|NA|VS|OU)$/i.test(it.str));
 
       if (progItem && !currentStudent.programa) {
         currentStudent.programa = progItem.str.toUpperCase();
@@ -505,7 +512,7 @@ export async function parseBatchGroupPdf(pdf) {
 
       if (periodoItem && crseItem && califItem) {
         const califStr = califItem.str.trim().toUpperCase();
-        const resolvedSubj = subjItem ? subjItem.str.toUpperCase() : getSubjFromCatalog(crseItem.str.toUpperCase());
+        const resolvedSubj = subjItem ? subjItem.str.toUpperCase() : getSubjFromCatalog(crseItem.str.toUpperCase(), carreras, currentStudent.programa);
         const crseClean = crseItem.str.toUpperCase();
 
         currentStudent.registros.push({
@@ -525,7 +532,7 @@ export async function parseBatchGroupPdf(pdf) {
   }
 
   for (const student of students) {
-    detectarModalidad(student, student.registros);
+    detectarModalidad(student, student.registros, carreras);
   }
 
   return {
@@ -535,12 +542,13 @@ export async function parseBatchGroupPdf(pdf) {
   };
 }
 
-export function detectarModalidad(estudiante, registros = []) {
+export function detectarModalidad(estudiante, registros = [], carreras = CARRERAS_LOCAL) {
   let conteoEjecutivo = 0;
   let conteoEscolarizado = 0;
   
   const dualClaves = ['ADS38', 'ADS39', 'ADS40', 'MKT26', 'MKS28', 'EES11', 'EES12'];
   let tieneDual = false;
+  const programaDeclarado = carreras.some(carrera => carrera.codigo === estudiante.programa);
 
   for (const r of registros) {
     const subj = r.subj || '';
@@ -559,13 +567,13 @@ export function detectarModalidad(estudiante, registros = []) {
 
   if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
     estudiante.modalidadDetectada = 'EJECUTIVO';
-    estudiante.programa = 'LIC-EJCO-17';
+    if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
   } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
     estudiante.modalidadDetectada = 'ESCOLARIZADO DUAL';
-    estudiante.programa = 'LIC-DAEM-18';
+    if (!programaDeclarado) estudiante.programa = 'LIC-DAEM-18';
   } else {
     estudiante.modalidadDetectada = 'ESCOLARIZADO';
-    estudiante.programa = 'LIC-COFI-18';
+    if (!programaDeclarado) estudiante.programa = 'LIC-COFI-18';
   }
   
   return estudiante;

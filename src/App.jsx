@@ -43,7 +43,6 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [mismatchModal, setMismatchModal] = useState(null);
-  const [errorModal, setErrorModal] = useState(null);
   const [notification, setNotification] = useState(null);
   const [isGlobalNeonManagerOpen, setIsGlobalNeonManagerOpen] = useState(false);
   const [estatusManuales, setEstatusManuales] = useState({});
@@ -90,44 +89,71 @@ export default function App() {
     });
   };
 
+  const processBatchUpload = (parsed, autoRouted = false) => {
+    const auditarAlumnos = parsed.students.map(s => {
+      if (estatusManuales[s.matricula]) {
+        s.estatus = estatusManuales[s.matricula].codigo;
+      }
+      const matchingCarrera = carreras.find(c => c.codigo === s.programa || c.clave === s.programa) || carreraSeleccionada;
+      const audit = runAcademicAudit(s, s.registros, matchingCarrera);
+      return {
+        estudiante: s,
+        auditData: audit,
+        carrera: matchingCarrera
+      };
+    });
+
+    const programasDelGrupo = [...new Set(parsed.students.map(student => student.programa).filter(Boolean))];
+    const carreraDelGrupo = programasDelGrupo.length === 1
+      ? carreras.find(c => c.codigo === programasDelGrupo[0] || c.clave === programasDelGrupo[0]) || carreraSeleccionada
+      : carreraSeleccionada;
+
+    if (carreraDelGrupo && carreraDelGrupo.codigo !== carreraSeleccionada.codigo) {
+      setCarreraSeleccionada(carreraDelGrupo);
+    }
+
+    setBatchData({
+      totalAlumnos: parsed.totalAlumnos,
+      alumnos: auditarAlumnos,
+      carrera: carreraDelGrupo
+    });
+    setActiveTab('grupo');
+    setNotification({
+      tipo: 'exito',
+      texto: autoRouted
+        ? `Se detectó un reporte grupal y se cambió a Auditoría de Grupo. ${parsed.totalAlumnos} alumnos auditados.`
+        : `Reporte de grupo procesado exitosamente: ${parsed.totalAlumnos} alumnos auditados.`
+    });
+  };
+
   // Manejador para subir PDF (kárdex individual o reporte consolidado de grupo)
   const handleUploadPdf = async (file) => {
     setIsProcessing(true);
-    setNotification(null);
 
     const isGroupUpload = activeTab === 'grupo';
+    let autoRoutedToGroup = false;
 
     try {
-      const parsed = await parsePdfKardex(file, isGroupUpload);
+      let parsed;
+      try {
+        parsed = await parsePdfKardex(file, isGroupUpload, carreras);
+      } catch (error) {
+        if (!isGroupUpload && error.message === 'GROUP_PDF_DETECTED') {
+          autoRoutedToGroup = true;
+          setActiveTab('grupo');
+          setNotification({
+            tipo: 'info',
+            texto: 'Se detectó un reporte grupal. Se cambió a Auditoría de Grupo para procesarlo.'
+          });
+          parsed = await parsePdfKardex(file, true, carreras);
+        } else {
+          throw error;
+        }
+      }
 
       // CASO A: Reporte consolidado de materias acreditadas (Grupo / Cuatrimestre)
       if (parsed.isBatch) {
-        const auditarAlumnos = parsed.students.map(s => {
-          if (estatusManuales[s.matricula]) {
-            s.estatus = estatusManuales[s.matricula].codigo;
-          }
-          const matchingCarrera = carreras.find(c => c.codigo === s.programa || c.clave === s.programa) || carreraSeleccionada;
-          const audit = runAcademicAudit(s, s.registros, matchingCarrera);
-          return {
-            estudiante: s,
-            auditData: audit,
-            carrera: matchingCarrera
-          };
-        });
-
-        const newBatch = {
-          totalAlumnos: parsed.totalAlumnos,
-          alumnos: auditarAlumnos,
-          carrera: carreraSeleccionada
-        };
-
-        setBatchData(newBatch);
-        setActiveTab('grupo');
-        setNotification({
-          tipo: 'exito',
-          texto: `Reporte de grupo procesado exitosamente: ${parsed.totalAlumnos} alumnos auditados.`
-        });
-        setIsProcessing(false);
+        processBatchUpload(parsed, autoRoutedToGroup);
         return;
       }
 
@@ -138,10 +164,17 @@ export default function App() {
 
       // Comprobar coincidencia del programa del PDF contra la carrera seleccionada
       if (parsed.estudiante?.programa && parsed.estudiante.programa !== carreraSeleccionada.codigo) {
+        const normalizedDetected = parsed.estudiante.programa.trim().replace(/0/g, 'O');
+        const targetCarrera = carreras.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
+          || carreras.find(c => c.codigo === parsed.estudiante.programa || c.clave === parsed.estudiante.programa)
+          || carreraSeleccionada;
+
         setMismatchModal({
           detectedProgram: parsed.estudiante.programa,
           currentProgram: carreraSeleccionada.codigo,
-          parsedData: parsed
+          parsedData: parsed,
+          targetCarrera,
+          autoSwitch: false
         });
         setIsProcessing(false);
         return;
@@ -158,17 +191,10 @@ export default function App() {
       });
     } catch (error) {
       console.error('Error al procesar el archivo PDF:', error);
-      if (error.message === "GROUP_PDF_DETECTED") {
-        setErrorModal({
-          titulo: "Archivo Incorrecto",
-          mensaje: "Has intentado subir un reporte grupal (múltiples alumnos) en la sección de auditoría individual. Por favor, utiliza la sección de 'Auditoría Grupal' para procesar este archivo, o sube el Kárdex de un solo alumno."
-        });
-      } else {
-        setNotification({
-          tipo: 'error',
-          texto: `Error al leer el archivo PDF: ${error.message || 'Formato no reconocido'}`
-        });
-      }
+      setNotification({
+        tipo: 'error',
+        texto: `Error al leer el archivo PDF: ${error.message || 'Formato no reconocido'}`
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -177,7 +203,6 @@ export default function App() {
   // Cargar demo de generación consolidada local (catalogo.pdf)
   const handleLoadBatchDemo = async () => {
     setIsProcessing(true);
-    setNotification(null);
     try {
       const response = await fetch('/catalogo.pdf');
       if (!response.ok) throw new Error('No se pudo descargar catalogo.pdf');
@@ -197,20 +222,29 @@ export default function App() {
   const handleConfirmMismatch = () => {
     try {
       if (!mismatchModal) return;
-      const { parsedData, detectedProgram } = mismatchModal;
+      const { parsedData, detectedProgram, targetCarrera: forcedTargetCarrera } = mismatchModal;
       
       const normalizedDetected = detectedProgram.trim().replace(/0/g, 'O');
       
-      const targetCarrera = carreras.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected) || {
-        ...carreraSeleccionada,
-        codigo: detectedProgram
-      };
+      const targetCarrera = forcedTargetCarrera
+        || carreras.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
+        || carreras.find(c => c.codigo === detectedProgram || c.clave === detectedProgram)
+        || {
+          ...carreraSeleccionada,
+          codigo: detectedProgram
+        };
       
       setCarreraSeleccionada(targetCarrera);
       const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, targetCarrera);
       setAuditData(auditResult);
       addToHistorial(auditResult);
       setActiveTab('mapa');
+      setNotification({
+        tipo: 'info',
+        texto: mismatchModal.autoSwitch
+          ? `Se cambió automáticamente al mapa ${targetCarrera.codigo} porque el kárdex pertenece a ese programa.`
+          : `Se cambió al mapa ${targetCarrera.codigo} porque el kárdex pertenece a ese programa.`
+      });
       setMismatchModal(null);
     } catch (error) {
       console.error("Error confirmando mismatch:", error);
@@ -326,16 +360,10 @@ export default function App() {
     rec: effectiveAuditData.resumen.aprobadasRec,
     re: effectiveAuditData.resumen.aprobadasRe,
     adeudo: effectiveAuditData.resumen.adeudos,
-    omitida: effectiveAuditData.resumen.omitidas
+    omitida: effectiveAuditData.resumen.omitidas,
+    ou: effectiveAuditData.incidencias.filter(incidencia => incidencia.estado === 'OU').length
+      + effectiveAuditData.electivas.filter(electiva => electiva.calificacion === 'OU').length
   } : undefined;
-
-  // Auto-dismiss notifications after 6 seconds
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 6000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
 
   return (
     <div className="flex min-h-screen bg-surface-0 text-text-primary transition-theme">
@@ -580,6 +608,7 @@ export default function App() {
           detectedProgram={mismatchModal.detectedProgram}
           currentProgram={mismatchModal.currentProgram}
           onConfirmSwitch={handleConfirmMismatch}
+          autoSwitch={Boolean(mismatchModal.autoSwitch)}
           onDismiss={() => {
             try {
               const { parsedData } = mismatchModal;
@@ -614,32 +643,6 @@ export default function App() {
         }}
       />
 
-      {/* Error Modal */}
-      {errorModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-surface-1 w-full max-w-md rounded-2xl shadow-glass-xl border border-border overflow-hidden animate-scale-in">
-            <div className="p-6">
-              <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center mb-4 mx-auto">
-                <AlertCircle className="w-6 h-6 text-rose-600 dark:text-rose-400" strokeWidth={2} />
-              </div>
-              <h3 className="text-xl font-black text-text-primary text-center tracking-tight mb-2">
-                {errorModal.titulo}
-              </h3>
-              <p className="text-sm text-text-secondary text-center leading-relaxed">
-                {errorModal.mensaje}
-              </p>
-            </div>
-            <div className="p-4 bg-surface-2 border-t border-border flex justify-center">
-              <button
-                onClick={() => setErrorModal(null)}
-                className="px-6 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 font-bold rounded-xl shadow-sm transition-all cursor-pointer"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -37,6 +37,9 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
 
   const { estudiante, carrera, resumen, incidencias = [], fechaConsulta } = auditData;
   const esElegible = resumen?.esElegibleEstadia;
+  const totalMateriasMapa = resumen?.totalMateriasMapa ?? 37;
+  const totalNivelesIngles = resumen?.nivelesIngles ?? 5;
+  const totalRequisitosEgreso = resumen?.requisitosEgresoTotal ?? 4;
 
   return (
     <div 
@@ -163,23 +166,25 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
         <div className="col-span-7 bg-surface-2 border border-border rounded-2xl p-5">
           <div className="text-[11px] font-black uppercase text-text-primary tracking-wider mb-3 flex items-center justify-between border-b border-border-subtle pb-2">
             <span>Resumen Cuantitativo de Créditos y Materias</span>
-            <span className="text-[10px] font-bold text-text-muted">Plan 37 Asignaturas + 5 Inglés + 4 Egreso</span>
+            <span className="text-[10px] font-bold text-text-muted">
+              Plan {totalMateriasMapa} Asignaturas + {totalNivelesIngles} Inglés + {totalRequisitosEgreso} Egreso
+            </span>
           </div>
 
           <div className="grid grid-cols-4 gap-2.5 text-center text-xs">
             <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
               <span className="text-[10px] font-semibold text-text-muted block uppercase mb-0.5">Mapa Oficial</span>
-              <span className="text-[16px] font-extrabold text-text-primary">{resumen.totalMateriasMapa} Asig.</span>
+              <span className="text-[16px] font-extrabold text-text-primary">{totalMateriasMapa} Asig.</span>
             </div>
 
             <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
               <span className="text-[10px] font-semibold text-text-muted block uppercase mb-0.5">Niveles Inglés</span>
-              <span className="text-[16px] font-extrabold text-text-primary">{resumen.inglesAcreditados} / 5</span>
+              <span className="text-[16px] font-extrabold text-text-primary">{resumen.inglesAcreditados} / {totalNivelesIngles}</span>
             </div>
 
             <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
               <span className="text-[10px] font-semibold text-purple-700 dark:text-purple-400 block uppercase mb-0.5">Req. Egreso</span>
-              <span className="text-[16px] font-extrabold text-purple-900 dark:text-purple-300">{resumen.coCurricularesAcreditados || 0} / 4</span>
+              <span className="text-[16px] font-extrabold text-purple-900 dark:text-purple-300">{resumen.coCurricularesAcreditados || 0} / {totalRequisitosEgreso}</span>
             </div>
 
             <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
@@ -253,6 +258,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
                   if (inc.estado === 'ADEUDO') badgeClass = 'bg-red-100 dark:bg-red-500/10 text-red-900 dark:text-red-300 border-red-300 dark:border-red-500/20';
                   if (inc.estado === 'OMITIDA') badgeClass = 'bg-orange-100 dark:bg-orange-500/10 text-orange-900 dark:text-orange-300 border-orange-300 dark:border-orange-500/20';
                   if (inc.estado === 'RECURSANDO') badgeClass = 'bg-indigo-100 dark:bg-indigo-500/10 text-indigo-900 dark:text-indigo-300 border-indigo-300 dark:border-indigo-500/20';
+                  if (inc.estado === 'OU') badgeClass = 'bg-purple-100 dark:bg-purple-500/10 text-purple-900 dark:text-purple-300 border-purple-300 dark:border-purple-500/20';
 
                   return (
                     <tr key={index} className="hover:bg-surface-2/50 transition-colors">

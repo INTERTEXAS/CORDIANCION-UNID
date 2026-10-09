@@ -141,7 +141,9 @@ export default function BatchAuditView({
       rec: currentAudit.resumen.aprobadasRec,
       re: currentAudit.resumen.aprobadasRe,
       adeudo: currentAudit.resumen.adeudos,
-      omitida: currentAudit.resumen.omitidas
+      omitida: currentAudit.resumen.omitidas,
+      ou: currentAudit.incidencias.filter(incidencia => incidencia.estado === 'OU').length
+        + currentAudit.electivas.filter(electiva => electiva.calificacion === 'OU').length
     } : undefined;
 
     return (
@@ -295,7 +297,7 @@ export default function BatchAuditView({
               {batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}
             </h2>
             <p className="text-[13px] text-text-muted mt-1">
-              Programa: <span className="font-mono font-bold text-text-secondary">{batchData.carrera?.clave || 'LIC-COFI-18'}</span> · 
+              Programa: <span className="font-mono font-bold text-text-secondary">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span> ·
               Reporte oficial de materias acreditadas (Banner UNID).
             </p>
           </div>
@@ -524,6 +526,7 @@ export default function BatchAuditView({
                     const esElegible = res?.dictamenEstadia?.includes('APROBADO') || res?.dictamenEstadia?.includes('ELEGIBLE');
                     const tieneAdeudos = (res?.adeudos || 0) > 0;
                     const totalAprobadas = res?.totalAprobadas ?? ((res?.aprobadasOrd || 0) + (res?.aprobadasRec || 0) + (res?.aprobadasRe || 0));
+                    const totalNivelesIngles = res?.nivelesIngles ?? 5;
                     const porcentaje = Math.round((totalAprobadas / (res?.totalMateriasMapa || 37)) * 100);
 
                     return (
@@ -630,7 +633,7 @@ export default function BatchAuditView({
 
                         {/* Inglés */}
                         <td className="py-3 px-3 text-center font-mono font-black text-text-primary text-[13px]">
-                          {res?.inglesAcreditados || 0}/5
+                          {res?.inglesAcreditados ?? 0}/{totalNivelesIngles}
                         </td>
 
                         {/* Acción */}
@@ -656,7 +659,7 @@ export default function BatchAuditView({
             {/* Pie de tabla con conteo */}
             <div className="px-5 py-3 bg-surface-2 border-t border-border flex items-center justify-between text-[11px] text-text-muted font-medium">
               <span>Mostrando {filteredAlumnos.length} de {alumnos.length} expedientes</span>
-              <span className="font-mono">{batchData.carrera?.clave || 'LIC-COFI-18'}</span>
+              <span className="font-mono">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span>
             </div>
           </div>
         )}
@@ -673,7 +676,7 @@ export default function BatchAuditView({
               Sábana Ejecutiva de Auditoría y Dictamen de Generación
             </h1>
             <p className="text-[11px] text-gray-700 mt-0.5">
-              Programa: <strong>{batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}</strong> ({batchData.carrera?.clave || 'LIC-COFI-18'}) · 
+              Programa: <strong>{batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}</strong> ({batchData.carrera?.codigo || 'LIC-COFI-18'}) ·
               Total de Alumnos: <strong>{alumnos.length}</strong> · Fecha: {new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' })}
             </p>
           </div>
@@ -719,7 +722,8 @@ export default function BatchAuditView({
             {alumnos.map((item, idx) => {
               const res = item.auditData?.resumen;
               const totalAprob = res?.totalAprobadas ?? ((res?.aprobadasOrd || 0) + (res?.aprobadasRec || 0));
-              const pct = Math.round((totalAprob / 37) * 100);
+              const totalMaterias = res?.totalMateriasMapa || 37;
+              const pct = Math.round((totalAprob / totalMaterias) * 100);
               const esApto = res?.dictamenEstadia?.includes('APROBADO') || res?.dictamenEstadia?.includes('ELEGIBLE');
               const tieneAd = (res?.adeudos || 0) > 0;
 
@@ -730,7 +734,7 @@ export default function BatchAuditView({
                   <td className="p-1 border border-gray-400 font-bold">{item.estudiante.nombre}</td>
                   <td className="p-1 border border-gray-400 text-center">{res?.aprobadasOrd || 0}</td>
                   <td className="p-1 border border-gray-400 text-center">{(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}</td>
-                  <td className="p-1 border border-gray-400 text-center">{res?.inglesAcreditados || 0}/5</td>
+                  <td className="p-1 border border-gray-400 text-center">{res?.inglesAcreditados ?? 0}/{res?.nivelesIngles ?? 5}</td>
                   <td className="p-1 border border-gray-400 text-center font-bold text-rose-700">{res?.adeudos || 0}</td>
                   <td className="p-1 border border-gray-400 text-center font-bold">{pct}%</td>
                   <td className="p-1 border border-gray-400 text-center">

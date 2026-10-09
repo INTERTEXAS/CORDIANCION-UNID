@@ -5,7 +5,8 @@ import {
   FileCheck, 
   XCircle, 
   AlertTriangle, 
-  Layers
+  Layers,
+  Info
 } from 'lucide-react';
 
 export default function FilterPills({ 
@@ -17,7 +18,8 @@ export default function FilterPills({
     rec: 0,
     re: 0,
     adeudo: 0,
-    omitida: 0
+    omitida: 0,
+    ou: 0
   } 
 }) {
   const filters = [
@@ -73,6 +75,14 @@ export default function FilterPills({
       color: 'orange',
       activeClass: 'bg-orange-600 dark:bg-orange-500 text-white shadow-sm',
       inactiveClass: 'bg-orange-50 dark:bg-orange-500/10 text-orange-700 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-500/20'
+    },
+    {
+      id: 'OU',
+      label: 'Oportunidad utilizada',
+      count: counts.ou,
+      icon: Info,
+      activeClass: 'bg-purple-700 dark:bg-purple-600 text-white shadow-sm',
+      inactiveClass: 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-500/20'
     }
   ];
 

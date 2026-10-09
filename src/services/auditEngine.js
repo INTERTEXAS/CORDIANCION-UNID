@@ -1,6 +1,40 @@
 // src/services/auditEngine.js
 import { CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData.js';
 
+function getDefaultNivelesIngles() {
+  return [
+    { nivel: 1, cuatrimestre: 1, claveSugerida: 'F001', nombre: 'INGLÉS I' },
+    { nivel: 2, cuatrimestre: 2, claveSugerida: 'F002', nombre: 'INGLÉS II' },
+    { nivel: 3, cuatrimestre: 3, claveSugerida: 'F003', nombre: 'INGLÉS III' },
+    { nivel: 4, cuatrimestre: 4, claveSugerida: 'F004', nombre: 'INGLÉS IV' },
+    { nivel: 5, cuatrimestre: 5, claveSugerida: 'P001', nombre: 'INGLÉS V' },
+  ];
+}
+
+function resolveNivelesIngles(carrera, mapa) {
+  const candidates = [
+    mapa?.niveles_ingles,
+    mapa?.nivelesIngles,
+    carrera?.niveles_ingles,
+    carrera?.nivelesIngles,
+    mapa?.niveles_ingles ?? (mapa && typeof mapa === 'object' ? mapa.niveles_ingles : undefined)
+  ];
+
+  for (const value of candidates) {
+    if (Array.isArray(value)) return value;
+    if (value === 0 || value === '0') return [];
+    if (typeof value === 'number' && value > 0) {
+      return getDefaultNivelesIngles().slice(0, Math.min(value, 5));
+    }
+    const numericValue = Number(value);
+    if (Number.isFinite(numericValue) && numericValue > 0) {
+      return getDefaultNivelesIngles().slice(0, Math.min(numericValue, 5));
+    }
+  }
+
+  return getDefaultNivelesIngles();
+}
+
 function checkPassed(calif) {
   if (!calif) return false;
   const s = String(calif).trim().toUpperCase();
@@ -31,9 +65,13 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     if (c) carreraEfectiva = c;
   }
 
-  const mapa = carreraEfectiva.mapa_json || CARRERAS_LOCAL[0].mapa_json;
+  const mapa = carreraEfectiva?.mapa_json || {};
+  if (!Array.isArray(mapa?.cuatrimestres) || mapa.cuatrimestres.length === 0) {
+    throw new Error(`No hay un mapa curricular cargado para ${carreraEfectiva.codigo || 'el programa seleccionado'}.`);
+  }
   const cuatrimestresRaw = Array.isArray(mapa.cuatrimestres) ? mapa.cuatrimestres : [];
   const electivasRaw = Array.isArray(mapa.electivas_multidisciplinares) ? mapa.electivas_multidisciplinares : [];
+  const nivelesInglesArr = resolveNivelesIngles(carreraEfectiva, mapa);
 
   // Normalizar la estructura del mapa (compatible tanto con Neon DB como con respaldo local)
   const cuatrimestres = cuatrimestresRaw.map(c => ({
@@ -185,7 +223,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
           break;
       }
 
-      if (['REC', 'RE', 'ADEUDO', 'OMITIDA', 'RECURSANDO'].includes(auditResult.estado) || auditResult.tieneDesfase) {
+      if (['REC', 'RE', 'ADEUDO', 'OMITIDA', 'RECURSANDO', 'OU'].includes(auditResult.estado) || auditResult.tieneDesfase) {
         incidencias.push({
           cuatrimestre: cuat.numero,
           clave: materia.clave,
@@ -218,16 +256,6 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   }
 
   const auditedIngles = [];
-  const defaultNivelesIngles = [
-    { nivel: 1, cuatrimestre: 1, claveSugerida: 'F001', nombre: 'INGLÉS I' },
-    { nivel: 2, cuatrimestre: 2, claveSugerida: 'F002', nombre: 'INGLÉS II' },
-    { nivel: 3, cuatrimestre: 3, claveSugerida: 'F003', nombre: 'INGLÉS III' },
-    { nivel: 4, cuatrimestre: 4, claveSugerida: 'F004', nombre: 'INGLÉS IV' },
-    { nivel: 5, cuatrimestre: 5, claveSugerida: 'P001', nombre: 'INGLÉS V' },
-  ];
-  const nivelesInglesArr = Array.isArray(mapa.niveles_ingles) 
-    ? mapa.niveles_ingles 
-    : (mapa.niveles_ingles === 0 ? [] : defaultNivelesIngles);
 
   let inglesAcreditados = 0;
   for (const item of nivelesInglesArr) {
@@ -249,16 +277,39 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
       });
       inglesAcreditados++;
     } else {
-      const attempts = normalizedRecords.filter(r => r.crse === claveSugerida);
-      const evalIngles = evaluateSubjectAttempts(
-        { clave: `LENG-${claveSugerida}`, crse: claveSugerida, nombre: item.nombre },
-        attempts,
-        item.cuatrimestre,
-        maxCuatrimestreAlcanzado,
-        primerPeriodoAlumno
+      const codigoInglesHistorico = `000${item.nivel}`;
+      const attempts = normalizedRecords.filter(r =>
+        r.crse === claveSugerida ||
+        (r.crse === codigoInglesHistorico && ['LENG', 'INHH'].includes(r.subj))
       );
 
-      if (['ORD', 'REC', 'RE'].includes(evalIngles.estado)) {
+      const tuvoAcreditacionHistorica = attempts.some(r => checkPassed((r.calificacion || '').trim().toUpperCase()));
+      const evalIngles = tuvoAcreditacionHistorica
+        ? {
+            estado: 'ORD',
+            etiquetaCorta: 'AC',
+            calificacion: 'AC',
+            modalidad: 'RW',
+            numIntentos: attempts.length,
+            vecesRecurso: Math.max(0, attempts.length - 1),
+            color: '#059669',
+            bgColor: '#ECFDF5',
+            icono: 'CheckCircle2',
+            historialTexto: attempts.map((at, idx) =>
+              `Intento ${idx + 1} (${at.periodo}): ${at.calificacion || 'Cursando'} [${at.modalidad || 'RW'}]`
+            ).join(' -> '),
+            tieneDesfase: false,
+            motivoIncidencia: 'Acreditado por historial previo de inglés; se considera nivel cubierto aunque el último intento haya sido reprobado.'
+          }
+        : evaluateSubjectAttempts(
+            { clave: `LENG-${claveSugerida}`, crse: claveSugerida, nombre: item.nombre },
+            attempts,
+            item.cuatrimestre,
+            maxCuatrimestreAlcanzado,
+            primerPeriodoAlumno
+          );
+
+      if (['ORD', 'REC', 'RE'].includes(evalIngles.estado) || tuvoAcreditacionHistorica) {
         inglesAcreditados++;
       } else if (evalIngles.estado === 'ADEUDO') {
         adeudosQ1toQ6.push({
@@ -269,21 +320,21 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         });
       }
 
-      if (['REC', 'RE', 'ADEUDO', 'OMITIDA'].includes(evalIngles.estado)) {
+      if (['REC', 'RE', 'ADEUDO', 'OMITIDA', 'OU'].includes(evalIngles.estado)) {
         incidencias.push({
           cuatrimestre: item.cuatrimestre,
           clave: `LENG-${claveSugerida}`,
           nombre: item.nombre,
           conecta: false,
           esEstadia: false,
-          estado: evalIngles.estado,
-          etiquetaCorta: evalIngles.etiquetaCorta,
-          intentosTotal: evalIngles.numIntentos,
-          vecesRecurso: evalIngles.vecesRecurso,
+          estado: tuvoAcreditacionHistorica ? 'ORD' : evalIngles.estado,
+          etiquetaCorta: tuvoAcreditacionHistorica ? 'AC' : evalIngles.etiquetaCorta,
+          intentosTotal: attempts.length,
+          vecesRecurso: Math.max(0, attempts.length - 1),
           historialTexto: evalIngles.historialTexto,
           intentosDetalle: attempts,
           tieneDesfase: false,
-          motivoIncidencia: evalIngles.motivoIncidencia
+          motivoIncidencia: tuvoAcreditacionHistorica ? 'Nivel de inglés acreditado por historial previo.' : evalIngles.motivoIncidencia
         });
       }
 
@@ -292,7 +343,8 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         cuatrimestre: item.cuatrimestre,
         clave: claveSugerida,
         nombre: item.nombre,
-        ...evalIngles
+        ...evalIngles,
+        ...(tuvoAcreditacionHistorica ? { estado: 'ORD', etiquetaCorta: 'AC', calificacion: 'AC', motivoIncidencia: 'Nivel de inglés acreditado por historial previo.' } : {})
       });
     }
   }
@@ -332,7 +384,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         totalAdeudos++;
       }
 
-      if (['REC', 'RE', 'ADEUDO'].includes(evalReq.estado)) {
+      if (['REC', 'RE', 'ADEUDO', 'OU'].includes(evalReq.estado)) {
         incidencias.push({
           cuatrimestre: 'EGR',
           clave: req.clave,
@@ -346,9 +398,11 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
           historialTexto: evalReq.historialTexto,
           intentosDetalle: attempts,
           tieneDesfase: false,
-          motivoIncidencia: evalReq.estado === 'ADEUDO'
-            ? 'Adeudo activo en requisito de titulación / egreso (EGEL / Co-curricular)'
-            : 'Requisito de egreso acreditado con observación'
+          motivoIncidencia: evalReq.estado === 'OU'
+            ? 'Oportunidad utilizada: el requisito se dio de baja. No se cuenta como acreditado.'
+            : evalReq.estado === 'ADEUDO'
+              ? 'Adeudo activo en requisito de titulación / egreso (EGEL / Co-curricular)'
+              : 'Requisito de egreso acreditado con observación'
         });
       }
 
@@ -484,7 +538,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     electivas: auditedElectivas,
     resumen: {
       totalMateriasMapa: cuatrimestres.reduce((acc, cuat) => acc + cuat.materias.length, 0),
-      nivelesIngles: mapa.niveles_ingles === 0 ? 0 : (mapa.niveles_ingles ? mapa.niveles_ingles.length : 5),
+      nivelesIngles: nivelesInglesArr.length,
       inglesAcreditados,
       requisitosEgresoTotal: 4,
       coCurricularesAcreditados,
@@ -575,6 +629,23 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
   const historialTexto = attempts.map((at, idx) =>
     `Intento ${idx + 1} (${at.periodo}): ${at.calificacion || 'Cursando'} [${at.modalidad || 'RW'}]`
   ).join(' -> ');
+
+  if (calif === 'OU') {
+    return {
+      estado: 'OU',
+      etiquetaCorta: 'OU',
+      calificacion: 'OU',
+      modalidad: ultimoIntento.modalidad || 'RW',
+      numIntentos,
+      vecesRecurso: Math.max(0, numIntentos - 1),
+      color: '#7E22CE',
+      bgColor: '#FAF5FF',
+      icono: 'AlertCircle',
+      historialTexto,
+      tieneDesfase,
+      motivoIncidencia: 'Oportunidad utilizada: la materia se dio de baja. No se cuenta como aprobada ni como reprobada.'
+    };
+  }
 
   if (estaCursando) {
     const esRec = numIntentos > 1;

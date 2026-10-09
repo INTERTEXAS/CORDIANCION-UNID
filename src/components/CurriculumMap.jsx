@@ -9,7 +9,8 @@ import {
   RotateCcw,
   AlertCircle,
   Clock,
-  Circle
+  Circle,
+  Info
 } from 'lucide-react';
 import StudentStatusSelector from './StudentStatusSelector';
 
@@ -60,6 +61,7 @@ export default function CurriculumMap({
     if (activeFilter === 'RE' && estado === 'RE') return false;
     if (activeFilter === 'ADEUDO' && estado === 'ADEUDO') return false;
     if (activeFilter === 'OMITIDA' && estado === 'OMITIDA') return false;
+    if (activeFilter === 'OU' && estado === 'OU') return false;
     return true;
   };
 
@@ -97,6 +99,14 @@ export default function CurriculumMap({
           gradeColor: 'text-slate-500',
           icon: Clock, 
           label: 'Pendiente' 
+        };
+      case 'OU':
+        return {
+          cardBorder: 'border-purple-300 dark:border-purple-500/40',
+          badgeBg: 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300',
+          gradeColor: 'text-purple-700 dark:text-purple-400',
+          icon: Info,
+          label: 'OU · Oportunidad utilizada'
         };
       case 'CURS':
         return { 
@@ -478,6 +488,12 @@ export default function CurriculumMap({
               <span className="font-bold text-text-primary">OMITIDA:</span>
               <span className="text-text-secondary">No cargada</span>
             </div>
+
+            <div className="flex items-center space-x-2 py-1">
+              <span className="w-3 h-3 rounded-full bg-[#7E22CE] shrink-0" />
+              <span className="font-bold text-text-primary">OU:</span>
+              <span className="text-text-secondary">Oportunidad utilizada; baja</span>
+            </div>
           </div>
 
           <div className="pt-2 border-t border-border-subtle text-[11px] text-text-muted leading-snug">
@@ -498,7 +514,11 @@ export default function CurriculumMap({
                 <div 
                   key={elec.clave} 
                   className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border text-[11px] leading-normal ${
-                    elec.cursada 
+                    activeFilter === 'OU' && elec.calificacion !== 'OU' ? 'opacity-30 grayscale' : 'opacity-100'
+                  } ${
+                    elec.calificacion === 'OU'
+                      ? 'bg-purple-50 dark:bg-purple-500/10 border-purple-200 dark:border-purple-500/20 text-purple-950 dark:text-purple-300 font-bold'
+                      : elec.cursada
                       ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-950 dark:text-emerald-300 font-bold' 
                       : elec.cursando
                       ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/20 text-indigo-950 dark:text-indigo-300 font-bold'
@@ -511,13 +531,15 @@ export default function CurriculumMap({
                     <span className="leading-normal truncate">{elec.nombre}</span>
                   </div>
                   <span className={`shrink-0 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ml-1 leading-normal ${
-                    elec.cursada
+                    elec.calificacion === 'OU'
+                      ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300'
+                      : elec.cursada
                       ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-400'
                       : elec.cursando
                       ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-400'
                       : 'bg-surface-3 text-text-muted'
                   }`}>
-                    {elec.cursada ? `AC (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disp.'}
+                    {elec.calificacion === 'OU' ? 'OU' : elec.cursada ? `AC (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disp.'}
                   </span>
                 </div>
               ))}

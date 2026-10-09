@@ -35,7 +35,7 @@ export async function getCarreras() {
 
   try {
     const sql = neon(databaseUrl);
-    const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras WHERE codigo IN ('LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17') ORDER BY codigo ASC`;
+    const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras WHERE codigo IN ('LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17', 'LIC-ARQU-18', 'LIC-DERE-18', 'LIC-EJDE-17', 'LIC-EJED-17') ORDER BY codigo ASC`;
     
     if (rows && rows.length > 0) {
       // Validamos que el mapa_json venga deserializado si venía como string
@@ -49,17 +49,23 @@ export async function getCarreras() {
           }
         }
         
-        let localCarrera = CARRERAS_LOCAL.find(c => c.codigo === carrera.codigo);
+        const localCarrera = CARRERAS_LOCAL.find(c => c.codigo === carrera.codigo);
 
         return {
+          ...localCarrera,
           ...carrera,
-          activa: ['LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17'].includes(carrera.codigo) ? true : Boolean(carrera.activa),
+          nombre: localCarrera?.nombre || carrera.nombre,
+          activa: true,
           mapa_json: mapa || (localCarrera ? localCarrera.mapa_json : null)
         };
       });
+      const carrerasPorCodigo = new Map(parsedRows.map(carrera => [carrera.codigo, carrera]));
+      const carrerasActivas = CARRERAS_LOCAL
+        .filter(carrera => carrera.activa)
+        .map(carrera => carrerasPorCodigo.get(carrera.codigo) || carrera);
 
       return {
-        carreras: parsedRows,
+        carreras: carrerasActivas,
         fuente: 'neon',
         mensaje: 'Conectado a Neon PostgreSQL Serverless'
       };

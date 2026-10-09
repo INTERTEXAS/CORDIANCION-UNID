@@ -5,7 +5,8 @@ export default function ProgramMismatchModal({
   detectedProgram, 
   currentProgram, 
   onConfirmSwitch, 
-  onDismiss 
+  onDismiss,
+  autoSwitch = false
 }) {
   if (!detectedProgram) return null;
 
@@ -27,6 +28,20 @@ export default function ProgramMismatchModal({
         <p className="text-[13px] text-text-secondary leading-relaxed">
           Las materias de este alumno pertenecen a <strong className="text-text-primary font-mono">({detectedProgram})</strong>, pero estás en el apartado de <strong className="text-text-primary font-mono">({currentProgram})</strong>.
         </p>
+
+        <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/80 dark:bg-amber-500/10 px-3 py-2 text-[11px] font-semibold text-amber-700 dark:text-amber-300 flex items-center gap-2">
+          {autoSwitch ? (
+            <>
+              <span className="inline-block h-2 w-2 rounded-full bg-amber-500 animate-pulse" aria-hidden="true" />
+              <span>Cambiando automáticamente al mapa <span className="font-mono font-bold">{detectedProgram}</span>...</span>
+            </>
+          ) : (
+            <>
+              <span className="inline-block h-2 w-2 rounded-full bg-amber-500" aria-hidden="true" />
+              <span>Al confirmar, se cambiará al mapa <span className="font-mono font-bold">{detectedProgram}</span>.</span>
+            </>
+          )}
+        </div>
 
         <div className="p-3.5 bg-surface-2 rounded-2xl text-[12px] space-y-2 transition-theme">
           <div className="flex justify-between items-center">
