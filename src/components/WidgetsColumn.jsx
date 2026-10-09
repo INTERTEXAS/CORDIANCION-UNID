@@ -241,7 +241,7 @@ export default function WidgetsColumn({
             </div>
           </div>
 
-          {/* 4. Historial Reciente */}
+          {/* 4. Historial Reciente s */}
           <div className="bg-surface-1 rounded-2xl border border-border p-4 shadow-card transition-theme">
             <div className="flex items-center space-x-2.5 pb-3 border-b border-border-subtle">
               <div className="p-1.5 bg-surface-2 rounded-xl text-text-secondary">
