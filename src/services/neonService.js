@@ -35,7 +35,7 @@ export async function getCarreras() {
 
   try {
     const sql = neon(databaseUrl);
-    const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras WHERE codigo IN ('LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17', 'LIC-ARQU-18', 'LIC-DERE-18', 'LIC-EJDE-17', 'LIC-EJED-17') ORDER BY codigo ASC`;
+    const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras WHERE codigo IN ('LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17', 'LIC-ARQU-18', 'LIC-DERE-18', 'LIC-EJDE-17', 'LIC-EJED-17', 'LIC-DSGD-18', 'LIC-CTCO-18', 'LIC-EJAD-17', 'LIC-MEES-18', 'LIC-SYSC-18') ORDER BY codigo ASC`;
     
     if (rows && rows.length > 0) {
       // Validamos que el mapa_json venga deserializado si venía como string

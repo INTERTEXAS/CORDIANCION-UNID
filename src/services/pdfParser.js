@@ -449,9 +449,36 @@ function isGradeFailing(calif) {
  * Procesa reportes consolidados oficiales ("Reporte de materias acreditadas")
  * que contienen múltiples alumnos en 1, 5, 30 o 100+ páginas de forma totalmente dinámica.
  */
+// Encabezados de columna del reporte grupal. La x de "Calificación" se detecta
+// porque la columna "Créditos" la precede y ambas contienen números: leer por
+// posición fija terminaba devolviendo el crédito como calificación.
+const HEADERS_GRUPAL = {
+  periodo: /^(?:Periodo|Periodo\s*Escolar)$/i,
+  programa: /^(?:Programa|Plan|Carrera)$/i,
+  subj: /^Subj$/i,
+  crse: /^Crse$/i,
+  creditos: /^Cr[eé]ditos?$/i,
+  calificacion: /^Calific(?:aci[oó]n|aci[oó]n\s+Final)?$/i
+};
+
+function detectarColumnasGrupal(rows) {
+  const cols = {};
+  for (const row of rows) {
+    for (const it of row.items) {
+      const txt = it.str.trim();
+      if (!txt || txt.length > 24) continue;
+      for (const [key, rx] of Object.entries(HEADERS_GRUPAL)) {
+        if (cols[key] === undefined && rx.test(txt)) cols[key] = it.x;
+      }
+    }
+  }
+  return cols;
+}
+
 export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
   const students = [];
   let currentStudent = null;
+  let cols = null;
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page = await pdf.getPage(pageNum);
@@ -477,6 +504,8 @@ export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
     rows.sort((a, b) => b.y - a.y);
     rows.forEach(r => r.items.sort((a, b) => a.x - b.x));
 
+    if (!cols) cols = detectarColumnasGrupal(rows);
+
     for (const row of rows) {
       const rowText = row.items.map(it => it.str).join(' ');
       if (/Reporte\s+de\s+materias|Expediente.*Nombre|Subj.*Crse/i.test(rowText)) continue;
@@ -500,11 +529,38 @@ export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
 
       if (!currentStudent) continue;
 
-      const periodoItem = row.items.find(it => it.x >= 200 && it.x < 255 && /^\d{6}$/.test(it.str));
-      const progItem = row.items.find(it => it.x >= 250 && it.x < 315 && /^LIC-[A-Z0-9-]+$/i.test(it.str));
-      const subjItem = row.items.find(it => it.x >= 310 && it.x < 365 && /^[A-Z]{3,4}$/i.test(it.str));
-      const crseItem = row.items.find(it => it.x >= 360 && it.x < 425 && /^[A-Z0-9-]{3,6}$/i.test(it.str));
-      const califItem = row.items.find(it => it.x >= 505 && /^(\d{1,2}|AC|NP|NA|VS|OU)$/i.test(it.str));
+      // Con encabezado detectado, la calificación se busca pegada a su columna (la de
+      // más a la derecha) para no capturar "Créditos". Sin encabezado, se usa el
+      // rango histórico pero tomando el token MÁS A LA DERECHA, no el primero.
+      const xCalif = cols.calificacion;
+      const xCred = cols.creditos;
+      const esCalif = (it) => /^(\d{1,2}(?:\.\d+)?|AC|NP|NA|VS|OU)$/i.test(it.str);
+
+      let califItem;
+      if (xCalif !== undefined) {
+        const candidatos = row.items
+          .filter(esCalif)
+          .filter(it => it.x >= xCalif - 12)
+          .filter(it => xCred === undefined || Math.abs(it.x - xCred) > Math.abs(it.x - xCalif) || it.x > xCred);
+        califItem = candidatos.sort((a, b) => a.x - b.x)[candidates.length - 1];
+      } else {
+        califItem = row.items.filter(esCalif).sort((a, b) => a.x - b.x).pop();
+      }
+
+      const xProg = cols.programa ?? 0;
+      const xSubj = cols.subj ?? 0;
+      const xCrse = cols.crse ?? 0;
+      const xPeriodo = cols.periodo ?? 0;
+
+      const periodoItem = row.items.find(it =>
+        /^\d{6}$/.test(it.str) &&
+        (xPeriodo ? Math.abs(it.x - xPeriodo) < 40 : it.x >= 200 && it.x < 255));
+      const progItem = row.items.find(it => /^LIC-[A-Z0-9-]+$/i.test(it.str) &&
+        (!xProg || Math.abs(it.x - xProg) < 60));
+      const subjItem = row.items.find(it => /^[A-Z]{3,4}$/i.test(it.str) &&
+        (!xSubj || Math.abs(it.x - xSubj) < 30));
+      const crseItem = row.items.find(it => /^[A-Z0-9-]{3,6}$/i.test(it.str) &&
+        (!xCrse || Math.abs(it.x - xCrse) < 40));
 
       if (progItem && !currentStudent.programa) {
         currentStudent.programa = progItem.str.toUpperCase();

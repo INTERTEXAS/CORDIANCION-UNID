@@ -1,4 +1,4 @@
-// Datos institucionales oficiales de Carreras y Mapa Curricular UNID
+﻿// Datos institucionales oficiales de Carreras y Mapa Curricular UNID
 // Incluye respaldo local para funcionamiento inmediato y sincronización con Neon
 
 export const CARRERAS_LOCAL = [
@@ -1600,6 +1600,731 @@ export const CARRERAS_LOCAL = [
       niveles_ingles: 0,
       electivas_multidisciplinares: []
     }
+  },
+{
+    id: 8,
+    codigo: 'LIC-CTCO-18',
+    nombre: 'LICENCIATURA EN CIENCIAS Y TÉCNICAS DE LA COMUNICACIÓN (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    ultima_actualizacion_cpa: '15-junio-2022',
+    creditos_programa: 309.78,
+    sede: 'CAM',
+    coordinadora: '',
+    activa: true,
+    total_materias: 37,
+    niveles_ingles: 5,
+    ingles_acumulativo: true,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0001',
+          materias: [
+            { clave: 'LMFM-HUS01', subj: 'LMFM', crse: 'HUS01', nombre: 'SER HUMANO', conecta: false, creditos: 6.13 },
+            { clave: 'LMPK-COS02', subj: 'LMPK', crse: 'COS02', nombre: 'TEORÍA DE LA IMAGEN', conecta: false, creditos: 7 },
+            { clave: 'LMIX-HTS01', subj: 'LMIX', crse: 'HTS01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMDX-EDS01', subj: 'LMDX', crse: 'EDS01', nombre: 'ESTRATEGIAS PARA LA AUTONOMÍA EN EL APRENDIZAJE', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COS01', subj: 'LMPX', crse: 'COS01', nombre: 'TEORÍA DE LA COMUNICACIÓN', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0002',
+          materias: [
+            { clave: 'LMFM-HUS02', subj: 'LMFM', crse: 'HUS02', nombre: 'SEMINARIO DE VALORES EN LO PERSONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPM-PSS01', subj: 'LMPM', crse: 'PSS01', nombre: 'PRINCIPIOS DE PSICOLOGÍA DE LA COMUNICACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPQ-COS04', subj: 'LMPQ', crse: 'COS04', nombre: 'PRINCIPIOS Y TÉCNICAS DE ANIMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMQP-COS03', subj: 'LMQP', crse: 'COS03', nombre: 'CREATIVIDAD', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0003',
+          materias: [
+            { clave: 'LMFM-HUS03', subj: 'LMFM', crse: 'HUS03', nombre: 'SEMINARIO DE VALORES EN LO COMÚN', conecta: false, creditos: 6.13 },
+            { clave: 'LMPK-COS06', subj: 'LMPK', crse: 'COS06', nombre: 'AUDIENCIAS Y MEDIOS', conecta: true, creditos: 7 },
+            { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: false, creditos: 7 },
+            { clave: 'LMPQ-COS07', subj: 'LMPQ', crse: 'COS07', nombre: 'PRODUCCIÓN DE VIDEO DIGITAL', conecta: false, creditos: 7 },
+            { clave: 'LMPL-COS08', subj: 'LMPL', crse: 'COS08', nombre: 'SEMINARIO DE LINGÜÍSTICA Y SEMIÓTICA', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0004',
+          materias: [
+            { clave: 'LMFM-HUS05', subj: 'LMFM', crse: 'HUS05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMPL-COS09', subj: 'LMPL', crse: 'COS09', nombre: 'GUIONISMO', conecta: false, creditos: 7 },
+            { clave: 'LMBX-IVS01', subj: 'LMBX', crse: 'IVS01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COT02', subj: 'LMPX', crse: 'COT02', nombre: 'ANÁLISIS DEL DISCURSO', conecta: true, creditos: 7 },
+            { clave: 'LMPQ-COS10', subj: 'LMPQ', crse: 'COS10', nombre: 'PRODUCCIÓN DE AUDIO DIGITAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0005',
+          materias: [
+            { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: false, creditos: 6.13 },
+            { clave: 'LMPJ-COS12', subj: 'LMPJ', crse: 'COS12', nombre: 'ASPECTOS LEGALES DE LA COMUNICACIÓN', conecta: true, creditos: 7 },
+            { clave: 'LMPL-COS13', subj: 'LMPL', crse: 'COS13', nombre: 'GÉNEROS PERIODÍSTICOS', conecta: false, creditos: 7 },
+            { clave: 'LMPK-DGT01', subj: 'LMPK', crse: 'DGT01', nombre: 'FOTOGRAFÍA PUBLICITARIA', conecta: false, creditos: 7 },
+            { clave: 'LMIP-COS14', subj: 'LMIP', crse: 'COS14', nombre: 'INTERACTIVIDAD EN MULTIMEDIOS', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMKP-MKS11', subj: 'LMKP', crse: 'MKS11', nombre: 'CAMPAÑAS DE PUBLICIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMAD-EES01', subj: 'LMAD', crse: 'EES01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COS15', subj: 'LMPX', crse: 'COS15', nombre: 'GESTIÓN DE PROYECTOS COMUNICATIVOS', conecta: true, creditos: 7 },
+            { clave: 'LMPQ-COT03', subj: 'LMPQ', crse: 'COT03', nombre: 'DISEÑO Y PRODUCCIÓN DE MEDIOS IMPRESOS', conecta: false, creditos: 7 },
+            { clave: 'LMAX-ADS15', subj: 'LMAX', crse: 'ADS15', nombre: 'RELACIONES PÚBLICAS', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-EES02', subj: 'LMAD', crse: 'EES02', nombre: 'Estadía Empresarial', conecta: false, creditos: 35, es_estadia: true, bloque_completo: true }
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COS16', subj: 'LMPX', crse: 'COS16', nombre: 'PRODUCCIÓN Y POSTPRODUCCIÓN DE MULTIMEDIOS', conecta: true, creditos: 7 },
+            { clave: 'LMPM-CMT02', subj: 'LMPM', crse: 'CMT02', nombre: 'COMUNICACIÓN EN LAS ORGANIZACIONES', conecta: false, creditos: 7 },
+            { clave: 'LMPK-COS17', subj: 'LMPK', crse: 'COS17', nombre: 'TALLER DE PERIODISMO DIGITAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMHV-EES03', subj: 'LMHV', crse: 'EES03', nombre: 'ESTADÍA EMPRESARIAL PARA EL ÉNFASIS PROFESIONAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true }
+          ]
+        }
+      ],
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: '0001', nombre: 'Fundamentals' },
+        { cuatrimestre: 2, nivel: 2, clave_default: '0002', nombre: 'Basic 1' },
+        { cuatrimestre: 3, nivel: 3, clave_default: '0003', nombre: 'Basic 2' },
+        { cuatrimestre: 4, nivel: 4, clave_default: '0004', nombre: 'Intermediate 1' },
+        { cuatrimestre: 5, nivel: 5, clave_default: '0005', nombre: 'Intermediate 2' }
+      ],
+      electivas_multidisciplinares: [
+        { clave: 'LMKP-MKS15', subj: 'LMKP', crse: 'MKS15', nombre: 'ESTRATEGIAS DE MEDIOS', conecta: false, creditos: 7 },
+        { clave: 'LMIK-SIS01', subj: 'LMIK', crse: 'SIS01', nombre: 'INNOVACIÓN Y TECNOLOGÍA', conecta: false, creditos: 7 },
+        { clave: 'LMPA-COS18', subj: 'LMPA', crse: 'COS18', nombre: 'IMAGEN PÚBLICA', conecta: false, creditos: 7 },
+        { clave: 'LMAX-NES01', subj: 'LMAX', crse: 'NES01', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS', conecta: false, creditos: 7 },
+        { clave: 'LMPD-MKS16', subj: 'LMPD', crse: 'MKS16', nombre: 'REDACCIÓN PUBLICITARIA', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADS03', subj: 'LMAX', crse: 'ADS03', nombre: 'COMPETITIVIDAD ESTRATÉGICA EMPRESARIAL', conecta: false, creditos: 7 },
+        { clave: 'LMPR-MKT23', subj: 'LMPR', crse: 'MKT23', nombre: 'RECURSOS DE EVALUACIÓN DE FOTOGRAFÍA CAMPAÑAS DE PERSUASIVA COMUNICACIÓN', conecta: false, creditos: 7 },
+        { clave: 'LMKP-COT01', subj: 'LMKP', crse: 'COT01', nombre: 'Eval.DeCampañasDeComunicación', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADT15', subj: 'LMAX', crse: 'ADT15', nombre: 'ESTRATEGIAS GESTIÓN DE NEGOCIOS DIRECTIVAS Y DE Y ADMINISTRACIÓN DE NEGOCIACIÓN PROYECTOS', conecta: true, creditos: 7 },
+        { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
+      ]
+    },
+    requisitos_egreso: [
+      { clave: 'CUPR-EGCC1', subj: 'CUPR', crse: 'EGCC1', nombre: 'CURSO DE PREPARACIÓN EGEL I - COMUNICACIÓN' },
+      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+    ]
+  },
+  {
+    id: 9,
+    codigo: 'LIC-DSGD-18',
+    nombre: 'LICENCIATURA EN DISEÑO GRÁFICO DIGITAL (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    ultima_actualizacion_cpa: '15-junio-2022',
+    creditos_programa: 309.72,
+    sede: 'CAM',
+    coordinadora: '',
+    activa: true,
+    total_materias: 37,
+    niveles_ingles: 5,
+    ingles_acumulativo: true,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0001',
+          materias: [
+            { clave: 'LMFM-HUS01', subj: 'LMFM', crse: 'HUS01', nombre: 'SER HUMANO', conecta: false, creditos: 6.13 },
+            { clave: 'LMKP-MKS01', subj: 'LMKP', crse: 'MKS01', nombre: 'FUNDAMENTOS DE MERCADOTECNIA', conecta: false, creditos: 7 },
+            { clave: 'LMIX-HTS01', subj: 'LMIX', crse: 'HTS01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMPK-COS02', subj: 'LMPK', crse: 'COS02', nombre: 'TEORÍA DE LA IMAGEN', conecta: false, creditos: 7 },
+            { clave: 'LMDX-EDS01', subj: 'LMDX', crse: 'EDS01', nombre: 'ESTRATEGIAS PARA LA AUTONOMÍA EN EL APRENDIZAJE', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0002',
+          materias: [
+            { clave: 'LMFM-HUS02', subj: 'LMFM', crse: 'HUS02', nombre: 'SEMINARIO DE VALORES EN LO PERSONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMQX-DGS02', subj: 'LMQX', crse: 'DGS02', nombre: 'TEORÍA DEL DISEÑO', conecta: false, creditos: 7 },
+            { clave: 'LMQP-COS03', subj: 'LMQP', crse: 'COS03', nombre: 'CREATIVIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMPQ-DGS01', subj: 'LMPQ', crse: 'DGS01', nombre: 'TÉCNICAS DE DIBUJO', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0003',
+          materias: [
+            { clave: 'LMFM-HUS03', subj: 'LMFM', crse: 'HUS03', nombre: 'SEMINARIO DE VALORES EN LO COMÚN', conecta: false, creditos: 6.13 },
+            { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: true, creditos: 7 },
+            { clave: 'LMQP-DGS03', subj: 'LMQP', crse: 'DGS03', nombre: 'PRINCIPIOS DE TIPOGRAFÍA', conecta: false, creditos: 7 },
+            { clave: 'LMJP-DES09', subj: 'LMJP', crse: 'DES09', nombre: 'PROPIEDAD INTELECTUAL', conecta: false, creditos: 7 },
+            { clave: 'LMQR-COS05', subj: 'LMQR', crse: 'COS05', nombre: 'ARTE Y APRECIACIÓN ESTÉTICA', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0004',
+          materias: [
+            { clave: 'LMFM-HUS05', subj: 'LMFM', crse: 'HUS05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMQX-DGS04', subj: 'LMQX', crse: 'DGS04', nombre: 'SERIGRAFÍA', conecta: false, creditos: 7 },
+            { clave: 'LMBX-IVS01', subj: 'LMBX', crse: 'IVS01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMKP-MKT01', subj: 'LMKP', crse: 'MKT01', nombre: 'ANÁLISIS DEL CONSUMIDOR Y DEL PRODUCTO', conecta: true, creditos: 7 },
+            { clave: 'LMPX-COS01', subj: 'LMPX', crse: 'COS01', nombre: 'TEORÍA DE LA COMUNICACIÓN', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0005',
+          materias: [
+            { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: false, creditos: 6.13 },
+            { clave: 'LMQP-DGS06', subj: 'LMQP', crse: 'DGS06', nombre: 'DISEÑO Y EDICIÓN DE IMÁGENES', conecta: true, creditos: 7 },
+            { clave: 'LMQP-DGS07', subj: 'LMQP', crse: 'DGS07', nombre: 'DISEÑO Y PRODUCCIÓN EDITORIAL', conecta: false, creditos: 7 },
+            { clave: 'LMPK-DGT01', subj: 'LMPK', crse: 'DGT01', nombre: 'FOTOGRAFÍA PUBLICITARIA', conecta: false, creditos: 7 },
+            { clave: 'LMQX-DGS05', subj: 'LMQX', crse: 'DGS05', nombre: 'AEROGRAFÍA', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMKP-MKS11', subj: 'LMKP', crse: 'MKS11', nombre: 'CAMPAÑAS DE PUBLICIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMAD-EES01', subj: 'LMAD', crse: 'EES01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMQP-DGS09', subj: 'LMQP', crse: 'DGS09', nombre: 'PRODUCCIÓN Y POSTPRODUCCIÓN DE GRÁFICOS DIGITALES', conecta: true, creditos: 7 },
+            { clave: 'LMPQ-COT03', subj: 'LMPQ', crse: 'COT03', nombre: 'DISEÑO Y PRODUCCIÓN DE MEDIOS IMPRESOS', conecta: false, creditos: 7 },
+            { clave: 'LMQX-DGS08', subj: 'LMQX', crse: 'DGS08', nombre: 'DISEÑO VECTORIAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-EES02', subj: 'LMAD', crse: 'EES02', nombre: 'Estadía Empresarial', conecta: false, creditos: 35, es_estadia: true, bloque_completo: true }
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMKQ-DGS11', subj: 'LMKQ', crse: 'DGS11', nombre: 'EXPOSICIONES Y STAND', conecta: false, creditos: 7 },
+            { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: false, creditos: 7 },
+            { clave: 'LMQK-DGT02', subj: 'LMQK', crse: 'DGT02', nombre: 'GESTIÓN DE PROYECTOS EN DISEÑO GRÁFICO', conecta: true, creditos: 7 },
+            { clave: 'LMQK-DGS10', subj: 'LMQK', crse: 'DGS10', nombre: 'DISEÑO DE EMPAQUES Y EMBALAJES', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMHV-EES03', subj: 'LMHV', crse: 'EES03', nombre: 'ESTADÍA EMPRESARIAL PARA EL ÉNFASIS PROFESIONAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true }
+          ]
+        }
+      ],
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: '0001', nombre: 'Fundamentals' },
+        { cuatrimestre: 2, nivel: 2, clave_default: '0002', nombre: 'Basic 1' },
+        { cuatrimestre: 3, nivel: 3, clave_default: '0003', nombre: 'Basic 2' },
+        { cuatrimestre: 4, nivel: 4, clave_default: '0004', nombre: 'Intermediate 1' },
+        { cuatrimestre: 5, nivel: 5, clave_default: '0005', nombre: 'Intermediate 2' }
+      ],
+      electivas_multidisciplinares: [
+        { clave: 'LMKP-MKS15', subj: 'LMKP', crse: 'MKS15', nombre: 'ESTRATEGIAS DE MEDIOS', conecta: false, creditos: 7 },
+        { clave: 'LMIK-SIS01', subj: 'LMIK', crse: 'SIS01', nombre: 'INNOVACIÓN Y TECNOLOGÍA', conecta: false, creditos: 7 },
+        { clave: 'LMPA-COS18', subj: 'LMPA', crse: 'COS18', nombre: 'IMAGEN PÚBLICA', conecta: false, creditos: 7 },
+        { clave: 'LMAX-NES01', subj: 'LMAX', crse: 'NES01', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS', conecta: false, creditos: 7 },
+        { clave: 'LMPD-MKS16', subj: 'LMPD', crse: 'MKS16', nombre: 'REDACCIÓN PUBLICITARIA', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADS03', subj: 'LMAX', crse: 'ADS03', nombre: 'COMPETITIVIDAD ESTRATÉGICA EMPRESARIAL', conecta: false, creditos: 7 },
+        { clave: 'LMPR-MKT23', subj: 'LMPR', crse: 'MKT23', nombre: 'RECURSOS DE EVALUACIÓN DE FOTOGRAFÍA CAMPAÑAS DE PERSUASIVA COMUNICACIÓN', conecta: false, creditos: 7 },
+        { clave: 'LMKP-COT01', subj: 'LMKP', crse: 'COT01', nombre: 'Eval.DeCampañasDeComunicación', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADT15', subj: 'LMAX', crse: 'ADT15', nombre: 'ESTRATEGIAS GESTIÓN DE NEGOCIOS DIRECTIVAS Y DE Y ADMINISTRACIÓN DE NEGOCIACIÓN PROYECTOS', conecta: true, creditos: 7 },
+        { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
+      ]
+    },
+    requisitos_egreso: [
+      { clave: 'CUPR-EGDG1', subj: 'CUPR', crse: 'EGDG1', nombre: 'CURSO DE PREPARACIÓN EGEL I - DISEÑO GRÁFICO DIGITAL' },
+      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+    ]
+  },
+  {
+    id: 10,
+    codigo: 'LIC-EJAD-17',
+    nombre: 'LICENCIATURA EN ADMINISTRACIÓN DE EMPRESAS (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 202160 (EJECUTIVO - MODULAR)',
+    ultima_actualizacion_cpa: '15-junio-2022',
+    creditos_programa: 336,
+    sede: 'CAM',
+    coordinadora: '',
+    activa: true,
+    total_materias: 49,
+    niveles_ingles: 5,
+    ingles_acumulativo: true,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0001',
+          materias: [
+            { clave: 'EMFM-HUR01', subj: 'EMFM', crse: 'HUR01', nombre: 'SER HUMANO', conecta: false, creditos: 7 },
+            { clave: 'EMIK-SIR01', subj: 'EMIK', crse: 'SIR01', nombre: 'INNOVACIÓN Y TECNOLÓGIA', conecta: false, creditos: 7 },
+            { clave: 'EMIX-HTR01', subj: 'EMIX', crse: 'HTR01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 7 },
+            { clave: 'EMAM-ADR18', subj: 'EMAM', crse: 'ADR18', nombre: 'LIDERAZGO', conecta: false, creditos: 7 },
+            { clave: 'EMIA-INR02', subj: 'EMIA', crse: 'INR02', nombre: 'SISTEMAS DE CALIDAD', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0002',
+          materias: [
+            { clave: 'EMFM-HUR03', subj: 'EMFM', crse: 'HUR03', nombre: 'VALORES EN LO PERSONAL', conecta: false, creditos: 7 },
+            { clave: 'EMAX-CFR01', subj: 'EMAX', crse: 'CFR01', nombre: 'FUNDAMENTOS DE CONTABILIDAD', conecta: false, creditos: 7 },
+            { clave: 'EMKP-MKR12', subj: 'EMKP', crse: 'MKR12', nombre: 'FUNDAMENTOS DE MERCADOTECNIA', conecta: false, creditos: 7 },
+            { clave: 'EMBX-IVR01', subj: 'EMBX', crse: 'IVR01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: false, creditos: 7 },
+            { clave: 'EMPX-CMR01', subj: 'EMPX', crse: 'CMR01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0003',
+          materias: [
+            { clave: 'EMFM-HUR02', subj: 'EMFM', crse: 'HUR02', nombre: 'VALORES EN LO COMÚN', conecta: false, creditos: 7 },
+            { clave: 'EMAX-ADR08', subj: 'EMAX', crse: 'ADR08', nombre: 'ESTRUCTURAS ADMINISTRATIVAS', conecta: true, creditos: 7 },
+            { clave: 'EMAX-FIR02', subj: 'EMAX', crse: 'FIR02', nombre: 'FINANZAS Y CONTABILIDAD', conecta: false, creditos: 7 },
+            { clave: 'EMAX-ADR02', subj: 'EMAX', crse: 'ADR02', nombre: 'PROCESO ADMINISTRATIVO', conecta: false, creditos: 7 },
+            { clave: 'EMKA-MKR14', subj: 'EMKA', crse: 'MKR14', nombre: 'ANÁLISIS DEL PRODUCTO', conecta: false, creditos: 7 },
+            { clave: 'ECIX-HTR01', subj: 'ECIX', crse: 'HTR01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: null, carga_14_semanas: true }
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0004',
+          materias: [
+            { clave: 'EMFM-HUR05', subj: 'EMFM', crse: 'HUR05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 7 },
+            { clave: 'EMAX-ADR01', subj: 'EMAX', crse: 'ADR01', nombre: 'CORRIENTES DE LA ADMINISTRACIÓN', conecta: false, creditos: 7 },
+            { clave: 'EMKM-MKR11', subj: 'EMKM', crse: 'MKR11', nombre: 'ANÁLISIS DEL CONSUMIDOR', conecta: true, creditos: 7 },
+            { clave: 'EMAX-FIR03', subj: 'EMAX', crse: 'FIR03', nombre: 'FUNDAMENTOS TEÓRICOS DEL ANÁLISIS FINANCIERO', conecta: false, creditos: 7 },
+            { clave: 'EMAX-ECR01', subj: 'EMAX', crse: 'ECR01', nombre: 'MICRO Y MACROECONOMÍA', conecta: false, creditos: 7 },
+            { clave: 'ECIA-INR02', subj: 'ECIA', crse: 'INR02', nombre: 'SISTEMAS DE CALIDAD', conecta: false, creditos: 7, carga_14_semanas: true }
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0005',
+          materias: [
+            { clave: 'EMFX-HUR04', subj: 'EMFX', crse: 'HUR04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: false, creditos: 7 },
+            { clave: 'EMAX-CFR10', subj: 'EMAX', crse: 'CFR10', nombre: 'CONTABILIDAD DE COSTOS', conecta: true, creditos: 7 },
+            { clave: 'EMAK-ADR07', subj: 'EMAK', crse: 'ADR07', nombre: 'ADMINISTRACIÓN DE VENTAS', conecta: false, creditos: 7 },
+            { clave: 'EMKA-MKR16', subj: 'EMKA', crse: 'MKR16', nombre: 'INVESTIGACIÓN CUANTITATIVA DE MERCADOS', conecta: false, creditos: 7 },
+            { clave: 'EMMA-ADR17', subj: 'EMMA', crse: 'ADR17', nombre: 'RECLUTAMIENTO, SELECCIÓN E INDUCCIÓN DEL PERSONAL', conecta: false, creditos: 7 },
+            { clave: 'ECIK-SIR01', subj: 'ECIK', crse: 'SIR01', nombre: 'INNOVACIÓN Y TECNOLÓGIA', conecta: false, creditos: 7, carga_14_semanas: true }
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'EMAD-PER05', subj: 'EMAD', crse: 'PER05', nombre: 'CAPACITACIÓN PARA EL DESARROLLO ORGANIZACIONAL', conecta: false, creditos: 7 },
+            { clave: 'EMAD-EER01', subj: 'EMAD', crse: 'EER01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'EMKA-MKR10', subj: 'EMKA', crse: 'MKR10', nombre: 'INVESTIGACIÓN CUALITATIVA DE MERCADOS', conecta: true, creditos: 7 },
+            { clave: 'EMAX-CFR04', subj: 'EMAX', crse: 'CFR04', nombre: 'PLANEACIÓN Y CONTROL DE PRESUPUESTOS', conecta: false, creditos: 7 },
+            { clave: 'EMKX-ADR10', subj: 'EMKX', crse: 'ADR10', nombre: 'ESTRATEGIAS DE PRECIOS Y VENTAS', conecta: false, creditos: 7 },
+            { clave: 'ECFM-HUR01', subj: 'ECFM', crse: 'HUR01', nombre: 'SER HUMANO', conecta: false, creditos: null, carga_14_semanas: true }
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'EMAD-EER02', subj: 'EMAD', crse: 'EER02', nombre: 'ESTADÍA EMPRESARIAL', conecta: false, creditos: 35, es_estadia: true },
+            { clave: 'EMAX-ADR14', subj: 'EMAX', crse: 'ADR14', nombre: 'RELACIONES LABORALES', conecta: false, creditos: 7 },
+            { clave: 'EMAI-ADR12', subj: 'EMAI', crse: 'ADR12', nombre: 'TÉCNICAS DE PLANEACIÓN Y CONTROL', conecta: true, creditos: 7 },
+            { clave: 'EMKP-MKR19', subj: 'EMKP', crse: 'MKR19', nombre: 'CAMPAÑAS DE PUBLICIDAD', conecta: false, creditos: 7 },
+            { clave: 'ECAM-ADR18', subj: 'ECAM', crse: 'ADR18', nombre: 'LIDERAZGO', conecta: false, creditos: 7, carga_14_semanas: true }
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'EMAJ-HUR06', subj: 'EMAJ', crse: 'HUR06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 7 },
+            { clave: 'EMAX-NER02', subj: 'EMAX', crse: 'NER02', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS', conecta: false, creditos: 7 },
+            { clave: 'EMIA-INR01', subj: 'EMIA', crse: 'INR01', nombre: 'LOGÍSTICA Y DISTRIBUCIÓN DE PRODUCTOS', conecta: false, creditos: 7 },
+            { clave: 'EMAX-ADR11', subj: 'EMAX', crse: 'ADR11', nombre: 'PLANEACIÓN ESTRATÉGICA', conecta: false, creditos: 7 },
+            { clave: 'EMAM-COR03', subj: 'EMAM', crse: 'COR03', nombre: 'CLIMA ORGANIZACIONAL', conecta: true, creditos: 7 }
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'EMAX-ADR13', subj: 'EMAX', crse: 'ADR13', nombre: 'ADMINISTRACIÓN DE COMPRAS E INVENTARIOS', conecta: false, creditos: 7 },
+            { clave: 'EMAX-ADR09', subj: 'EMAX', crse: 'ADR09', nombre: 'DISEÑO ORGANIZACIONAL', conecta: false, creditos: 7 },
+            { clave: 'EMMA-ADR16', subj: 'EMMA', crse: 'ADR16', nombre: 'EVALUACIÓN DEL DESEMPEÑO LABORAL', conecta: false, creditos: 7 },
+            { clave: 'EMAX-FIR11', subj: 'EMAX', crse: 'FIR11', nombre: 'FORMULACIÓN Y EVALUACIÓN DE PROYECTOS DE INVERSIÓN', conecta: true, creditos: 7 },
+            { clave: 'EMKA-COR01', subj: 'EMKA', crse: 'COR01', nombre: 'IMAGEN CORPORATIVA', conecta: false, creditos: 7 }
+          ]
+        }
+      ],
+      niveles_ingles: 0,
+      electivas_multidisciplinares: []
+    },
+    requisitos_egreso: [
+      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN DE EMPRESAS' },
+      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+    ]
+  },
+  {
+    id: 11,
+    codigo: 'LIC-MEES-18',
+    nombre: 'LICENCIATURA EN MERCADOTECNIA ESTRATÉGICA (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    ultima_actualizacion_cpa: '15-junio-2022',
+    creditos_programa: 309.78,
+    sede: 'CAM',
+    coordinadora: '',
+    activa: true,
+    total_materias: 37,
+    niveles_ingles: 5,
+    ingles_acumulativo: true,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0001',
+          materias: [
+            { clave: 'LMFM-HUS01', subj: 'LMFM', crse: 'HUS01', nombre: 'SER HUMANO', conecta: false, creditos: 6.13 },
+            { clave: 'LMAX-CFS01', subj: 'LMAX', crse: 'CFS01', nombre: 'FUNDAMENTOS DE CONTABILIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMIX-HTS01', subj: 'LMIX', crse: 'HTS01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMKP-MKS01', subj: 'LMKP', crse: 'MKS01', nombre: 'FUNDAMENTOS DE MERCADOTECNIA', conecta: false, creditos: 7 },
+            { clave: 'LMDX-EDS01', subj: 'LMDX', crse: 'EDS01', nombre: 'ESTRATEGIAS PARA LA AUTONOMÍA EN EL APRENDIZAJE', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0002',
+          materias: [
+            { clave: 'LMFM-HUS02', subj: 'LMFM', crse: 'HUS02', nombre: 'SEMINARIO DE VALORES EN LO PERSONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMQR-MKS02', subj: 'LMQR', crse: 'MKS02', nombre: 'DISEÑO DE IMAGEN', conecta: false, creditos: 7 },
+            { clave: 'LMKI-MKS03', subj: 'LMKI', crse: 'MKS03', nombre: 'MULTIMEDIA DE LA MERCADOTECNIA', conecta: false, creditos: 7 },
+            { clave: 'LMKP-MKS04', subj: 'LMKP', crse: 'MKS04', nombre: 'PUBLICIDAD CREATIVA', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0003',
+          materias: [
+            { clave: 'LMFM-HUS03', subj: 'LMFM', crse: 'HUS03', nombre: 'SEMINARIO DE VALORES EN LO COMÚN', conecta: false, creditos: 6.13 },
+            { clave: 'LMAK-MKS05', subj: 'LMAK', crse: 'MKS05', nombre: 'COMERCIALIZACIÓN ESTRATÉGICA', conecta: true, creditos: 7 },
+            { clave: 'LMQI-MKS06', subj: 'LMQI', crse: 'MKS06', nombre: 'DISEÑO DIGITAL', conecta: false, creditos: 7 },
+            { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: false, creditos: 7 },
+            { clave: 'LMAX-ECS01', subj: 'LMAX', crse: 'ECS01', nombre: 'MICRO Y MACROECONOMÍA', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0004',
+          materias: [
+            { clave: 'LMFM-HUS05', subj: 'LMFM', crse: 'HUS05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMAK-MKS07', subj: 'LMAK', crse: 'MKS07', nombre: 'COMERCIALIZACIÓN ESTRATÉGICA WEB', conecta: false, creditos: 7 },
+            { clave: 'LMBX-IVS01', subj: 'LMBX', crse: 'IVS01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMKP-MKT01', subj: 'LMKP', crse: 'MKT01', nombre: 'ANÁLISIS DEL CONSUMIDOR Y DEL PRODUCTO', conecta: true, creditos: 7 },
+            { clave: 'LMKX-MKS08', subj: 'LMKX', crse: 'MKS08', nombre: 'MERCADOTECNIA INTERNACIONAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0005',
+          materias: [
+            { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: false, creditos: 6.13 },
+            { clave: 'LMKA-MKS09', subj: 'LMKA', crse: 'MKS09', nombre: 'INVESTIGACIÓN CUANTITATIVA Y CUALITATIVA DE MERCADOS', conecta: true, creditos: 7 },
+            { clave: 'LMAX-NES02', subj: 'LMAX', crse: 'NES02', nombre: 'AMBIENTE GLOBAL DE NEGOCIOS', conecta: false, creditos: 7 },
+            { clave: 'LMKX-ADT14', subj: 'LMKX', crse: 'ADT14', nombre: 'ESTRATEGIAS DE PRECIOS Y VENTAS', conecta: false, creditos: 7 },
+            { clave: 'LMKA-MKS10', subj: 'LMKA', crse: 'MKS10', nombre: 'PROMOCIÓN DE VENTAS', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMKP-MKS11', subj: 'LMKP', crse: 'MKS11', nombre: 'CAMPAÑAS DE PUBLICIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMAD-EES01', subj: 'LMAD', crse: 'EES01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMIA-INS18', subj: 'LMIA', crse: 'INS18', nombre: 'LOGÍSTICA Y DISTRIBUCIÓN DE PRODUCTOS', conecta: true, creditos: 7 },
+            { clave: 'LMKA-MKT13', subj: 'LMKA', crse: 'MKT13', nombre: 'GERENCIA DE MARCA', conecta: false, creditos: 7 },
+            { clave: 'LMKX-MKS12', subj: 'LMKX', crse: 'MKS12', nombre: 'MARKETING ESTRATÉGICO', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-EES02', subj: 'LMAD', crse: 'EES02', nombre: 'Estadía Empresarial', conecta: false, creditos: 35, es_estadia: true, bloque_completo: true }
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMKX-MKS13', subj: 'LMKX', crse: 'MKS13', nombre: 'COORDINACIÓN DE PROGRAMAS DE MERCADOTECNIA', conecta: false, creditos: 7 },
+            { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: false, creditos: 7 },
+            { clave: 'LMAK-ADT06', subj: 'LMAK', crse: 'ADT06', nombre: 'ADMINISTRACIÓN DE VENTAS', conecta: true, creditos: 7 },
+            { clave: 'LMKX-MKS14', subj: 'LMKX', crse: 'MKS14', nombre: 'SEMINARIO INTEGRADOR DE MERCADOTECNIA', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMHV-EES03', subj: 'LMHV', crse: 'EES03', nombre: 'ESTADÍA EMPRESARIAL PARA EL ÉNFASIS PROFESIONAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true }
+          ]
+        }
+      ],
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: '0001', nombre: 'Fundamentals' },
+        { cuatrimestre: 2, nivel: 2, clave_default: '0002', nombre: 'Basic 1' },
+        { cuatrimestre: 3, nivel: 3, clave_default: '0003', nombre: 'Basic 2' },
+        { cuatrimestre: 4, nivel: 4, clave_default: '0004', nombre: 'Intermediate 1' },
+        { cuatrimestre: 5, nivel: 5, clave_default: '0005', nombre: 'Intermediate 2' }
+      ],
+      electivas_multidisciplinares: [
+        { clave: 'LMKP-COT01', subj: 'LMKP', crse: 'COT01', nombre: 'EVALUACIÓN DE CAMPAÑAS DE COMUNICACIÓN', conecta: false, creditos: 7 },
+        { clave: 'LMKP-MKS15', subj: 'LMKP', crse: 'MKS15', nombre: 'ESTRATEGIAS DE MEDIOS', conecta: false, creditos: 7 },
+        { clave: 'LMIK-SIS01', subj: 'LMIK', crse: 'SIS01', nombre: 'INNOVACIÓN Y TECNOLOGÍA', conecta: false, creditos: 7 },
+        { clave: 'LMPD-MKS16', subj: 'LMPD', crse: 'MKS16', nombre: 'REDACCIÓN PUBLICITARIA', conecta: false, creditos: 7 },
+        { clave: 'LMAX-NES01', subj: 'LMAX', crse: 'NES01', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADS15', subj: 'LMAX', crse: 'ADS15', nombre: 'RELACIONES PÚBLICAS', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADS03', subj: 'LMAX', crse: 'ADS03', nombre: 'COMPETITIVIDAD ESTRATÉGICA EMPRESARIAL', conecta: false, creditos: 7 },
+        { clave: 'LMPR-MKT23', subj: 'LMPR', crse: 'MKT23', nombre: 'RECURSOS DE EVALUACIÓN DE FOTOGRAFÍA CAMPAÑAS DE PERSUASIVA COMUNICACIÓN', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADT15', subj: 'LMAX', crse: 'ADT15', nombre: 'ESTRATEGIAS GESTIÓN DE NEGOCIOS DIRECTIVAS Y DE Y ADMINISTRACIÓN DE NEGOCIACIÓN PROYECTOS', conecta: true, creditos: 7 },
+        { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
+      ]
+    },
+    requisitos_egreso: [
+      { clave: 'CUPR-EGMK1', subj: 'CUPR', crse: 'EGMK1', nombre: 'CURSO DE PREPARACIÓN EGEL I - MERCADOTECNIA ESTRATÉGICA' },
+      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+    ]
+  },
+  {
+    id: 12,
+    codigo: 'LIC-SYSC-18',
+    nombre: 'LICENCIATURA EN INGENIERÍA DE SOFTWARE Y SISTEMAS COMPUTACIONALES (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    ultima_actualizacion_cpa: '15-junio-2022',
+    creditos_programa: 309.78,
+    sede: 'CAM',
+    coordinadora: '',
+    activa: true,
+    total_materias: 37,
+    niveles_ingles: 5,
+    ingles_acumulativo: true,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0001',
+          materias: [
+            { clave: 'LMFM-HUS01', subj: 'LMFM', crse: 'HUS01', nombre: 'SER HUMANO', conecta: false, creditos: 6.13 },
+            { clave: 'LMIX-SIS02', subj: 'LMIX', crse: 'SIS02', nombre: 'FUNDAMENTOS DE INGENIERÍA DEL SOFTWARE', conecta: false, creditos: 7 },
+            { clave: 'LMIX-HTS01', subj: 'LMIX', crse: 'HTS01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIS04', subj: 'LMIX', crse: 'SIS04', nombre: 'FUNDAMENTOS DE REDES', conecta: false, creditos: 7 },
+            { clave: 'LMDX-EDS01', subj: 'LMDX', crse: 'EDS01', nombre: 'ESTRATEGIAS PARA LA AUTONOMÍA EN EL APRENDIZAJE', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0002',
+          materias: [
+            { clave: 'LMFM-HUS02', subj: 'LMFM', crse: 'HUS02', nombre: 'SEMINARIO DE VALORES EN LO PERSONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMIE-INS16', subj: 'LMIE', crse: 'INS16', nombre: 'TEMAS SELECTOS DE FÍSICA APLICADA A LA INGENIERÍA', conecta: false, creditos: 7 },
+            { clave: 'LMIE-SIS03', subj: 'LMIE', crse: 'SIS03', nombre: 'DISEÑO ESTRUCTURADO DE ALGORITMOS', conecta: false, creditos: 7 },
+            { clave: 'LMEI-MTS01', subj: 'LMEI', crse: 'MTS01', nombre: 'ÁLGEBRA SUPERIOR', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0003',
+          materias: [
+            { clave: 'LMFM-HUS03', subj: 'LMFM', crse: 'HUS03', nombre: 'SEMINARIO DE VALORES EN LO COMÚN', conecta: false, creditos: 6.13 },
+            { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: true, creditos: 7 },
+            { clave: 'LMIX-INS17', subj: 'LMIX', crse: 'INS17', nombre: 'INGENIERÍA DE REQUISITOS DE SOFTWARE', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIS05', subj: 'LMIX', crse: 'SIS05', nombre: 'PRINCIPIOS DE PROGRAMACIÓN LÓGICA', conecta: false, creditos: 7 },
+            { clave: 'LMIE-MTS03', subj: 'LMIE', crse: 'MTS03', nombre: 'CÁLCULO DIFERENCIAL E INTEGRAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0004',
+          materias: [
+            { clave: 'LMFM-HUS05', subj: 'LMFM', crse: 'HUS05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMEI-MTS07', subj: 'LMEI', crse: 'MTS07', nombre: 'ÁLGEBRA LINEAL Y CÁLCULO VECTORIAL', conecta: false, creditos: 7 },
+            { clave: 'LMBX-IVS01', subj: 'LMBX', crse: 'IVS01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIT14', subj: 'LMIX', crse: 'SIT14', nombre: 'FUNDAMENTOS DE BASES DE DATOS', conecta: true, creditos: 7 },
+            { clave: 'LMIP-SIS06', subj: 'LMIP', crse: 'SIS06', nombre: 'PROGRAMACIÓN VISUAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0005',
+          materias: [
+            { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: false, creditos: 6.13 },
+            { clave: 'LMIE-MTS04', subj: 'LMIE', crse: 'MTS04', nombre: 'ECUACIONES DIFERENCIALES', conecta: true, creditos: 7 },
+            { clave: 'LMIX-SIS07', subj: 'LMIX', crse: 'SIS07', nombre: 'PROGRAMACIÓN ESTRUCTURADA', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIT29', subj: 'LMIX', crse: 'SIT29', nombre: 'HERRAMIENTAS DE SOFTWARE Y SISTEMAS OPERATIVOS', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIS08', subj: 'LMIX', crse: 'SIS08', nombre: 'SISTEMAS DE INFORMACIÓN', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMIX-SIS09', subj: 'LMIX', crse: 'SIS09', nombre: 'DESARROLLO Y PROGRAMACIÓN ORIENTADO A OBJETOS', conecta: false, creditos: 7 },
+            { clave: 'LMAD-EES01', subj: 'LMAD', crse: 'EES01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIS11', subj: 'LMIX', crse: 'SIS11', nombre: 'GESTIÓN DE SERVIDORES', conecta: true, creditos: 7 },
+            { clave: 'LMIX-SIT26', subj: 'LMIX', crse: 'SIT26', nombre: 'SEGURIDAD INFORMÁTICA', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIS10', subj: 'LMIX', crse: 'SIS10', nombre: 'DISEÑO Y ADMINISTRACIÓN DE BASES DE DATOS', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-EES02', subj: 'LMAD', crse: 'EES02', nombre: 'Estadía Empresarial', conecta: false, creditos: 35, es_estadia: true, bloque_completo: true }
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMIP-SIS12', subj: 'LMIP', crse: 'SIS12', nombre: 'DESARROLLO DE APLICACIONES', conecta: false, creditos: 7 },
+            { clave: 'LMIX-SIS13', subj: 'LMIX', crse: 'SIS13', nombre: 'EMPRESAS Y SISTEMAS ERP', conecta: false, creditos: 7 },
+            { clave: 'LMAI-INT06', subj: 'LMAI', crse: 'INT06', nombre: 'ADMINISTRACIÓN Y EVALUACIÓN DE PROYECTOS', conecta: false, creditos: 7 },
+            { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMHV-EES03', subj: 'LMHV', crse: 'EES03', nombre: 'ESTADÍA EMPRESARIAL PARA EL ÉNFASIS PROFESIONAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true }
+          ]
+        }
+      ],
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: '0001', nombre: 'Fundamentals' },
+        { cuatrimestre: 2, nivel: 2, clave_default: '0002', nombre: 'Basic 1' },
+        { cuatrimestre: 3, nivel: 3, clave_default: '0003', nombre: 'Basic 2' },
+        { cuatrimestre: 4, nivel: 4, clave_default: '0004', nombre: 'Intermediate 1' },
+        { cuatrimestre: 5, nivel: 5, clave_default: '0005', nombre: 'Intermediate 2' }
+      ],
+      electivas_multidisciplinares: [
+        { clave: 'LMIX-SIS14', subj: 'LMIX', crse: 'SIS14', nombre: 'PROCESO DE TESTEO DE REDES', conecta: false, creditos: null },
+        { clave: 'LMIK-SIS01', subj: 'LMIK', crse: 'SIS01', nombre: 'INNOVACIÓN Y TECNOLOGÍA', conecta: false, creditos: 7 },
+        { clave: 'LMIX-SIS15', subj: 'LMIX', crse: 'SIS15', nombre: 'PROTOCOLOS DE ENRUTAMIENTO', conecta: false, creditos: null },
+        { clave: 'LMAX-NES01', subj: 'LMAX', crse: 'NES01', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS', conecta: false, creditos: 7 },
+        { clave: 'LMIX-SIS16', subj: 'LMIX', crse: 'SIS16', nombre: 'REDES INALÁMBRICAS Y CONMUTACIÓN LAN', conecta: false, creditos: null },
+        { clave: 'LMAX-ADS03', subj: 'LMAX', crse: 'ADS03', nombre: 'COMPETITIVIDAD ESTRATÉGICA EMPRESARIAL', conecta: false, creditos: 7 },
+        { clave: 'LMIX-SIT01', subj: 'LMIX', crse: 'SIT01', nombre: 'ADMINISTRACIÓN DE ANÁLISIS DE SEGURIDAD EN REDES RENDIMIENTO EN REDES', conecta: false, creditos: 7 },
+        { clave: 'LMIX-SIT03', subj: 'LMIX', crse: 'SIT03', nombre: 'AnálisisDeRendiemientoEnRedes', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADT15', subj: 'LMAX', crse: 'ADT15', nombre: 'ESTRATEGIAS GESTIÓN DE NEGOCIOS DIRECTIVAS Y DE Y ADMINISTRACIÓN DE NEGOCIACIÓN PROYECTOS', conecta: true, creditos: 7 },
+        { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
+      ]
+    },
+    requisitos_egreso: [
+      { clave: 'CUPR-EVSS1', subj: 'CUPR', crse: 'EVSS1', nombre: 'CURSO DE PREPARACIÓN EVIPE I - INGENIERÍA DE SOFTWARE' },
+      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+    ]
   }
 ];
 

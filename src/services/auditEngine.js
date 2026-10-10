@@ -142,19 +142,37 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   let maxCuatrimestreAlcanzado = 1;
   const periodosCursados = [...new Set(normalizedRecords.map(r => r.periodo).filter(Boolean))].sort();
 
+  // Un mismo CRSE puede repetirse en un mapa (p.ej. materia LM- y su variante EC- de 14 semanas).
+  // Para esos CRSE ambiguos el emparejamiento debe usar la clave completa (SUBJ-CRSE), no solo el CRSE.
+  const clavesPorCrse = new Map();
+  for (const c of cuatrimestres) {
+    for (const mat of c.materias) {
+      if (!clavesPorCrse.has(mat.crse)) clavesPorCrse.set(mat.crse, new Set());
+      clavesPorCrse.get(mat.crse).add(mat.clave);
+    }
+  }
+  const esCrseAmbiguo = (crse) => (clavesPorCrse.get(crse)?.size || 0) > 1;
+
   const subjectMapAttempts = new Map();
   for (const c of cuatrimestres) {
     for (const mat of c.materias) {
-      const attempts = normalizedRecords.filter(r =>
-        r.crse === mat.crse ||
-        r.claveCompleta === mat.clave ||
-        (mat.alias_corregir && r.crse === mat.alias_corregir)
-      );
+      const attempts = normalizedRecords.filter(r => {
+        if (esCrseAmbiguo(mat.crse)) {
+          // CRSE repetido: exigir que coincida también el prefijo de.subject
+          if (r.claveCompleta === mat.clave) return true;
+          if (mat.alias_corregir && r.crse === mat.alias_corregir) return true;
+          return false;
+        }
+        return (
+          r.crse === mat.crse ||
+          r.claveCompleta === mat.clave ||
+          (mat.alias_corregir && r.crse === mat.alias_corregir)
+        );
+      });
       if (attempts.length > 0 && c.numero > maxCuatrimestreAlcanzado) {
         maxCuatrimestreAlcanzado = c.numero;
       }
-      // Usar mat.crse como llave única garantizada
-      subjectMapAttempts.set(mat.crse, attempts);
+      subjectMapAttempts.set(mat.clave, attempts);
     }
   }
 
@@ -183,7 +201,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     const auditedMaterias = [];
 
     for (const materia of cuat.materias) {
-      const attempts = subjectMapAttempts.get(materia.crse) || [];
+      const attempts = subjectMapAttempts.get(materia.clave) || [];
       const auditResult = evaluateSubjectAttempts(
         materia,
         attempts,
@@ -350,8 +368,16 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   }
 
   // 6. Evaluar Electivas Multidisciplinares
+  // Si el CRSE también existe como materia de cuatrimestre, exigir la clave completa
+  // para no marcar como cursada una electiva que el alumno nunca tomó.
+  const crsesDeMateria = new Set();
+  for (const c of cuatrimestres) for (const m of c.materias) crsesDeMateria.add(m.crse);
+
   const auditedElectivas = electivasMultidisciplinares.map(elec => {
-    const attempts = normalizedRecords.filter(r => r.crse === elec.crse);
+    const attempts = normalizedRecords.filter(r => {
+      if (crsesDeMateria.has(elec.crse)) return r.claveCompleta === elec.clave;
+      return r.crse === elec.crse;
+    });
     const estaCursada = attempts.some(a => a.esAprobada);
     const estaCursando = attempts.some(a => a.estaCursando);
     const ultimoIntento = attempts[attempts.length - 1];
