@@ -36,10 +36,11 @@ export async function getCarreras() {
   try {
     const sql = neon(databaseUrl);
     const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras ORDER BY codigo ASC`;
-    
+
     if (rows && rows.length > 0) {
-      // Validamos que el mapa_json venga deserializado si venía como string
-      const parsedRows = rows.map(carrera => {
+      // Mapear los datos provenientes de Neon por código
+      const dbCarrerasMap = new Map();
+      rows.forEach(carrera => {
         let mapa = carrera.mapa_json;
         if (typeof mapa === 'string') {
           try {
@@ -48,22 +49,31 @@ export async function getCarreras() {
             console.warn('[NeonService] Error al parsear mapa_json de carrera:', carrera.codigo, e);
           }
         }
-        
-        const localCarrera = CARRERAS_LOCAL.find(c => c.codigo === carrera.codigo);
-        const nombreOficial = resolverNombreOficialCarrera(carrera) || localCarrera?.nombre || carrera.nombre;
-
-        return {
-          ...localCarrera,
+        dbCarrerasMap.set(carrera.codigo, {
           ...carrera,
+          mapa_json: mapa
+        });
+      });
+
+      // El catálogo maestro institucional garantizado son las 11 carreras oficiales de CARRERAS_LOCAL.
+      // Sincronizamos las propiedades desde Neon para las carreras oficiales.
+      const carrerasConsolidadas = CARRERAS_LOCAL.map(local => {
+        const fromDb = dbCarrerasMap.get(local.codigo);
+        if (!fromDb) return local;
+
+        const nombreOficial = resolverNombreOficialCarrera(fromDb) || local.nombre;
+        return {
+          ...local,
+          ...fromDb,
           nombre: nombreOficial,
-          activa: carrera.activa !== undefined ? Boolean(carrera.activa) : (localCarrera ? localCarrera.activa : true),
-          coordinadora: carrera.coordinadora || localCarrera?.coordinadora || '',
-          mapa_json: mapa || (localCarrera ? localCarrera.mapa_json : null)
+          activa: fromDb.activa !== undefined ? Boolean(fromDb.activa) : local.activa,
+          coordinadora: fromDb.coordinadora || local.coordinadora,
+          mapa_json: fromDb.mapa_json || local.mapa_json
         };
       });
 
       return {
-        carreras: parsedRows,
+        carreras: carrerasConsolidadas,
         fuente: 'neon',
         mensaje: 'Conectado a Neon PostgreSQL Serverless'
       };

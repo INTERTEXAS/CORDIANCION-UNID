@@ -17,7 +17,6 @@ import {
   Briefcase,
   Scale,
   Compass,
-  Layers,
   FolderTree
 } from 'lucide-react';
 import { ALUMNOS_DEMO } from '../data/demoStudents';
@@ -104,9 +103,6 @@ export default function HeaderBar({
       carreras: items
     };
   });
-
-  const codigosAgrupados = new Set(gruposCoordinadoras.flatMap(g => g.carreras.map(c => c.codigo)));
-  const carrerasSinGrupo = (carreras || []).filter(c => !codigosAgrupados.has(c.codigo));
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -244,43 +240,6 @@ export default function HeaderBar({
                       </div>
                     );
                   })}
-
-                  {/* Fallback para carreras sin coordinadora asignada */}
-                  {carrerasSinGrupo.length > 0 && (
-                    <div className="rounded-xl border border-border p-2.5 bg-surface-2/40 space-y-1.5">
-                      <div className="px-3 py-1.5 rounded-lg text-[11px] font-bold bg-surface-3 text-text-secondary flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <Layers className="w-3.5 h-3.5" strokeWidth={2} />
-                          <span>OTRAS LICENCIATURAS</span>
-                        </div>
-                        <span className="text-[10px] font-mono">{carrerasSinGrupo.length}</span>
-                      </div>
-                      <div className="space-y-1">
-                        {carrerasSinGrupo.map((carrera) => {
-                          const isSelected = carreraSeleccionada?.codigo === carrera.codigo;
-                          const nombreCompleto = resolverNombreOficialCarrera(carrera);
-                          return (
-                            <button
-                              key={carrera.codigo}
-                              onClick={() => {
-                                onSelectCarrera(carrera);
-                                setIsDropdownOpen(false);
-                              }}
-                              className={`w-full text-left px-3.5 py-2.5 rounded-lg flex items-center justify-between transition-all cursor-pointer border hover:bg-surface-2 ${
-                                isSelected ? 'bg-surface-1 font-semibold shadow-xs' : 'border-transparent bg-surface-1/70'
-                              }`}
-                            >
-                              <div className="flex flex-col min-w-0 pr-3">
-                                <span className="font-mono text-[11px] font-extrabold text-text-primary">{carrera.codigo}</span>
-                                <span className="text-[11px] text-text-primary/90 mt-0.5">{nombreCompleto}</span>
-                              </div>
-                              {isSelected && <Check className="w-4 h-4 text-accent shrink-0 ml-1" strokeWidth={2} />}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
