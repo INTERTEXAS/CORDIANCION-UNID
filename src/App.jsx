@@ -254,6 +254,7 @@ export default function App() {
 
   // Cargar caso demo institucional
   const handleLoadDemo = (demo) => {
+    if (!demo) return;
     const auditResult = runAcademicAudit(
       {
         matricula: demo.matricula,
@@ -267,10 +268,12 @@ export default function App() {
     );
     setAuditData(auditResult);
     addToHistorial(auditResult);
-    setActiveTab('mapa');
+    if (activeTab !== 'cedula') {
+      setActiveTab('mapa');
+    }
     setNotification({
       tipo: 'exito',
-      texto: `Cargado: ${demo.label}`
+      texto: `Cargado: ${demo.label || demo.nombre}`
     });
   };
 
@@ -490,10 +493,10 @@ export default function App() {
                 {/* Tab Switcher + Filters */}
                 <div className="no-print print:hidden bg-surface-1 p-3 rounded-2xl border border-border shadow-card space-y-2.5 transition-theme">
                   <div className="flex items-center justify-between">
-                    <div className="bg-surface-2 dark:bg-white/[0.04] p-1 rounded-xl inline-flex items-center space-x-1 select-none">
+                    <div className="bg-surface-2 dark:bg-white/[0.04] p-1 rounded-xl inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full">
                       <button
                         onClick={() => setActiveTab('mapa')}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
+                        className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
                           activeTab === 'mapa'
                             ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-card'
                             : 'text-text-muted hover:text-text-secondary'
@@ -505,7 +508,7 @@ export default function App() {
 
                       <button
                         onClick={() => setActiveTab('cedula')}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
+                        className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
                           activeTab === 'cedula'
                             ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-card'
                             : 'text-text-muted hover:text-text-secondary'
@@ -516,8 +519,9 @@ export default function App() {
                       </button>
                     </div>
 
-                    <div className="text-[11px] font-medium text-text-muted uppercase tracking-wider hidden sm:block">
-                      {activeTab === 'mapa' ? 'Validación de Asignaturas' : 'Cédula Oficial'}
+                    <div className="text-[11px] font-medium text-text-muted uppercase tracking-wider hidden xl:block">
+                      {activeTab === 'mapa' && 'Validación de Asignaturas'}
+                      {activeTab === 'cedula' && 'Cédula Oficial'}
                     </div>
                   </div>
 

@@ -52,6 +52,54 @@ function checkFailed(calif) {
 }
 import { detectarModalidad } from './pdfParser.js';
 
+/**
+ * Regla de exclusión: filtra e ignora por completo materias de relleno y cursos de preparación EGEL:
+ * - Ortografía (claves típicas CMS02, LMPD-CMS02, MPD-CMS02).
+ * - Comprensión Lectora (claves típicas CMS03, LMPD-CMS03, MPD-CMS03).
+ * - CURSO DE PREPARACIÓN EGEL I (clave CUPR-ECCF1, CUPR-EGCF1 o cualquier prefijo/clave CUPR).
+ * No se suman al total del mapa, no se marcan en rojo como omitidas ni afectan el avance.
+ */
+export function esMateriaIgnorada(item) {
+  if (!item) return false;
+  const clave = String(item.clave || item.claveCompleta || '').toUpperCase().trim();
+  const crse = String(item.crse || '').toUpperCase().trim();
+  const subj = String(item.subj || '').toUpperCase().trim();
+  const nombre = String(item.nombre || '').toUpperCase().trim();
+
+  // 1. Ortografía
+  if (crse === 'CMS02' || clave.includes('CMS02') || nombre.includes('ORTOGRAF')) {
+    return true;
+  }
+
+  // 2. Comprensión Lectora
+  if (crse === 'CMS03' || clave.includes('CMS03') || nombre.includes('COMPRENSI')) {
+    return true;
+  }
+
+  // 3. CURSO DE PREPARACIÓN EGEL I (o cualquier prefijo CUPR / ECCF1 / EGCF1)
+  if (
+    subj === 'CUPR' ||
+    subj.startsWith('CUPR') ||
+    crse.startsWith('CUPR') ||
+    clave.startsWith('CUPR') ||
+    clave.includes('CUPR') ||
+    crse === 'ECCF1' ||
+    crse === 'EGCF1' ||
+    clave.includes('ECCF1') ||
+    clave.includes('EGCF1') ||
+    nombre.includes('PREPARACIÓN EGEL') ||
+    nombre.includes('PREPARACION EGEL') ||
+    nombre.includes('CURSO DE PREPARACIÓN EGEL') ||
+    nombre.includes('CURSO DE PREPARACION EGEL') ||
+    nombre.includes('PREPARACIÓN EVIPE') ||
+    nombre.includes('PREPARACION EVIPE')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_LOCAL[0]) {
   // Asegurarnos de detectar la modalidad si no viene calculada
   if (!estudiante.modalidadDetectada) {
@@ -74,39 +122,45 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   const nivelesInglesArr = resolveNivelesIngles(carreraEfectiva, mapa);
 
   // Normalizar la estructura del mapa (compatible tanto con Neon DB como con respaldo local)
+  // Filtrar e ignorar por completo materias de relleno y EGEL del mapa curricular
   const cuatrimestres = cuatrimestresRaw.map(c => ({
     ...c,
     numero: c.numero,
     nombre: c.nombre || `${c.numero}.º Cuat.`,
     con_ingles: c.con_ingles !== undefined ? c.con_ingles : Boolean(c.ingles),
-    materias: (c.materias || []).map(m => {
-      const subj = (m.subj || (m.clave ? m.clave.split('-')[0] : 'LMAX')).toUpperCase();
-      const crse = (m.crse || (m.clave ? m.clave.split('-')[1] : '')).toUpperCase();
-      return {
-        ...m,
-        subj,
-        crse,
-        clave: m.clave || `${subj}-${crse}`,
-        conecta: m.conecta !== undefined ? m.conecta : Boolean(m.cc),
-        creditos_bh: m.creditos_bh || m.bh || 1,
-        es_estadia: Boolean(m.es_estadia)
-      };
-    })
+    materias: (c.materias || [])
+      .filter(m => !esMateriaIgnorada(m))
+      .map(m => {
+        const subj = (m.subj || (m.clave ? m.clave.split('-')[0] : 'LMAX')).toUpperCase();
+        const crse = (m.crse || (m.clave ? m.clave.split('-')[1] : '')).toUpperCase();
+        return {
+          ...m,
+          subj,
+          crse,
+          clave: m.clave || `${subj}-${crse}`,
+          conecta: m.conecta !== undefined ? m.conecta : Boolean(m.cc),
+          creditos_bh: m.creditos_bh || m.bh || 1,
+          es_estadia: Boolean(m.es_estadia)
+        };
+      })
   }));
 
-  const electivasMultidisciplinares = electivasRaw.map(el => {
-    const subj = (el.subj || (el.clave ? el.clave.split('-')[0] : 'LMAX')).toUpperCase();
-    const crse = (el.crse || (el.clave ? el.clave.split('-')[1] : '')).toUpperCase();
-    return {
-      ...el,
-      subj,
-      crse,
-      clave: el.clave || `${subj}-${crse}`
-    };
-  });
+  const electivasMultidisciplinares = electivasRaw
+    .filter(el => !esMateriaIgnorada(el))
+    .map(el => {
+      const subj = (el.subj || (el.clave ? el.clave.split('-')[0] : 'LMAX')).toUpperCase();
+      const crse = (el.crse || (el.clave ? el.clave.split('-')[1] : '')).toUpperCase();
+      return {
+        ...el,
+        subj,
+        crse,
+        clave: el.clave || `${subj}-${crse}`
+      };
+    });
 
-  // 1. Normalizar registros extraídos del PDF
-  const normalizedRecords = registros.map(r => {
+  // 1. Filtrar e ignorar registros de relleno/EGEL y normalizar registros extraídos del PDF
+  const registrosFiltrados = (registros || []).filter(r => !esMateriaIgnorada(r));
+  const normalizedRecords = registrosFiltrados.map(r => {
     let crse = (r.crse || '').toUpperCase().trim();
     if (crse === 'CFTD8') crse = 'CFT08';
     if (crse === 'MT02' || crse === 'MT 02') crse = 'MTS02';
@@ -390,13 +444,18 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     };
   });
 
-  // 7. Evaluar Requisitos Co-Curriculares y de Titulación / Egreso
+  // 7. Evaluar Requisitos Co-Curriculares y de Titulación / Egreso (excluyendo materias ignoradas)
+  const reqEgresoBase = Array.isArray(carreraEfectiva?.requisitos_egreso) && carreraEfectiva.requisitos_egreso.length > 0
+    ? carreraEfectiva.requisitos_egreso
+    : (REQUISITOS_EGRESO || []);
+  const reqEgresoFiltrados = reqEgresoBase.filter(req => !esMateriaIgnorada(req));
+
   const auditedCoCurriculares = [];
   const adeudosReqEgreso = [];
   const omitidasReqEgreso = [];
   let coCurricularesAcreditados = 0;
 
-  for (const req of (REQUISITOS_EGRESO || [])) {
+  for (const req of reqEgresoFiltrados) {
     const reqCrse = (req.crse || (req.clave ? req.clave.split('-')[1] : '')).toUpperCase();
     const attempts = normalizedRecords.filter(r => r.crse === reqCrse);
 
@@ -527,7 +586,11 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   }));
 
   // === ANÁLISIS DE COHERENCIA CURRICULAR ===
-  const excludeClavesComunes = ['LENG', 'INHH', 'CIAN', 'PROP', 'TUPR', 'TPEG', 'HUS01', 'HUS02', 'HUS03', 'HUS04', 'HUS05', 'HUS06', 'HTS01', 'EDS01', 'CMS01', 'CMS02', 'CMS03'];
+  const excludeClavesComunes = [
+    'LENG', 'INHH', 'CIAN', 'PROP', 'TUPR', 'TPEG', 'CUPR',
+    'HUS01', 'HUS02', 'HUS03', 'HUS04', 'HUS05', 'HUS06',
+    'HTS01', 'EDS01', 'CMS01', 'CMS02', 'CMS03', 'ECCF1', 'EGCF1'
+  ];
   const clavesMapaActual = new Set();
   cuatrimestres.forEach(c => c.materias.forEach(m => clavesMapaActual.add(m.crse)));
   electivasMultidisciplinares.forEach(e => clavesMapaActual.add(e.crse));
@@ -535,7 +598,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   let materiasCoincidentes = 0;
   const materiasHuerfanas = [];
 
-  registros.forEach(r => {
+  registrosFiltrados.forEach(r => {
     if (excludeClavesComunes.includes(r.subj) || excludeClavesComunes.includes(r.crse)) return;
     if (clavesMapaActual.has(r.crse)) {
       materiasCoincidentes++;
@@ -566,7 +629,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
       totalMateriasMapa: cuatrimestres.reduce((acc, cuat) => acc + cuat.materias.length, 0),
       nivelesIngles: nivelesInglesArr.length,
       inglesAcreditados,
-      requisitosEgresoTotal: 4,
+      requisitosEgresoTotal: reqEgresoFiltrados.length,
       coCurricularesAcreditados,
       aprobadasOrd: totalAprobadasOrd,
       aprobadasRec: totalAprobadasRec,
@@ -682,8 +745,8 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
       modalidad: ultimoIntento.modalidad || 'RW',
       numIntentos,
       vecesRecurso: numIntentos - 1,
-      color: '#4F46E5',
-      bgColor: '#EEF2FF',
+      color: '#DB2777',
+      bgColor: '#FDF2F8',
       icono: 'Clock',
       historialTexto,
       tieneDesfase,

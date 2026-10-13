@@ -213,8 +213,8 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
             </div>
 
             <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-400 block uppercase mb-0.5">En Curso Activo</span>
-              <span className="text-[16px] font-extrabold text-[#4F46E5]">{resumen.cursando}</span>
+              <span className="text-[10px] font-semibold text-pink-700 dark:text-pink-400 block uppercase mb-0.5">En Curso Activo</span>
+              <span className="text-[16px] font-extrabold text-[#DB2777]">{resumen.cursando}</span>
             </div>
           </div>
         </div>
@@ -257,7 +257,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
                   if (inc.estado === 'RE') badgeClass = 'bg-sky-100 dark:bg-sky-500/10 text-sky-900 dark:text-sky-300 border-sky-300 dark:border-sky-500/20';
                   if (inc.estado === 'ADEUDO') badgeClass = 'bg-red-100 dark:bg-red-500/10 text-red-900 dark:text-red-300 border-red-300 dark:border-red-500/20';
                   if (inc.estado === 'OMITIDA') badgeClass = 'bg-orange-100 dark:bg-orange-500/10 text-orange-900 dark:text-orange-300 border-orange-300 dark:border-orange-500/20';
-                  if (inc.estado === 'RECURSANDO') badgeClass = 'bg-indigo-100 dark:bg-indigo-500/10 text-indigo-900 dark:text-indigo-300 border-indigo-300 dark:border-indigo-500/20';
+                  if (inc.estado === 'RECURSANDO') badgeClass = 'bg-pink-100 dark:bg-pink-500/10 text-pink-900 dark:text-pink-300 border-pink-300 dark:border-pink-500/20';
                   if (inc.estado === 'OU') badgeClass = 'bg-purple-100 dark:bg-purple-500/10 text-purple-900 dark:text-purple-300 border-purple-300 dark:border-purple-500/20';
 
                   return (

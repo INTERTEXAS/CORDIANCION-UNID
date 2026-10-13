@@ -62,6 +62,7 @@ export default function CurriculumMap({
     if (activeFilter === 'ADEUDO' && estado === 'ADEUDO') return false;
     if (activeFilter === 'OMITIDA' && estado === 'OMITIDA') return false;
     if (activeFilter === 'OU' && estado === 'OU') return false;
+    if (activeFilter === 'CURS' && (estado === 'CURS' || estado === 'CURSANDO' || estado === 'RECURSANDO')) return false;
     return true;
   };
 
@@ -109,15 +110,19 @@ export default function CurriculumMap({
           label: 'OU · Oportunidad utilizada'
         };
       case 'CURS':
+      case 'CURSANDO':
+      case 'RECURSANDO':
         return { 
-          cardBorder: 'border-indigo-300 dark:border-indigo-500/40', 
-          badgeBg: 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300', 
-          gradeColor: 'text-indigo-700 dark:text-indigo-400',
+          cardBg: 'bg-pink-50 dark:bg-pink-950/20',
+          cardBorder: 'border-pink-300 dark:border-pink-500/40', 
+          badgeBg: 'bg-pink-100 dark:bg-pink-500/20 text-pink-800 dark:text-pink-300', 
+          gradeColor: 'text-pink-700 dark:text-pink-400',
           icon: BookOpen, 
-          label: 'En Curso' 
+          label: estado === 'RECURSANDO' ? 'Recursando' : 'En Curso' 
         };
       default:
         return { 
+          cardBg: 'bg-surface-1',
           cardBorder: 'border-border', 
           badgeBg: 'bg-surface-2 text-text-secondary', 
           gradeColor: 'text-text-primary',
@@ -275,7 +280,7 @@ export default function CurriculumMap({
                   <div
                     key={materia.clave}
                     onClick={() => setSelectedMateriaModal({ materia, audit })}
-                    className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[110px] box-border bg-surface-1 ${visual.cardBorder} ${
+                    className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[110px] box-border ${visual.cardBg || 'bg-surface-1'} ${visual.cardBorder} ${
                       dimmed ? 'opacity-30 grayscale' : 'opacity-100'
                     }`}
                     title="Haga clic para ver el historial detallado de intentos"
@@ -362,7 +367,7 @@ export default function CurriculumMap({
               <div
                 key={`ing-${ing.nivel || ing.clave}`}
                 onClick={() => setSelectedMateriaModal({ materia: { clave: `LENG-${ing.clave}`, nombre: ing.nombre }, audit: ing })}
-                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border bg-surface-1 ${visual.cardBorder} ${
+                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border ${visual.cardBg || 'bg-surface-1'} ${visual.cardBorder} ${
                   dimmed ? 'opacity-30 grayscale' : 'opacity-100'
                 }`}
                 title="Haga clic para ver el detalle de intentos de inglés"
@@ -406,7 +411,7 @@ export default function CurriculumMap({
               <div
                 key={`cocu-${cocu.clave || index}`}
                 onClick={() => setSelectedMateriaModal({ materia: { clave: cocu.clave, nombre: cocu.nombre }, audit: cocu })}
-                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border bg-surface-1 ${visual.cardBorder} ${
+                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border ${visual.cardBg || 'bg-surface-1'} ${visual.cardBorder} ${
                   dimmed ? 'opacity-30 grayscale' : 'opacity-100'
                 }`}
                 title="Haga clic para ver el detalle de este requisito"
@@ -472,7 +477,7 @@ export default function CurriculumMap({
             </div>
 
             <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-[#4F46E5] shrink-0" />
+              <span className="w-3 h-3 rounded-full bg-pink-500 shrink-0" />
               <span className="font-bold text-text-primary">CURS:</span>
               <span className="text-text-secondary">En Curso</span>
             </div>
@@ -521,7 +526,7 @@ export default function CurriculumMap({
                       : elec.cursada
                       ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-950 dark:text-emerald-300 font-bold' 
                       : elec.cursando
-                      ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/20 text-indigo-950 dark:text-indigo-300 font-bold'
+                      ? 'bg-pink-50 dark:bg-pink-950/20 border-pink-300 dark:border-pink-500/30 text-pink-950 dark:text-pink-300 font-bold'
                       : 'bg-surface-1 border-border text-text-secondary font-medium'
                   }`}
                   style={{ overflow: 'visible' }}
@@ -536,7 +541,7 @@ export default function CurriculumMap({
                       : elec.cursada
                       ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-400'
                       : elec.cursando
-                      ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-400'
+                      ? 'bg-pink-100 dark:bg-pink-500/20 text-pink-800 dark:text-pink-400'
                       : 'bg-surface-3 text-text-muted'
                   }`}>
                     {elec.calificacion === 'OU' ? 'OU' : elec.cursada ? `AC (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disp.'}

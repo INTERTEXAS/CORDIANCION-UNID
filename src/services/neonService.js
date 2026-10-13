@@ -1,6 +1,6 @@
 // Servicio de consulta de Carreras en Neon Database con Respaldo Local Oficial
 import { neon } from '@neondatabase/serverless';
-import { CARRERAS_LOCAL } from '../data/carrerasData.js';
+import { CARRERAS_LOCAL, resolverNombreOficialCarrera } from '../data/carrerasData.js';
 
 function getDatabaseUrl() {
   try {
@@ -35,7 +35,7 @@ export async function getCarreras() {
 
   try {
     const sql = neon(databaseUrl);
-    const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras WHERE codigo IN ('LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17', 'LIC-ARQU-18', 'LIC-DERE-18', 'LIC-EJDE-17', 'LIC-EJED-17', 'LIC-DSGD-18', 'LIC-CTCO-18', 'LIC-EJAD-17', 'LIC-MEES-18', 'LIC-SYSC-18') ORDER BY codigo ASC`;
+    const rows = await sql`SELECT codigo, nombre, encabezado_plan, activa, coordinadora, mapa_json FROM carreras ORDER BY codigo ASC`;
     
     if (rows && rows.length > 0) {
       // Validamos que el mapa_json venga deserializado si venía como string
@@ -50,22 +50,20 @@ export async function getCarreras() {
         }
         
         const localCarrera = CARRERAS_LOCAL.find(c => c.codigo === carrera.codigo);
+        const nombreOficial = resolverNombreOficialCarrera(carrera) || localCarrera?.nombre || carrera.nombre;
 
         return {
           ...localCarrera,
           ...carrera,
-          nombre: localCarrera?.nombre || carrera.nombre,
-          activa: true,
+          nombre: nombreOficial,
+          activa: carrera.activa !== undefined ? Boolean(carrera.activa) : (localCarrera ? localCarrera.activa : true),
+          coordinadora: carrera.coordinadora || localCarrera?.coordinadora || '',
           mapa_json: mapa || (localCarrera ? localCarrera.mapa_json : null)
         };
       });
-      const carrerasPorCodigo = new Map(parsedRows.map(carrera => [carrera.codigo, carrera]));
-      const carrerasActivas = CARRERAS_LOCAL
-        .filter(carrera => carrera.activa)
-        .map(carrera => carrerasPorCodigo.get(carrera.codigo) || carrera);
 
       return {
-        carreras: carrerasActivas,
+        carreras: parsedRows,
         fuente: 'neon',
         mensaje: 'Conectado a Neon PostgreSQL Serverless'
       };
