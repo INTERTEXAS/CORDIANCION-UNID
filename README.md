@@ -111,7 +111,7 @@ Antes de cada proceso de compilación para producción, el sistema ejecuta de fo
 
 1. **Conexión a Neon PostgreSQL**: Validación de canal seguro y respuesta del servidor.
 2. **Estructura de Tablas**: Existencia de las tablas `auditoria_grupal`, `auditorias_estudiantes`, `carreras`, `estatus_alumnos` y `usuarios`.
-3. **Catálogo de Carreras**: Recuperación íntegra de los 11 programas de licenciatura.
+3. **Catálogo de Carreras**: Recuperación íntegra de los 12 programas de licenciatura.
 4. **Motor de Auditoría**: Procesamiento analítico de expedientes prueba bajo todas las modalidades.
 5. **Guardado en Base de Datos**: Inserción de lote de prueba.
 6. **Consulta y Recuperación**: Validación de integridad de datos leídos.
@@ -137,16 +137,16 @@ Si alguna de las 8 pruebas falla, la compilación de producción se detiene auto
 
 ## Configuración y Variables de Entorno
 
-Crear un archivo `.env` en la raíz del proyecto con la siguiente estructura:
+Crear un archivo `.env` en la raíz del proyecto tomando como base la plantilla `.env.example` con la siguiente estructura:
 
 ```env
-# Conexión a Neon PostgreSQL Serverless
-DATABASE_URL="postgresql://usuario:contraseña@servidor-pooler.neon.tech/neondb?sslmode=require"
-VITE_NEON_DATABASE_URL="postgresql://usuario:contraseña@servidor-pooler.neon.tech/neondb?sslmode=require"
+# Conexión a la base de datos Neon PostgreSQL Serverless
+DATABASE_URL="tu_url_de_base_de_datos"
+VITE_NEON_DATABASE_URL="tu_url_de_base_de_datos"
 
 # Microsoft Entra ID (Azure AD) - UNID Single Tenant
-VITE_AZURE_CLIENT_ID="tu_azure_client_id_aqui"
-VITE_AZURE_TENANT_ID="tu_azure_tenant_id_aqui"
+VITE_AZURE_CLIENT_ID="tu_client_id_aqui"
+VITE_AZURE_TENANT_ID="tu_tenant_id_aqui"
 ```
 
 ---
