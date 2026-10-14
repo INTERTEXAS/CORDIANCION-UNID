@@ -50,7 +50,48 @@ function checkFailed(calif) {
   const n = parseFloat(s);
   return !isNaN(n) && n < 6;
 }
-import { detectarModalidad } from './pdfParser.js';
+
+export function detectarModalidad(estudiante, registros = [], carreras = CARRERAS_LOCAL) {
+  if (!estudiante) return estudiante;
+  if (typeof estudiante === 'string') {
+    estudiante = { programa: estudiante };
+  }
+  let conteoEjecutivo = 0;
+  let conteoEscolarizado = 0;
+  
+  const dualClaves = ['ADS38', 'ADS39', 'ADS40', 'MKT26', 'MKS28', 'EES11', 'EES12'];
+  let tieneDual = false;
+  const catalogo = Array.isArray(carreras) && carreras.length > 0 ? carreras : CARRERAS_LOCAL;
+  const programaDeclarado = catalogo.some(carrera => carrera.codigo === estudiante.programa);
+
+  for (const r of (registros || [])) {
+    const subj = r?.subj || '';
+    const crse = r?.crse || '';
+    
+    if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
+      conteoEjecutivo++;
+    } else if (subj.startsWith('L') || /^[A-Z]{2}[ST]\d{2}$/.test(crse)) {
+      conteoEscolarizado++;
+    }
+    
+    if (dualClaves.includes(crse)) {
+      tieneDual = true;
+    }
+  }
+
+  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
+    estudiante.modalidadDetectada = 'EJECUTIVO';
+    if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
+  } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
+    estudiante.modalidadDetectada = 'ESCOLARIZADO DUAL';
+    if (!programaDeclarado) estudiante.programa = 'LIC-DAEM-18';
+  } else {
+    estudiante.modalidadDetectada = 'ESCOLARIZADO';
+    if (!programaDeclarado) estudiante.programa = 'LIC-COFI-18';
+  }
+  
+  return estudiante;
+}
 
 /**
  * Regla de exclusión: filtra e ignora por completo materias de relleno y cursos de preparación EGEL:
@@ -163,9 +204,9 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   const normalizedRecords = registrosFiltrados.map(r => {
     let crse = (r.crse || '').toUpperCase().trim();
     if (crse === 'CFTD8') crse = 'CFT08';
-    if (crse === 'MT02' || crse === 'MT 02') crse = 'MTS02';
     const subj = (r.subj || '').toUpperCase().trim();
-    const calif = r.calificacion !== undefined && r.calificacion !== null ? String(r.calificacion).trim() : '';
+    const rawCalif = r.calificacion !== undefined && r.calificacion !== null ? r.calificacion : r.grde;
+    const calif = rawCalif !== undefined && rawCalif !== null ? String(rawCalif).trim() : '';
     const esAprob = checkPassed(calif);
     const esReprob = checkFailed(calif);
     const estaCurs = !calif || calif === '';

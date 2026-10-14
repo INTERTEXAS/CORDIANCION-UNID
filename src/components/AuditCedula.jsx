@@ -5,7 +5,6 @@ import {
   CheckCircle2, 
   FileSpreadsheet
 } from 'lucide-react';
-import StudentStatusSelector from './StudentStatusSelector';
 
 export default function AuditCedula({ auditData, forwardedRef, onStatusChange }) {
   const [localEstatus, setLocalEstatus] = useState('AC');
@@ -26,7 +25,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
   if (!auditData) {
     return (
       <div className="bg-surface-1 rounded-3xl border border-border p-12 text-center text-text-muted shadow-card transition-theme">
-        <FileSpreadsheet className="w-12 h-12 mx-auto text-text-muted/50 mb-3" strokeWidth={1.5} />
+        <FileSpreadsheet className="w-12 h-12 mx-auto text-text-muted/50 mb-3" strokeWidth={1.8} />
         <h3 className="text-base font-bold text-text-primary">Sin cédula de auditoría</h3>
         <p className="text-[13px] text-text-secondary mt-1 max-w-md mx-auto">
           Cargue el expediente del estudiante para generar la cédula ejecutiva y la bitácora de trazabilidad.
@@ -97,13 +96,6 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
             <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Sede y Plan:</span>
             <span className="font-semibold text-text-secondary text-[13px] block mt-1">{estudiante.sede} · {carrera?.codigo || 'LIC-COFI-18'}</span>
           </div>
-          <div className="border-l border-border-subtle pl-6">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1">Estatus Actual:</span>
-            <StudentStatusSelector 
-              estudiante={{ ...estudiante, estatus: localEstatus }} 
-              onStatusChange={handleStatusUpdate} 
-            />
-          </div>
           {estudiante.modalidadDetectada && (
             <div className="border-l border-border-subtle pl-6">
               <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Modalidad:</span>
@@ -135,9 +127,9 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
           <div>
             <div className="flex items-center space-x-2 text-[11px] font-bold uppercase tracking-wider pb-1.5">
               {esElegible ? (
-                <ShieldCheck className="w-5 h-5 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
+                <ShieldCheck className="w-5 h-5 text-emerald-700 dark:text-emerald-400" strokeWidth={1.8} />
               ) : (
-                <ShieldAlert className="w-5 h-5 text-rose-700 dark:text-rose-400" strokeWidth={1.5} />
+                <ShieldAlert className="w-5 h-5 text-rose-700 dark:text-rose-400" strokeWidth={1.8} />
               )}
               <span>Dictamen Normativo Institucional</span>
             </div>
@@ -224,7 +216,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
       <div className="space-y-3 select-none pt-2">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <div className="flex items-center space-x-2">
-            <FileSpreadsheet className="w-5 h-5 text-text-secondary" strokeWidth={1.5} />
+            <FileSpreadsheet className="w-5 h-5 text-text-secondary" strokeWidth={1.8} />
             <h3 className="text-[13px] font-black uppercase text-text-primary tracking-wider">
               Bitácora de Incidencias y Trazabilidad de Intentos
             </h3>
@@ -237,8 +229,8 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
         </div>
 
         {incidencias.length > 0 ? (
-          <div className="border border-border rounded-xl overflow-hidden shadow-sm">
-            <table className="w-full text-left text-[12px] border-collapse">
+          <div className="border border-border rounded-xl overflow-x-auto shadow-sm">
+            <table className="w-full min-w-[720px] text-left text-[12px] border-collapse">
               <thead>
                 <tr className="bg-surface-2 text-text-secondary text-[11px] uppercase font-bold tracking-wider border-b border-border">
                   <th className="py-2.5 px-3 text-center w-14">Cuat.</th>
@@ -301,7 +293,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
           </div>
         ) : (
           <div className="p-6 bg-emerald-50/60 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/10 rounded-xl text-center text-[13px] text-emerald-900 dark:text-emerald-300">
-            <CheckCircle2 className="w-7 h-7 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" strokeWidth={1.5} />
+            <CheckCircle2 className="w-7 h-7 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" strokeWidth={1.8} />
             <span className="font-bold">Trayectoria Regular Limpia:</span> No se registran recursamientos, exámenes extraordinarios ni adeudos activos en el expediente.
           </div>
         )}

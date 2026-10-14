@@ -2,97 +2,159 @@
   <img src="./assets/unid-logo-full.png" alt="UNID - Universidad Interamericana para el Desarrollo" width="280" />
   <h1>Sistema de Auditoría Curricular y Validación de Estadía</h1>
   <p><strong>Universidad Interamericana para el Desarrollo &middot; Coordinación Académica</strong></p>
-  <p>Plataforma institucional de grado ERP para el procesamiento masivo de kárdex, auditoría de trayectorias académicas y emisión automatizada de dictámenes normativos.</p>
+  <p>Plataforma institucional de grado ERP para el procesamiento de kárdex, auditoría de trayectorias académicas, persistencia en la nube y emisión automatizada de dictámenes normativos.</p>
 </div>
 
 ---
 
 ## Resumen Ejecutivo
 
-El **Sistema de Auditoría Curricular y Validación de Estadía** es una solución web de nivel corporativo concebida para automatizar la revisión de expedientes académicos a partir de los documentos oficiales emitidos por la institución (*Detalle de selección de cursos y estado de cuenta por alumno*).
+El **Sistema de Auditoría Curricular y Validación de Estadía** es una plataforma web institucional concebida para automatizar el análisis integral de expedientes académicos a partir de los documentos oficiales emitidos por el sistema institucional (*Detalle de selección de cursos y estado de cuenta por alumno*).
 
-La herramienta soporta tanto **auditoría individual** como procesamiento **masivo de generaciones (Batch Processing)**, eliminando la captura manual y suprimiendo discrepancias de criterio normativo. Genera reportes consolidados y dictámenes inmediatos sobre la elegibilidad para la Estadía Empresarial (7.º y 9.º cuatrimestres), requisitos de titulación y egreso del Plan 2018.
+La solución permite auditar expedientes tanto de forma individual como mediante **procesamiento masivo por generaciones (Batch Processing)**. Suprime por completo la captura manual de calificaciones y homologa los criterios de dictamen normativo para:
+- Elegibilidad para Estadía Empresarial (7.º y 9.º cuatrimestres).
+- Verificación de avance crediticio y asignaturas acreditadas vs. adeudadas.
+- Cumplimiento de los 5 niveles obligatorios de idioma inglés o acreditación global.
+- Requisitos co-curriculares, talleres de titulación y examen EGEL.
 
 ---
 
-## Especificaciones Funcionales y de Ingeniería
+## Módulos y Capacidades del Sistema
 
-### 1. Interfaz Gráfica Avanzada y Experiencia de Usuario (UX)
-- **Diseño Moderno y Dinámico**: Interfaz visual optimizada con tipografía `Inter`, paletas de colores armónicas y micro-animaciones para una experiencia fluida e intuitiva, especialmente pensada para personal no técnico.
-- **Soporte de Tema Oscuro (Dark Mode)**: Integración completa de modo oscuro dinámico en todas las pantallas.
-- **Detección y Manejo de Desfase de Programas**: Modal inteligente que detecta cuando el Kárdex subido pertenece a un mapa curricular distinto al seleccionado y reconfigura el entorno con un solo clic.
+### 1. Seguridad, Control de Acceso y Sesión Institucional
+- **Autenticación con Microsoft Entra ID (Azure AD)**: Integración oficial mediante `@azure/msal-browser` y `@azure/msal-react` con inquilino institucional único (Single Tenant).
+- **Restricción Estricta de Dominio `@unid.mx`**: La barrera de seguridad (`AuthBarrier`) inspecciona los tokens emitidos y deniega el acceso a cualquier cuenta que no pertenezca explícitamente al dominio institucional `@unid.mx`.
+- **Puente OAuth de Cierre Automático**: Comunicación entre ventana emergente y ventana principal basada en `broadcastResponseToMainFrame` (`BroadcastChannel`), garantizando el cierre instantáneo de la ventana emergente tras seleccionar la cuenta (sea exitosa o rechazada) sin montar la aplicación en dicha ventana.
+- **Temporizador de Inactividad Institucional**: Cierre automático de sesión tras 5 minutos de inactividad del usuario para proteger expedientes en computadoras compartidas o de oficina.
+- **Acceso Especial de Super Administrador / Desarrollador**: Modal de mantenimiento (`DevLoginModal`) con credenciales seguras para labores técnicas, auditoría de base de datos y depuración, exento del límite de inactividad.
 
-### 2. Auditoría Consolidada de Grupo (Procesamiento Masivo)
-- **Extracción Múltiple**: Procesamiento de reportes masivos (sábanas de grupo) extrayendo la trayectoria de decenas de estudiantes simultáneamente.
-- **Directorio ERP Institucional**: Visualización de alta densidad basada en patrones de diseño corporativos (Cinta de Datos, indicadores de estatus planos, tipografía estructurada) para el control rápido del avance de la generación.
-- **Integración Neon DB**: Almacenamiento y gestión de los reportes consolidados en bases de datos PostgreSQL serverless, clasificados por ciclo escolar.
-- **Sábana Ejecutiva (PDF)**: Generación automática del reporte consolidado de grupo, limpio y adaptado formalmente para impresión.
+### 2. Motor de Extracción y Análisis de Kárdex (PDF.js)
+- **Extracción de Coordenadas Espaciales**: Lectura directa de operadores de texto en PDF mediante coordenadas analíticas, sin depender de OCR susceptible a fallos.
+- **Detección Automática de Modalidad**: Identificación algorítmica de la modalidad del estudiante (Escolarizada o No Escolarizada / Ejecutiva) a partir del contenido del documento.
+- **Segmentación Estricta de Campos Banner**:
+  - Asignatura, clave de materia (`SUBJ` / `CRSE`), código CRN, periodo cursado, calificación numérica y modalidad de acreditación.
+  - Exclusión automática de ruido institucional (calificaciones parciales sin valor final, leyendas administrativas).
+- **Detección de Desfase de Programas**: Modal interactivo que alerta al usuario si el kárdex cargado pertenece a un programa académico distinto al seleccionado en la vista, permitiendo la reconfiguración inmediata del entorno con un solo clic.
 
-### 2. Motor de Extracción Dinámica de Kárdex (PDF.js)
-- **Procesamiento Espacial por Coordenadas**: Análisis directo de los operadores de texto mediante coordenadas $X$ e $Y$.
-- **Segmentación Estricta de Columnas**:
-  - `CRN`, `SUBJ`, `CRSE`, `PERIODO`, `GRDE` / `MODALIDAD`.
-  - **Filtro de Ruido Institucional**: Exclusión automática de calificaciones parciales, créditos y sede.
-- **Normalización de Caracteres OCR**: Corrección algorítmica de artefactos de renderizado.
-- **Extracción de Identidad del Alumno**: Captura estructurada de Matrícula, Nombre, Sede, Programa y Estatus de permanencia.
+### 3. Persistencia en la Nube (Neon Serverless PostgreSQL)
+- **Base de Datos Serverless en la Nube**: Almacenamiento estructurado mediante Neon PostgreSQL y conexión optimizada por pooler (`@neondatabase/serverless`).
+- **Gestión por Ciclos Escolares**: Organización y persistencia de lotes completos de alumnos clasificados por ciclo escolar y cuatrimestre.
+- **Operaciones de Lote**: Guardado masivo, consulta histórica, visualización detallada y depuración/eliminación granular de ciclos escolares registrados.
+- **Contingencia Local**: Si la conexión remota no estuviera disponible, el sistema mantiene la operación local en memoria sin interrumpir el trabajo de coordinación.
 
-### 3. Matriz de Estados Curriculares
-El motor clasifica cada una de las asignaturas del mapa curricular oficial bajo los siguientes criterios normativos:
+### 4. Catálogo Oficial de Programas Académicos (Plan 2018)
+El sistema integra y sincroniza el catálogo oficial de 11 licenciaturas institucionales:
+1. **LIC-ADME-18**: Licenciatura en Administración de Empresas
+2. **LIC-COFI-18**: Licenciatura en Contabilidad y Finanzas
+3. **LIC-DERE-18**: Licenciatura en Derecho
+4. **LIC-MERK-18**: Licenciatura en Mercadotecnia
+5. **LIC-IDIT-18**: Licenciatura en Ingeniería en Diseño Industrial y Tecnología
+6. **LIC-INFO-18**: Licenciatura en Ingeniería en Tecnologías de Información
+7. **LIC-PSIC-18**: Licenciatura en Psicología Organizacional
+8. **LIC-PEDG-18**: Licenciatura en Pedagogía
+9. **LIC-CIEN-18**: Licenciatura en Ciencias y Técnicas de la Comunicación
+10. **LIC-TURH-18**: Licenciatura en Administración de Empresas Turísticas / Turismo y Hotelería
+11. **LIC-DINT-18**: Licenciatura en Diseño e Industria del Vestido / Digital
+
+---
+
+## Matriz de Estados Curriculares Normativos
+
+Cada asignatura identificada en el mapa curricular oficial se dictamina bajo la siguiente matriz de estados:
 
 | Código | Denominación Institucional | Criterio de Clasificación |
 | :--- | :--- | :--- |
-| **ORD** | 1.ª Oportunidad Ordinaria | Aprobada en el primer intento registrado mediante modalidad `RW`. |
-| **REC** | Recursamiento Acreditado | Aprobada tras cursar dos o más intentos académicos. |
-| **RE** | Regularización / Extraordinario | Acreditada mediante examen extraordinario o modalidad `RE`. |
-| **CURS** | En Curso Activo | Asignatura registrada en el ciclo vigente sin calificación numérica final. |
-| **REC · CURSO** | Recursamiento en Curso | Asignatura en curso activo que cuenta con reprobaciones previas. |
-| **ADEUDO** | Reprobada Activa | Último intento registrado con calificación inferior a 6.0, `NP` o `NA`. |
-| **OMITIDA** | Asignatura No Cursada | Materia perteneciente a ciclos anteriores al nivel actual que no registra inscripción. |
-| **PEND.** | Pendiente Curricular | Asignatura programada para cuatrimestres futuros. |
-
-### 4. Detección de Desfases y Requisitos de Titulación
-- Registro cronológico detallado de intentos y detección de desfases temporales.
-- **Acreditación de Inglés**: Seguimiento de los 5 niveles obligatorios o exención global (`LENG-0008`).
-- **Requisitos Co-Curriculares**: Auditoría de claves terminales (`MPD-CMS02`, `MPD-CMS03`, `CUPR-EGCF1`, `TPEG-0001`).
-
-### 5. Dictamen Normativo de Estadía Empresarial
-- **Elegible para Estadía**: Asignaturas 1.º a 6.º acreditadas y prerrequisitos liberados.
-- **No Elegible / Retenido**: Presencia de adeudos o materias omitidas en bloque básico/formativo.
+| **ORD** | 1.ª Oportunidad Ordinaria | Asignatura aprobada en su primera inscripción formal. |
+| **REC** | Recursamiento Acreditado | Asignatura aprobada tras dos o más periodos cursados. |
+| **RE** | Regularización / Extraordinario | Asignatura acreditada mediante evaluación extraordinaria. |
+| **CURS** | En Curso Activo | Asignatura inscrita en el ciclo escolar actual sin calificación numérica final. |
+| **REC · CURSO** | Recursamiento en Curso | Asignatura inscrita actualmente que registra antecedentes reprobatorios. |
+| **ADEUDO** | Reprobada Activa | Último intento registrado con estatus reprobatorio (`NA`, `NP` o calificación inferior a 6.0). |
+| **OMITIDA** | Asignatura No Cursada | Materia correspondiente a cuatrimestres anteriores al actual que no registra inscripción previa. |
+| **PEND.** | Pendiente Curricular | Materia programada para cuatrimestres posteriores de la trayectoria. |
 
 ---
 
-## Módulos y Vistas Oficiales
+## Vistas y Herramientas Operativas
 
-El sistema estructura la salida de auditoría en interfaces modulares planas y estructuradas, optimizadas para impresión:
+1. **Directorio Consolidado de Grupo (Batch View)**:
+   - Tabla dinámica de alta densidad con filtros por dictamen (Aprobados, Con Adeudo, No Elegibles, En Curso).
+   - Buscador en tiempo real por matrícula o nombre del alumno.
+   - Resumen estadístico de la generación (promedio general, porcentaje de avance, tasa de elegibilidad).
+   - Exportación de la lista completa a formato CSV / Excel.
+   - Generación de **Sábana Ejecutiva Oficial en PDF** lista para archivo o firma.
+2. **Hoja 1: Mapa Curricular Interactivo**:
+   - Visualización estructurada en cuadrícula de los 9 cuatrimestres del plan de estudios.
+   - Código cromático institucional por estado de materia.
+   - Selector dinámico de asignaturas electivas multidisciplinares.
+   - Bloque dedicado al seguimiento de Inglés I a V y requisitos co-curriculares.
+3. **Hoja 2: Cédula de Auditoría Oficial**:
+   - Formato formal imprimible con balance cuantitativo de créditos y asignaturas.
+   - Bitácora analítica de observaciones curriculares.
+   - Recuadro institucional para firmas de Coordinación Académica y Dirección de Campus.
+4. **Diseño Visual de Grado Ejecutivo**:
+   - Tipografía estructurada (`Inter` y `JetBrains Mono`).
+   - Soporte nativo para modo oscuro y modo claro con persistencia de preferencia de usuario.
 
-1. **Auditoría de Grupo**: Directorio consolidado con indicadores de estado y gestión en la nube (Neon).
-2. **Hoja 1: Mapa Curricular de Ejecución**: Representación en cuadrícula de 9 cuatrimestres, inglés, requisitos y catálogo de electivas multidisciplinares.
-3. **Hoja 2: Cédula de Auditoría Académica**: Formato oficial para impresión con tarjetas de balance cuantitativo, bitácora analítica y cuadro de firmas.
+---
+
+## Suite de Pruebas de Integridad Automatizadas (`prebuild`)
+
+Antes de cada proceso de compilación para producción, el sistema ejecuta de forma obligatoria el script de validación `test-health.mjs`, verificando 8 componentes críticos:
+
+1. **Conexión a Neon PostgreSQL**: Validación de canal seguro y respuesta del servidor.
+2. **Estructura de Tablas**: Existencia de las tablas `auditoria_grupal`, `auditorias_estudiantes`, `carreras`, `estatus_alumnos` y `usuarios`.
+3. **Catálogo de Carreras**: Recuperación íntegra de los 11 programas de licenciatura.
+4. **Motor de Auditoría**: Procesamiento analítico de expedientes prueba bajo todas las modalidades.
+5. **Guardado en Base de Datos**: Inserción de lote de prueba.
+6. **Consulta y Recuperación**: Validación de integridad de datos leídos.
+7. **Eliminación y Limpieza**: Depuración limpia del lote de prueba sin dejar residuos.
+8. **Seguridad y Acceso Dev**: Comprobación de autenticación de Super Administrador.
+
+Si alguna de las 8 pruebas falla, la compilación de producción se detiene automáticamente para prevenir despliegues con anomalías.
 
 ---
 
 ## Arquitectura y Stack Tecnológico
 
-- **Interfaz de Usuario**: React 19, Tailwind CSS (Patrones ERP / Estructurales).
-- **Herramientas de Compilación**: Vite 8.
-- **Motor de Renderizado PDF**: `pdfjs-dist` (configuración de worker local integrado).
-- **Generación de Reportes**: `html2canvas`, `jspdf`.
-- **Capa de Persistencia**: Neon Serverless PostgreSQL (`@neondatabase/serverless`).
-- **Iconografía Vectorial**: `lucide-react`.
+- **Frontend Core**: React 19, JavaScript moderno (ESNext).
+- **Herramienta de Construcción**: Vite 8.
+- **Estilos**: Tailwind CSS estructurado para aplicaciones corporativas (patrones ERP).
+- **Autenticación**: `@azure/msal-browser` (v3+), `@azure/msal-react`.
+- **Motor PDF**: `pdfjs-dist` con Web Worker integrado localmente.
+- **Generación de Reportes**: `jspdf`, `html2canvas`.
+- **Base de Datos Serverless**: Neon PostgreSQL (`@neondatabase/serverless`).
+- **Iconografía**: `lucide-react`.
 
 ---
 
-## Instalación y Configuración Local
+## Configuración y Variables de Entorno
+
+Crear un archivo `.env` en la raíz del proyecto con la siguiente estructura:
+
+```env
+# Conexión a Neon PostgreSQL Serverless
+DATABASE_URL="postgresql://usuario:contraseña@servidor-pooler.neon.tech/neondb?sslmode=require"
+VITE_NEON_DATABASE_URL="postgresql://usuario:contraseña@servidor-pooler.neon.tech/neondb?sslmode=require"
+
+# Microsoft Entra ID (Azure AD) - UNID Single Tenant
+VITE_AZURE_CLIENT_ID="3e9aa3e7-af76-4177-9ff5-c6150a6e7eb4"
+VITE_AZURE_TENANT_ID="1eac60bd-d90a-4a9e-a286-54e8fd9cdcb7"
+```
+
+---
+
+## Instalación y Ejecución Local
 
 ### Prerrequisitos
 - Node.js versión 18.0.0 o superior.
-- Gestor de paquetes npm.
+- Administrador de paquetes `npm`.
 
-### Instrucciones
+### Procedimiento
 1. Clonar el repositorio:
    ```bash
    git clone <URL_DEL_REPOSITORIO>
-   cd Cordinacion-UNID
+   cd CORDIANCION-UNID
    ```
 
 2. Instalar dependencias del proyecto:
@@ -100,21 +162,26 @@ El sistema estructura la salida de auditoría en interfaces modulares planas y e
    npm install
    ```
 
-3. Iniciar el entorno de desarrollo:
+3. Ejecutar la suite de pruebas de salud del sistema de forma independiente:
+   ```bash
+   npm run test:health
+   ```
+
+4. Iniciar el servidor local de desarrollo:
    ```bash
    npm run dev
    ```
 
-4. Generar la compilación para producción:
+5. Generar la compilación para producción (ejecuta automáticamente las pruebas previas):
    ```bash
    npm run build
    ```
 
 ---
 
-## Despliegue en Vercel
+## Despliegue en Producción (Vercel)
 
-El proyecto dispone del archivo de configuración `vercel.json` para gestionar el enrutamiento de la aplicación de una sola página (SPA):
+El proyecto incluye la configuración en `vercel.json` para gestionar el enrutamiento y las cabeceras requeridas para aplicaciones de una sola página (SPA):
 
 - **Plataforma**: Vercel
 - **Preajuste de Framework**: Vite

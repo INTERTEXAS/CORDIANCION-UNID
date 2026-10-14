@@ -91,10 +91,10 @@ export default function UploadStudentCard({ carrera, onUploadPdf, onLoadBatchDem
               }`}
               onClick={() => fileInputRef.current?.click()}
             >
-              <div className={`w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center transition-colors ${
-                isDragOver ? 'bg-accent/20 text-accent' : 'bg-surface-3/60 text-text-muted group-hover:bg-accent/10 group-hover:text-accent'
+              <div className={`w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center transition-all ${
+                isDragOver ? 'bg-accent/20 text-accent scale-110' : 'bg-surface-3/60 text-text-muted group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-105 shadow-2xs'
               }`}>
-                <FileUp className="w-6 h-6" strokeWidth={1.5} />
+                <FileUp className="w-6 h-6 transition-transform duration-200 group-hover:-translate-y-0.5" strokeWidth={1.8} />
               </div>
               <p className="text-[13px] font-semibold text-text-primary mb-1">
                 Arrastre su archivo PDF aquí
@@ -108,9 +108,9 @@ export default function UploadStudentCard({ carrera, onUploadPdf, onLoadBatchDem
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center justify-center space-x-2 px-4 py-3 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all cursor-pointer"
+                className="flex items-center justify-center space-x-2 px-4 py-3 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-xs hover:shadow-md transition-all cursor-pointer group active:scale-95"
               >
-                <Upload className="w-4 h-4" strokeWidth={2} />
+                <Upload className="w-4 h-4 transition-transform duration-200 group-hover:-translate-y-0.5" strokeWidth={1.8} />
                 <span>Subir PDF</span>
               </button>
 
@@ -118,13 +118,12 @@ export default function UploadStudentCard({ carrera, onUploadPdf, onLoadBatchDem
                 <button
                   type="button"
                   onClick={onOpenNeonManager}
-                  className="flex items-center justify-center space-x-2 px-4 py-3 bg-surface-2 hover:bg-surface-3 text-text-primary border border-border text-[13px] font-semibold rounded-xl transition-all cursor-pointer"
+                  className="flex items-center justify-center space-x-2 px-4 py-3 bg-surface-2 hover:bg-surface-3 text-text-primary border border-border text-[13px] font-semibold rounded-xl transition-all cursor-pointer group active:scale-95"
                 >
-                  <Database className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                  <Database className="w-4 h-4 text-indigo-500 dark:text-indigo-400 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
                   <span>Base de datos</span>
                 </button>
               )}
-
             </div>
           </div>
         </div>

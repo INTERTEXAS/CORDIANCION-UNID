@@ -1,8 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Users, 
   Search, 
-  CheckCircle2, 
   AlertTriangle, 
   ArrowLeft, 
   ChevronLeft, 
@@ -15,7 +14,6 @@ import {
   Calendar,
   ArrowUpDown,
   Download,
-  Clock,
   RefreshCw
 } from 'lucide-react';
 import CurriculumMap from './CurriculumMap';
@@ -27,11 +25,13 @@ export default function BatchAuditView({
   batchData, // { totalAlumnos, alumnos: [ { estudiante, auditData, carrera } ], carrera }
   onClearBatch,
   onUploadNewBatch,
+  onUploadPdf,
   onActiveStudentAuditChange,
   onExportPdf,
   isExporting,
   onLoadBatchData
 }) {
+  const fileInputRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('TODOS'); // 'TODOS' | 'ELEGIBLE' | 'ADEUDOS' | 'OMITIDAS'
   const [sortBy, setSortBy] = useState('nombre'); // 'nombre' | 'matricula' | 'avance-desc' | 'avance-asc'
@@ -230,7 +230,7 @@ export default function BatchAuditView({
                     : 'text-text-muted hover:text-text-primary hover:bg-surface-3'
                 }`}
               >
-                <Layers className="w-4 h-4" strokeWidth={1.5} />
+                <Layers className="w-4 h-4" strokeWidth={1.8} />
                 <span>Hoja 1: Mapa de Ejecución</span>
               </button>
 
@@ -242,7 +242,7 @@ export default function BatchAuditView({
                     : 'text-text-muted hover:text-text-primary hover:bg-surface-3'
                 }`}
               >
-                <FileText className="w-4 h-4" strokeWidth={1.5} />
+                <FileText className="w-4 h-4" strokeWidth={1.8} />
                 <span>Hoja 2: Cédula y Trazabilidad</span>
               </button>
             </div>
@@ -343,11 +343,36 @@ export default function BatchAuditView({
             {/* Divisor Visual */}
             <div className="hidden sm:block w-px h-8 bg-border-subtle mx-2"></div>
 
+            {/* Input oculto para subir nuevo reporte PDF */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  if (onUploadPdf) {
+                    onUploadPdf(file);
+                  } else if (onUploadNewBatch) {
+                    onUploadNewBatch(file);
+                  }
+                  e.target.value = '';
+                }
+              }}
+              accept="application/pdf"
+              className="hidden"
+            />
+
             {/* Acciones Secundarias */}
             <button
-              onClick={onUploadNewBatch}
+              onClick={() => {
+                if (fileInputRef.current) {
+                  fileInputRef.current.click();
+                } else if (onUploadNewBatch) {
+                  onUploadNewBatch();
+                }
+              }}
               className="px-4 py-2.5 bg-surface-2 hover:bg-surface-3 border border-border text-text-primary text-[13px] font-bold rounded-xl transition-all cursor-pointer flex items-center space-x-2"
-              title="Cargar un nuevo archivo PDF de grupo"
+              title="Cargar un nuevo archivo PDF de grupo desde su equipo"
             >
               <SlidersHorizontal className="w-4 h-4 text-accent" strokeWidth={2} />
               <span>Subir otro Reporte</span>
@@ -500,7 +525,7 @@ export default function BatchAuditView({
       <div className="print:hidden">
         {filteredAlumnos.length === 0 ? (
           <div className="bg-surface-1 rounded-3xl border border-border p-16 text-center shadow-card">
-            <Search className="w-10 h-10 text-text-muted/50 mx-auto mb-3" strokeWidth={1.5} />
+            <Search className="w-10 h-10 text-text-muted/50 mx-auto mb-3" strokeWidth={1.8} />
             <p className="text-[15px] font-bold text-text-primary">No se encontraron alumnos con ese criterio</p>
             <p className="text-[13px] text-text-muted mt-1.5">Prueba cambiando el término de búsqueda o el filtro seleccionado.</p>
           </div>

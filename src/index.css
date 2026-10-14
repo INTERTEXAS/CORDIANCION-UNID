@@ -65,7 +65,46 @@
   color-scheme: dark;
 }
 
+/* === PALETA EXCLUSIVA SUPER ADMIN (ADMIN_SISTEMA): AMARILLO Y VERDE === */
+.theme-super-admin {
+  --accent: #FACC15;
+  --accent-hover: #EAB308;
+  --accent-soft: rgba(250, 204, 21, 0.15);
+  --accent-text: #854D0E;
+  --border-color: rgba(234, 179, 8, 0.35);
+  --border-subtle: rgba(16, 185, 129, 0.25);
+}
+
+.dark.theme-super-admin,
+.dark .theme-super-admin,
+.theme-super-admin.dark {
+  --accent-text: #FEF08A;
+  --border-color: rgba(234, 179, 8, 0.4);
+  --border-subtle: rgba(16, 185, 129, 0.3);
+}
+
+.theme-super-admin .bg-accent {
+  background-color: #FACC15 !important;
+  color: #0F172A !important;
+}
+
+.theme-super-admin .text-accent {
+  color: #EAB308 !important;
+}
+
+.dark.theme-super-admin .text-accent,
+.dark .theme-super-admin .text-accent,
+.theme-super-admin.dark .text-accent {
+  color: #FACC15 !important;
+}
+
 @layer base {
+  html, body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     background: var(--surface-0);
     color: var(--text-primary);
@@ -106,7 +145,87 @@
   background: var(--scrollbar-thumb-hover);
 }
 
-/* === TRANSITIONS === */
+/* === TRANSITIONS & AMBIENT ANIMATIONS === */
+@keyframes floatSlow1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.14;
+  }
+  50% {
+    transform: translate(35px, -25px) scale(1.18);
+    opacity: 0.28;
+  }
+}
+
+@keyframes floatSlow2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.12;
+  }
+  50% {
+    transform: translate(-30px, 30px) scale(1.22);
+    opacity: 0.25;
+  }
+}
+
+@keyframes subtleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.28;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes shimmerGlow {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float-1 {
+  animation: floatSlow1 12s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: floatSlow2 16s ease-in-out infinite;
+}
+
+.animate-subtle-float {
+  animation: subtleFloat 5s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 9s ease-in-out infinite;
+}
+
+.animate-shimmer-glow {
+  background-size: 200% auto;
+  animation: shimmerGlow 5s linear infinite;
+}
+
+/* Iluminación ambiental arquitectónica sobria y ejecutiva */
+.bg-executive-glow {
+  background: 
+    radial-gradient(ellipse 75% 45% at 50% 0%, rgba(30, 58, 102, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+    #080C14;
+}
+
 @layer utilities {
   .transition-theme {
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, box-shadow 0.2s ease;

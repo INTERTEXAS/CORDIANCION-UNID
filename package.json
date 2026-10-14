@@ -5,11 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node test-health.mjs && node test-comprehensive.mjs",
     "build": "vite build",
+    "test": "node test-health.mjs && node test-comprehensive.mjs",
+    "test:health": "node test-health.mjs",
+    "test:comprehensive": "node test-comprehensive.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/msal-browser": "^5.25.1",
+    "@azure/msal-react": "^5.7.2",
     "@neondatabase/serverless": "^1.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",

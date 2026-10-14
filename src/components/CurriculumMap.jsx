@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   ShieldCheck,
   ShieldAlert,
@@ -12,36 +12,19 @@ import {
   Circle,
   Info
 } from 'lucide-react';
-import StudentStatusSelector from './StudentStatusSelector';
 
 export default function CurriculumMap({ 
   auditData, 
   activeFilter = 'TODAS',
   forwardedRef,
-  onStatusChange
+  onStatusChange: _onStatusChange
 }) {
   const [selectedMateriaModal, setSelectedMateriaModal] = useState(null);
-  
-  // Local state for immediate UI reaction when status changes
-  const [localEstatus, setLocalEstatus] = useState('AC');
-
-  useEffect(() => {
-    if (auditData?.estudiante?.estatus) {
-      setLocalEstatus(auditData.estudiante.estatus);
-    }
-  }, [auditData]);
-
-  const handleStatusUpdate = (newStatus) => {
-    setLocalEstatus(newStatus);
-    if (onStatusChange) {
-      onStatusChange(newStatus);
-    }
-  };
 
   if (!auditData) {
     return (
       <div className="bg-surface-1 rounded-3xl border border-border p-12 text-center text-text-muted shadow-card transition-theme">
-        <BookOpen className="w-12 h-12 mx-auto text-text-muted/50 mb-3" strokeWidth={1.5} />
+        <BookOpen className="w-12 h-12 mx-auto text-text-muted/50 mb-3" strokeWidth={1.8} />
         <h3 className="text-base font-bold text-text-primary">Sin datos de auditoría cargados</h3>
         <p className="text-[13px] text-text-secondary mt-1 max-w-md mx-auto">
           Seleccione una licenciatura y cargue el kárdex del alumno en PDF o elija uno de los casos de prueba institucionales para visualizar el mapa curricular oficial.
@@ -214,13 +197,6 @@ export default function CurriculumMap({
             <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Sede:</span>
             <span className="font-semibold text-text-secondary text-[13px] block mt-1">{estudiante.sede || 'CAM'}</span>
           </div>
-          <div className="border-l border-border-subtle pl-5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Estatus Actual:</span>
-            <StudentStatusSelector 
-              estudiante={{ ...estudiante, estatus: localEstatus }} 
-              onStatusChange={handleStatusUpdate} 
-            />
-          </div>
           {estudiante.modalidadDetectada && (
             <div className="border-l border-border-subtle pl-5">
               <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Modalidad:</span>
@@ -244,18 +220,21 @@ export default function CurriculumMap({
               : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-500/20'
           }`}>
             {esElegible ? (
-              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.8} />
             ) : (
-              <ShieldAlert className="w-4 h-4 text-rose-600 dark:text-rose-400" strokeWidth={1.5} />
+              <ShieldAlert className="w-4 h-4 text-rose-600 dark:text-rose-400" strokeWidth={1.8} />
             )}
             <span>{resumen.dictamenEstadia}</span>
           </span>
         </div>
       </div>
 
-      {/* 3. CUADRÍCULA DE LOS CUATRIMESTRES */}
-      <div className={`grid gap-2 select-none ${cuatrimestres.length === 10 ? 'grid-cols-10' : 'grid-cols-9'}`}>
-        {cuatrimestres.map((cuat) => (
+      {/* CONTENEDOR RESPONSIVO AL ZOOM PARA CUADRÍCULA DE CUATRIMESTRES */}
+      <div className="overflow-x-auto pb-2 -mx-1 px-1">
+        <div className="min-w-[860px] space-y-4">
+          {/* 3. CUADRÍCULA DE LOS CUATRIMESTRES */}
+          <div className={`grid gap-2 select-none ${cuatrimestres.length === 10 ? 'grid-cols-10' : 'grid-cols-9'}`}>
+            {cuatrimestres.map((cuat) => (
           <div key={cuat.numero} className="flex flex-col space-y-2">
             {/* Cabecera del Cuatrimestre */}
             <div className="bg-[#181C24] dark:bg-surface-2 text-white dark:text-text-primary text-center py-2 px-1 rounded-lg shadow-sm border dark:border-border transition-theme">
@@ -331,7 +310,7 @@ export default function CurriculumMap({
               {/* Relleno de altura para cuatrimestres con estadía de bloque completo */}
               {cuat.materias.length === 1 && cuat.materias[0].es_estadia && (
                 <div key={`filler-${cuat.numero}`} className="flex-1 bg-surface-2 border border-dashed border-border rounded-lg p-2 flex flex-col items-center justify-center text-center text-text-muted text-[11px]">
-                  <Award className="w-6 h-6 text-text-muted/50 mb-1" strokeWidth={1.5} />
+                  <Award className="w-6 h-6 text-text-muted/50 mb-1" strokeWidth={1.8} />
                   <span className="font-bold text-text-secondary">Bloque Completo</span>
                   <span className="text-[10px] text-text-muted">Estadía</span>
                 </div>
@@ -447,6 +426,9 @@ export default function CurriculumMap({
           })}
         </div>
       </div>
+        </div>
+      </div>
+      {/* FIN CONTENEDOR RESPONSIVO AL ZOOM */}
 
       {/* 5. PARTE INFERIOR: NOMENCLATURA (IZQ) Y ELECTIVAS MULTIDISCIPLINARES (DER) */}
       <div className="grid grid-cols-12 gap-4 pt-4 border-t border-border select-none text-[13px]" style={{ overflow: 'visible' }}>

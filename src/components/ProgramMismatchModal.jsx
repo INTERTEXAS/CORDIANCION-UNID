@@ -14,8 +14,8 @@ export default function ProgramMismatchModal({
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-[2px] z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-surface-1 rounded-3xl shadow-glass-lg border border-border max-w-md w-full p-6 space-y-4 animate-scale-in transition-theme">
         <div className="flex items-center space-x-3">
-          <div className="p-2.5 bg-amber-100 dark:bg-amber-500/15 rounded-2xl">
-            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" strokeWidth={1.5} />
+          <div className="p-2.5 bg-amber-100 dark:bg-amber-500/15 rounded-2xl shadow-2xs">
+            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" strokeWidth={1.8} />
           </div>
           <div>
             <h3 className="text-[14px] font-bold text-text-primary leading-tight">

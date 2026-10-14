@@ -17,8 +17,11 @@ import {
   Briefcase,
   Scale,
   Compass,
-  FolderTree
+  FolderTree,
+  LogOut,
+  Crown
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { ALUMNOS_DEMO } from '../data/demoStudents';
 import { useTheme } from '../context/ThemeContext';
 import { resolverNombreOficialCarrera } from '../data/carrerasData';
@@ -94,6 +97,10 @@ export default function HeaderBar({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDemoOpen, setIsDemoOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { user: activeUser, isSuperAdmin, logout } = useAuth();
+
+  const userName = activeUser?.nombre || activeUser?.email?.split('@')[0] || 'Docente';
+  const userEmail = activeUser?.email || '';
 
   // Agrupamiento por coordinadora pasando el objeto carrera completo
   const gruposCoordinadoras = COORDINADORAS_CONFIG.map(config => {
@@ -113,30 +120,29 @@ export default function HeaderBar({
   };
 
   return (
-    <header className="h-14 bg-surface-1 border-b border-border px-4 flex items-center justify-between sticky top-0 z-10 select-none transition-theme">
-      {/* Left: Sidebar toggle + Career Selector */}
-      <div className="flex items-center space-x-2">
+    <header className="h-14 bg-surface-1 border-b border-border px-3 sm:px-4 flex items-center justify-between sticky top-0 z-20 select-none transition-theme gap-3 w-full">
+      {/* Left: Sidebar toggle + Clean Flexible Career Selector */}
+      <div className="flex items-center space-x-2 min-w-0 flex-1 max-w-sm sm:max-w-md lg:max-w-lg">
         <button
           onClick={onToggleSidebar}
-          className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors cursor-pointer flex-shrink-0"
+          className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-all cursor-pointer shrink-0 hover:scale-105"
           title={isSidebarOpen ? "Ocultar menú" : "Mostrar menú"}
         >
           {isSidebarOpen ? (
-            <PanelLeftClose className="w-[18px] h-[18px]" strokeWidth={1.5} />
+            <PanelLeftClose className="w-[18px] h-[18px]" strokeWidth={1.8} />
           ) : (
-            <PanelLeftOpen className="w-[18px] h-[18px]" strokeWidth={1.5} />
+            <PanelLeftOpen className="w-[18px] h-[18px]" strokeWidth={1.8} />
           )}
         </button>
 
-        <div className="h-5 w-px bg-border mx-1 hidden sm:block" />
+        <div className="h-5 w-px bg-border mx-0.5 hidden sm:block shrink-0" />
 
-        <div className="flex items-center space-x-1.5 text-text-muted">
-          <GraduationCap className="w-4 h-4 text-accent" strokeWidth={1.5} />
-          <span className="text-[12px] font-semibold text-text-secondary hidden sm:inline">Programa:</span>
+        <div className="items-center shrink-0 hidden sm:flex p-1.5 rounded-lg bg-accent/10 text-accent">
+          <GraduationCap className="w-4 h-4" strokeWidth={1.8} />
         </div>
 
-        {/* Custom Dropdown */}
-        <div className="relative">
+        {/* Custom Career Dropdown - Flexible & Clean */}
+        <div className="relative min-w-0 flex-1">
           {isDropdownOpen && (
             <div 
               className="fixed inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-[2px] z-40 transition-opacity"
@@ -144,21 +150,31 @@ export default function HeaderBar({
             />
           )}
 
-          <div className="relative z-50">
+          <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center justify-between min-w-[260px] max-w-[440px] bg-surface-2 hover:bg-surface-3 border border-border text-text-primary text-[12px] font-semibold rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all shadow-xs"
+              className="w-full flex items-center justify-between bg-surface-2 hover:bg-surface-3 border border-border text-text-primary text-[12px] font-semibold rounded-xl px-2.5 sm:px-3 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all shadow-xs gap-1.5"
+              title={carreraSeleccionada ? `${carreraSeleccionada.codigo} · ${resolverNombreOficialCarrera(carreraSeleccionada)}` : 'Seleccionar programa'}
             >
-              <span className="truncate pr-3">
-                {carreraSeleccionada 
-                  ? `${carreraSeleccionada.codigo} · ${resolverNombreOficialCarrera(carreraSeleccionada)}` 
-                  : 'Seleccione programa...'}
-              </span>
-              <ChevronDown className={`w-4 h-4 text-text-muted shrink-0 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+              <div className="flex items-center min-w-0 truncate text-left">
+                {carreraSeleccionada ? (
+                  <>
+                    <span className="font-mono text-[11px] font-bold text-accent shrink-0 mr-1.5">
+                      {carreraSeleccionada.codigo}
+                    </span>
+                    <span className="truncate text-text-primary text-[12px] font-medium">
+                      {resolverNombreOficialCarrera(carreraSeleccionada)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-text-muted text-[12px]">Seleccione programa...</span>
+                )}
+              </div>
+              <ChevronDown className={`w-3.5 h-3.5 text-text-muted shrink-0 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} strokeWidth={1.8} />
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-full md:w-[560px] bg-surface-1 rounded-2xl shadow-glass-lg border border-border overflow-hidden animate-scale-in">
+              <div className="absolute top-full left-0 mt-2 w-[calc(100vw-2rem)] max-w-lg md:w-[560px] bg-surface-1 rounded-2xl shadow-glass-lg border border-border overflow-hidden animate-scale-in z-50">
                 <div className="px-4 py-2.5 text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] border-b border-border-subtle bg-surface-2/50 flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <FolderTree className="w-3.5 h-3.5 text-accent" strokeWidth={1.8} />
@@ -168,7 +184,7 @@ export default function HeaderBar({
                     {carreras.length} Licenciaturas
                   </span>
                 </div>
-                <div className="max-h-[68vh] overflow-y-auto p-3 space-y-3">
+                <div className="max-h-[65vh] overflow-y-auto p-3 space-y-3">
                   {gruposCoordinadoras.map((grupo) => {
                     if (grupo.carreras.length === 0) return null;
                     const GrupoIcon = grupo.icon;
@@ -247,8 +263,8 @@ export default function HeaderBar({
         </div>
       </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center space-x-1.5">
+      {/* Right: Clean, un-crowded Actions and Compact Profile */}
+      <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
         {/* Hidden file input */}
         <input
           type="file"
@@ -267,20 +283,20 @@ export default function HeaderBar({
             />
           )}
 
-          <div className="relative z-50">
+          <div className="relative">
             <button
               type="button"
               onClick={() => setIsDemoOpen(!isDemoOpen)}
-              className="flex items-center space-x-1.5 px-3 py-2 text-[12px] font-medium text-text-secondary bg-surface-2 hover:bg-surface-3 rounded-xl border border-border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/40"
-              title="Cargar ejemplos preconfigurados"
+              className="flex items-center space-x-1.5 px-2.5 py-2 text-[12px] font-medium text-text-secondary bg-surface-2 hover:bg-surface-3 rounded-xl border border-border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/40 group hover:shadow-xs"
+              title="Cargar expedientes demo de prueba"
             >
-              <Sparkles className="w-3.5 h-3.5 text-accent" strokeWidth={1.5} />
-              <span className="hidden md:inline">Demo</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${isDemoOpen ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+              <Sparkles className="w-3.5 h-3.5 text-accent transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" strokeWidth={1.8} />
+              <span className="hidden xl:inline text-[11px] font-semibold">Demo</span>
+              <ChevronDown className={`w-3 h-3 text-text-muted transition-transform duration-200 ${isDemoOpen ? 'rotate-180' : ''}`} strokeWidth={1.8} />
             </button>
 
             {isDemoOpen && (
-              <div className="absolute right-0 mt-2 w-72 bg-surface-1 rounded-2xl shadow-glass-lg border border-border py-1 animate-scale-in overflow-hidden">
+              <div className="absolute right-0 mt-2 w-72 bg-surface-1 rounded-2xl shadow-glass-lg border border-border py-1 animate-scale-in overflow-hidden z-50">
                 <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.1em] text-text-muted border-b border-border-subtle bg-surface-2/50">
                   Expedientes de Prueba
                 </div>
@@ -302,20 +318,21 @@ export default function HeaderBar({
           </div>
         </div>
 
-        {/* Upload button */}
+        {/* Upload button - Primary gold action */}
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isProcessing}
-          className="flex items-center space-x-1.5 px-3.5 py-2 bg-accent hover:bg-accent-hover text-slate-950 text-[12px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all disabled:opacity-60 cursor-pointer"
+          className="flex items-center space-x-1.5 px-3 py-2 bg-accent hover:bg-accent-hover text-slate-950 text-[12px] font-bold rounded-xl shadow-xs transition-all disabled:opacity-60 cursor-pointer group active:scale-95"
+          title="Subir Kárdex oficial en PDF"
         >
           {isProcessing ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" strokeWidth={1.5} />
-              <span className="hidden sm:inline">Procesando…</span>
+              <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
+              <span className="hidden md:inline">Procesando…</span>
             </>
           ) : (
             <>
-              <Upload className="w-4 h-4" strokeWidth={1.5} />
+              <Upload className="w-4 h-4 transition-transform duration-200 group-hover:-translate-y-0.5" strokeWidth={1.8} />
               <span className="hidden sm:inline">Subir Kárdex</span>
             </>
           )}
@@ -324,28 +341,28 @@ export default function HeaderBar({
         {/* Reset button */}
         <button
           onClick={onReset}
-          className="p-2 text-text-muted hover:text-text-primary hover:bg-surface-2 rounded-xl border border-border transition-all cursor-pointer"
+          className="p-2 text-text-muted hover:text-text-primary hover:bg-surface-2 rounded-xl border border-border transition-all cursor-pointer group hover:shadow-xs active:scale-95"
           title="Limpiar consulta"
         >
-          <RotateCcw className="w-4 h-4" strokeWidth={1.5} />
+          <RotateCcw className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-45" strokeWidth={1.8} />
         </button>
 
         {/* Export button */}
         <button
           onClick={onExportPdf}
           disabled={!hasAuditData || isExporting}
-          className="flex items-center space-x-1.5 px-3 py-2 bg-surface-2 dark:bg-white/[0.06] hover:bg-surface-3 dark:hover:bg-white/[0.1] text-text-primary text-[12px] font-bold rounded-xl border border-border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+          className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-2 bg-surface-2 hover:bg-surface-3 text-text-primary text-[12px] font-semibold rounded-xl border border-border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group hover:shadow-xs active:scale-95"
           title="Exportar dictamen oficial de 2 hojas"
         >
           {isExporting ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" strokeWidth={1.5} />
-              <span className="hidden sm:inline">Generando…</span>
+              <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
+              <span className="hidden xl:inline">Generando…</span>
             </>
           ) : (
             <>
-              <Download className="w-4 h-4" strokeWidth={1.5} />
-              <span className="hidden sm:inline">Exportar PDF</span>
+              <Download className="w-4 h-4 transition-transform duration-200 group-hover:translate-y-0.5" strokeWidth={1.8} />
+              <span className="hidden xl:inline">Exportar PDF</span>
             </>
           )}
         </button>
@@ -353,28 +370,66 @@ export default function HeaderBar({
         {/* Dark mode toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-all cursor-pointer"
+          className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-all cursor-pointer group hover:shadow-xs"
           title={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
         >
           {theme === 'dark' ? (
-            <Sun className="w-4 h-4 text-amber-400" strokeWidth={1.5} />
+            <Sun className="w-4 h-4 text-amber-400 transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.8} />
           ) : (
-            <Moon className="w-4 h-4" strokeWidth={1.5} />
+            <Moon className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-12" strokeWidth={1.8} />
           )}
         </button>
 
         {/* Widgets toggle */}
         <button
           onClick={onToggleWidgets}
-          className={`p-2 rounded-xl border transition-all cursor-pointer ${
+          className={`p-2 rounded-xl border transition-all cursor-pointer group hover:shadow-xs ${
             isWidgetsOpen 
               ? 'bg-accent/10 text-accent border-accent/20' 
               : 'bg-surface-2 hover:bg-surface-3 text-text-muted border-border'
           }`}
           title="Panel de widgets"
         >
-          <SlidersHorizontal className="w-4 h-4" strokeWidth={1.5} />
+          <SlidersHorizontal className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
         </button>
+
+        {/* Perfil Compacto y Elegante (Sin saturar la barra) */}
+        {activeUser && (
+          <div className="flex items-center space-x-1.5 pl-1.5 sm:pl-2 border-l border-border/80">
+            {isSuperAdmin ? (
+              <div 
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white border border-slate-800 dark:border-slate-700 shadow-xs cursor-default transition-all"
+                title={`Super Administrador · ${userName} (${userEmail})`}
+              >
+                <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" strokeWidth={2} />
+                <span className="text-[11px] font-bold tracking-wider text-white whitespace-nowrap">
+                  SUPER ADMIN
+                </span>
+              </div>
+            ) : (
+              <div 
+                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-surface-2 border border-border text-[11px] font-semibold text-text-secondary cursor-default"
+                title={`Usuario Institucional: ${userName} (${userEmail})`}
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                <span className="hidden lg:inline text-text-primary font-bold max-w-[110px] truncate">
+                  {userName}
+                </span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
+                  @unid.mx
+                </span>
+              </div>
+            )}
+
+            <button
+              onClick={logout}
+              className="p-2 rounded-xl text-text-muted hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20 transition-all cursor-pointer group"
+              title={`Cerrar sesión (${userEmail})`}
+            >
+              <LogOut className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={1.8} />
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );

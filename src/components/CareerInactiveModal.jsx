@@ -7,8 +7,8 @@ export default function CareerInactiveModal({ carrera, onSelectActive }) {
   return (
     <div className="flex items-center justify-center min-h-[50vh] animate-fade-in">
       <div className="bg-surface-1 rounded-3xl border border-border p-10 max-w-xl mx-auto shadow-card text-center space-y-4 transition-theme">
-        <div className="w-14 h-14 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto">
-          <Layers className="w-7 h-7" strokeWidth={1.5} />
+        <div className="w-14 h-14 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto shadow-2xs">
+          <Layers className="w-7 h-7" strokeWidth={1.8} />
         </div>
 
         <div className="space-y-1">
@@ -30,9 +30,9 @@ export default function CareerInactiveModal({ carrera, onSelectActive }) {
         <div className="pt-3">
           <button
             onClick={onSelectActive}
-            className="inline-flex items-center space-x-2 px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all cursor-pointer"
+            className="inline-flex items-center space-x-2 px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all cursor-pointer group active:scale-95"
           >
-            <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
+            <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" strokeWidth={1.8} />
             <span>Volver a Contabilidad y Finanzas (LIC-COFI-18)</span>
           </button>
         </div>

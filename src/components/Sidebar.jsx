@@ -73,10 +73,10 @@ export default function Sidebar({
 
           <button
             onClick={onToggle}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/[0.06] transition-colors flex-shrink-0 cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/[0.08] transition-all flex-shrink-0 cursor-pointer hover:scale-105"
             title="Ocultar menú lateral"
           >
-            <PanelLeftClose className="w-4 h-4" strokeWidth={1.5} />
+            <PanelLeftClose className="w-4 h-4" strokeWidth={1.8} />
           </button>
         </div>
 
@@ -94,20 +94,22 @@ export default function Sidebar({
                   onClick={item.onClick}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all cursor-pointer group ${
                     item.isActive
-                      ? 'bg-white/[0.08] text-white shadow-glass'
+                      ? 'bg-white/[0.08] text-white shadow-xs border border-white/10'
                       : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-200'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <div className={`p-1.5 rounded-lg transition-colors ${
-                      item.isActive ? 'bg-[#F2B705]/15 text-[#F2B705]' : 'text-slate-500 group-hover:text-slate-300'
+                    <div className={`p-1.5 rounded-lg transition-all duration-200 ${
+                      item.isActive 
+                        ? 'bg-[#F2B705]/15 text-[#F2B705] border border-[#F2B705]/30 shadow-xs' 
+                        : 'bg-white/[0.03] text-slate-400 border border-transparent group-hover:text-slate-200 group-hover:bg-white/[0.08] group-hover:scale-105'
                     }`}>
-                      <Icon className="w-4 h-4" strokeWidth={1.5} />
+                      <Icon className="w-4 h-4" strokeWidth={1.8} />
                     </div>
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="bg-[#F2B705] text-slate-950 font-mono font-bold text-[10px] px-2 py-0.5 rounded-full min-w-[24px] text-center">
+                    <span className="bg-[#F2B705] text-slate-950 font-mono font-bold text-[10px] px-2 py-0.5 rounded-full min-w-[24px] text-center shadow-xs">
                       {item.badge}
                     </span>
                   )}
@@ -115,7 +117,7 @@ export default function Sidebar({
 
                 {/* Sub-items */}
                 {item.children && item.isActive && (
-                  <div className="mt-1 ml-5 pl-4 border-l border-white/[0.06] space-y-0.5">
+                  <div className="mt-1 ml-5 pl-4 border-l border-white/[0.08] space-y-0.5">
                     {item.children.map(child => {
                       const ChildIcon = child.icon;
                       const isChildActive = activeTab === child.id;
@@ -123,13 +125,17 @@ export default function Sidebar({
                         <button
                           key={child.id}
                           onClick={child.onClick}
-                          className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg text-[12px] font-medium transition-all cursor-pointer ${
+                          className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg text-[12px] font-medium transition-all cursor-pointer group ${
                             isChildActive 
-                              ? 'text-[#F2B705] font-semibold' 
-                              : 'text-slate-500 hover:text-slate-300'
+                              ? 'text-[#F2B705] font-semibold bg-[#F2B705]/10' 
+                              : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
                           }`}
                         >
-                          <ChildIcon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} />
+                          <div className={`p-1 rounded-md transition-colors ${
+                            isChildActive ? 'text-[#F2B705]' : 'text-slate-500 group-hover:text-slate-300'
+                          }`}>
+                            <ChildIcon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
+                          </div>
                           <span>{child.label}</span>
                         </button>
                       );
@@ -147,9 +153,9 @@ export default function Sidebar({
           {futureItems.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-slate-600 cursor-default opacity-50">
-                <div className="p-1.5 rounded-lg">
-                  <Icon className="w-4 h-4" strokeWidth={1.5} />
+              <div key={idx} className="flex items-center space-x-3 px-3 py-2 rounded-xl text-[12.5px] font-medium text-slate-600 cursor-default opacity-50">
+                <div className="p-1.5 rounded-lg bg-white/[0.02]">
+                  <Icon className="w-4 h-4" strokeWidth={1.8} />
                 </div>
                 <span>{item.label}</span>
               </div>
@@ -160,25 +166,28 @@ export default function Sidebar({
         {/* Footer: System Status */}
         <div className="p-4 border-t border-white/[0.06] bg-black/20 text-[11px] space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="flex items-center space-x-1.5 text-slate-500">
-              <Server className="w-3.5 h-3.5" strokeWidth={1.5} />
+            <span className="flex items-center space-x-2 text-slate-400 font-medium">
+              <Server className="w-3.5 h-3.5 text-slate-500" strokeWidth={1.8} />
               <span>Base de datos:</span>
             </span>
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+            <span className={`inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
               dbStatus?.fuente === 'neon'
-                ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20'
-                : 'bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20'
+                ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/25'
+                : 'bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/25'
             }`}>
-              {dbStatus?.fuente === 'neon' ? '● Neon' : '● Local'}
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                dbStatus?.fuente === 'neon' ? 'bg-emerald-400' : 'bg-amber-400'
+              }`} />
+              <span>{dbStatus?.fuente === 'neon' ? 'Neon DB' : 'Local'}</span>
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="flex items-center space-x-1.5 text-slate-500">
-              <Building2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+            <span className="flex items-center space-x-2 text-slate-400 font-medium">
+              <Building2 className="w-3.5 h-3.5 text-slate-500" strokeWidth={1.8} />
               <span>Campus:</span>
             </span>
-            <span className="font-semibold text-slate-300">Sede CAM</span>
+            <span className="font-semibold text-slate-200">Sede CAM</span>
           </div>
 
           <div className="pt-2 text-[10px] text-slate-600 text-center border-t border-white/[0.04]">

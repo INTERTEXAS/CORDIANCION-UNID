@@ -46,8 +46,8 @@ export default function WidgetsColumn({
         {/* Header */}
         <div className="h-14 px-4 bg-surface-1 border-b border-border flex items-center justify-between shrink-0 transition-theme">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 bg-accent/10 text-accent rounded-xl">
-              <SlidersHorizontal className="w-4 h-4" strokeWidth={1.5} />
+            <div className="p-2 bg-accent/10 text-accent rounded-xl shadow-2xs">
+              <SlidersHorizontal className="w-4 h-4" strokeWidth={1.8} />
             </div>
             <div>
               <h2 className="text-[13px] font-bold text-text-primary leading-tight">
@@ -61,10 +61,10 @@ export default function WidgetsColumn({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-all cursor-pointer hover:scale-105"
             title="Cerrar panel"
           >
-            <X className="w-4 h-4" strokeWidth={1.5} />
+            <X className="w-4 h-4" strokeWidth={1.8} />
           </button>
         </div>
 
@@ -74,7 +74,7 @@ export default function WidgetsColumn({
           <div className="bg-surface-1 rounded-2xl border border-border p-4 shadow-card transition-theme">
             <div className="flex items-center space-x-2.5 pb-3 border-b border-border-subtle">
               <div className="p-1.5 bg-surface-2 rounded-xl text-text-secondary">
-                <Building2 className="w-4 h-4" strokeWidth={1.5} />
+                <Building2 className="w-4 h-4" strokeWidth={1.8} />
               </div>
               <div>
                 <h3 className="text-[13px] font-bold text-text-primary leading-tight">
@@ -105,7 +105,7 @@ export default function WidgetsColumn({
             <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
               <div className="flex items-center space-x-2.5">
                 <div className="p-1.5 bg-surface-2 rounded-xl text-text-secondary">
-                  <UserCheck className="w-4 h-4" strokeWidth={1.5} />
+                  <UserCheck className="w-4 h-4" strokeWidth={1.8} />
                 </div>
                 <div>
                   <h3 className="text-[13px] font-bold text-text-primary">Expediente del Alumno</h3>
@@ -160,9 +160,9 @@ export default function WidgetsColumn({
             <div className="flex items-center space-x-2.5 pb-3 border-b border-border-subtle">
               <div className={`p-1.5 rounded-xl ${esElegible ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'}`}>
                 {esElegible ? (
-                  <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
+                  <ShieldCheck className="w-4 h-4" strokeWidth={1.8} />
                 ) : (
-                  <ShieldAlert className="w-4 h-4" strokeWidth={1.5} />
+                  <ShieldAlert className="w-4 h-4" strokeWidth={1.8} />
                 )}
               </div>
               <div>
@@ -241,11 +241,11 @@ export default function WidgetsColumn({
             </div>
           </div>
 
-          {/* 4. Historial Reciente s */}
+          {/* 4. Historial Reciente */}
           <div className="bg-surface-1 rounded-2xl border border-border p-4 shadow-card transition-theme">
             <div className="flex items-center space-x-2.5 pb-3 border-b border-border-subtle">
               <div className="p-1.5 bg-surface-2 rounded-xl text-text-secondary">
-                <History className="w-4 h-4" strokeWidth={1.5} />
+                <History className="w-4 h-4" strokeWidth={1.8} />
               </div>
               <div>
                 <h3 className="text-[13px] font-bold text-text-primary">Historial Reciente</h3>
@@ -270,7 +270,7 @@ export default function WidgetsColumn({
                           {item.estudiante.matricula} · {item.estudiante.programa}
                         </div>
                       </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-text-muted group-hover:text-accent flex-shrink-0 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.5} />
+                      <ChevronRight className="w-3.5 h-3.5 text-text-muted group-hover:text-accent flex-shrink-0 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.8} />
                     </button>
                   ))}
                 </div>

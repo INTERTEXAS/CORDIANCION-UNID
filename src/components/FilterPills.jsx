@@ -107,9 +107,9 @@ export default function FilterPills({
           <button
             key={f.id}
             onClick={() => onFilterChange(isActive ? 'TODAS' : f.id)}
-            className={`px-3 py-1.5 text-[12px] font-semibold rounded-xl inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${buttonStyle}`}
+            className={`px-3 py-1.5 text-[12px] font-semibold rounded-xl inline-flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer group hover:shadow-xs active:scale-95 ${buttonStyle}`}
           >
-            <Icon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} />
+            <Icon className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
             <span>{f.label}</span>
             <span className={`px-1.5 py-0.5 text-[10px] rounded-lg font-bold leading-none inline-block ${
               isActive 

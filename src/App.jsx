@@ -9,6 +9,8 @@ import CareerInactiveModal from './components/CareerInactiveModal';
 import ProgramMismatchModal from './components/ProgramMismatchModal';
 import UploadStudentCard from './components/UploadStudentCard';
 import BatchAuditView from './components/BatchAuditView';
+import AuthBarrier from './components/AuthBarrier';
+import { useAuth } from './context/AuthContext';
 
 import { getCarreras } from './services/neonService';
 import { parsePdfKardex } from './services/pdfParser';
@@ -21,13 +23,13 @@ import {
   Layers, 
   AlertCircle, 
   CheckCircle2,
-  Users,
   X
 } from 'lucide-react';
 import NeonAuditManagerModal from './components/NeonAuditManagerModal';
 import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
+  const { isSuperAdmin } = useAuth();
   const [carreras, setCarreras] = useState(CARRERAS_LOCAL);
   const [carreraSeleccionada, setCarreraSeleccionada] = useState(CARRERAS_LOCAL[0]);
   const [dbStatus, setDbStatus] = useState({ fuente: 'local', mensaje: 'Iniciando conexión...' });
@@ -80,6 +82,17 @@ export default function App() {
     }
     loadData();
   }, []);
+
+  // Acceso total e irrestricto a las 11 carreras para TODOS los usuarios autenticados (@unid.mx y Super Admin)
+  const displayCarreras = React.useMemo(() => {
+    return (carreras || CARRERAS_LOCAL).map(c => ({ ...c, activa: true }));
+  }, [carreras]);
+
+  useEffect(() => {
+    if (carreraSeleccionada && !carreraSeleccionada.activa) {
+      setCarreraSeleccionada(prev => ({ ...prev, activa: true }));
+    }
+  }, [carreraSeleccionada]);
 
   // Agregar al historial reciente (máximo 5 alumnos en memoria)
   const addToHistorial = (newAudit) => {
@@ -205,7 +218,10 @@ export default function App() {
     setIsProcessing(true);
     try {
       const response = await fetch('/catalogo.pdf');
-      if (!response.ok) throw new Error('No se pudo descargar catalogo.pdf');
+      const contentType = response.headers.get('content-type') || '';
+      if (!response.ok || contentType.includes('text/html')) {
+        throw new Error('El archivo de demostración catalogo.pdf no está disponible.');
+      }
       const blob = await response.blob();
       const file = new File([blob], 'catalogo.pdf', { type: 'application/pdf' });
       await handleUploadPdf(file);
@@ -213,7 +229,7 @@ export default function App() {
       console.error('Error cargando demo de lote:', err);
       setNotification({
         tipo: 'error',
-        texto: 'No se pudo cargar el archivo catalogo.pdf local.'
+        texto: err.message || 'No se pudo cargar el archivo catalogo.pdf local.'
       });
       setIsProcessing(false);
     }
@@ -369,7 +385,8 @@ export default function App() {
   } : undefined;
 
   return (
-    <div className="flex min-h-screen bg-surface-0 text-text-primary transition-theme">
+    <AuthBarrier>
+      <div className={`flex min-h-screen ${isSuperAdmin ? 'theme-super-admin' : ''} bg-surface-0 text-text-primary transition-theme`}>
       {/* Sidebar */}
       <div className="no-print print:hidden">
         <Sidebar 
@@ -387,7 +404,7 @@ export default function App() {
         {/* Header */}
         <div className="no-print print:hidden">
           <HeaderBar
-            carreras={carreras}
+            carreras={displayCarreras}
             carreraSeleccionada={carreraSeleccionada}
             onSelectCarrera={(carrera) => {
               setCarreraSeleccionada(carrera);
@@ -418,21 +435,22 @@ export default function App() {
 
         {/* Notification Toast */}
         {notification && (
-          <div className={`no-print print:hidden mx-4 mt-3 px-4 py-2.5 rounded-xl text-[12px] font-semibold flex items-center justify-between border animate-slide-down transition-theme ${
+          <div className={`no-print print:hidden mx-4 mt-3 px-4 py-3 rounded-2xl text-[12px] font-semibold flex items-center justify-between border shadow-sm backdrop-blur-md animate-slide-down transition-theme ${
             notification.tipo === 'exito'
-              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20'
+              ? 'bg-emerald-50/90 dark:bg-emerald-500/15 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-500/30'
               : notification.tipo === 'error'
-              ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-500/20'
-              : 'bg-blue-50 dark:bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-500/20'
+              ? 'bg-rose-50/90 dark:bg-rose-500/15 text-rose-900 dark:text-rose-200 border-rose-300 dark:border-rose-500/30'
+              : 'bg-blue-50/90 dark:bg-blue-500/15 text-blue-900 dark:text-blue-200 border-blue-300 dark:border-blue-500/30'
           }`}>
-            <span className="flex items-center space-x-2">
-              {notification.tipo === 'exito' && <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />}
-              {notification.tipo === 'error' && <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" strokeWidth={1.5} />}
-              <span>{notification.texto}</span>
+            <span className="flex items-center space-x-2.5">
+              {notification.tipo === 'exito' && <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" strokeWidth={1.8} />}
+              {notification.tipo === 'error' && <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" strokeWidth={1.8} />}
+              <span className="leading-snug">{notification.texto}</span>
             </span>
             <button 
               onClick={() => setNotification(null)}
-              className="text-text-muted hover:text-text-primary ml-4 p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+              className="text-text-muted hover:text-text-primary ml-4 p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+              title="Cerrar notificación"
             >
               <X className="w-3.5 h-3.5" strokeWidth={2} />
             </button>
@@ -462,7 +480,7 @@ export default function App() {
                     setSelectedBatchStudentAudit(null);
                     setActiveTab('mapa');
                   }}
-                  onUploadNewBatch={handleLoadBatchDemo}
+                  onUploadPdf={handleUploadPdf}
                   onActiveStudentAuditChange={setSelectedBatchStudentAudit}
                   onExportPdf={handleExportPdf}
                   isExporting={isExporting}
@@ -493,28 +511,28 @@ export default function App() {
                 {/* Tab Switcher + Filters */}
                 <div className="no-print print:hidden bg-surface-1 p-3 rounded-2xl border border-border shadow-card space-y-2.5 transition-theme">
                   <div className="flex items-center justify-between">
-                    <div className="bg-surface-2 dark:bg-white/[0.04] p-1 rounded-xl inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full">
+                    <div className="bg-surface-2 dark:bg-white/[0.04] p-1 rounded-xl inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full border border-border/50">
                       <button
                         onClick={() => setActiveTab('mapa')}
-                        className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap group ${
                           activeTab === 'mapa'
-                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-card'
-                            : 'text-text-muted hover:text-text-secondary'
+                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-xs font-bold'
+                            : 'text-text-muted hover:text-text-primary hover:bg-surface-3/50'
                         }`}
                       >
-                        <Layers className="w-3.5 h-3.5" strokeWidth={1.5} />
+                        <Layers className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
                         <span>Mapa de Ejecución</span>
                       </button>
 
                       <button
                         onClick={() => setActiveTab('cedula')}
-                        className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap group ${
                           activeTab === 'cedula'
-                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-card'
-                            : 'text-text-muted hover:text-text-secondary'
+                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-xs font-bold'
+                            : 'text-text-muted hover:text-text-primary hover:bg-surface-3/50'
                         }`}
                       >
-                        <FileText className="w-3.5 h-3.5" strokeWidth={1.5} />
+                        <FileText className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
                         <span>Cédula de Auditoría</span>
                       </button>
                     </div>
@@ -647,6 +665,7 @@ export default function App() {
         }}
       />
 
-    </div>
+      </div>
+    </AuthBarrier>
   );
 }

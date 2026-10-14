@@ -1,26 +1,70 @@
 // src/services/pdfParser.js
 import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData.js';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+if (typeof window !== 'undefined' && pdfjsLib?.GlobalWorkerOptions) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+}
+
+export function detectarModalidad(estudiante, registros = [], carreras = CARRERAS_LOCAL) {
+  if (!estudiante) return estudiante;
+  if (typeof estudiante === 'string') {
+    estudiante = { programa: estudiante };
+  }
+  let conteoEjecutivo = 0;
+  let conteoEscolarizado = 0;
+  
+  const dualClaves = ['ADS38', 'ADS39', 'ADS40', 'MKT26', 'MKS28', 'EES11', 'EES12'];
+  let tieneDual = false;
+  const catalogo = Array.isArray(carreras) && carreras.length > 0 ? carreras : CARRERAS_LOCAL;
+  const programaDeclarado = catalogo.some(carrera => carrera.codigo === estudiante.programa);
+
+  for (const r of (registros || [])) {
+    const subj = r?.subj || '';
+    const crse = r?.crse || '';
+    
+    if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
+      conteoEjecutivo++;
+    } else if (subj.startsWith('L') || /^[A-Z]{2}[ST]\d{2}$/.test(crse)) {
+      conteoEscolarizado++;
+    }
+    
+    if (dualClaves.includes(crse)) {
+      tieneDual = true;
+    }
+  }
+
+  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
+    estudiante.modalidadDetectada = 'EJECUTIVO';
+    if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
+  } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
+    estudiante.modalidadDetectada = 'ESCOLARIZADO DUAL';
+    if (!programaDeclarado) estudiante.programa = 'LIC-DAEM-18';
+  } else {
+    estudiante.modalidadDetectada = 'ESCOLARIZADO';
+    if (!programaDeclarado) estudiante.programa = 'LIC-COFI-18';
+  }
+  
+  return estudiante;
+}
 
 function createCrseRegex(carreras) {
   const dynamicCrses = [];
-  for (const carrera of carreras) {
-    if (carrera.mapa_json) {
+  const catalogo = Array.isArray(carreras) && carreras.length > 0 ? carreras : CARRERAS_LOCAL;
+  for (const carrera of catalogo) {
+    if (carrera?.mapa_json) {
       for (const cuat of (carrera.mapa_json.cuatrimestres || [])) {
         for (const materia of (cuat.materias || [])) {
-          if (materia.crse) dynamicCrses.push(materia.crse);
+          if (materia?.crse) dynamicCrses.push(materia.crse);
         }
       }
       for (const electiva of (carrera.mapa_json.electivas_multidisciplinares || [])) {
-        if (electiva.crse) dynamicCrses.push(electiva.crse);
+        if (electiva?.crse) dynamicCrses.push(electiva.crse);
       }
     }
   }
-  for (const requisito of REQUISITOS_EGRESO) {
-    if (requisito.crse) dynamicCrses.push(requisito.crse);
+  for (const requisito of (REQUISITOS_EGRESO || [])) {
+    if (requisito?.crse) dynamicCrses.push(requisito.crse);
   }
 
   const catalogRegex = [...new Set(dynamicCrses)]
@@ -31,12 +75,16 @@ function createCrseRegex(carreras) {
 
 export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras = CARRERAS_LOCAL) {
   const crseRegex = createCrseRegex(carreras);
-  const arrayBuffer = fileOrBuffer instanceof File
-    ? await fileOrBuffer.arrayBuffer()
-    : fileOrBuffer;
+  let dataBuffer = fileOrBuffer;
+  if (fileOrBuffer instanceof Blob || (typeof fileOrBuffer === 'object' && typeof fileOrBuffer?.arrayBuffer === 'function')) {
+    dataBuffer = await fileOrBuffer.arrayBuffer();
+  }
+  if (dataBuffer instanceof ArrayBuffer) {
+    dataBuffer = new Uint8Array(dataBuffer);
+  }
 
   const loadingTask = pdfjsLib.getDocument({
-    data: arrayBuffer,
+    data: dataBuffer,
     cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
     cMapPacked: true,
   });
@@ -401,11 +449,13 @@ function extractStudentMetadata(text) {
 }
 
 function getSubjFromCatalog(crse, carreras = CARRERAS_LOCAL, programa = '') {
-  const req = REQUISITOS_EGRESO.find(r => r.crse === crse);
-  if (req) return req.subj;
+  if (!crse) return 'LMAX';
+  const req = (REQUISITOS_EGRESO || []).find(r => r?.crse === crse);
+  if (req?.subj) return req.subj;
 
-  const carrerasOrdenadas = [...carreras].sort((a, b) =>
-    Number(b.codigo === programa) - Number(a.codigo === programa)
+  const catalogo = Array.isArray(carreras) && carreras.length > 0 ? carreras : CARRERAS_LOCAL;
+  const carrerasOrdenadas = [...catalogo].sort((a, b) =>
+    Number(b?.codigo === programa) - Number(a?.codigo === programa)
   );
   for (const carrera of carrerasOrdenadas) {
     if (!carrera.mapa_json) continue;
@@ -542,7 +592,7 @@ export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
           .filter(esCalif)
           .filter(it => it.x >= xCalif - 12)
           .filter(it => xCred === undefined || Math.abs(it.x - xCred) > Math.abs(it.x - xCalif) || it.x > xCred);
-        califItem = candidatos.sort((a, b) => a.x - b.x)[candidates.length - 1];
+        califItem = candidatos.sort((a, b) => a.x - b.x).pop();
       } else {
         califItem = row.items.filter(esCalif).sort((a, b) => a.x - b.x).pop();
       }
@@ -596,41 +646,4 @@ export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
     totalAlumnos: students.length,
     students
   };
-}
-
-export function detectarModalidad(estudiante, registros = [], carreras = CARRERAS_LOCAL) {
-  let conteoEjecutivo = 0;
-  let conteoEscolarizado = 0;
-  
-  const dualClaves = ['ADS38', 'ADS39', 'ADS40', 'MKT26', 'MKS28', 'EES11', 'EES12'];
-  let tieneDual = false;
-  const programaDeclarado = carreras.some(carrera => carrera.codigo === estudiante.programa);
-
-  for (const r of registros) {
-    const subj = r.subj || '';
-    const crse = r.crse || '';
-    
-    if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
-      conteoEjecutivo++;
-    } else if (subj.startsWith('L') || /^[A-Z]{2}[ST]\d{2}$/.test(crse)) {
-      conteoEscolarizado++;
-    }
-    
-    if (dualClaves.includes(crse)) {
-      tieneDual = true;
-    }
-  }
-
-  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
-    estudiante.modalidadDetectada = 'EJECUTIVO';
-    if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
-  } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
-    estudiante.modalidadDetectada = 'ESCOLARIZADO DUAL';
-    if (!programaDeclarado) estudiante.programa = 'LIC-DAEM-18';
-  } else {
-    estudiante.modalidadDetectada = 'ESCOLARIZADO';
-    if (!programaDeclarado) estudiante.programa = 'LIC-COFI-18';
-  }
-  
-  return estudiante;
 }

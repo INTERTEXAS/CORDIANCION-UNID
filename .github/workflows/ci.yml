@@ -1,0 +1,37 @@
+name: CI & Deployment Validation
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate-and-build:
+    name: Validar Integridad del Sistema y Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas y validación del sistema
+        env:
+          VITE_NEON_DATABASE_URL: ${{ secrets.VITE_NEON_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run test
+
+      - name: Compilación de producción
+        env:
+          VITE_NEON_DATABASE_URL: ${{ secrets.VITE_NEON_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run build

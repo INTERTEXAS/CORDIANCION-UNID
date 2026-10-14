@@ -27,8 +27,8 @@ export default class ErrorBoundary extends React.Component {
       return (
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="bg-surface-1 rounded-3xl border border-border p-8 max-w-xl mx-auto shadow-card text-center space-y-4 transition-theme animate-fade-in">
-            <div className="w-12 h-12 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" strokeWidth={1.5} />
+            <div className="w-12 h-12 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center mx-auto shadow-2xs">
+              <AlertTriangle className="w-6 h-6" strokeWidth={1.8} />
             </div>
             <div className="space-y-1">
               <span className="text-[10px] font-bold text-rose-700 dark:text-rose-400 bg-rose-100/80 dark:bg-rose-500/15 px-2.5 py-1 rounded-full uppercase tracking-wider inline-block">
@@ -44,9 +44,9 @@ export default class ErrorBoundary extends React.Component {
             <div className="pt-2">
               <button
                 onClick={this.handleReset}
-                className="inline-flex items-center space-x-2 px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl transition-colors cursor-pointer shadow-sm hover:shadow-glow-gold"
+                className="inline-flex items-center space-x-2 px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl transition-all cursor-pointer shadow-sm hover:shadow-glow-gold group active:scale-95"
               >
-                <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
+                <RefreshCw className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" strokeWidth={1.8} />
                 <span>Reiniciar y Reintentar</span>
               </button>
             </div>
