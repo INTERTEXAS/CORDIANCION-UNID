@@ -42,19 +42,26 @@ La solución permite auditar expedientes tanto de forma individual como mediante
 - **Operaciones de Lote**: Guardado masivo, consulta histórica, visualización detallada y depuración/eliminación granular de ciclos escolares registrados.
 - **Contingencia Local**: Si la conexión remota no estuviera disponible, el sistema mantiene la operación local en memoria sin interrumpir el trabajo de coordinación.
 
-### 4. Catálogo Oficial de Programas Académicos (Plan 2018)
-El sistema integra y sincroniza el catálogo oficial de 11 licenciaturas institucionales:
-1. **LIC-ADME-18**: Licenciatura en Administración de Empresas
-2. **LIC-COFI-18**: Licenciatura en Contabilidad y Finanzas
-3. **LIC-DERE-18**: Licenciatura en Derecho
-4. **LIC-MERK-18**: Licenciatura en Mercadotecnia
-5. **LIC-IDIT-18**: Licenciatura en Ingeniería en Diseño Industrial y Tecnología
-6. **LIC-INFO-18**: Licenciatura en Ingeniería en Tecnologías de Información
-7. **LIC-PSIC-18**: Licenciatura en Psicología Organizacional
-8. **LIC-PEDG-18**: Licenciatura en Pedagogía
-9. **LIC-CIEN-18**: Licenciatura en Ciencias y Técnicas de la Comunicación
-10. **LIC-TURH-18**: Licenciatura en Administración de Empresas Turísticas / Turismo y Hotelería
-11. **LIC-DINT-18**: Licenciatura en Diseño e Industria del Vestido / Digital
+### 4. Catálogo Oficial de Programas Académicos (12 Carreras)
+El sistema integra y sincroniza el catálogo oficial de 12 licenciaturas institucionales organizadas por coordinación:
+
+**Coordinación: Laura Angélica Ara Angulo (Ciencias Económico-Administrativas)**
+1. **LIC-COFI-18**: Licenciatura en Contabilidad y Finanzas (Mixto) - Federal
+2. **LIC-DAEM-18**: Licenciatura en Administración y Dirección Empresarial - Plan 2018 Dual
+3. **LIC-EJCO-17**: Licenciatura en Contabilidad Financiera - Plan 202160 Ejecutivo Modular
+
+**Coordinación: Yessica Inurreta Pavón (Arquitectura, Derecho, Educación y Deporte)**
+4. **LIC-ARQU-18**: Licenciatura en Arquitectura (Mixto) - Federal
+5. **LIC-DERE-18**: Licenciatura en Derecho y Ciencias Jurídicas (Mixto) - Federal
+6. **LIC-EJDE-17**: Licenciatura Ejecutiva en Derecho (Modular) - Federal
+7. **LIC-EJED-17**: Licenciatura Ejecutiva en Educación y Tecnologías para el Aprendizaje (Modular) - Federal
+8. **LIC-EDFI-18**: Licenciatura en Educación Física, Recreación y Deporte (Mixto) - Federal
+
+**Coordinación: Avelina García Romeo (Diseño, Administración, Mercadotecnia e Ingeniería)**
+9. **LIC-DSGD-18**: Licenciatura en Diseño Gráfico Digital (Mixto) - Federal
+10. **LIC-EJAD-17**: Licenciatura en Administración de Empresas (Mixto) - Federal
+11. **LIC-MEES-18**: Licenciatura en Mercadotecnia Estratégica (Mixto) - Federal
+12. **LIC-SYSC-18**: Licenciatura en Ingeniería de Software y Sistemas Computacionales (Mixto) - Federal
 
 ---
 

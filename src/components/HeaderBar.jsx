@@ -62,12 +62,12 @@ const COORDINADORAS_CONFIG = [
     id: 'yessica',
     nombreDisplay: 'YESSICA INURRETA PAVÓN',
     icon: Scale,
-    areaLabel: 'Arquitectura, Derecho y Educación',
+    areaLabel: 'Arquitectura, Derecho, Educación y Deporte',
     matches: (carrera) => {
       const codigo = (carrera?.codigo || '').toUpperCase();
-      // Las 4 carreras oficiales de Yessica según estructura institucional:
-      // ARQU, DERE, EJDE, EJED
-      const yessKeys = ['ARQU', 'DERE', 'EJDE', 'EJED'];
+      // Las 5 carreras oficiales de Yessica según estructura institucional:
+      // ARQU, DERE, EJDE, EJED, EDFI/EFRD
+      const yessKeys = ['ARQU', 'DERE', 'EJDE', 'EJED', 'EDFI', 'EFRD'];
       return yessKeys.some(k => codigo.includes(k));
     },
     containerClass: 'bg-orange-50/50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/40',

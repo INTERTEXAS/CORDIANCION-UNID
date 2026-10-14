@@ -1606,6 +1606,146 @@ export const CARRERAS_LOCAL = [
     }
   },
   {
+    id: 8,
+    codigo: 'LIC-EDFI-18',
+    nombre: 'LICENCIATURA EN EDUCACIÓN FÍSICA, RECREACIÓN Y DEPORTE (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    ultima_actualizacion_cpa: '31-julio-2026',
+    sede: 'CAM',
+    coordinadora: 'YESSICA INURRETA PAVÓN',
+    activa: true,
+    total_materias: 37,
+    niveles_ingles: 5,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F001',
+          materias: [
+            { clave: 'LMFM-HUS01', subj: 'LMFM', crse: 'HUS01', nombre: 'SER HUMANO', conecta: false, creditos: 3 },
+            { clave: 'LMDX-EDS01', subj: 'LMDX', crse: 'EDS01', nombre: 'ESTRATEGIAS PARA LA AUTONOMÍA EN EL APRENDIZAJE', conecta: false, creditos: 3 },
+            { clave: 'LMIX-HTS01', subj: 'LMIX', crse: 'HTS01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFS01', subj: 'LMCX', crse: 'EFS01', nombre: 'TEORÍA DEL EJERCICIO', conecta: false, creditos: 3 },
+            { clave: 'LMSC-SAS01', subj: 'LMSC', crse: 'SAS01', nombre: 'BASES DE ANATOMÍA HUMANA', conecta: false, creditos: 3 },
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F002',
+          materias: [
+            { clave: 'LMFM-HUS02', subj: 'LMFM', crse: 'HUS02', nombre: 'SEMINARIO DE VALORES EN LO PERSONAL', conecta: false, creditos: 3 },
+            { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 3 },
+            { clave: 'LMMD-PSS02', subj: 'LMMD', crse: 'PSS02', nombre: 'TEORÍAS PSICOLÓGICAS DEL DESARROLLO', conecta: false, creditos: 3 },
+            { clave: 'LMSC-SAS02', subj: 'LMSC', crse: 'SAS02', nombre: 'FISIOLOGÍA', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFS02', subj: 'LMCX', crse: 'EFS02', nombre: 'TEORÍA DEL ENTRENAMIENTO DEPORTIVO', conecta: false, creditos: 3 },
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F003',
+          materias: [
+            { clave: 'LMFM-HUS03', subj: 'LMFM', crse: 'HUS03', nombre: 'SEMINARIO DE VALORES EN LO COMÚN', conecta: true, creditos: 3 },
+            { clave: 'LMCM-EFS03', subj: 'LMCM', crse: 'EFS03', nombre: 'CORPOREIDAD Y MOTRICIDAD', conecta: false, creditos: 3 },
+            { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFS04', subj: 'LMCX', crse: 'EFS04', nombre: 'PREPARACIÓN FÍSICA', conecta: false, creditos: 3 },
+            { clave: 'LMMC-PSS03', subj: 'LMMC', crse: 'PSS03', nombre: 'PSICOLOGÍA APLICADA AL DEPORTE', conecta: false, creditos: 3 },
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F004',
+          materias: [
+            { clave: 'LMFM-HUS05', subj: 'LMFM', crse: 'HUS05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFS05', subj: 'LMCX', crse: 'EFS05', nombre: 'ATLETISMO', conecta: false, creditos: 3 },
+            { clave: 'LMBX-IVS01', subj: 'LMBX', crse: 'IVS01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: true, creditos: 3 },
+            { clave: 'LMCX-EFT01', subj: 'LMCX', crse: 'EFT01', nombre: 'BASES DEL DEPORTE EDUCATIVO', conecta: false, creditos: 3 },
+            { clave: 'LMDC-EFS06', subj: 'LMDC', crse: 'EFS06', nombre: 'DIDÁCTICA DE LA EDUCACIÓN FÍSICA', conecta: false, creditos: 3 },
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'P001',
+          materias: [
+            { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: true, creditos: 3 },
+            { clave: 'LMDC-EFS08', subj: 'LMDC', crse: 'EFS08', nombre: 'DISEÑO Y USO DE MATERIAL DIDÁCTICO', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFS07', subj: 'LMCX', crse: 'EFS07', nombre: 'ACTIVIDADES EN ESPACIOS ABIERTOS', conecta: false, creditos: 3 },
+            { clave: 'LMMX-EFT02', subj: 'LMMX', crse: 'EFT02', nombre: 'EDUCACIÓN PSICOMOTRIZ', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFS09', subj: 'LMCX', crse: 'EFS09', nombre: 'FÚTBOL', conecta: false, creditos: 3 },
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMCX-EFS10', subj: 'LMCX', crse: 'EFS10', nombre: 'BASQUETBOL', conecta: false, creditos: 3 },
+            { clave: 'LMAD-EES01', subj: 'LMAD', crse: 'EES01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: true, creditos: 3 },
+            { clave: 'LMCX-EFS11', subj: 'LMCX', crse: 'EFS11', nombre: 'OBSERVACIÓN Y PRÁCTICA DE LA EDUCACIÓN FÍSICA', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFT03', subj: 'LMCX', crse: 'EFT03', nombre: 'ESTRATEGIAS DE ANIMACIÓN SOCIOCULTURAL', conecta: false, creditos: 3 },
+            { clave: 'LMSC-SAS03', subj: 'LMSC', crse: 'SAS03', nombre: 'PRIMEROS AUXILIOS', conecta: false, creditos: 3 },
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-EES02', subj: 'LMAD', crse: 'EES02', nombre: 'ESTADÍA EMPRESARIAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true },
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 3 },
+            { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: true, creditos: 3 },
+            { clave: 'LMCX-EFS12', subj: 'LMCX', crse: 'EFS12', nombre: 'EVALUACIÓN EN EDUCACIÓN FÍSICA', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFT04', subj: 'LMCX', crse: 'EFT04', nombre: 'PROYECTOS DEPORTIVOS PARA LA RECREACIÓN', conecta: false, creditos: 3 },
+            { clave: 'LMCX-EFS13', subj: 'LMCX', crse: 'EFS13', nombre: 'VOLEIBOL', conecta: false, creditos: 3 },
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMHV-EES03', subj: 'LMHV', crse: 'EES03', nombre: 'ESTADÍA EMPRESARIAL PARA EL ÉNFASIS PROFESIONAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true },
+          ]
+        }
+      ],
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: 'F001', nombre: 'INGLÉS I' },
+        { cuatrimestre: 2, nivel: 2, clave_default: 'F002', nombre: 'INGLÉS II' },
+        { cuatrimestre: 3, nivel: 3, clave_default: 'F003', nombre: 'INGLÉS III' },
+        { cuatrimestre: 4, nivel: 4, clave_default: 'F004', nombre: 'INGLÉS IV' },
+        { cuatrimestre: 5, nivel: 5, clave_default: 'P001', nombre: 'INGLÉS V' },
+      ],
+      electivas_multidisciplinares: [
+        { clave: 'LMCX-EFT05', subj: 'LMCX', crse: 'EFT05', nombre: 'DEPORTE Y CALIDAD DE VIDA' },
+        { clave: 'LMCX-EFS14', subj: 'LMCX', crse: 'EFS14', nombre: 'DEPORTES ALTERNATIVOS EN EDUCACIÓN' },
+        { clave: 'LMCX-EFS15', subj: 'LMCX', crse: 'EFS15', nombre: 'EDUCACIÓN FÍSICA E INCLUSIÓN' },
+        { clave: 'LMCX-EFT06', subj: 'LMCX', crse: 'EFT06', nombre: 'NUEVAS TENDENCIAS DE LA ACTIVIDAD FÍSICA' },
+        { clave: 'LMSC-SAS04', subj: 'LMSC', crse: 'SAS04', nombre: 'PREVENCIÓN Y TRATAMIENTO DE LESIONES' },
+        { clave: 'LMIK-SIS01', subj: 'LMIK', crse: 'SIS01', nombre: 'INNOVACIÓN Y TECNOLOGÍA' },
+        { clave: 'LMAX-NES01', subj: 'LMAX', crse: 'NES01', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS' },
+        { clave: 'LMAX-ADS03', subj: 'LMAX', crse: 'ADS03', nombre: 'COMPETITIVIDAD ESTRATÉGICA EMPRESARIAL' },
+        { clave: 'LMAX-ADT15', subj: 'LMAX', crse: 'ADT15', nombre: 'ESTRATEGIAS DIRECTIVAS Y DE NEGOCIACIÓN' },
+        { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'GESTIÓN DE NEGOCIOS Y ADMINISTRACIÓN DE PROYECTOS' },
+      ]
+    }
+  },
+  {
     id: 9,
     codigo: 'LIC-DSGD-18',
     nombre: 'LICENCIATURA EN DISEÑO GRÁFICO DIGITAL (MIXTO) - FEDERAL',
@@ -1752,7 +1892,7 @@ export const CARRERAS_LOCAL = [
     ]
   },
   {
-    id: 9,
+    id: 10,
     codigo: 'LIC-EJAD-17',
     nombre: 'LICENCIATURA EN ADMINISTRACIÓN DE EMPRESAS (MIXTO) - FEDERAL',
     encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 202160 (EJECUTIVO - MODULAR)',
@@ -2207,11 +2347,13 @@ export const NOMBRES_LARGOS_CARRERAS = {
   'LIC-DAEM-18': 'LICENCIATURA EN ADMINISTRACIÓN Y DIRECCIÓN EMPRESARIAL - PLAN 2018 DUAL',
   'LIC-EJCO-17': 'LICENCIATURA EN CONTABILIDAD FINANCIERA - PLAN 202160 EJECUTIVO MODULAR',
 
-  // Yessica (4)
+  // Yessica (5)
   'LIC-ARQU-18': 'LICENCIATURA EN ARQUITECTURA (MIXTO) - FEDERAL',
   'LIC-DERE-18': 'LICENCIATURA EN DERECHO Y CIENCIAS JURÍDICAS (MIXTO) - FEDERAL',
   'LIC-EJDE-17': 'LICENCIATURA EJECUTIVA EN DERECHO (MODULAR) - FEDERAL',
   'LIC-EJED-17': 'LICENCIATURA EJECUTIVA EN EDUCACIÓN Y TECNOLOGÍAS PARA EL APRENDIZAJE (MODULAR) - FEDERAL',
+  'LIC-EDFI-18': 'LICENCIATURA EN EDUCACIÓN FÍSICA, RECREACIÓN Y DEPORTE (MIXTO) - FEDERAL',
+  'LIC-EFRD-18': 'LICENCIATURA EN EDUCACIÓN FÍSICA, RECREACIÓN Y DEPORTE (MIXTO) - FEDERAL',
 
   // Avelina (4)
   'LIC-DSGD-18': 'LICENCIATURA EN DISEÑO GRÁFICO DIGITAL (MIXTO) - FEDERAL',

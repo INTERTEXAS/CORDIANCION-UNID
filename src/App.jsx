@@ -83,7 +83,7 @@ export default function App() {
     loadData();
   }, []);
 
-  // Acceso total e irrestricto a las 11 carreras para TODOS los usuarios autenticados (@unid.mx y Super Admin)
+  // Acceso total e irrestricto a las 12 carreras para TODOS los usuarios autenticados (@unid.mx y Super Admin)
   const displayCarreras = React.useMemo(() => {
     return (carreras || CARRERAS_LOCAL).map(c => ({ ...c, activa: true }));
   }, [carreras]);

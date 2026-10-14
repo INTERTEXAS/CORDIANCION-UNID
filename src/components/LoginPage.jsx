@@ -1,23 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest, isValidUnidEmail, getAccountEmail } from '../authConfig';
-import { ShieldAlert, ShieldCheck, Loader2, ArrowRight, Terminal } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, Loader2, ArrowRight, Terminal, X } from 'lucide-react';
 import DevLoginModal from './DevLoginModal';
 
-export default function LoginPage({ initialError = null, onAuthSuccess = null }) {
+export default function LoginPage({ initialError = null, onAuthSuccess = null, onClearError = null }) {
   const { instance } = useMsal();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState(initialError);
   const [isDevModalOpen, setIsDevModalOpen] = useState(false);
+  const timerRef = useRef(null);
 
-  React.useEffect(() => {
-    if (initialError) {
-      setErrorMessage(initialError);
+  // Borra de inmediato el mensaje de error y cancela temporizadores activos
+  const dismissError = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
     }
-  }, [initialError]);
+    setErrorMessage(null);
+    if (onClearError) {
+      onClearError();
+    }
+  }, [onClearError]);
+
+  // Asigna un mensaje de error con duración programada de 20 segundos
+  const setTimedErrorMessage = useCallback((msg) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setErrorMessage(msg);
+    if (msg) {
+      // Temporizador de 20 segundos (20,000 ms)
+      timerRef.current = setTimeout(() => {
+        dismissError();
+      }, 20000);
+    }
+  }, [dismissError]);
+
+  useEffect(() => {
+    if (initialError) {
+      setTimedErrorMessage(initialError);
+    } else {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      setErrorMessage(null);
+    }
+  }, [initialError, setTimedErrorMessage]);
+
+  // Limpieza defensiva del temporizador al desmontar
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const handleLogin = async () => {
-    setErrorMessage(null);
+    // EN CADA INTENTO: Borrar inmediatamente el mensaje anterior
+    dismissError();
     setIsLoggingIn(true);
 
     try {
@@ -34,7 +78,13 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null })
       if (!account || !isValidUnidEmail(account)) {
         console.warn(`[Auth] Intento de acceso no autorizado con correo: ${email}`);
         instance.setActiveAccount(null);
-        setErrorMessage(`Acceso denegado: El correo (${email || 'desconocido'}) no pertenece al dominio oficial @unid.mx. Solo personal con cuenta @unid.mx tiene acceso permitido.`);
+        try {
+          if (typeof instance.clearCache === 'function') {
+            await instance.clearCache();
+          }
+        } catch (_) {}
+
+        setTimedErrorMessage(`Acceso denegado: El correo (${email || 'desconocido'}) no pertenece al dominio oficial @unid.mx. Solo personal con cuenta @unid.mx tiene acceso permitido.`);
         return;
       }
 
@@ -58,9 +108,9 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null })
         error.message?.toLowerCase().includes('popup');
 
       if (isCancelled) {
-        setErrorMessage('Inicio de sesión cancelado o ventana cerrada.');
+        setTimedErrorMessage('Inicio de sesión cancelado o ventana cerrada.');
       } else {
-        setErrorMessage(error.message || 'Error al conectar con los servicios de Microsoft Entra ID.');
+        setTimedErrorMessage(error.message || 'Error al conectar con los servicios de Microsoft Entra ID.');
       }
     } finally {
       setIsLoggingIn(false);
@@ -126,19 +176,23 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null })
             </p>
           </div>
 
-          {/* Mensaje de Alerta / Timeout / Error (si existe) */}
+          {/* Mensaje de Alerta / Timeout / Error (se borra en cada intento y dura 20s) */}
           {errorMessage && (
-            <div className={`mb-5 p-3.5 rounded-xl border text-xs flex items-start space-x-2.5 animate-shake ${
-              errorMessage.includes('inactividad') || errorMessage.includes('expirado')
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-200'
-                : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-            }`}>
+            <div 
+              key={errorMessage}
+              className={`mb-5 p-3.5 rounded-xl border text-xs flex items-start space-x-2.5 animate-shake relative overflow-hidden transition-all duration-300 ${
+                errorMessage.includes('inactividad') || errorMessage.includes('expirado')
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-200'
+                  : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              }`}
+            >
               <ShieldAlert className={`w-4 h-4 shrink-0 mt-0.5 ${
                 errorMessage.includes('inactividad') || errorMessage.includes('expirado')
                   ? 'text-amber-400'
                   : 'text-rose-400'
               }`} strokeWidth={1.8} />
-              <div className="space-y-0.5">
+
+              <div className="space-y-1 flex-1 pr-4 min-w-0">
                 <span className={`font-bold block ${
                   errorMessage.includes('inactividad') || errorMessage.includes('expirado')
                     ? 'text-amber-100'
@@ -149,6 +203,31 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null })
                     : 'Acceso no autorizado'}
                 </span>
                 <p className="leading-relaxed opacity-90">{errorMessage}</p>
+                <div className="pt-0.5 flex items-center justify-between text-[10px] opacity-75">
+                  <span>Cierre automático en 20s</span>
+                  <span className="font-mono">o al reintentar</span>
+                </div>
+              </div>
+
+              {/* Botón manual para descartar el mensaje */}
+              <button
+                type="button"
+                onClick={dismissError}
+                className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+                title="Descartar aviso"
+              >
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+
+              {/* Barra de progreso de cuenta regresiva de 20s */}
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 overflow-hidden">
+                <div 
+                  className={`h-full ${
+                    errorMessage.includes('inactividad') || errorMessage.includes('expirado')
+                      ? 'bg-amber-400'
+                      : 'bg-rose-400'
+                  } animate-countdown-20s`} 
+                />
               </div>
             </div>
           )}

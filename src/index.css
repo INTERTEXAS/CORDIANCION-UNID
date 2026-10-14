@@ -218,6 +218,19 @@
   animation: shimmerGlow 5s linear infinite;
 }
 
+@keyframes countdownBar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.animate-countdown-20s {
+  animation: countdownBar 20s linear forwards;
+}
+
 /* Iluminación ambiental arquitectónica sobria y ejecutiva */
 .bg-executive-glow {
   background: 

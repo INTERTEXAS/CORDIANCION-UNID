@@ -32,6 +32,11 @@ export default function AuthBarrier({ children }) {
         console.warn('[AuthBarrier] Cuenta en sesión no autorizada:', email);
         setAuthError(`Acceso denegado: El correo (${email || 'desconocido'}) no pertenece al dominio oficial @unid.mx. Solo personal con cuenta @unid.mx tiene acceso permitido.`);
         instance.setActiveAccount(null);
+        try {
+          if (typeof instance.clearCache === 'function') {
+            instance.clearCache();
+          }
+        } catch (_) {}
       }
     }
     setIsVerifying(false);
@@ -117,6 +122,7 @@ export default function AuthBarrier({ children }) {
     return (
       <LoginPage 
         initialError={authError} 
+        onClearError={() => setAuthError(null)}
         onAuthSuccess={(authResult, role) => {
           setAuthError(null);
           if (role === 'ADMIN_SISTEMA') {
