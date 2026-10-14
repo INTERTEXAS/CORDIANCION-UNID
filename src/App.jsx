@@ -178,8 +178,10 @@ export default function App() {
       // Comprobar coincidencia del programa del PDF contra la carrera seleccionada
       if (parsed.estudiante?.programa && parsed.estudiante.programa !== carreraSeleccionada.codigo) {
         const normalizedDetected = parsed.estudiante.programa.trim().replace(/0/g, 'O');
-        const targetCarrera = carreras.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
-          || carreras.find(c => c.codigo === parsed.estudiante.programa || c.clave === parsed.estudiante.programa)
+        const targetCarrera = (carreras || []).find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
+          || (carreras || []).find(c => c.codigo === parsed.estudiante.programa || c.clave === parsed.estudiante.programa)
+          || CARRERAS_LOCAL.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
+          || CARRERAS_LOCAL.find(c => c.codigo === parsed.estudiante.programa || c.clave === parsed.estudiante.programa)
           || carreraSeleccionada;
 
         setMismatchModal({
@@ -243,8 +245,10 @@ export default function App() {
       const normalizedDetected = detectedProgram.trim().replace(/0/g, 'O');
       
       const targetCarrera = forcedTargetCarrera
-        || carreras.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
-        || carreras.find(c => c.codigo === detectedProgram || c.clave === detectedProgram)
+        || (carreras || []).find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
+        || (carreras || []).find(c => c.codigo === detectedProgram || c.clave === detectedProgram)
+        || CARRERAS_LOCAL.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
+        || CARRERAS_LOCAL.find(c => c.codigo === detectedProgram || c.clave === detectedProgram)
         || {
           ...carreraSeleccionada,
           codigo: detectedProgram

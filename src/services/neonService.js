@@ -56,7 +56,7 @@ export async function getCarreras() {
         });
       });
 
-      // El catálogo maestro institucional garantizado son las 12 carreras oficiales de CARRERAS_LOCAL.
+      // El catálogo maestro institucional garantizado incluye las carreras oficiales de CARRERAS_LOCAL y Neon DB.
       // Sincronizamos las propiedades desde Neon para las carreras oficiales.
       const carrerasConsolidadas = CARRERAS_LOCAL.map(local => {
         const fromDb = dbCarrerasMap.get(local.codigo);
@@ -71,6 +71,13 @@ export async function getCarreras() {
           coordinadora: fromDb.coordinadora || local.coordinadora,
           mapa_json: fromDb.mapa_json || local.mapa_json
         };
+      });
+
+      // Añadir de forma dinámica cualquier carrera registrada en BD que no esté en local
+      dbCarrerasMap.forEach((fromDb, codigo) => {
+        if (!carrerasConsolidadas.some(c => c.codigo === codigo)) {
+          carrerasConsolidadas.push(fromDb);
+        }
       });
 
       return {
