@@ -2323,6 +2323,150 @@ export const CARRERAS_LOCAL = [
       { clave: 'CUPR-EVSS1', subj: 'CUPR', crse: 'EVSS1', nombre: 'CURSO DE PREPARACIÓN EVIPE I - INGENIERÍA DE SOFTWARE' },
       { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
     ]
+  },
+  {
+    id: 13,
+    codigo: 'LIC-ADME-18',
+    nombre: 'LICENCIATURA EN ADMINISTRACIÓN EMPRESARIAL (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    ultima_actualizacion_cpa: '14-octubre-2026',
+    sede: 'CAM',
+    coordinadora: 'AVELINA GARCÍA ROMEO',
+    activa: true,
+    total_materias: 37,
+    niveles_ingles: 5,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F001',
+          materias: [
+            { clave: 'LMFM-HUS01', subj: 'LMFM', crse: 'HUS01', nombre: 'SER HUMANO', conecta: false, creditos: 3 },
+            { clave: 'LMAX-ADS05', subj: 'LMAX', crse: 'ADS05', nombre: 'ESTRUCTURAS ADMINISTRATIVAS', conecta: false, creditos: 3 },
+            { clave: 'LMIX-HTS01', subj: 'LMIX', crse: 'HTS01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 3 },
+            { clave: 'LMAX-CFS01', subj: 'LMAX', crse: 'CFS01', nombre: 'FUNDAMENTOS DE CONTABILIDAD', conecta: false, creditos: 3 },
+            { clave: 'LMDX-EDS01', subj: 'LMDX', crse: 'EDS01', nombre: 'ESTRATEGIAS PARA LA AUTONOMÍA EN EL APRENDIZAJE', conecta: false, creditos: 3 }
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F002',
+          materias: [
+            { clave: 'LMFM-HUS02', subj: 'LMFM', crse: 'HUS02', nombre: 'SEMINARIO DE VALORES EN LO PERSONAL', conecta: false, creditos: 3 },
+            { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 3 },
+            { clave: 'LMAX-FIS02', subj: 'LMAX', crse: 'FIS02', nombre: 'FUNDAMENTOS TEÓRICOS DEL ANÁLISIS FINANCIERO', conecta: false, creditos: 3 },
+            { clave: 'LMAX-ADS07', subj: 'LMAX', crse: 'ADS07', nombre: 'PROCESO ADMINISTRATIVO', conecta: false, creditos: 3 },
+            { clave: 'LMAX-ADS08', subj: 'LMAX', crse: 'ADS08', nombre: 'CORRIENTES DE LA ADMINISTRACIÓN', conecta: false, creditos: 3 }
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F003',
+          materias: [
+            { clave: 'LMFM-HUS03', subj: 'LMFM', crse: 'HUS03', nombre: 'SEMINARIO DE VALORES EN LO COMÚN', conecta: true, creditos: 3 },
+            { clave: 'LMAX-CFS02', subj: 'LMAX', crse: 'CFS02', nombre: 'CONTABILIDAD DE COSTOS', conecta: false, creditos: 3 },
+            { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: false, creditos: 3 },
+            { clave: 'LMAM-ADS08', subj: 'LMAM', crse: 'ADS08', nombre: 'LIDERAZGO', conecta: false, creditos: 3 },
+            { clave: 'LIMAX-ECS01', subj: 'LIMAX', crse: 'ECS01', alias_corregir: 'LMAX-ECS01', nombre: 'MICRO Y MACROECONOMÍA', conecta: false, creditos: 3 }
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'F004',
+          materias: [
+            { clave: 'LMFM-HUS05', subj: 'LMFM', crse: 'HUS05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 3 },
+            { clave: 'LMAX-ADS10', subj: 'LMAX', crse: 'ADS10', nombre: 'DISEÑO ORGANIZACIONAL', conecta: false, creditos: 3 },
+            { clave: 'LMBX-IVS01', subj: 'LMBX', crse: 'IVS01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: true, creditos: 3 },
+            { clave: 'LMKP-MKT01', subj: 'LMKP', crse: 'MKT01', nombre: 'ANÁLISIS DEL CONSUMIDOR Y DEL PRODUCTO', conecta: false, creditos: 3 },
+            { clave: 'LMIA-INS07', subj: 'LMIA', crse: 'INS07', nombre: 'SISTEMAS DE CALIDAD', conecta: false, creditos: 3 }
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'P001',
+          materias: [
+            { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: true, creditos: 3 },
+            { clave: 'LMMA-ADS11', subj: 'LMMA', crse: 'ADS11', nombre: 'RECLUTAMIENTO, SELECCIÓN E INDUCCIÓN DEL PERSONAL', conecta: false, creditos: 3 },
+            { clave: 'LMKA-MKS01', subj: 'LMKA', crse: 'MKS01', nombre: 'INVESTIGACIÓN CUANTITATIVA Y CUALITATIVA DE MERCADOS', conecta: false, creditos: 3 },
+            { clave: 'LMKX-ADT14', subj: 'LMKX', crse: 'ADT14', nombre: 'ESTRATEGIAS DE PRECIOS Y VENTAS', conecta: false, creditos: 3 },
+            { clave: 'LMAI-ADS12', subj: 'LMAI', crse: 'ADS12', nombre: 'TÉCNICAS DE PLANEACIÓN Y CONTROL', conecta: false, creditos: 3 }
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-PES06', subj: 'LMAD', crse: 'PES06', nombre: 'CAPACITACIÓN PARA EL DESARROLLO ORGANIZACIONAL', conecta: false, creditos: 3 },
+            { clave: 'LMAD-EES01', subj: 'LMAD', crse: 'EES01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: true, creditos: 3 },
+            { clave: 'LMIA-INS18', subj: 'LMIA', crse: 'INS18', nombre: 'LOGÍSTICA Y DISTRIBUCIÓN DE PRODUCTOS', conecta: false, creditos: 3 },
+            { clave: 'LMAX-CFT08', subj: 'LMAX', crse: 'CFT08', nombre: 'PLANEACIÓN Y CONTROL DE PRESUPUESTOS', conecta: false, creditos: 3 },
+            { clave: 'LMAX-ADS14', subj: 'LMAX', crse: 'ADS14', nombre: 'RELACIONES LABORALES', conecta: false, creditos: 3 }
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-EES02', subj: 'LMAD', crse: 'EES02', nombre: 'ESTADÍA EMPRESARIAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true }
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 3 },
+            { clave: 'LMMA-PSS06', subj: 'LMMA', crse: 'PSS06', nombre: 'EVALUACIÓN DEL DESEMPEÑO LABORAL', conecta: false, creditos: 3 },
+            { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: true, creditos: 3 },
+            { clave: 'LMAK-ADT08', subj: 'LMAK', crse: 'ADT08', nombre: 'ADMINISTRACIÓN DE VENTAS', conecta: false, creditos: 3 },
+            { clave: 'LMAX-ADS16', subj: 'LMAX', crse: 'ADS16', nombre: 'PLANEACIÓN ESTRATÉGICA', conecta: false, creditos: 3 }
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMHV-EES03', subj: 'LMHV', crse: 'EES03', nombre: 'ESTADÍA EMPRESARIAL PARA EL ÉNFASIS PROFESIONAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true }
+          ]
+        }
+      ],
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: 'F001', nombre: 'INGLÉS I' },
+        { cuatrimestre: 2, nivel: 2, clave_default: 'F002', nombre: 'INGLÉS II' },
+        { cuatrimestre: 3, nivel: 3, clave_default: 'F003', nombre: 'INGLÉS III' },
+        { cuatrimestre: 4, nivel: 4, clave_default: 'F004', nombre: 'INGLÉS IV' },
+        { cuatrimestre: 5, nivel: 5, clave_default: 'P001', nombre: 'INGLÉS V' }
+      ],
+      electivas_multidisciplinares: [
+        { clave: 'LMIK-SIS01', subj: 'LMIK', crse: 'SIS01', nombre: 'INNOVACIÓN Y TECNOLOGÍA' },
+        { clave: 'LMAX-FIS10', subj: 'LMAX', crse: 'FIS10', nombre: 'FINANZAS EMPRESARIALES' },
+        { clave: 'LMAX-NES01', subj: 'LMAX', crse: 'NES01', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS' },
+        { clave: 'LMAX-ADS03', subj: 'LMAX', crse: 'ADS03', nombre: 'COMPETITIVIDAD ESTRATÉGICA EMPRESARIAL' },
+        { clave: 'LMAX-ADT15', subj: 'LMAX', crse: 'ADT15', nombre: 'ESTRATEGIAS DIRECTIVAS Y DE NEGOCIACIÓN' },
+        { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'GESTIÓN DE NEGOCIOS Y ADMINISTRACIÓN DE PROYECTOS' },
+        { clave: 'LMAX-FIS11', subj: 'LMAX', crse: 'FIS11', nombre: 'FORMULACIÓN Y EVALUACIÓN DE PROYECTOS DE INVERSIÓN' },
+        { clave: 'LMAX-FIS09', subj: 'LMAX', crse: 'FIS09', nombre: 'BANCA Y CRÉDITO' },
+        { clave: 'LMAJ-CFT07', subj: 'LMAJ', crse: 'CFT07', nombre: 'GRAVÁMENES INTERNACIONALES' },
+        { clave: 'LMAX-FIT15', subj: 'LMAX', crse: 'FIT15', nombre: 'SISTEMA FINANCIERO INTERNACIONAL' }
+      ]
+    },
+    requisitos_egreso: [
+      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN EMPRESARIAL' },
+      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+    ]
   }
 ];
 
@@ -2355,11 +2499,12 @@ export const NOMBRES_LARGOS_CARRERAS = {
   'LIC-EDFI-18': 'LICENCIATURA EN EDUCACIÓN FÍSICA, RECREACIÓN Y DEPORTE (MIXTO) - FEDERAL',
   'LIC-EFRD-18': 'LICENCIATURA EN EDUCACIÓN FÍSICA, RECREACIÓN Y DEPORTE (MIXTO) - FEDERAL',
 
-  // Avelina (4)
+  // Avelina (5)
   'LIC-DSGD-18': 'LICENCIATURA EN DISEÑO GRÁFICO DIGITAL (MIXTO) - FEDERAL',
   'LIC-EJAD-17': 'LICENCIATURA EN ADMINISTRACIÓN DE EMPRESAS (MIXTO) - FEDERAL',
   'LIC-MEES-18': 'LICENCIATURA EN MERCADOTECNIA ESTRATÉGICA (MIXTO) - FEDERAL',
-  'LIC-SYSC-18': 'LICENCIATURA EN INGENIERÍA DE SOFTWARE Y SISTEMAS COMPUTACIONALES (MIXTO) - FEDERAL'
+  'LIC-SYSC-18': 'LICENCIATURA EN INGENIERÍA DE SOFTWARE Y SISTEMAS COMPUTACIONALES (MIXTO) - FEDERAL',
+  'LIC-ADME-18': 'LICENCIATURA EN ADMINISTRACIÓN EMPRESARIAL (MIXTO) - FEDERAL'
 };
 
 export function resolverNombreOficialCarrera(carrera) {

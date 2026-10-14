@@ -49,9 +49,9 @@ const COORDINADORAS_CONFIG = [
     areaLabel: 'Diseño, Administración, Mercadotecnia e Ingeniería',
     matches: (carrera) => {
       const codigo = (carrera?.codigo || '').toUpperCase();
-      // Las 4 carreras oficiales de Ave según sistema institucional:
-      // DSGD, EJAD, MEES, SYSC
-      const aveKeys = ['DSGD', 'EJAD', 'MEES', 'SYSC'];
+      // Las 5 carreras oficiales de Ave según sistema institucional:
+      // DSGD, EJAD, MEES, SYSC, ADME
+      const aveKeys = ['DSGD', 'EJAD', 'MEES', 'SYSC', 'ADME'];
       return aveKeys.some(k => codigo.includes(k));
     },
     containerClass: 'bg-pink-50/50 dark:bg-pink-950/20 border-pink-200 dark:border-pink-800/40',

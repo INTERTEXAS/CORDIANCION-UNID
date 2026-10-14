@@ -96,14 +96,14 @@ async function ejecutarPruebas() {
 
   // 3. Prueba de lectura del catálogo de carreras
   try {
-    console.log('\n[3/8] Verificando catálogo oficial de 12 carreras (getCarreras)...');
+    console.log('\n[3/8] Verificando catálogo oficial de 13 carreras (getCarreras)...');
     const resCarreras = await getCarreras();
     console.log(`Catálogo recuperado. Fuente: ${resCarreras.fuente}, Total carreras: ${resCarreras.carreras.length}`);
-    if (resCarreras.carreras.length >= 12) {
-      console.log('Catálogo completo con las 12 licenciaturas operativas.');
+    if (resCarreras.carreras.length >= 13) {
+      console.log('Catálogo completo con las 13 licenciaturas operativas.');
       resultados.catalogoCarreras = true;
     } else {
-      console.warn('Número de carreras menor a 12:', resCarreras.carreras.length);
+      console.warn('Número de carreras menor a 13:', resCarreras.carreras.length);
     }
   } catch (err) {
     console.error('Error en getCarreras:', err.message);
@@ -136,8 +136,8 @@ async function ejecutarPruebas() {
       console.log(`Alumno ${demo.matricula} (${demo.programa}): Avance ${avancePct}%, Aprobadas: ${auditResult.resumen.totalAprobadas}/${auditResult.resumen.totalMateriasMapa}, Dictamen: ${auditResult.resumen.dictamenEstadia}`);
     }
 
-    // Probar auditoría en cada una de las 12 carreras
-    console.log('Probando compatibilidad del motor con las 12 carreras institucionales...');
+    // Probar auditoría en cada una de las 13 carreras
+    console.log('Probando compatibilidad del motor con las 13 carreras institucionales...');
     for (const carrera of CARRERAS_LOCAL) {
       const auditCarrera = runAcademicAudit(
         { matricula: '00000000', nombre: 'TEST CARRERA', programa: carrera.codigo },
@@ -148,7 +148,7 @@ async function ejecutarPruebas() {
         throw new Error(`Fallo en carrera ${carrera.codigo}`);
       }
     }
-    console.log('Las 12 carreras institucionales fueron procesadas por el motor sin anomalías.');
+    console.log('Las 13 carreras institucionales fueron procesadas por el motor sin anomalías.');
 
     if (todosExitosos) {
       console.log('Motor de auditoría procesó todos los expedientes demo sin errores.');

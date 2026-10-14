@@ -42,8 +42,8 @@ La solución permite auditar expedientes tanto de forma individual como mediante
 - **Operaciones de Lote**: Guardado masivo, consulta histórica, visualización detallada y depuración/eliminación granular de ciclos escolares registrados.
 - **Contingencia Local**: Si la conexión remota no estuviera disponible, el sistema mantiene la operación local en memoria sin interrumpir el trabajo de coordinación.
 
-### 4. Catálogo Oficial de Programas Académicos (12 Carreras)
-El sistema integra y sincroniza el catálogo oficial de 12 licenciaturas institucionales organizadas por coordinación:
+### 4. Catálogo Oficial de Programas Académicos (13 Carreras)
+El sistema integra y sincroniza el catálogo oficial de 13 licenciaturas institucionales organizadas por coordinación:
 
 **Coordinación: Laura Angélica Ara Angulo (Ciencias Económico-Administrativas)**
 1. **LIC-COFI-18**: Licenciatura en Contabilidad y Finanzas (Mixto) - Federal
@@ -62,6 +62,7 @@ El sistema integra y sincroniza el catálogo oficial de 12 licenciaturas institu
 10. **LIC-EJAD-17**: Licenciatura en Administración de Empresas (Mixto) - Federal
 11. **LIC-MEES-18**: Licenciatura en Mercadotecnia Estratégica (Mixto) - Federal
 12. **LIC-SYSC-18**: Licenciatura en Ingeniería de Software y Sistemas Computacionales (Mixto) - Federal
+13. **LIC-ADME-18**: Licenciatura en Administración Empresarial (Mixto) - Federal
 
 ---
 
@@ -111,7 +112,7 @@ Antes de cada proceso de compilación para producción, el sistema ejecuta de fo
 
 1. **Conexión a Neon PostgreSQL**: Validación de canal seguro y respuesta del servidor.
 2. **Estructura de Tablas**: Existencia de las tablas `auditoria_grupal`, `auditorias_estudiantes`, `carreras`, `estatus_alumnos` y `usuarios`.
-3. **Catálogo de Carreras**: Recuperación íntegra de los 12 programas de licenciatura.
+3. **Catálogo de Carreras**: Recuperación íntegra de los 13 programas de licenciatura.
 4. **Motor de Auditoría**: Procesamiento analítico de expedientes prueba bajo todas las modalidades.
 5. **Guardado en Base de Datos**: Inserción de lote de prueba.
 6. **Consulta y Recuperación**: Validación de integridad de datos leídos.

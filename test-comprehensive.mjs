@@ -94,18 +94,19 @@ assert(
 );
 
 // ----------------------------------------------------
-// TEST SUITE 3: Catálogo Oficial de Carreras (12 Licenciaturas)
+// TEST SUITE 3: Catálogo Oficial de Carreras (13 Licenciaturas)
 // ----------------------------------------------------
 console.log('\n--- 3. Pruebas de Catálogo Oficial de Carreras ---');
 
 const resCarreras = await getCarreras();
 const carreras = resCarreras?.carreras || resCarreras || [];
-assert(carreras.length === 12, `Catálogo contiene exactamente 12 carreras (detectadas: ${carreras.length})`);
+assert(carreras.length === 13, `Catálogo contiene exactamente 13 carreras (detectadas: ${carreras.length})`);
 
 const codigosEsperados = [
   'LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17', 'LIC-ARQU-18',
   'LIC-DERE-18', 'LIC-EJDE-17', 'LIC-EJED-17', 'LIC-EDFI-18',
-  'LIC-DSGD-18', 'LIC-EJAD-17', 'LIC-MEES-18', 'LIC-SYSC-18'
+  'LIC-DSGD-18', 'LIC-EJAD-17', 'LIC-MEES-18', 'LIC-SYSC-18',
+  'LIC-ADME-18'
 ];
 
 for (const cod of codigosEsperados) {
@@ -160,9 +161,9 @@ assert(
 );
 
 // ----------------------------------------------------
-// TEST SUITE 5: Compatibilidad del Motor con las 12 Carreras
+// TEST SUITE 5: Compatibilidad del Motor con las 13 Carreras
 // ----------------------------------------------------
-console.log('\n--- 5. Compatibilidad del Motor con los 12 Mapas Curriculares ---');
+console.log('\n--- 5. Compatibilidad del Motor con los 13 Mapas Curriculares ---');
 
 for (const car of CARRERAS_LOCAL) {
   const auditCarrera = runAcademicAudit(
