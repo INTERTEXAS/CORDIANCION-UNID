@@ -2,8 +2,10 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import { CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData.js';
 
+// Configuración oficial y robusta del Web Worker de PDF.js para Vite y Vercel
+// Utiliza CDN público optimizado (jsDelivr) para evitar errores de módulos dinámicos en producción
 if (typeof window !== 'undefined' && pdfjsLib?.GlobalWorkerOptions) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version || '6.3.289'}/build/pdf.worker.min.mjs`;
 }
 
 export function detectarModalidad(estudiante, registros = [], carreras = CARRERAS_LOCAL) {
@@ -85,7 +87,7 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras 
 
   const loadingTask = pdfjsLib.getDocument({
     data: dataBuffer,
-    cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+    cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version || '6.3.289'}/cmaps/`,
     cMapPacked: true,
   });
 
