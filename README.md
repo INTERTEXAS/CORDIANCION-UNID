@@ -138,8 +138,8 @@ DATABASE_URL="postgresql://usuario:contraseña@servidor-pooler.neon.tech/neondb?
 VITE_NEON_DATABASE_URL="postgresql://usuario:contraseña@servidor-pooler.neon.tech/neondb?sslmode=require"
 
 # Microsoft Entra ID (Azure AD) - UNID Single Tenant
-VITE_AZURE_CLIENT_ID="3e9aa3e7-af76-4177-9ff5-c6150a6e7eb4"
-VITE_AZURE_TENANT_ID="1eac60bd-d90a-4a9e-a286-54e8fd9cdcb7"
+VITE_AZURE_CLIENT_ID="tu_azure_client_id_aqui"
+VITE_AZURE_TENANT_ID="tu_azure_tenant_id_aqui"
 ```
 
 ---
