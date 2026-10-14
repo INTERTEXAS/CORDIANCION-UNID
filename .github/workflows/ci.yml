@@ -18,7 +18,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Instalar dependencias
@@ -28,10 +28,12 @@ jobs:
         env:
           VITE_NEON_DATABASE_URL: ${{ secrets.VITE_NEON_DATABASE_URL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CI: true
         run: npm run test
 
       - name: Compilación de producción
         env:
           VITE_NEON_DATABASE_URL: ${{ secrets.VITE_NEON_DATABASE_URL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CI: true
         run: npm run build
