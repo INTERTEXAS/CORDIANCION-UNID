@@ -146,9 +146,9 @@ const auditoriaCtco = runAcademicAudit(
 assert(
   auditoriaCtco.resumen.totalMateriasMapa === 37 &&
   carreraCtco.requisitos_egreso.some(req => req.crse === 'EGCC1') &&
-  auditoriaCtco.coCurriculares.some(req => req.crse === '0001') &&
+  !auditoriaCtco.coCurriculares.some(req => req.crse === '0001' || req.clave === 'TPEG-0001') &&
   auditoriaCtco.electivas.length === 10,
-  'LIC-CTCO-18 conserva EGEL y procesa mapa, electivas y Taller de Pre-egreso'
+  'LIC-CTCO-18 conserva EGEL y excluye Taller de Pre-egreso de requisitos'
 );
 
 // ----------------------------------------------------

@@ -138,6 +138,18 @@ export function esMateriaIgnorada(item) {
     return true;
   }
 
+  // 4. Taller de Pre-egreso (TPEG)
+  if (
+    subj === 'TPEG' ||
+    subj.startsWith('TPEG') ||
+    clave.startsWith('TPEG') ||
+    clave.includes('TPEG') ||
+    nombre.includes('PRE-EGRESO') ||
+    nombre.includes('PREEGRESO')
+  ) {
+    return true;
+  }
+
   return false;
 }
 

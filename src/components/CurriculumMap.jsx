@@ -40,8 +40,7 @@ export default function CurriculumMap({
     'ECAM-ADR18',
     'ECIA-INR02',
     'ECIK-SIR01',
-    'ECFM-HUR01',
-    'TPEG-0001'
+    'ECFM-HUR01'
   ]);
   const debeOcultarseDelMapa = (materia) => esEjad && clavesOcultasEjad.has(materia.clave);
 
@@ -87,9 +86,19 @@ export default function CurriculumMap({
         };
       case 'OMITIDA':
         return { 
-          cardBorder: 'border-slate-200 dark:border-slate-700', 
-          badgeBg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400', 
-          gradeColor: 'text-slate-500',
+          cardBg: 'bg-orange-50/60 dark:bg-orange-950/20',
+          cardBorder: 'border-orange-300 dark:border-orange-500/40', 
+          badgeBg: 'bg-orange-100 dark:bg-orange-500/20 text-orange-800 dark:text-orange-300', 
+          gradeColor: 'text-orange-700 dark:text-orange-400',
+          icon: AlertTriangle, 
+          label: 'Omitida' 
+        };
+      case 'PENDIENTE':
+        return { 
+          cardBg: 'bg-surface-1',
+          cardBorder: 'border-border/60', 
+          badgeBg: 'bg-surface-2 text-text-muted', 
+          gradeColor: 'text-text-muted/40',
           icon: Clock, 
           label: 'Pendiente' 
         };
@@ -280,8 +289,8 @@ export default function CurriculumMap({
                           {materia.subj}-{materia.crse}
                         </span>
                         {materia.conecta && (
-                          <span className="px-1.5 py-0.5 text-[8px] font-black text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-500/10 rounded-sm shadow-sm" title="Clase Conecta">
-                            CC
+                          <span className="px-1.5 py-0.5 text-[8px] font-black text-cyan-700 dark:text-cyan-300 bg-cyan-100 dark:bg-cyan-500/15 border border-cyan-200 dark:border-cyan-500/20 rounded-sm shadow-sm tracking-wider" title="Asignatura Institucional Virtual (Clase Conecta)">
+                            CONECTA
                           </span>
                         )}
                       </div>
@@ -405,8 +414,13 @@ export default function CurriculumMap({
                 title="Haga clic para ver el detalle de este requisito"
               >
                 <div>
-                  <div className="font-mono font-bold text-[9px] text-text-muted tracking-widest uppercase mb-1">
-                    {cocu.clave}
+                  <div className="flex items-start justify-between mb-1">
+                    <span className="font-mono font-bold text-[9px] text-text-muted tracking-widest uppercase">
+                      {cocu.clave}
+                    </span>
+                    <span className="px-1.5 py-0.5 text-[8px] font-black text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/15 border border-purple-200 dark:border-purple-500/20 rounded-sm shadow-sm" title="Requisito Co-Curricular / Titulación">
+                      CC
+                    </span>
                   </div>
                   <div className="text-[10px] font-black text-text-primary leading-tight whitespace-normal break-normal">
                     {cocu.nombre}
@@ -482,18 +496,41 @@ export default function CurriculumMap({
             <div className="flex items-center space-x-2 py-1">
               <span className="w-3 h-3 rounded-full bg-[#EA580C] shrink-0" />
               <span className="font-bold text-text-primary">OMITIDA:</span>
-              <span className="text-text-secondary">No cargada</span>
+              <span className="text-text-secondary">No cargada en periodo</span>
             </div>
 
             <div className="flex items-center space-x-2 py-1">
               <span className="w-3 h-3 rounded-full bg-[#7E22CE] shrink-0" />
               <span className="font-bold text-text-primary">OU:</span>
-              <span className="text-text-secondary">Oportunidad utilizada; baja</span>
+              <span className="text-text-secondary">Oportunidad utilizada</span>
+            </div>
+
+            <div className="flex items-center space-x-2 py-1">
+              <span className="w-3 h-3 rounded-full bg-slate-400 shrink-0" />
+              <span className="font-bold text-text-primary">PEND:</span>
+              <span className="text-text-secondary">Por cursar (futura)</span>
             </div>
           </div>
 
+          {/* Distinción clara de Tipos de Asignatura e Insignias */}
+          <div className="pt-2 border-t border-border-subtle flex items-center justify-between text-[11px] flex-wrap gap-2">
+            <div className="flex items-center space-x-1.5">
+              <span className="px-1.5 py-0.5 text-[8.5px] font-black text-cyan-700 dark:text-cyan-300 bg-cyan-100 dark:bg-cyan-500/20 border border-cyan-200 dark:border-cyan-500/20 rounded">
+                CONECTA
+              </span>
+              <span className="text-text-secondary font-medium">Clase institucional virtual</span>
+            </div>
+            <div className="flex items-center space-x-1.5">
+              <span className="px-1.5 py-0.5 text-[8.5px] font-black text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/20 border border-purple-200 dark:border-purple-500/20 rounded">
+                CC
+              </span>
+              <span className="text-text-secondary font-medium">Requisito Co-Curricular</span>
+            </div>
+          </div>
+
+          {/* Nota Normativa de Estadía */}
           <div className="pt-2 border-t border-border-subtle text-[11px] text-text-muted leading-snug">
-            * <strong className="text-rose-600 dark:text-rose-400 font-bold">CC</strong>: Clase Conecta. Materias en <strong className="text-red-700 dark:text-red-400 font-bold">ADEUDO</strong> u <strong className="text-orange-700 dark:text-orange-400 font-bold">OMITIDAS</strong> (1.º-6.º) bloquean Estadía.
+            * <strong className="text-text-primary font-bold">Normativa de Estadía:</strong> Asignaturas en <strong className="text-red-700 dark:text-red-400 font-bold">ADEUDO</strong> u <strong className="text-orange-700 dark:text-orange-400 font-bold">OMITIDAS</strong> (1.º a 6.º cuatrimestre) bloquean la Estadía.
           </div>
         </div>
 

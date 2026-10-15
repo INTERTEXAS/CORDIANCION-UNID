@@ -142,7 +142,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
               {esElegible 
                 ? 'El expediente del estudiante valida el 100% de los requisitos curriculares, idioma inglés y requisitos co-curriculares / egreso sin registrar materias en adeudo activo ni materias omitidas. Se autoriza la asignación e inscripción de la Estadía Empresarial y proceso de titulación.'
                 : (resumen.adeudosReqEgreso > 0 || resumen.omitidasReqEgreso > 0)
-                ? `El expediente presenta restricciones de titulación: ${resumen.adeudosReqEgreso || 0} adeudo(s) activo(s) y/o ${resumen.omitidasReqEgreso || 0} materia(s) omitida(s) en Requisitos Co-Curriculares y de Egreso (EGEL / Ortografía / Comprensión / TPEG). Requiere solventar los adeudos para acreditar el dictamen.`
+                ? `El expediente presenta restricciones de titulación: ${resumen.adeudosReqEgreso || 0} adeudo(s) activo(s) y/o ${resumen.omitidasReqEgreso || 0} materia(s) omitida(s) en Requisitos Co-Curriculares y de Egreso (EGEL / Ortografía / Comprensión). Requiere solventar los adeudos para acreditar el dictamen.`
                 : `El expediente presenta restricciones académicas: ${resumen.adeudosQ1toQ6} asignatura(s) en adeudo activo y/o ${resumen.omitidasQ1toQ6} asignatura(s) omitida(s) dentro del bloque 1.º a 6.º cuatrimestre. Conforme al reglamento escolar UNID, no es posible inscribir Estadía Empresarial hasta solventar dichos adeudos.`
               }
             </p>
@@ -263,8 +263,8 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
                       <td className="py-2.5 px-3 font-medium text-text-primary">
                         <span>{inc.nombre}</span>
                         {inc.conecta && (
-                          <span className="ml-1.5 text-[9px] font-black text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-200 dark:border-rose-500/20">
-                            CC Conecta
+                          <span className="ml-1.5 text-[9px] font-black text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-200 dark:border-cyan-500/20">
+                            CONECTA
                           </span>
                         )}
                       </td>

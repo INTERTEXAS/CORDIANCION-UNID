@@ -222,7 +222,7 @@ export default function WidgetsColumn({
                             <div className="flex items-center space-x-2 text-[10px] text-text-muted">
                               <span>Cuatrimestre {mat.cuatrimestre}.º</span>
                               {mat.conecta && (
-                                <span className="text-rose-600 dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-500/10 px-1.5 rounded-lg">
+                                <span className="text-cyan-700 dark:text-cyan-300 font-bold bg-cyan-50 dark:bg-cyan-500/10 px-1.5 rounded-lg border border-cyan-200 dark:border-cyan-500/20">
                                   Clase Conecta
                                 </span>
                               )}

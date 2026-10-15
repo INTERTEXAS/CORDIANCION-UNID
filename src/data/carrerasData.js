@@ -1887,8 +1887,7 @@ export const CARRERAS_LOCAL = [
       ]
     },
     requisitos_egreso: [
-      { clave: 'CUPR-EGDG1', subj: 'CUPR', crse: 'EGDG1', nombre: 'CURSO DE PREPARACIÓN EGEL I - DISEÑO GRÁFICO DIGITAL' },
-      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+      { clave: 'CUPR-EGDG1', subj: 'CUPR', crse: 'EGDG1', nombre: 'CURSO DE PREPARACIÓN EGEL I - DISEÑO GRÁFICO DIGITAL' }
     ]
   },
   {
@@ -2028,8 +2027,7 @@ export const CARRERAS_LOCAL = [
       electivas_multidisciplinares: []
     },
     requisitos_egreso: [
-      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN DE EMPRESAS' },
-      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN DE EMPRESAS' }
     ]
   },
   {
@@ -2174,8 +2172,7 @@ export const CARRERAS_LOCAL = [
       ]
     },
     requisitos_egreso: [
-      { clave: 'CUPR-EGMK1', subj: 'CUPR', crse: 'EGMK1', nombre: 'CURSO DE PREPARACIÓN EGEL I - MERCADOTECNIA ESTRATÉGICA' },
-      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+      { clave: 'CUPR-EGMK1', subj: 'CUPR', crse: 'EGMK1', nombre: 'CURSO DE PREPARACIÓN EGEL I - MERCADOTECNIA ESTRATÉGICA' }
     ]
   },
   {
@@ -2320,8 +2317,7 @@ export const CARRERAS_LOCAL = [
       ]
     },
     requisitos_egreso: [
-      { clave: 'CUPR-EVSS1', subj: 'CUPR', crse: 'EVSS1', nombre: 'CURSO DE PREPARACIÓN EVIPE I - INGENIERÍA DE SOFTWARE' },
-      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+      { clave: 'CUPR-EVSS1', subj: 'CUPR', crse: 'EVSS1', nombre: 'CURSO DE PREPARACIÓN EVIPE I - INGENIERÍA DE SOFTWARE' }
     ]
   },
   {
@@ -2464,8 +2460,7 @@ export const CARRERAS_LOCAL = [
       ]
     },
     requisitos_egreso: [
-      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN EMPRESARIAL' },
-      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN EMPRESARIAL' }
     ]
   },
   {
@@ -2610,21 +2605,19 @@ export const CARRERAS_LOCAL = [
       ]
     },
     requisitos_egreso: [
-      { clave: 'CUPR-EGCC1', subj: 'CUPR', crse: 'EGCC1', nombre: 'CURSO DE PREPARACIÓN EGEL I - COMUNICACIÓN' },
-      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+      { clave: 'CUPR-EGCC1', subj: 'CUPR', crse: 'EGCC1', nombre: 'CURSO DE PREPARACIÓN EGEL I - COMUNICACIÓN' }
     ]
   }
 ];
 
 // Materias co-curriculares que deben ignorarse totalmente (ninguna de las obligatorias)
-export const MATERIAS_IGNORADAS = ['CMS02', 'LMPD-CMS02', 'MPD-CMS02', 'CMS03', 'LMPD-CMS03', 'MPD-CMS03', 'CUPR-ECCF1', 'CUPR-EGCF1'];
+export const MATERIAS_IGNORADAS = ['CMS02', 'LMPD-CMS02', 'MPD-CMS02', 'CMS03', 'LMPD-CMS03', 'MPD-CMS03', 'CUPR-ECCF1', 'CUPR-EGCF1', 'TPEG-0001', 'TPEG'];
 
 // Requisitos Co-Curriculares y de Titulación / Egreso obligatorios UNID
 export const REQUISITOS_EGRESO = [
   { clave: 'MPD-CMS02', subj: 'MPD', crse: 'CMS02', nombre: 'ORTOGRAFÍA' },
   { clave: 'MPD-CMS03', subj: 'MPD', crse: 'CMS03', nombre: 'COMPRENSIÓN LECTORA' },
-  { clave: 'CUPR-EGCF1', subj: 'CUPR', crse: 'EGCF1', nombre: 'CURSO DE PREPARACIÓN EGEL I' },
-  { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+  { clave: 'CUPR-EGCF1', subj: 'CUPR', crse: 'EGCF1', nombre: 'CURSO DE PREPARACIÓN EGEL I' }
 ];
 
 // Claves de inglés reconocidas
