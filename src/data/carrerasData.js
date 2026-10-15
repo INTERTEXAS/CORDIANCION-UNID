@@ -2533,3 +2533,92 @@ export function resolverNombreOficialCarrera(carrera) {
   }
   return cod;
 }
+
+/**
+ * Normaliza cualquier formato de mapa curricular (objeto estructurado o arreglo plano de materias)
+ * al estándar institucional requerido por el motor de auditoría y la interfaz.
+ */
+export function normalizarMapaCurricular(mapaRaw) {
+  if (!mapaRaw) return { cuatrimestres: [], electivas_multidisciplinares: [], niveles_ingles: [] };
+
+  // Si ya es un objeto con cuatrimestres válidos
+  if (mapaRaw && typeof mapaRaw === 'object' && !Array.isArray(mapaRaw)) {
+    if (Array.isArray(mapaRaw.cuatrimestres) && mapaRaw.cuatrimestres.length > 0) {
+      return mapaRaw;
+    }
+  }
+
+  // Si es un arreglo plano de materias: [{ cuatrimestre, clave, nombre }, ...]
+  if (Array.isArray(mapaRaw)) {
+    const cuatriMap = new Map();
+    const electivas = [];
+
+    mapaRaw.forEach(item => {
+      const q = Number(item.cuatrimestre) || 1;
+      const clave = String(item.clave || '').trim();
+      const partes = clave.split('-');
+      const subj = (item.subj || partes[0] || 'LMAX').toUpperCase();
+      const crse = (item.crse || partes[1] || '').toUpperCase();
+      const nombre = (item.nombre || '').toUpperCase();
+      const esEstadia = Boolean(
+        item.es_estadia ||
+        crse.includes('EES') ||
+        nombre.includes('ESTADÍA') ||
+        nombre.includes('ESTADIA')
+      );
+
+      const matObj = {
+        clave: clave || `${subj}-${crse}`,
+        subj,
+        crse,
+        nombre,
+        conecta: item.conecta !== undefined ? item.conecta : false,
+        creditos: item.creditos || (esEstadia ? 5 : 3),
+        es_estadia: esEstadia,
+        bloque_completo: esEstadia
+      };
+
+      if (!cuatriMap.has(q)) {
+        cuatriMap.set(q, []);
+      }
+
+      if (q === 9 && !esEstadia) {
+        electivas.push({
+          clave: matObj.clave,
+          subj: matObj.subj,
+          crse: matObj.crse,
+          nombre: matObj.nombre
+        });
+      }
+
+      cuatriMap.get(q).push(matObj);
+    });
+
+    const maxQ = Math.max(...Array.from(cuatriMap.keys()), 9);
+    const cuatrimestres = [];
+    for (let i = 1; i <= maxQ; i++) {
+      const materias = cuatriMap.get(i) || [];
+      cuatrimestres.push({
+        numero: i,
+        nombre: i === 1 ? '1.er Cuatrimestre' : `${i}.º Cuatrimestre`,
+        con_ingles: i <= 5,
+        clave_ingles_sugerida: i <= 4 ? `F00${i}` : (i === 5 ? 'P001' : null),
+        materias
+      });
+    }
+
+    return {
+      cuatrimestres,
+      electivas_multidisciplinares: electivas,
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: 'F001', nombre: 'INGLÉS I' },
+        { cuatrimestre: 2, nivel: 2, clave_default: 'F002', nombre: 'INGLÉS II' },
+        { cuatrimestre: 3, nivel: 3, clave_default: 'F003', nombre: 'INGLÉS III' },
+        { cuatrimestre: 4, nivel: 4, clave_default: 'F004', nombre: 'INGLÉS IV' },
+        { cuatrimestre: 5, nivel: 5, clave_default: 'P001', nombre: 'INGLÉS V' }
+      ]
+    };
+  }
+
+  return { cuatrimestres: [], electivas_multidisciplinares: [], niveles_ingles: [] };
+}

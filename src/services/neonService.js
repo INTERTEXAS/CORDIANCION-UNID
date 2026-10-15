@@ -1,6 +1,6 @@
 // Servicio de consulta de Carreras en Neon Database con Respaldo Local Oficial
 import { neon } from '@neondatabase/serverless';
-import { CARRERAS_LOCAL, resolverNombreOficialCarrera } from '../data/carrerasData.js';
+import { CARRERAS_LOCAL, resolverNombreOficialCarrera, normalizarMapaCurricular } from '../data/carrerasData.js';
 
 function getDatabaseUrl() {
   try {
@@ -50,6 +50,7 @@ export async function getCarreras() {
             console.warn('[NeonService] Error al parsear mapa_json de carrera:', carrera.codigo, e);
           }
         }
+        mapa = normalizarMapaCurricular(mapa);
         dbCarrerasMap.set(carrera.codigo, {
           ...carrera,
           mapa_json: mapa
@@ -63,20 +64,28 @@ export async function getCarreras() {
         if (!fromDb) return local;
 
         const nombreOficial = resolverNombreOficialCarrera(fromDb) || local.nombre;
+        const mapaDb = normalizarMapaCurricular(fromDb.mapa_json);
+        const mapaValido = (Array.isArray(mapaDb?.cuatrimestres) && mapaDb.cuatrimestres.length > 0)
+          ? mapaDb
+          : local.mapa_json;
+
         return {
           ...local,
           ...fromDb,
           nombre: nombreOficial,
           activa: fromDb.activa !== undefined ? Boolean(fromDb.activa) : local.activa,
           coordinadora: fromDb.coordinadora || local.coordinadora,
-          mapa_json: fromDb.mapa_json || local.mapa_json
+          mapa_json: mapaValido
         };
       });
 
       // Añadir de forma dinámica cualquier carrera registrada en BD que no esté en local
       dbCarrerasMap.forEach((fromDb, codigo) => {
         if (!carrerasConsolidadas.some(c => c.codigo === codigo)) {
-          carrerasConsolidadas.push(fromDb);
+          carrerasConsolidadas.push({
+            ...fromDb,
+            mapa_json: normalizarMapaCurricular(fromDb.mapa_json)
+          });
         }
       });
 

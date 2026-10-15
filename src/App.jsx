@@ -244,7 +244,7 @@ export default function App() {
       
       const normalizedDetected = detectedProgram.trim().replace(/0/g, 'O');
       
-      const targetCarrera = forcedTargetCarrera
+      let targetCarrera = forcedTargetCarrera
         || (carreras || []).find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
         || (carreras || []).find(c => c.codigo === detectedProgram || c.clave === detectedProgram)
         || CARRERAS_LOCAL.find(c => c.codigo && c.codigo.replace(/0/g, 'O') === normalizedDetected)
@@ -253,6 +253,13 @@ export default function App() {
           ...carreraSeleccionada,
           codigo: detectedProgram
         };
+
+      if (!Array.isArray(targetCarrera?.mapa_json?.cuatrimestres) || targetCarrera.mapa_json.cuatrimestres.length === 0) {
+        const localFallback = CARRERAS_LOCAL.find(c => c.codigo === targetCarrera.codigo || c.codigo === detectedProgram);
+        if (localFallback) {
+          targetCarrera = { ...targetCarrera, ...localFallback, mapa_json: localFallback.mapa_json };
+        }
+      }
       
       setCarreraSeleccionada(targetCarrera);
       const auditResult = runAcademicAudit(parsedData.estudiante, parsedData.registros, targetCarrera);

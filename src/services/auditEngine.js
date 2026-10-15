@@ -1,5 +1,5 @@
 // src/services/auditEngine.js
-import { CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData.js';
+import { CARRERAS_LOCAL, REQUISITOS_EGRESO, normalizarMapaCurricular } from '../data/carrerasData.js';
 
 function getDefaultNivelesIngles() {
   return [
@@ -154,9 +154,21 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     if (c) carreraEfectiva = c;
   }
 
-  const mapa = carreraEfectiva?.mapa_json || {};
+  // Normalizar el mapa curricular (soporta tanto objeto con cuatrimestres como arreglo plano de materias)
+  let mapa = normalizarMapaCurricular(carreraEfectiva?.mapa_json);
+
+  // Si aún no tiene cuatrimestres válidos, buscar en CARRERAS_LOCAL por código de programa
   if (!Array.isArray(mapa?.cuatrimestres) || mapa.cuatrimestres.length === 0) {
-    throw new Error(`No hay un mapa curricular cargado para ${carreraEfectiva.codigo || 'el programa seleccionado'}.`);
+    const codProg = carreraEfectiva?.codigo || estudiante?.programa;
+    const localFallback = CARRERAS_LOCAL.find(c => c.codigo === codProg || (c.codigo && c.codigo.replace(/0/g, 'O') === (codProg || '').replace(/0/g, 'O')));
+    if (localFallback?.mapa_json) {
+      mapa = normalizarMapaCurricular(localFallback.mapa_json);
+      carreraEfectiva = { ...carreraEfectiva, mapa_json: mapa };
+    }
+  }
+
+  if (!Array.isArray(mapa?.cuatrimestres) || mapa.cuatrimestres.length === 0) {
+    throw new Error(`No hay un mapa curricular cargado para ${carreraEfectiva?.codigo || estudiante?.programa || 'el programa seleccionado'}.`);
   }
   const cuatrimestresRaw = Array.isArray(mapa.cuatrimestres) ? mapa.cuatrimestres : [];
   const electivasRaw = Array.isArray(mapa.electivas_multidisciplinares) ? mapa.electivas_multidisciplinares : [];
