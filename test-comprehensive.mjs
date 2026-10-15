@@ -197,10 +197,53 @@ assert(
   'Filtro de materias ignora correctamente actividades no curriculares'
 );
 
+// Alumno D: Estudiante que reprobó en ordinario (5) pero acreditó en regularización RE (8.0)
+const registrosD = [
+  { subj: 'LMFM', crse: 'HUS01', materia: 'SER HUMANO', periodo: '202210', grde: '5', modalidad: 'RW' },
+  { subj: 'LMFM', crse: 'HUS01', materia: 'SER HUMANO', periodo: '202210', grde: '8.0', modalidad: 'RE' }
+];
+
+const auditD = runAcademicAudit(
+  { matricula: '00776655', nombre: 'ALUMNO RECUPERADO', programa: 'LIC-COFI-18' },
+  registrosD,
+  carreraCofi
+);
+
+const materiaHus01 = auditD.cuatrimestres[0].materias.find(m => m.crse === 'HUS01');
+assert(
+  auditD.resumen.adeudos === 0 &&
+  auditD.resumen.totalAprobadas >= 1 &&
+  materiaHus01?.audit?.estado === 'RE' &&
+  materiaHus01?.audit?.estado !== 'ADEUDO',
+  'Materia con reprobación histórica acreditada en RE nunca se clasifica como ADEUDO'
+);
+
+// Alumno E: Estudiante que reprobó en ordinario (NA) y acreditó en recursamiento posterior (9.0)
+const registrosE = [
+  { subj: 'LMFM', crse: 'HUS01', materia: 'SER HUMANO', periodo: '202210', grde: 'NA', modalidad: 'RW' },
+  { subj: 'LMFM', crse: 'HUS01', materia: 'SER HUMANO', periodo: '202220', grde: '9.0', modalidad: 'RW' }
+];
+
+const auditE = runAcademicAudit(
+  { matricula: '00554433', nombre: 'ALUMNO RECURSAMIENTO', programa: 'LIC-COFI-18' },
+  registrosE,
+  carreraCofi
+);
+
+const materiaHus01Rec = auditE.cuatrimestres[0].materias.find(m => m.crse === 'HUS01');
+assert(
+  auditE.resumen.adeudos === 0 &&
+  auditE.resumen.totalAprobadas >= 1 &&
+  materiaHus01Rec?.audit?.estado === 'REC',
+  'Materia acreditada en recursamiento se clasifica como REC y no genera adeudo'
+);
+
 // ----------------------------------------------------
-// TEST SUITE 5: Compatibilidad del Motor con las 13 Carreras
+// TEST SUITE 5: Compatibilidad del Motor con los 18 Mapas Curriculares (14 Licenciaturas + 4 Maestrías)
 // ----------------------------------------------------
-console.log('\n--- 5. Compatibilidad del Motor con los 14 Mapas Curriculares ---');
+console.log('\n--- 5. Compatibilidad del Motor con los 18 Mapas Curriculares Institucionales ---');
+
+assert(CARRERAS_LOCAL.length === 18, `CARRERAS_LOCAL contiene 18 programas completos (detectados: ${CARRERAS_LOCAL.length})`);
 
 for (const car of CARRERAS_LOCAL) {
   const auditCarrera = runAcademicAudit(
@@ -208,9 +251,10 @@ for (const car of CARRERAS_LOCAL) {
     [],
     car
   );
+  const minCuats = car.codigo.startsWith('MAE-') ? 5 : 8;
   assert(
-    auditCarrera && auditCarrera.cuatrimestres && auditCarrera.cuatrimestres.length >= 8,
-    `Motor calcula mapa curricular completo para ${car.codigo} (${car.nombre.substring(0, 20)}...)`
+    auditCarrera && auditCarrera.cuatrimestres && auditCarrera.cuatrimestres.length >= minCuats,
+    `Motor calcula mapa curricular completo para ${car.codigo} (${car.nombre.substring(0, 25)}...)`
   );
 }
 

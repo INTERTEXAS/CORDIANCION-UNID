@@ -2607,6 +2607,290 @@ export const CARRERAS_LOCAL = [
     requisitos_egreso: [
       { clave: 'CUPR-EGCC1', subj: 'CUPR', crse: 'EGCC1', nombre: 'CURSO DE PREPARACIÓN EGEL I - COMUNICACIÓN' }
     ]
+  },
+  {
+    codigo: 'MAE-EDUP-22',
+    nombre: 'MAESTRÍA EN EDUCACIÓN (PAC)',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2022',
+    activa: true,
+    coordinadora: 'AVELINA GARCIA ROMEO',
+    sede: 'CAM',
+    total_materias: 15,
+    niveles_ingles: 0,
+    mapa_json: {
+      plan: '2022',
+      modalidad: 'PAC',
+      cuatrimestres: [
+        {
+          nombre: '1.º Cuat.',
+          numero: 1,
+          con_ingles: false,
+          materias: [
+            { crse: 'EDV07', subj: 'MPAC', clave: 'MPAC-EDV07', nombre: 'ORIGEN Y FUNDAMENTOS DE LA EDUCACIÓN', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV06', subj: 'MPAC', clave: 'MPAC-EDV06', nombre: 'INNOVACIÓN Y TECNOLOGÍA APLICADA A LA EDUCACIÓN', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV05', subj: 'MPAC', clave: 'MPAC-EDV05', nombre: 'EVALUACIÓN Y MEJORA DE LA EDUCACIÓN', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '2.º Cuat.',
+          numero: 2,
+          con_ingles: false,
+          materias: [
+            { crse: 'EDV08', subj: 'MPAC', clave: 'MPAC-EDV08', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN EDUCATIVA', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV09', subj: 'MPAC', clave: 'MPAC-EDV09', nombre: 'SISTEMAS DE INFORMACIÓN PARA LA FORMACIÓN', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV04', subj: 'MPAC', clave: 'MPAC-EDV04', nombre: 'MODELO EDUCATIVO Y PROSPECTIVA', conecta: true, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '3.º Cuat.',
+          numero: 3,
+          con_ingles: false,
+          materias: [
+            { crse: 'EDV10', subj: 'MPAC', clave: 'MPAC-EDV10', nombre: 'ANÁLISIS POLÍTICO Y SOCIOECONÓMICO DE LA EDUCACIÓN EN MÉXICO', conecta: true, creditos_bh: 1 },
+            { crse: 'EDV12', subj: 'MPAC', clave: 'MPAC-EDV12', nombre: 'PLANEACIÓN DEL APRENDIZAJE EN ENTORNOS VIRTUALES', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV11', subj: 'MPAC', clave: 'MPAC-EDV11', nombre: 'FORMACIÓN EN TIEMPO DE CRISIS', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '4.º Cuat.',
+          numero: 4,
+          con_ingles: false,
+          materias: [
+            { crse: 'EDV14', subj: 'MPAC', clave: 'MPAC-EDV14', nombre: 'ESTRATEGIAS PARA EL DISEÑO CURRICULAR', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV13', subj: 'MPAC', clave: 'MPAC-EDV13', nombre: 'DISEÑO DE APRENDIZAJE EN LÍNEA Y EXPERIENCIA DE USUARIO', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV15', subj: 'MPAC', clave: 'MPAC-EDV15', nombre: 'PLANEACIÓN EDUCATIVA Y MODELOS DE GESTIÓN', conecta: true, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '5.º Cuat.',
+          numero: 5,
+          con_ingles: false,
+          materias: [
+            { crse: 'EDV17', subj: 'MPAC', clave: 'MPAC-EDV17', nombre: 'PROYECTOS EDUCATIVOS PARA LA SOSTENIBILIDAD', conecta: false, creditos_bh: 1 },
+            { crse: 'EDV03', subj: 'MPAC', clave: 'MPAC-EDV03', nombre: 'PROYECTOS EDUCATIVOS EN AMBIENTES VIRTUALES DE APRENDIZAJE', conecta: true, creditos_bh: 1 },
+            { crse: 'EDV16', subj: 'MPAC', clave: 'MPAC-EDV16', nombre: 'PROYECTO DE MEJORA INSTITUCIONAL', conecta: false, creditos_bh: 1 }
+          ]
+        }
+      ],
+      niveles_ingles: 0,
+      total_materias: 15,
+      ultima_actualizacion_cpa: '31-julio-2026',
+      electivas_multidisciplinares: []
+    },
+    requisitos_egreso: []
+  },
+  {
+    codigo: 'MAE-MADP-22',
+    nombre: 'MAESTRÍA EN ADMINISTRACIÓN DE NEGOCIOS (PAC)',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2022',
+    activa: true,
+    coordinadora: 'YESSICA INURRETA PAVON',
+    sede: 'CAM',
+    total_materias: 15,
+    niveles_ingles: 0,
+    mapa_json: {
+      plan: '2022',
+      modalidad: 'PAC',
+      cuatrimestres: [
+        {
+          nombre: '1.º Cuat.',
+          numero: 1,
+          con_ingles: false,
+          materias: [
+            { crse: 'ADV02', subj: 'MPAC', clave: 'MPAC-ADV02', nombre: 'ADMINISTRACIÓN Y DIRECCIÓN ESTRATÉGICA', conecta: false, creditos_bh: 1 },
+            { crse: 'ADV03', subj: 'MPAC', clave: 'MPAC-ADV03', nombre: 'COMPETITIVIDAD E INNOVACIÓN EN LAS ORGANIZACIONES', conecta: true, creditos_bh: 1, seriada_con: 'R-2' },
+            { crse: 'ADV04', subj: 'MPAC', clave: 'MPAC-ADV04', nombre: 'HABILIDADES PARA LA ALTA DIRECCIÓN', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '2.º Cuat.',
+          numero: 2,
+          con_ingles: false,
+          materias: [
+            { crse: 'FIV01', subj: 'MPAC', clave: 'MPAC-FIV01', nombre: 'ENTORNO ECONÓMICO GLOBAL', conecta: true, creditos_bh: 1, seriada_con: 'R-3' },
+            { crse: 'NEV02', subj: 'MPAC', clave: 'MPAC-NEV02', nombre: 'PLANEACIÓN Y DESARROLLO DE LOS NEGOCIOS', conecta: false, creditos_bh: 1 },
+            { crse: 'ADV05', subj: 'MPAC', clave: 'MPAC-ADV05', nombre: 'MODELOS PARA LA TOMA DE DECISIONES', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '3.º Cuat.',
+          numero: 3,
+          con_ingles: false,
+          materias: [
+            { crse: 'FIV02', subj: 'MPAC', clave: 'MPAC-FIV02', nombre: 'FINANZAS CORPORATIVAS AVANZADAS', conecta: false, creditos_bh: 1 },
+            { crse: 'MKV01', subj: 'MPAC', clave: 'MPAC-MKV01', nombre: 'ESTRATEGIA DE MERCADOTECNIA EN LOS NEGOCIOS', conecta: false, creditos_bh: 1 },
+            { crse: 'ADV01', subj: 'MPAC', clave: 'MPAC-ADV01', nombre: 'LIDERAZGO ESTRATÉGICO ORGANIZACIONAL', conecta: true, creditos_bh: 1, seriada_con: 'R-2' }
+          ]
+        },
+        {
+          nombre: '4.º Cuat.',
+          numero: 4,
+          con_ingles: false,
+          materias: [
+            { crse: 'ADV07', subj: 'MPAC', clave: 'MPAC-ADV07', nombre: 'MARCO JURÍDICO DE LOS NEGOCIOS', conecta: true, creditos_bh: 1, seriada_con: 'R-3' },
+            { crse: 'ADV06', subj: 'MPAC', clave: 'MPAC-ADV06', nombre: 'GESTIÓN DE LA CALIDAD Y EL SERVICIO', conecta: false, creditos_bh: 1 },
+            { crse: 'NEV03', subj: 'MPAC', clave: 'MPAC-NEV03', nombre: 'TECNOLOGÍA APLICADA A LA ESTRATEGIA DE NEGOCIO', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '5.º Cuat.',
+          numero: 5,
+          con_ingles: false,
+          materias: [
+            { crse: 'ADV10', subj: 'MPAC', clave: 'MPAC-ADV10', nombre: 'SOSTENIBILIDAD EN LA EMPRESA', conecta: false, creditos_bh: 1 },
+            { crse: 'ADV08', subj: 'MPAC', clave: 'MPAC-ADV08', nombre: 'ESTRATEGIAS PARA EL EMPRENDIMIENTO', conecta: false, creditos_bh: 1 },
+            { crse: 'ADV09', subj: 'MPAC', clave: 'MPAC-ADV09', nombre: 'MODELO DE GESTIÓN EN ENTORNOS MULTICULTURALES', conecta: true, creditos_bh: 1, seriada_con: 'R-2' }
+          ]
+        }
+      ],
+      niveles_ingles: 0,
+      total_materias: 15,
+      ultima_actualizacion_cpa: '01-junio-2022',
+      electivas_multidisciplinares: []
+    },
+    requisitos_egreso: []
+  },
+  {
+    codigo: 'MAE-MDEC-20',
+    nombre: 'MAESTRÍA EN DERECHO CONSTITUCIONAL Y AMPARO (MIXTA) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2020',
+    activa: true,
+    coordinadora: 'AVELINA GARCIA ROMEO',
+    sede: 'CAM',
+    total_materias: 15,
+    niveles_ingles: 0,
+    mapa_json: {
+      plan: '2020',
+      modalidad: 'MIXTA',
+      cuatrimestres: [
+        {
+          nombre: '1.º Cuat.',
+          numero: 1,
+          con_ingles: false,
+          materias: [
+            { crse: 'DEA01', subj: 'MMJX', clave: 'MMJX-DEA01', nombre: 'SISTEMA INTERNACIONAL DE PROTECCIÓN DE DERECHOS HUMANOS', conecta: false, creditos_bh: 1 },
+            { crse: 'DEA02', subj: 'MMJX', clave: 'MMJX-DEA02', nombre: 'SISTEMAS JURÍDICOS CONTEMPORÁNEOS', conecta: false, creditos_bh: 1 },
+            { crse: 'DEO01', subj: 'MMJX', clave: 'MMJX-DEO01', nombre: 'TEORÍA DEL AMPARO', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '2.º Cuat.',
+          numero: 2,
+          con_ingles: false,
+          materias: [
+            { crse: 'DEA03', subj: 'MMJX', clave: 'MMJX-DEA03', nombre: 'ANÁLISIS INTERNACIONAL DEL AMPARO', conecta: false, creditos_bh: 1 },
+            { crse: 'DEA04', subj: 'MMJX', clave: 'MMJX-DEA04', nombre: 'ESTUDIO COMPARATIVO CONSTITUCIONAL', conecta: false, creditos_bh: 1 },
+            { crse: 'DEO02', subj: 'MMJX', clave: 'MMJX-DEO02', nombre: 'GARANTÍAS CIVILES, POLÍTICAS Y SOCIALES', conecta: true, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '3.º Cuat.',
+          numero: 3,
+          con_ingles: false,
+          materias: [
+            { crse: 'DEA05', subj: 'MMJX', clave: 'MMJX-DEA05', nombre: 'AMPARO DIRECTO E INDIRECTO', conecta: false, creditos_bh: 1 },
+            { crse: 'DEA06', subj: 'MMJX', clave: 'MMJX-DEA06', nombre: 'DERECHO DE ACCESO A LA INFORMACIÓN', conecta: false, creditos_bh: 1 },
+            { crse: 'DEO03', subj: 'MMJX', clave: 'MMJX-DEO03', nombre: 'DERECHO PROCESAL CONSTITUCIONAL', conecta: true, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '4.º Cuat.',
+          numero: 4,
+          con_ingles: false,
+          materias: [
+            { crse: 'DEA07', subj: 'MMJX', clave: 'MMJX-DEA07', nombre: 'AMPARO POR CONTROVERSIAS', conecta: false, creditos_bh: 1 },
+            { crse: 'DEA08', subj: 'MMJX', clave: 'MMJX-DEA08', nombre: 'CONSULTORÍA APLICABLE A DERECHOS HUMANOS', conecta: false, creditos_bh: 1 },
+            { crse: 'DEO04', subj: 'MMJX', clave: 'MMJX-DEO04', nombre: 'CONTROVERSIA CONSTITUCIONAL', conecta: true, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '5.º Cuat.',
+          numero: 5,
+          con_ingles: false,
+          materias: [
+            { crse: 'DEA09', subj: 'MMJX', clave: 'MMJX-DEA09', nombre: 'ASESORÍA ANTE JUICIOS DE AMPARO', conecta: false, creditos_bh: 1 },
+            { crse: 'DEA10', subj: 'MMJX', clave: 'MMJX-DEA10', nombre: 'INTERPRETACIÓN Y ARGUMENTACIÓN DE LA JURISPRUDENCIA', conecta: false, creditos_bh: 1 },
+            { crse: 'DEO05', subj: 'MMJX', clave: 'MMJX-DEO05', nombre: 'INNOVACIÓN Y PROSPECTIVA EN DERECHOS HUMANOS', conecta: true, creditos_bh: 1 }
+          ]
+        }
+      ],
+      niveles_ingles: 0,
+      total_materias: 15,
+      ultima_actualizacion_cpa: '31-julio-2026',
+      electivas_multidisciplinares: []
+    },
+    requisitos_egreso: []
+  },
+  {
+    codigo: 'MAE-MERP-22',
+    nombre: 'MAESTRÍA EN MERCADOTECNIA Y MEDIOS DIGITALES (PAC)',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2022',
+    activa: true,
+    coordinadora: 'YESSICA INURRETA PAVON',
+    sede: 'CAM',
+    total_materias: 15,
+    niveles_ingles: 0,
+    mapa_json: {
+      plan: '2022',
+      modalidad: 'PAC',
+      cuatrimestres: [
+        {
+          nombre: '1.º Cuat.',
+          numero: 1,
+          con_ingles: false,
+          materias: [
+            { crse: 'MKV01', subj: 'MPAC', clave: 'MPAC-MKV01', nombre: 'ESTRATEGIAS DE MARKETING EN LOS NEGOCIOS', conecta: false, creditos_bh: 1 },
+            { crse: 'MKV02', subj: 'MPAC', clave: 'MPAC-MKV02', nombre: 'INVESTIGACIÓN DE MERCADOS GLOBALES', conecta: true, creditos_bh: 1, seriada_con: 'R-2' },
+            { crse: 'MKV05', subj: 'MPAC', clave: 'MPAC-MKV05', nombre: 'DESARROLLO E INNOVACIÓN EMPRESARIAL', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '2.º Cuat.',
+          numero: 2,
+          con_ingles: false,
+          materias: [
+            { crse: 'MKV06', subj: 'MPAC', clave: 'MPAC-MKV06', nombre: 'DESARROLLO DE NUEVOS PRODUCTOS Y SERVICIOS', conecta: false, creditos_bh: 1 },
+            { crse: 'MKV11', subj: 'MPAC', clave: 'MPAC-MKV11', nombre: 'NORMATIVIDAD APLICADA A LA MERCADOTECNIA', conecta: true, creditos_bh: 1, seriada_con: 'R-3' },
+            { crse: 'MKV08', subj: 'MPAC', clave: 'MPAC-MKV08', nombre: 'MÉTRICAS DE MARKETING Y VENTAS', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '3.º Cuat.',
+          numero: 3,
+          con_ingles: false,
+          materias: [
+            { crse: 'MKV09', subj: 'MPAC', clave: 'MPAC-MKV09', nombre: 'ESTRATEGIAS DE MERCADOTECNIA DIGITAL', conecta: true, creditos_bh: 1, seriada_con: 'R-2' },
+            { crse: 'MKV10', subj: 'MPAC', clave: 'MPAC-MKV10', nombre: 'INTELIGENCIA ANALÍTICA DE NEGOCIOS', conecta: false, creditos_bh: 1 },
+            { crse: 'MKV07', subj: 'MPAC', clave: 'MPAC-MKV07', nombre: 'ESTADÍSTICA PARA LA TOMA DE DECISIONES', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '4.º Cuat.',
+          numero: 4,
+          con_ingles: false,
+          materias: [
+            { crse: 'MKV12', subj: 'MPAC', clave: 'MPAC-MKV12', nombre: 'DISEÑO DE EXPERIENCIAS', conecta: false, creditos_bh: 1 },
+            { crse: 'MKV13', subj: 'MPAC', clave: 'MPAC-MKV13', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE MARKETING', conecta: true, creditos_bh: 1, seriada_con: 'R-3' },
+            { crse: 'MKV14', subj: 'MPAC', clave: 'MPAC-MKV14', nombre: 'PUBLICIDAD EN MEDIOS DIGITALES', conecta: false, creditos_bh: 1 }
+          ]
+        },
+        {
+          nombre: '5.º Cuat.',
+          numero: 5,
+          con_ingles: false,
+          materias: [
+            { crse: 'MKV15', subj: 'MPAC', clave: 'MPAC-MKV15', nombre: 'COMERCIO ELECTRÓNICO Y NEGOCIOS DIGITALES', conecta: true, creditos_bh: 1, seriada_con: 'R-2' },
+            { crse: 'MKV16', subj: 'MPAC', clave: 'MPAC-MKV16', nombre: 'DESARROLLO DE PROYECTOS DE MERCADOTECNIA', conecta: false, creditos_bh: 1 },
+            { crse: 'MKV17', subj: 'MPAC', clave: 'MPAC-MKV17', nombre: 'DISEÑO DE ESTRATEGIAS DE MERCADEO', conecta: false, creditos_bh: 1 }
+          ]
+        }
+      ],
+      niveles_ingles: 0,
+      total_materias: 15,
+      ultima_actualizacion_cpa: '30-abril-2023',
+      electivas_multidisciplinares: []
+    },
+    requisitos_egreso: []
   }
 ];
 
@@ -2644,7 +2928,13 @@ export const NOMBRES_LARGOS_CARRERAS = {
   'LIC-EJAD-17': 'LICENCIATURA EN ADMINISTRACIÓN DE EMPRESAS (MIXTO) - FEDERAL',
   'LIC-MEES-18': 'LICENCIATURA EN MERCADOTECNIA ESTRATÉGICA (MIXTO) - FEDERAL',
   'LIC-SYSC-18': 'LICENCIATURA EN INGENIERÍA DE SOFTWARE Y SISTEMAS COMPUTACIONALES (MIXTO) - FEDERAL',
-  'LIC-ADME-18': 'LICENCIATURA EN ADMINISTRACIÓN EMPRESARIAL (MIXTO) - FEDERAL'
+  'LIC-ADME-18': 'LICENCIATURA EN ADMINISTRACIÓN EMPRESARIAL (MIXTO) - FEDERAL',
+
+  // Maestrías Institucionales (4)
+  'MAE-EDUP-22': 'MAESTRÍA EN EDUCACIÓN (PAC)',
+  'MAE-MADP-22': 'MAESTRÍA EN ADMINISTRACIÓN DE NEGOCIOS (PAC)',
+  'MAE-MDEC-20': 'MAESTRÍA EN DERECHO CONSTITUCIONAL Y AMPARO (MIXTA) - FEDERAL',
+  'MAE-MERP-22': 'MAESTRÍA EN MERCADOTECNIA Y MEDIOS DIGITALES (PAC)'
 };
 
 export function resolverNombreOficialCarrera(carrera) {

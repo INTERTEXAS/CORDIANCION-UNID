@@ -19,7 +19,8 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
   const dualClaves = ['ADS38', 'ADS39', 'ADS40', 'MKT26', 'MKS28', 'EES11', 'EES12'];
   let tieneDual = false;
   const catalogo = Array.isArray(carreras) && carreras.length > 0 ? carreras : CARRERAS_LOCAL;
-  const programaDeclarado = catalogo.some(carrera => carrera.codigo === estudiante.programa);
+  const programaDeclarado = catalogo.some(carrera => carrera.codigo === estudiante.programa) ||
+    /^(?:LIC|MAE|DOC|ESP)-[A-Z0-9-]+$/i.test(estudiante.programa || '');
 
   for (const r of (registros || [])) {
     const subj = r?.subj || '';
@@ -38,13 +39,13 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
 
   if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
     estudiante.modalidadDetectada = 'EJECUTIVO';
-    if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
+    if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'LIC-EJCO-17';
   } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
     estudiante.modalidadDetectada = 'ESCOLARIZADO DUAL';
-    if (!programaDeclarado) estudiante.programa = 'LIC-DAEM-18';
+    if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'LIC-DAEM-18';
   } else {
     estudiante.modalidadDetectada = 'ESCOLARIZADO';
-    if (!programaDeclarado) estudiante.programa = 'LIC-COFI-18';
+    if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'LIC-COFI-18';
   }
   
   return estudiante;
@@ -397,20 +398,25 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras 
 }
 
 function cleanGradeToken(raw) {
-  if (!raw) return null;
-  const s = raw.trim().replace(/[|]/g, '');
+  if (!raw && raw !== 0) return null;
+  const s = String(raw).trim().replace(/[|]/g, '');
   if (!s || /^CAM/i.test(s) || /^(?:RW|RE)$/i.test(s)) return null;
 
+  // Corrección de artefactos OCR comunes en reportes Banner
   if (s === '19' || s === '109' || s === '199') return '9';
   if (s === '18' || s === '189') return '8';
   if (s === '17' || s === '107') return '7';
   if (s.toLowerCase() === 'g') return '9';
   if (s === 'B') return '8';
 
-  if (s === '10' || s === '10.0') return '10';
-  if (/^[5-9]$/.test(s)) return s;
-  if (/^(?:AC|NP|NA)$/i.test(s)) return s.toUpperCase();
-  if (s.toUpperCase() === 'OU') return 'OU';
+  // Códigos de acreditación o estatus institucional
+  if (/^(?:AC|NP|NA|SD|AP|EX|OU|BA)$/i.test(s)) return s.toUpperCase();
+
+  // Calificaciones numéricas (enteros o decimales: 10, 10.0, 9.5, 8.0, 7.5, 6.0, 5.0, 0, etc.)
+  const num = parseFloat(s.replace(',', '.'));
+  if (!isNaN(num) && num >= 0 && num <= 10) {
+    return Number.isInteger(num) ? String(num) : String(num);
+  }
 
   return null;
 }
@@ -441,7 +447,8 @@ function extractStudentMetadata(text) {
     }
   }
 
-  const progMatch = text.match(/\((LIC-[A-Z0-9-]+)\)/i) || text.match(/\b(LIC-[A-Z0-9-]+)\b/i);
+  const progMatch = text.match(/\(((?:LIC|MAE|DOC|ESP)-[A-Z0-9-]+)\)/i) ||
+                    text.match(/\b((?:LIC|MAE|DOC|ESP)-[A-Z0-9-]+)\b/i);
   if (progMatch) programa = progMatch[1].toUpperCase();
 
   const estMatch = text.match(/\)\s*[^\n|]*\|?\s*\b(EG|AC|BA|IN)\b/i) || text.match(/\b(EG|AC|BA|IN)\b/);
@@ -482,17 +489,17 @@ function getSubjFromCatalog(crse, carreras = CARRERAS_LOCAL, programa = '') {
 }
 
 function isGradePassing(calif) {
-  if (!calif) return false;
+  if (!calif && calif !== 0) return false;
   const s = String(calif).trim().toUpperCase();
-  if (s === 'AC') return true;
+  if (['AC', 'A', 'AP', 'EX'].includes(s)) return true;
   const num = parseFloat(s);
   return !isNaN(num) && num >= 6;
 }
 
 function isGradeFailing(calif) {
-  if (!calif) return false;
+  if (!calif && calif !== 0) return false;
   const s = String(calif).trim().toUpperCase();
-  if (s === 'NP' || s === 'NA') return true;
+  if (['NP', 'NA', 'SD'].includes(s)) return true;
   const num = parseFloat(s);
   return !isNaN(num) && num < 6;
 }
@@ -586,7 +593,7 @@ export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
       // rango histórico pero tomando el token MÁS A LA DERECHA, no el primero.
       const xCalif = cols.calificacion;
       const xCred = cols.creditos;
-      const esCalif = (it) => /^(\d{1,2}(?:\.\d+)?|AC|NP|NA|VS|OU)$/i.test(it.str);
+      const esCalif = (it) => /^(\d{1,2}(?:\.\d+)?|AC|NP|NA|SD|AP|EX|VS|OU|BA)$/i.test(it.str.trim());
 
       let califItem;
       if (xCalif !== undefined) {
@@ -607,7 +614,7 @@ export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
       const periodoItem = row.items.find(it =>
         /^\d{6}$/.test(it.str) &&
         (xPeriodo ? Math.abs(it.x - xPeriodo) < 40 : it.x >= 200 && it.x < 255));
-      const progItem = row.items.find(it => /^LIC-[A-Z0-9-]+$/i.test(it.str) &&
+      const progItem = row.items.find(it => /^(?:LIC|MAE|DOC|ESP)-[A-Z0-9-]+$/i.test(it.str) &&
         (!xProg || Math.abs(it.x - xProg) < 60));
       const subjItem = row.items.find(it => /^[A-Z]{3,4}$/i.test(it.str) &&
         (!xSubj || Math.abs(it.x - xSubj) < 30));

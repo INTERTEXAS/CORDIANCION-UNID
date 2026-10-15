@@ -38,7 +38,7 @@ function resolveNivelesIngles(carrera, mapa) {
 function checkPassed(calif) {
   if (!calif) return false;
   const s = String(calif).trim().toUpperCase();
-  if (s === 'AC') return true;
+  if (s === 'AC' || s === 'A' || s === 'AP' || s === 'EX') return true;
   const n = parseFloat(s);
   return !isNaN(n) && n >= 6;
 }
@@ -46,7 +46,7 @@ function checkPassed(calif) {
 function checkFailed(calif) {
   if (!calif) return false;
   const s = String(calif).trim().toUpperCase();
-  if (s === 'NP' || s === 'NA') return true;
+  if (s === 'NP' || s === 'NA' || s === 'SD') return true;
   const n = parseFloat(s);
   return !isNaN(n) && n < 6;
 }
@@ -62,7 +62,11 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
   const dualClaves = ['ADS38', 'ADS39', 'ADS40', 'MKT26', 'MKS28', 'EES11', 'EES12'];
   let tieneDual = false;
   const catalogo = Array.isArray(carreras) && carreras.length > 0 ? carreras : CARRERAS_LOCAL;
-  const programaDeclarado = catalogo.some(carrera => carrera.codigo === estudiante.programa);
+  const programaDeclarado = Boolean(estudiante.programa && (
+    catalogo.some(carrera => carrera?.codigo === estudiante.programa) ||
+    estudiante.programa.startsWith('LIC-') ||
+    estudiante.programa.startsWith('MAE-')
+  ));
 
   for (const r of (registros || [])) {
     const subj = r?.subj || '';
@@ -79,7 +83,7 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     }
   }
 
-  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
+  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17' || (estudiante.programa && estudiante.programa.includes('EJ'))) {
     estudiante.modalidadDetectada = 'EJECUTIVO';
     if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
   } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
@@ -154,16 +158,20 @@ export function esMateriaIgnorada(item) {
 }
 
 export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_LOCAL[0]) {
-  // Asegurarnos de detectar la modalidad si no viene calculada
+  // Asegurarnos de detectar la modalidad si no viene calculada, aportando la carrera recibida como contexto
   if (!estudiante.modalidadDetectada) {
-    detectarModalidad(estudiante, registros);
+    const catalogoContexto = carrera ? [carrera, ...CARRERAS_LOCAL] : CARRERAS_LOCAL;
+    detectarModalidad(estudiante, registros, catalogoContexto);
   }
   
   // Asignar dinámicamente la carrera basada en el programa detectado, si existe en local/neon
   let carreraEfectiva = carrera;
-  if (estudiante.programa && carrera.codigo !== estudiante.programa) {
+  if (estudiante.programa && carrera?.codigo !== estudiante.programa) {
     const c = CARRERAS_LOCAL.find(c => c.codigo === estudiante.programa);
     if (c) carreraEfectiva = c;
+  }
+  if (!carreraEfectiva && carrera) {
+    carreraEfectiva = carrera;
   }
 
   // Normalizar el mapa curricular (soporta tanto objeto con cuatrimestres como arreglo plano de materias)
@@ -247,8 +255,22 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     };
   });
 
-  // Ordenar cronológicamente por periodo
-  normalizedRecords.sort((a, b) => (parseInt(a.periodo, 10) || 0) - (parseInt(b.periodo, 10) || 0));
+  // Ordenar cronológicamente por periodo y por secuencia académica dentro del mismo periodo
+  normalizedRecords.sort((a, b) => {
+    const pA = parseInt(a.periodo, 10) || 0;
+    const pB = parseInt(b.periodo, 10) || 0;
+    if (pA !== pB) return pA - pB;
+
+    // En el mismo periodo, el cursamiento ordinario (RW) ocurre antes del examen de regularización (RE)
+    if (a.modalidad === 'RW' && b.modalidad === 'RE') return -1;
+    if (a.modalidad === 'RE' && b.modalidad === 'RW') return 1;
+
+    // Si uno reprobó y otro aprobó en el mismo periodo, el aprobado es el definitivo resolutivo
+    if (a.esReprobada && b.esAprobada) return -1;
+    if (a.esAprobada && b.esReprobada) return 1;
+
+    return 0;
+  });
 
   const primerPeriodoAlumno = normalizedRecords.length > 0 ? normalizedRecords[0].periodo : null;
 
@@ -762,14 +784,12 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
   }
 
   const numIntentos = attempts.length;
-  const ultimoIntento = attempts[numIntentos - 1];
   const primerIntento = attempts[0];
-  const penultimoIntento = numIntentos > 1 ? attempts[numIntentos - 2] : null;
+  const ultimoIntento = attempts[numIntentos - 1];
 
-  const calif = (ultimoIntento.calificacion || '').trim().toUpperCase();
-  const esAprobada = checkPassed(calif);
-  const esReprobada = checkFailed(calif);
-  const estaCursando = !calif || calif === '';
+  // Comprobar si la materia fue acreditada en CUALQUIERA de sus intentos registrados
+  const intentosAprobados = attempts.filter(a => checkPassed(a.calificacion));
+  const tieneAprobada = intentosAprobados.length > 0;
 
   // Detectar si una materia de 1.º cuatrimestre se cargó con desfase en periodos posteriores
   const tieneDesfase = Boolean(
@@ -784,7 +804,66 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
     `Intento ${idx + 1} (${at.periodo}): ${at.calificacion || 'Cursando'} [${at.modalidad || 'RW'}]`
   ).join(' -> ');
 
-  if (calif === 'OU') {
+  // 1. SI LA MATERIA FUE ACREDITADA (en RE, Recursamiento u Ordinario)
+  if (tieneAprobada) {
+    const intentoExitoso = intentosAprobados[intentosAprobados.length - 1];
+    const esModoRE = intentoExitoso.modalidad === 'RE' || attempts.some(a => a.modalidad === 'RE' && checkPassed(a.calificacion));
+
+    if (esModoRE) {
+      return {
+        estado: 'RE',
+        etiquetaCorta: 'MODO RE',
+        calificacion: intentoExitoso.calificacion,
+        modalidad: 'RE',
+        numIntentos,
+        vecesRecurso: Math.max(0, numIntentos - 1),
+        color: '#0284C7',
+        bgColor: '#F0F9FF',
+        icono: 'FileCheck',
+        historialTexto,
+        tieneDesfase,
+        motivoIncidencia: 'Acreditada mediante examen de regularización / extraordinario (Modo RE)'
+      };
+    }
+
+    if (numIntentos >= 2) {
+      return {
+        estado: 'REC',
+        etiquetaCorta: `REC · ${numIntentos}`,
+        calificacion: intentoExitoso.calificacion,
+        modalidad: intentoExitoso.modalidad || 'RW',
+        numIntentos,
+        vecesRecurso: numIntentos - 1,
+        color: '#D97706',
+        bgColor: '#FFFBEB',
+        icono: 'RotateCw',
+        historialTexto,
+        tieneDesfase,
+        motivoIncidencia: `Aprobada en recursamiento tras ${numIntentos - 1} intento(s) previo(s)`
+      };
+    }
+
+    return {
+      estado: 'ORD',
+      etiquetaCorta: 'ORD',
+      calificacion: intentoExitoso.calificacion,
+      modalidad: intentoExitoso.modalidad || 'RW',
+      numIntentos: 1,
+      vecesRecurso: 0,
+      color: '#059669',
+      bgColor: '#ECFDF5',
+      icono: 'CheckCircle2',
+      historialTexto,
+      tieneDesfase,
+      motivoIncidencia: tieneDesfase ? `Materia de 1.º cuatrimestre cursada con desfase en el periodo ${primerIntento.periodo}` : null
+    };
+  }
+
+  // 2. NO ESTÁ ACREDITADA EN NINGÚN INTENTO
+  const ultimaCalif = (ultimoIntento.calificacion || '').trim().toUpperCase();
+  const estaCursando = !ultimaCalif || ultimaCalif === '';
+
+  if (ultimaCalif === 'OU') {
     return {
       estado: 'OU',
       etiquetaCorta: 'OU',
@@ -803,6 +882,7 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
 
   if (estaCursando) {
     const esRec = numIntentos > 1;
+    const penultimoIntento = numIntentos > 1 ? attempts[numIntentos - 2] : null;
     return {
       estado: esRec ? 'RECURSANDO' : 'CURSANDO',
       etiquetaCorta: esRec ? 'REC · CURSO' : 'CURSANDO',
@@ -819,57 +899,7 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
     };
   }
 
-  if (esAprobada && (ultimoIntento.modalidad === 'RE' || attempts.some(a => a.modalidad === 'RE' && checkPassed(a.calificacion)))) {
-    return {
-      estado: 'RE',
-      etiquetaCorta: 'MODO RE',
-      calificacion: ultimoIntento.calificacion,
-      modalidad: 'RE',
-      numIntentos,
-      vecesRecurso: Math.max(0, numIntentos - 1),
-      color: '#0284C7',
-      bgColor: '#F0F9FF',
-      icono: 'FileCheck',
-      historialTexto,
-      tieneDesfase,
-      motivoIncidencia: 'Acreditada mediante examen de regularización / extraordinario (Modo RE)'
-    };
-  }
-
-  if (esAprobada && numIntentos >= 2) {
-    return {
-      estado: 'REC',
-      etiquetaCorta: `REC · ${numIntentos}`,
-      calificacion: ultimoIntento.calificacion,
-      modalidad: ultimoIntento.modalidad || 'RW',
-      numIntentos,
-      vecesRecurso: numIntentos - 1,
-      color: '#D97706',
-      bgColor: '#FFFBEB',
-      icono: 'RotateCw',
-      historialTexto,
-      tieneDesfase,
-      motivoIncidencia: `Aprobada en recursamiento tras ${numIntentos - 1} intento(s) fallido(s)`
-    };
-  }
-
-  if (esAprobada && numIntentos === 1) {
-    return {
-      estado: 'ORD',
-      etiquetaCorta: 'ORD',
-      calificacion: ultimoIntento.calificacion,
-      modalidad: 'RW',
-      numIntentos: 1,
-      vecesRecurso: 0,
-      color: '#059669',
-      bgColor: '#ECFDF5',
-      icono: 'CheckCircle2',
-      historialTexto,
-      tieneDesfase,
-      motivoIncidencia: tieneDesfase ? `Materia de 1.º cuatrimestre cursada con desfase en el periodo ${primerIntento.periodo}` : null
-    };
-  }
-
+  const esReprobada = checkFailed(ultimaCalif);
   if (esReprobada) {
     return {
       estado: 'ADEUDO',
