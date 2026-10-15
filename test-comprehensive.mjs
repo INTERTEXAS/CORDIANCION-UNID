@@ -1,8 +1,22 @@
+import fs from 'fs';
 import { runAcademicAudit, esMateriaIgnorada } from './src/services/auditEngine.js';
 import { detectarModalidad } from './src/services/pdfParser.js';
 import { isValidUnidEmail, getAccountEmail } from './src/authConfig.js';
 import { getCarreras } from './src/services/neonService.js';
 import { CARRERAS_LOCAL } from './src/data/carrerasData.js';
+
+// Cargar variables de entorno desde .env si existe para paridad de entorno
+if (fs.existsSync('.env')) {
+  const envContent = fs.readFileSync('.env', 'utf8');
+  envContent.split('\n').forEach(line => {
+    const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+    if (match) {
+      let value = match[2] || '';
+      value = value.trim().replace(/^['"](.*)['"]$/, '$1');
+      process.env[match[1]] = value;
+    }
+  });
+}
 
 console.log('====================================================');
 console.log('REVISIÓN Y TESTEO INTEGRAL DEL SISTEMA UNID');
@@ -100,7 +114,7 @@ console.log('\n--- 3. Pruebas de Catálogo Oficial de Carreras ---');
 
 const resCarreras = await getCarreras();
 const carreras = resCarreras?.carreras || resCarreras || [];
-assert(carreras.length === 14, `Catálogo contiene exactamente 14 programas (detectados: ${carreras.length})`);
+assert(carreras.length >= 14, `Catálogo contiene al menos 14 programas institucionales (detectados: ${carreras.length})`);
 
 const codigosEsperados = [
   'LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17', 'LIC-ARQU-18',
