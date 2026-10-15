@@ -2360,7 +2360,7 @@ export const CARRERAS_LOCAL = [
             { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 3 },
             { clave: 'LMAX-FIS02', subj: 'LMAX', crse: 'FIS02', nombre: 'FUNDAMENTOS TEÓRICOS DEL ANÁLISIS FINANCIERO', conecta: false, creditos: 3 },
             { clave: 'LMAX-ADS07', subj: 'LMAX', crse: 'ADS07', nombre: 'PROCESO ADMINISTRATIVO', conecta: false, creditos: 3 },
-            { clave: 'LMAX-ADS08', subj: 'LMAX', crse: 'ADS08', nombre: 'CORRIENTES DE LA ADMINISTRACIÓN', conecta: false, creditos: 3 }
+            { clave: 'LMAX-ADS06', subj: 'LMAX', crse: 'ADS06', alias_corregir: 'ADS08', nombre: 'CORRIENTES DE LA ADMINISTRACIÓN', conecta: false, creditos: 3 }
           ]
         },
         {
@@ -2373,7 +2373,7 @@ export const CARRERAS_LOCAL = [
             { clave: 'LMAX-CFS02', subj: 'LMAX', crse: 'CFS02', nombre: 'CONTABILIDAD DE COSTOS', conecta: false, creditos: 3 },
             { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: false, creditos: 3 },
             { clave: 'LMAM-ADS08', subj: 'LMAM', crse: 'ADS08', nombre: 'LIDERAZGO', conecta: false, creditos: 3 },
-            { clave: 'LIMAX-ECS01', subj: 'LIMAX', crse: 'ECS01', alias_corregir: 'LMAX-ECS01', nombre: 'MICRO Y MACROECONOMÍA', conecta: false, creditos: 3 }
+            { clave: 'LMAX-ECS01', subj: 'LMAX', crse: 'ECS01', alias_corregir: 'LIMAX-ECS01', nombre: 'MICRO Y MACROECONOMÍA', conecta: false, creditos: 3 }
           ]
         },
         {
@@ -2397,7 +2397,7 @@ export const CARRERAS_LOCAL = [
           materias: [
             { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: true, creditos: 3 },
             { clave: 'LMMA-ADS11', subj: 'LMMA', crse: 'ADS11', nombre: 'RECLUTAMIENTO, SELECCIÓN E INDUCCIÓN DEL PERSONAL', conecta: false, creditos: 3 },
-            { clave: 'LMKA-MKS01', subj: 'LMKA', crse: 'MKS01', nombre: 'INVESTIGACIÓN CUANTITATIVA Y CUALITATIVA DE MERCADOS', conecta: false, creditos: 3 },
+            { clave: 'LMKA-MKS09', subj: 'LMKA', crse: 'MKS09', alias_corregir: 'MKS01', nombre: 'INVESTIGACIÓN CUANTITATIVA Y CUALITATIVA DE MERCADOS', conecta: false, creditos: 3 },
             { clave: 'LMKX-ADT14', subj: 'LMKX', crse: 'ADT14', nombre: 'ESTRATEGIAS DE PRECIOS Y VENTAS', conecta: false, creditos: 3 },
             { clave: 'LMAI-ADS12', subj: 'LMAI', crse: 'ADS12', nombre: 'TÉCNICAS DE PLANEACIÓN Y CONTROL', conecta: false, creditos: 3 }
           ]
@@ -2428,9 +2428,9 @@ export const CARRERAS_LOCAL = [
           con_ingles: false,
           materias: [
             { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 3 },
-            { clave: 'LMMA-PSS06', subj: 'LMMA', crse: 'PSS06', nombre: 'EVALUACIÓN DEL DESEMPEÑO LABORAL', conecta: false, creditos: 3 },
+            { clave: 'LMMA-PSS05', subj: 'LMMA', crse: 'PSS05', alias_corregir: 'PSS06', nombre: 'EVALUACIÓN DEL DESEMPEÑO LABORAL', conecta: false, creditos: 3 },
             { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: true, creditos: 3 },
-            { clave: 'LMAK-ADT08', subj: 'LMAK', crse: 'ADT08', nombre: 'ADMINISTRACIÓN DE VENTAS', conecta: false, creditos: 3 },
+            { clave: 'LMAK-ADT06', subj: 'LMAK', crse: 'ADT06', alias_corregir: 'ADT08', nombre: 'ADMINISTRACIÓN DE VENTAS', conecta: false, creditos: 3 },
             { clave: 'LMAX-ADS16', subj: 'LMAX', crse: 'ADS16', nombre: 'PLANEACIÓN ESTRATÉGICA', conecta: false, creditos: 3 }
           ]
         },
@@ -2622,3 +2622,59 @@ export function normalizarMapaCurricular(mapaRaw) {
 
   return { cuatrimestres: [], electivas_multidisciplinares: [], niveles_ingles: [] };
 }
+
+// Lista oficial depurada para el sistema Banner de la Licenciatura en Administración Empresarial
+export const MAPA_MATERIAS_ADME_18 = [
+  { cuatrimestre: 1, clave: "LMFM-HUS01", nombre: "Ser Humano" },
+  { cuatrimestre: 1, clave: "LMAX-ADS05", nombre: "Estructuras Administrativas" },
+  { cuatrimestre: 1, clave: "LMIX-HTS01", nombre: "Herramientas Tecnológicas de Productividad" },
+  { cuatrimestre: 1, clave: "LMAX-CFS01", nombre: "Fundamentos de Contabilidad" },
+  { cuatrimestre: 1, clave: "LMDX-EDS01", nombre: "Estrategias para la Autonomía en el Aprendizaje" },
+  { cuatrimestre: 2, clave: "LMFM-HUS02", nombre: "Seminario de Valores en lo Personal" },
+  { cuatrimestre: 2, clave: "LMPX-CMS01", nombre: "Comunicación" },
+  { cuatrimestre: 2, clave: "LMAX-FIS02", nombre: "Fundamentos Teóricos del Análisis Financiero" },
+  { cuatrimestre: 2, clave: "LMAX-ADS07", nombre: "Proceso Administrativo" },
+  { cuatrimestre: 2, clave: "LMAX-ADS06", nombre: "Corrientes de la Administración" },
+  { cuatrimestre: 3, clave: "LMFM-HUS03", nombre: "Seminario de Valores en lo Común" },
+  { cuatrimestre: 3, clave: "LMAX-CFS02", nombre: "Contabilidad de Costos" },
+  { cuatrimestre: 3, clave: "LMEI-MTS02", nombre: "Estadística" },
+  { cuatrimestre: 3, clave: "LMAM-ADS08", nombre: "Liderazgo" },
+  { cuatrimestre: 3, clave: "LMAX-ECS01", nombre: "Micro y Macroeconomía" },
+  { cuatrimestre: 4, clave: "LMFM-HUS05", nombre: "Ética Profesional" },
+  { cuatrimestre: 4, clave: "LMAX-ADS10", nombre: "Diseño Organizacional" },
+  { cuatrimestre: 4, clave: "LMBX-IVS01", nombre: "Metodología de la Investigación" },
+  { cuatrimestre: 4, clave: "LMKP-MKT01", nombre: "Análisis del Consumidor y del Producto" },
+  { cuatrimestre: 4, clave: "LMIA-INS07", nombre: "Sistemas de Calidad" },
+  { cuatrimestre: 5, clave: "LMFX-HUS04", nombre: "Fe y Mundo Contemporáneo" },
+  { cuatrimestre: 5, clave: "LMMA-ADS11", nombre: "Reclutamiento, Selección e Inducción del Personal" },
+  { cuatrimestre: 5, clave: "LMKA-MKS09", nombre: "Investigación Cuantitativa y Cualitativa de Mercados" },
+  { cuatrimestre: 5, clave: "LMKX-ADT14", nombre: "Estrategias de Precios y Ventas" },
+  { cuatrimestre: 5, clave: "LMAI-ADS12", nombre: "Técnicas de Planeación y Control" },
+  { cuatrimestre: 6, clave: "LMAD-PES06", nombre: "Capacitación para el Desarrollo Organizacional" },
+  { cuatrimestre: 6, clave: "LMAD-EES01", nombre: "Proyecto de Transformación" },
+  { cuatrimestre: 6, clave: "LMIA-INS18", nombre: "Logística y Distribución de Productos" },
+  { cuatrimestre: 6, clave: "LMAX-CFT08", nombre: "Planeación y Control de Presupuestos" },
+  { cuatrimestre: 6, clave: "LMAX-ADS14", nombre: "Relaciones Laborales" },
+  { cuatrimestre: 7, clave: "LMAD-EES02", nombre: "Estadía Empresarial" },
+  { cuatrimestre: 8, clave: "LMAJ-HUS06", nombre: "Responsabilidad Social" },
+  { cuatrimestre: 8, clave: "LMMA-PSS05", nombre: "Evaluación del Desempeño Laboral" },
+  { cuatrimestre: 8, clave: "LMHA-ADS02", nombre: "Gestión de Proyectos Productivos" },
+  { cuatrimestre: 8, clave: "LMAK-ADT06", nombre: "Administración de Ventas" },
+  { cuatrimestre: 8, clave: "LMAX-ADS16", nombre: "Planeación Estratégica" },
+  { cuatrimestre: 9, clave: "LMIK-SIS01", nombre: "Innovación y Tecnología" },
+  { cuatrimestre: 9, clave: "LMAX-FIS10", nombre: "Finanzas Empresariales" },
+  { cuatrimestre: 9, clave: "LMAX-NES01", nombre: "Desarrollo de Nuevos Negocios" },
+  { cuatrimestre: 9, clave: "LMAX-FIS11", nombre: "Formulación y Evaluación de Proyectos de Inversión" },
+  { cuatrimestre: 9, clave: "LMAX-ADS03", nombre: "Competitividad Estratégica Empresarial" },
+  { cuatrimestre: 9, clave: "LMAJ-CFT07", nombre: "Gravámenes Internacionales" },
+  { cuatrimestre: 9, clave: "LMAX-ADT15", nombre: "Estrategias Directivas y de Negociación" },
+  { cuatrimestre: 9, clave: "LMAX-FIT15", nombre: "Sistema Financiero Internacional" },
+  { cuatrimestre: 9, clave: "LMAX-NET06", nombre: "Gestión de Negocios y Administración de Proyectos" },
+  { cuatrimestre: 9, clave: "LMHV-EES03", nombre: "Estadía Empresarial para el Énfasis Profesional" }
+];
+
+// Diccionario de mapas curriculares por código oficial de carrera
+export const MAPAS_CURRICULARES = CARRERAS_LOCAL.reduce((acc, car) => {
+  acc[car.codigo] = car.mapa_json;
+  return acc;
+}, { 'LIC-ADME-18': normalizarMapaCurricular(MAPA_MATERIAS_ADME_18) });
