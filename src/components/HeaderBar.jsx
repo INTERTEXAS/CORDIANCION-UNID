@@ -49,9 +49,8 @@ const COORDINADORAS_CONFIG = [
     areaLabel: 'Diseño, Administración, Mercadotecnia e Ingeniería',
     matches: (carrera) => {
       const codigo = (carrera?.codigo || '').toUpperCase();
-      // Las 5 carreras oficiales de Ave según sistema institucional:
-      // DSGD, EJAD, MEES, SYSC, ADME
-      const aveKeys = ['DSGD', 'EJAD', 'MEES', 'SYSC', 'ADME'];
+      // Programas asignados a Avelina según el sistema institucional.
+      const aveKeys = ['DSGD', 'EJAD', 'MEES', 'SYSC', 'ADME', 'CTCO'];
       return aveKeys.some(k => codigo.includes(k));
     },
     containerClass: 'bg-pink-50/50 dark:bg-pink-950/20 border-pink-200 dark:border-pink-800/40',
@@ -110,6 +109,20 @@ export default function HeaderBar({
       carreras: items
     };
   });
+  const carrerasAgrupadas = new Set(gruposCoordinadoras.flatMap(grupo => grupo.carreras.map(carrera => carrera.codigo)));
+  const carrerasSinCoordinacion = (carreras || []).filter(carrera => !carrerasAgrupadas.has(carrera.codigo));
+  if (carrerasSinCoordinacion.length > 0) {
+    gruposCoordinadoras.push({
+      id: 'sin-coordinacion',
+      nombreDisplay: 'SIN COORDINACIÓN ASIGNADA',
+      icon: FolderTree,
+      areaLabel: 'Programas adicionales del catálogo',
+      carreras: carrerasSinCoordinacion,
+      containerClass: 'bg-slate-50/50 dark:bg-slate-950/20 border-slate-200 dark:border-slate-800/40',
+      headerClass: 'text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-900/40',
+      itemClass: 'hover:bg-slate-50 dark:hover:bg-slate-900/20 border-slate-200 dark:border-slate-800/40'
+    });
+  }
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];

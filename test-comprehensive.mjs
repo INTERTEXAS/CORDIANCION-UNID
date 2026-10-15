@@ -94,25 +94,48 @@ assert(
 );
 
 // ----------------------------------------------------
-// TEST SUITE 3: Catálogo Oficial de Carreras (13 Licenciaturas)
+// TEST SUITE 3: Catálogo de Carreras (14 Programas)
 // ----------------------------------------------------
 console.log('\n--- 3. Pruebas de Catálogo Oficial de Carreras ---');
 
 const resCarreras = await getCarreras();
 const carreras = resCarreras?.carreras || resCarreras || [];
-assert(carreras.length === 13, `Catálogo contiene exactamente 13 carreras (detectadas: ${carreras.length})`);
+assert(carreras.length === 14, `Catálogo contiene exactamente 14 programas (detectados: ${carreras.length})`);
 
 const codigosEsperados = [
   'LIC-COFI-18', 'LIC-DAEM-18', 'LIC-EJCO-17', 'LIC-ARQU-18',
   'LIC-DERE-18', 'LIC-EJDE-17', 'LIC-EJED-17', 'LIC-EDFI-18',
   'LIC-DSGD-18', 'LIC-EJAD-17', 'LIC-MEES-18', 'LIC-SYSC-18',
-  'LIC-ADME-18'
+  'LIC-ADME-18', 'LIC-CTCO-18'
 ];
 
 for (const cod of codigosEsperados) {
   const existe = carreras.some(c => c.codigo === cod);
   assert(existe, `Carrera ${cod} presente y activa en el catálogo`);
 }
+
+const carreraCtco = carreras.find(c => c.codigo === 'LIC-CTCO-18');
+assert(
+  carreraCtco?.activa && carreraCtco.mapa_json?.cuatrimestres?.length === 9,
+  'LIC-CTCO-18 está activo y conserva sus 9 cuatrimestres'
+);
+const modalidadCtco = detectarModalidad({ programa: 'LIC-CTCO-18' });
+assert(
+  modalidadCtco.programa === 'LIC-CTCO-18' && modalidadCtco.modalidadDetectada === 'ESCOLARIZADO',
+  'LIC-CTCO-18 se reconoce como programa escolarizado'
+);
+const auditoriaCtco = runAcademicAudit(
+  { matricula: 'CTCO-TEST', nombre: 'PRUEBA CTCO', programa: 'LIC-CTCO-18' },
+  [],
+  carreraCtco
+);
+assert(
+  auditoriaCtco.resumen.totalMateriasMapa === 37 &&
+  carreraCtco.requisitos_egreso.some(req => req.crse === 'EGCC1') &&
+  auditoriaCtco.coCurriculares.some(req => req.crse === '0001') &&
+  auditoriaCtco.electivas.length === 10,
+  'LIC-CTCO-18 conserva EGEL y procesa mapa, electivas y Taller de Pre-egreso'
+);
 
 // ----------------------------------------------------
 // TEST SUITE 4: Motor de Auditoría Académica y Reglas Normativas
@@ -163,7 +186,7 @@ assert(
 // ----------------------------------------------------
 // TEST SUITE 5: Compatibilidad del Motor con las 13 Carreras
 // ----------------------------------------------------
-console.log('\n--- 5. Compatibilidad del Motor con los 13 Mapas Curriculares ---');
+console.log('\n--- 5. Compatibilidad del Motor con los 14 Mapas Curriculares ---');
 
 for (const car of CARRERAS_LOCAL) {
   const auditCarrera = runAcademicAudit(

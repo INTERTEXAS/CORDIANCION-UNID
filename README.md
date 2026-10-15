@@ -42,8 +42,8 @@ La solución permite auditar expedientes tanto de forma individual como mediante
 - **Operaciones de Lote**: Guardado masivo, consulta histórica, visualización detallada y depuración/eliminación granular de ciclos escolares registrados.
 - **Contingencia Local**: Si la conexión remota no estuviera disponible, el sistema mantiene la operación local en memoria sin interrumpir el trabajo de coordinación.
 
-### 4. Catálogo Oficial de Programas Académicos (13 Carreras)
-El sistema integra y sincroniza el catálogo oficial de 13 licenciaturas institucionales organizadas por coordinación:
+### 4. Catálogo de Programas Académicos (14 Programas)
+El sistema integra y sincroniza 14 programas institucionales organizados por coordinación:
 
 **Coordinación: Laura Angélica Ara Angulo (Ciencias Económico-Administrativas)**
 1. **LIC-COFI-18**: Licenciatura en Contabilidad y Finanzas (Mixto) - Federal
@@ -63,6 +63,9 @@ El sistema integra y sincroniza el catálogo oficial de 13 licenciaturas institu
 11. **LIC-MEES-18**: Licenciatura en Mercadotecnia Estratégica (Mixto) - Federal
 12. **LIC-SYSC-18**: Licenciatura en Ingeniería de Software y Sistemas Computacionales (Mixto) - Federal
 13. **LIC-ADME-18**: Licenciatura en Administración Empresarial (Mixto) - Federal
+
+**Programa adicional sin coordinación asignada**
+14. **LIC-CTCO-18**: Licenciatura en Ciencias y Técnicas de la Comunicación (Mixto) - Federal
 
 ---
 

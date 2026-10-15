@@ -2467,6 +2467,152 @@ export const CARRERAS_LOCAL = [
       { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN EMPRESARIAL' },
       { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
     ]
+  },
+  {
+    id: 14,
+    codigo: 'LIC-CTCO-18',
+    nombre: 'LICENCIATURA EN CIENCIAS Y TÉCNICAS DE LA COMUNICACIÓN (MIXTO) - FEDERAL',
+    encabezado_plan: 'MAPA DE EJECUCIÓN PARA EL PLAN 2018',
+    ultima_actualizacion_cpa: '15-junio-2022',
+    creditos_programa: 309.78,
+    sede: 'CAM',
+    coordinadora: '',
+    activa: true,
+    total_materias: 37,
+    niveles_ingles: 5,
+    ingles_acumulativo: true,
+    mapa_json: {
+      cuatrimestres: [
+        {
+          numero: 1,
+          nombre: '1.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0001',
+          materias: [
+            { clave: 'LMFM-HUS01', subj: 'LMFM', crse: 'HUS01', nombre: 'SER HUMANO', conecta: false, creditos: 6.13 },
+            { clave: 'LMPK-COS02', subj: 'LMPK', crse: 'COS02', nombre: 'TEORÍA DE LA IMAGEN', conecta: false, creditos: 7 },
+            { clave: 'LMIX-HTS01', subj: 'LMIX', crse: 'HTS01', nombre: 'HERRAMIENTAS TECNOLÓGICAS DE PRODUCTIVIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMDX-EDS01', subj: 'LMDX', crse: 'EDS01', nombre: 'ESTRATEGIAS PARA LA AUTONOMÍA EN EL APRENDIZAJE', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COS01', subj: 'LMPX', crse: 'COS01', nombre: 'TEORÍA DE LA COMUNICACIÓN', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 2,
+          nombre: '2.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0002',
+          materias: [
+            { clave: 'LMFM-HUS02', subj: 'LMFM', crse: 'HUS02', nombre: 'SEMINARIO DE VALORES EN LO PERSONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMPX-CMS01', subj: 'LMPX', crse: 'CMS01', nombre: 'COMUNICACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPM-PSS01', subj: 'LMPM', crse: 'PSS01', nombre: 'PRINCIPIOS DE PSICOLOGÍA DE LA COMUNICACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPQ-COS04', subj: 'LMPQ', crse: 'COS04', nombre: 'PRINCIPIOS Y TÉCNICAS DE ANIMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMQP-COS03', subj: 'LMQP', crse: 'COS03', nombre: 'CREATIVIDAD', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 3,
+          nombre: '3.er Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0003',
+          materias: [
+            { clave: 'LMFM-HUS03', subj: 'LMFM', crse: 'HUS03', nombre: 'SEMINARIO DE VALORES EN LO COMÚN', conecta: false, creditos: 6.13 },
+            { clave: 'LMPK-COS06', subj: 'LMPK', crse: 'COS06', nombre: 'AUDIENCIAS Y MEDIOS', conecta: true, creditos: 7 },
+            { clave: 'LMEI-MTS02', subj: 'LMEI', crse: 'MTS02', nombre: 'ESTADÍSTICA', conecta: false, creditos: 7 },
+            { clave: 'LMPQ-COS07', subj: 'LMPQ', crse: 'COS07', nombre: 'PRODUCCIÓN DE VIDEO DIGITAL', conecta: false, creditos: 7 },
+            { clave: 'LMPL-COS08', subj: 'LMPL', crse: 'COS08', nombre: 'SEMINARIO DE LINGÜÍSTICA Y SEMIÓTICA', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 4,
+          nombre: '4.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0004',
+          materias: [
+            { clave: 'LMFM-HUS05', subj: 'LMFM', crse: 'HUS05', nombre: 'ÉTICA PROFESIONAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMPL-COS09', subj: 'LMPL', crse: 'COS09', nombre: 'GUIONISMO', conecta: false, creditos: 7 },
+            { clave: 'LMBX-IVS01', subj: 'LMBX', crse: 'IVS01', nombre: 'METODOLOGÍA DE LA INVESTIGACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COT02', subj: 'LMPX', crse: 'COT02', nombre: 'ANÁLISIS DEL DISCURSO', conecta: true, creditos: 7 },
+            { clave: 'LMPQ-COS10', subj: 'LMPQ', crse: 'COS10', nombre: 'PRODUCCIÓN DE AUDIO DIGITAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 5,
+          nombre: '5.º Cuatrimestre',
+          con_ingles: true,
+          clave_ingles_sugerida: 'LENG-0005',
+          materias: [
+            { clave: 'LMFX-HUS04', subj: 'LMFX', crse: 'HUS04', nombre: 'FE Y MUNDO CONTEMPORÁNEO', conecta: false, creditos: 6.13 },
+            { clave: 'LMPJ-COS12', subj: 'LMPJ', crse: 'COS12', nombre: 'ASPECTOS LEGALES DE LA COMUNICACIÓN', conecta: true, creditos: 7 },
+            { clave: 'LMPL-COS13', subj: 'LMPL', crse: 'COS13', nombre: 'GÉNEROS PERIODÍSTICOS', conecta: false, creditos: 7 },
+            { clave: 'LMPK-DGT01', subj: 'LMPK', crse: 'DGT01', nombre: 'FOTOGRAFÍA PUBLICITARIA', conecta: false, creditos: 7 },
+            { clave: 'LMIP-COS14', subj: 'LMIP', crse: 'COS14', nombre: 'INTERACTIVIDAD EN MULTIMEDIOS', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 6,
+          nombre: '6.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMKP-MKS11', subj: 'LMKP', crse: 'MKS11', nombre: 'CAMPAÑAS DE PUBLICIDAD', conecta: false, creditos: 7 },
+            { clave: 'LMAD-EES01', subj: 'LMAD', crse: 'EES01', nombre: 'PROYECTO DE TRANSFORMACIÓN', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COS15', subj: 'LMPX', crse: 'COS15', nombre: 'GESTIÓN DE PROYECTOS COMUNICATIVOS', conecta: true, creditos: 7 },
+            { clave: 'LMPQ-COT03', subj: 'LMPQ', crse: 'COT03', nombre: 'DISEÑO Y PRODUCCIÓN DE MEDIOS IMPRESOS', conecta: false, creditos: 7 },
+            { clave: 'LMAX-ADS15', subj: 'LMAX', crse: 'ADS15', nombre: 'RELACIONES PÚBLICAS', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 7,
+          nombre: '7.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAD-EES02', subj: 'LMAD', crse: 'EES02', nombre: 'Estadía Empresarial', conecta: false, creditos: 35, es_estadia: true, bloque_completo: true }
+          ]
+        },
+        {
+          numero: 8,
+          nombre: '8.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMAJ-HUS06', subj: 'LMAJ', crse: 'HUS06', nombre: 'RESPONSABILIDAD SOCIAL', conecta: false, creditos: 6.13 },
+            { clave: 'LMHA-ADS02', subj: 'LMHA', crse: 'ADS02', nombre: 'GESTIÓN DE PROYECTOS PRODUCTIVOS', conecta: false, creditos: 7 },
+            { clave: 'LMPX-COS16', subj: 'LMPX', crse: 'COS16', nombre: 'PRODUCCIÓN Y POSTPRODUCCIÓN DE MULTIMEDIOS', conecta: true, creditos: 7 },
+            { clave: 'LMPM-CMT02', subj: 'LMPM', crse: 'CMT02', nombre: 'COMUNICACIÓN EN LAS ORGANIZACIONES', conecta: false, creditos: 7 },
+            { clave: 'LMPK-COS17', subj: 'LMPK', crse: 'COS17', nombre: 'TALLER DE PERIODISMO DIGITAL', conecta: false, creditos: 7 }
+          ]
+        },
+        {
+          numero: 9,
+          nombre: '9.º Cuatrimestre',
+          con_ingles: false,
+          materias: [
+            { clave: 'LMHV-EES03', subj: 'LMHV', crse: 'EES03', nombre: 'ESTADÍA EMPRESARIAL PARA EL ÉNFASIS PROFESIONAL', conecta: false, creditos: 5, es_estadia: true, bloque_completo: true }
+          ]
+        }
+      ],
+      niveles_ingles: [
+        { cuatrimestre: 1, nivel: 1, clave_default: '0001', nombre: 'Fundamentals' },
+        { cuatrimestre: 2, nivel: 2, clave_default: '0002', nombre: 'Basic 1' },
+        { cuatrimestre: 3, nivel: 3, clave_default: '0003', nombre: 'Basic 2' },
+        { cuatrimestre: 4, nivel: 4, clave_default: '0004', nombre: 'Intermediate 1' },
+        { cuatrimestre: 5, nivel: 5, clave_default: '0005', nombre: 'Intermediate 2' }
+      ],
+      electivas_multidisciplinares: [
+        { clave: 'LMKP-MKS15', subj: 'LMKP', crse: 'MKS15', nombre: 'ESTRATEGIAS DE MEDIOS', conecta: false, creditos: 7 },
+        { clave: 'LMIK-SIS01', subj: 'LMIK', crse: 'SIS01', nombre: 'INNOVACIÓN Y TECNOLOGÍA', conecta: false, creditos: 7 },
+        { clave: 'LMPA-COS18', subj: 'LMPA', crse: 'COS18', nombre: 'IMAGEN PÚBLICA', conecta: false, creditos: 7 },
+        { clave: 'LMAX-NES01', subj: 'LMAX', crse: 'NES01', nombre: 'DESARROLLO DE NUEVOS NEGOCIOS', conecta: false, creditos: 7 },
+        { clave: 'LMPD-MKS16', subj: 'LMPD', crse: 'MKS16', nombre: 'REDACCIÓN PUBLICITARIA', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADS03', subj: 'LMAX', crse: 'ADS03', nombre: 'COMPETITIVIDAD ESTRATÉGICA EMPRESARIAL', conecta: false, creditos: 7 },
+        { clave: 'LMPR-MKT23', subj: 'LMPR', crse: 'MKT23', nombre: 'RECURSOS DE EVALUACIÓN DE FOTOGRAFÍA CAMPAÑAS DE PERSUASIVA COMUNICACIÓN', conecta: false, creditos: 7 },
+        { clave: 'LMKP-COT01', subj: 'LMKP', crse: 'COT01', nombre: 'Eval.DeCampañasDeComunicación', conecta: false, creditos: 7 },
+        { clave: 'LMAX-ADT15', subj: 'LMAX', crse: 'ADT15', nombre: 'ESTRATEGIAS GESTIÓN DE NEGOCIOS DIRECTIVAS Y DE Y ADMINISTRACIÓN DE NEGOCIACIÓN PROYECTOS', conecta: true, creditos: 7 },
+        { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
+      ]
+    },
+    requisitos_egreso: [
+      { clave: 'CUPR-EGCC1', subj: 'CUPR', crse: 'EGCC1', nombre: 'CURSO DE PREPARACIÓN EGEL I - COMUNICACIÓN' },
+      { clave: 'TPEG-0001', subj: 'TPEG', crse: '0001', nombre: 'TALLER DE PRE-EGRESO' }
+    ]
   }
 ];
 
@@ -2488,6 +2634,7 @@ export const CLAVES_INGLES = ['F001', 'F002', 'F003', 'F004', 'P001', 'LENG-0008
 export const NOMBRES_LARGOS_CARRERAS = {
   // Laura Angélica (3)
   'LIC-COFI-18': 'LICENCIATURA EN CONTABILIDAD Y FINANZAS (MIXTO) - FEDERAL',
+  'LIC-CTCO-18': 'LICENCIATURA EN CIENCIAS Y TÉCNICAS DE LA COMUNICACIÓN (MIXTO) - FEDERAL',
   'LIC-DAEM-18': 'LICENCIATURA EN ADMINISTRACIÓN Y DIRECCIÓN EMPRESARIAL - PLAN 2018 DUAL',
   'LIC-EJCO-17': 'LICENCIATURA EN CONTABILIDAD FINANCIERA - PLAN 202160 EJECUTIVO MODULAR',
 

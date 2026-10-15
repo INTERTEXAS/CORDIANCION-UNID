@@ -35,6 +35,15 @@ export default function CurriculumMap({
 
   const { estudiante, carrera, cuatrimestres, ingles, coCurriculares = [], electivas, resumen, coherencia, fechaConsulta } = auditData;
   const esElegible = resumen?.esElegibleEstadia;
+  const esEjad = carrera?.codigo === 'LIC-EJAD-17' || estudiante?.programa === 'LIC-EJAD-17';
+  const clavesOcultasEjad = new Set([
+    'ECAM-ADR18',
+    'ECIA-INR02',
+    'ECIK-SIR01',
+    'ECFM-HUR01',
+    'TPEG-0001'
+  ]);
+  const debeOcultarseDelMapa = (materia) => esEjad && clavesOcultasEjad.has(materia.clave);
 
   // Función para determinar si una materia debe atenuarse con base en el filtro
   const isMateriaDimmed = (estado) => {
@@ -248,7 +257,7 @@ export default function CurriculumMap({
 
             {/* Materias del Cuatrimestre */}
             <div className="flex flex-col space-y-2 flex-1">
-              {cuat.materias.map((materia) => {
+              {cuat.materias.filter((materia) => !debeOcultarseDelMapa(materia)).map((materia) => {
                 const audit = materia.audit;
                 const dimmed = isMateriaDimmed(audit.estado);
                 const visual = getMateriaVisuals(audit.estado);
@@ -382,7 +391,7 @@ export default function CurriculumMap({
           )}
 
           {/* 4 Requisitos Co-Curriculares y de Titulación / Egreso (Cols 6 a 9) */}
-          {coCurriculares.map((cocu, index) => {
+          {coCurriculares.filter((cocu) => !debeOcultarseDelMapa(cocu)).map((cocu, index) => {
             const dimmed = isMateriaDimmed(cocu.estado);
             const visual = getMateriaVisuals(cocu.estado);
             const Icon = visual.icon;
