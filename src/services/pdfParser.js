@@ -76,6 +76,27 @@ function createCrseRegex(carreras) {
   return new RegExp(`\\b(${catalogRegex ? `${catalogRegex}|` : ''}[A-Z]{2,3}\\d{2}|F00[1-4]|P001|000[1-8]|CMS02|CMS03|EG[A-Z0-9]{3})\\b`, 'gi');
 }
 
+export function matchCourseRowsToModes(courseRows, modeRows) {
+  const usedModes = new Set();
+  return courseRows.map(course => {
+    let matchedIndex = -1;
+    let minDistance = Infinity;
+
+    for (let modeIndex = 0; modeIndex < modeRows.length; modeIndex++) {
+      if (usedModes.has(modeIndex)) continue;
+      const distance = Math.abs(modeRows[modeIndex].y - course.y);
+      if (distance < minDistance) {
+        minDistance = distance;
+        matchedIndex = modeIndex;
+      }
+    }
+
+    if (minDistance > 6) return null;
+    usedModes.add(matchedIndex);
+    return matchedIndex;
+  });
+}
+
 export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras = CARRERAS_LOCAL) {
   const crseRegex = createCrseRegex(carreras);
   let dataBuffer = fileOrBuffer;
@@ -312,7 +333,7 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras 
   }
 
   // 5. Construir los registros finales
-  const usedModos = new Set();
+  const matchedModeIndices = matchCourseRowsToModes(crseList, modoList);
   const registros = crseList.map((cItem, idx) => {
     const crse = cItem.crse;
     const subj = getSubjFromCatalog(crse, carreras, estudiante.programa);
@@ -349,25 +370,8 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras 
       if (bestC) crn = bestC.crn;
     }
 
-    let matchedModo = null;
-    if (modoList.length === crseList.length && modoList[idx]) {
-      matchedModo = modoList[idx];
-    } else {
-      let bestMIdx = -1;
-      let minMDiff = Infinity;
-      for (let mIdx = 0; mIdx < modoList.length; mIdx++) {
-        if (usedModos.has(mIdx)) continue;
-        const d = Math.abs(modoList[mIdx].y - cItem.y);
-        if (d < minMDiff && d <= 28) {
-          minMDiff = d;
-          bestMIdx = mIdx;
-        }
-      }
-      if (bestMIdx !== -1) {
-        usedModos.add(bestMIdx);
-        matchedModo = modoList[bestMIdx];
-      }
-    }
+    const matchedModeIndex = matchedModeIndices[idx];
+    const matchedModo = matchedModeIndex === null ? null : modoList[matchedModeIndex];
 
     const calificacion = matchedModo ? matchedModo.calificacion : '';
     const modalidad = matchedModo ? matchedModo.modo : 'RW';

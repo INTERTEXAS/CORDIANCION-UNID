@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { runAcademicAudit, esMateriaIgnorada } from './src/services/auditEngine.js';
-import { detectarModalidad } from './src/services/pdfParser.js';
+import { detectarModalidad, matchCourseRowsToModes } from './src/services/pdfParser.js';
 import { isValidUnidEmail, getAccountEmail } from './src/authConfig.js';
 import { getCarreras } from './src/services/neonService.js';
 import { CARRERAS_LOCAL } from './src/data/carrerasData.js';
@@ -138,6 +138,14 @@ assert(
   modalidadCtco.programa === 'LIC-CTCO-18' && modalidadCtco.modalidadDetectada === 'ESCOLARIZADO',
   'LIC-CTCO-18 se reconoce como programa escolarizado'
 );
+const alineacionFilas = matchCourseRowsToModes(
+  [{ y: 100 }, { y: 85 }, { y: 70 }],
+  [{ y: 100 }, { y: 70 }]
+);
+assert(
+  alineacionFilas[0] === 0 && alineacionFilas[1] === null && alineacionFilas[2] === 1,
+  'La ausencia de una calificación no desplaza la modalidad ni la nota de otros renglones'
+);
 const auditoriaCtco = runAcademicAudit(
   { matricula: 'CTCO-TEST', nombre: 'PRUEBA CTCO', programa: 'LIC-CTCO-18' },
   [],
@@ -236,6 +244,29 @@ assert(
   auditE.resumen.totalAprobadas >= 1 &&
   materiaHus01Rec?.audit?.estado === 'REC',
   'Materia acreditada en recursamiento se clasifica como REC y no genera adeudo'
+);
+
+const registrosAcreditadosCtco = [
+  { subj: 'LMPQ', crse: 'COS04', periodo: '202520', calificacion: '8', modalidad: 'RW' },
+  { subj: 'LMQP', crse: 'COS03', periodo: '202520', calificacion: '7', modalidad: 'RW' },
+  { subj: 'LMPQ', crse: 'COS07', periodo: '202540', calificacion: '8', modalidad: 'RW' },
+  { subj: 'LMPK', crse: 'DGT01', periodo: '202620', calificacion: '9', modalidad: 'RW' },
+  { subj: 'LMKP', crse: 'MKS11', periodo: '202540', calificacion: '6', modalidad: 'RW' }
+];
+const auditAcreditadosCtco = runAcademicAudit(
+  { matricula: '00682376', nombre: 'PRUEBA DE CALIFICACIONES', programa: 'LIC-CTCO-18' },
+  registrosAcreditadosCtco,
+  carreraCtco
+);
+const clavesAcreditadasCtco = new Set(registrosAcreditadosCtco.map(r => r.crse));
+const materiasAcreditadasCtco = auditAcreditadosCtco.cuatrimestres
+  .flatMap(c => c.materias)
+  .filter(m => clavesAcreditadasCtco.has(m.crse));
+assert(
+  materiasAcreditadasCtco.length === clavesAcreditadasCtco.size &&
+  materiasAcreditadasCtco.every(m => m.audit?.estado === 'ORD') &&
+  auditAcreditadosCtco.resumen.adeudos === 0,
+  'Las cinco materias aprobadas del historial CTCO no se clasifican como adeudos'
 );
 
 // ----------------------------------------------------
