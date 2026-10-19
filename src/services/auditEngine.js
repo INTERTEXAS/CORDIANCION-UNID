@@ -728,6 +728,63 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   // carreraSugerida se infiere del programa detectado previamente
   const carreraSugerida = estudiante.programa;
 
+  // === CÁLCULO DE PROMEDIO APROBATORIO DEFINITIVO (OPCIÓN A) ===
+  // Considera todas las asignaturas acreditadas (ORD, REC, RE) con calificación numérica (>= 6.0 y <= 10.0).
+  // Excluye materias reprobadas no solventadas (adeudos), materias en curso o pendientes,
+  // y acreditaciones cualitativas (AC, EX, etc.).
+  // Si el estudiante apenas inicia su carrera y no tiene materias numéricas concluidas,
+  // promedio es null y se muestra formalmente como 'S/C' (Sin Calificaciones).
+  const notasNumericasAprobadas = [];
+
+  for (const cuat of auditedCuatrimestres) {
+    for (const m of cuat.materias) {
+      if (['ORD', 'REC', 'RE'].includes(m.audit?.estado)) {
+        const rawGrade = (m.audit?.calificacion || '').toString().trim();
+        const numGrade = parseFloat(rawGrade);
+        if (!isNaN(numGrade) && numGrade >= 6.0 && numGrade <= 10.0) {
+          notasNumericasAprobadas.push({
+            clave: m.clave,
+            nombre: m.nombre,
+            calificacion: numGrade
+          });
+        }
+      }
+    }
+  }
+
+  for (const elec of auditedElectivas) {
+    if (elec.cursada) {
+      const rawGrade = (elec.calificacion || '').toString().trim();
+      const numGrade = parseFloat(rawGrade);
+      if (!isNaN(numGrade) && numGrade >= 6.0 && numGrade <= 10.0) {
+        notasNumericasAprobadas.push({
+          clave: elec.clave,
+          nombre: elec.nombre,
+          calificacion: numGrade
+        });
+      }
+    }
+  }
+
+  for (const ing of auditedIngles) {
+    if (['ORD', 'REC', 'RE'].includes(ing.estado)) {
+      const rawGrade = (ing.calificacion || '').toString().trim();
+      const numGrade = parseFloat(rawGrade);
+      if (!isNaN(numGrade) && numGrade >= 6.0 && numGrade <= 10.0) {
+        notasNumericasAprobadas.push({
+          clave: ing.clave,
+          nombre: ing.nombre,
+          calificacion: numGrade
+        });
+      }
+    }
+  }
+
+  const materiasConNota = notasNumericasAprobadas.length;
+  const sumaNotas = notasNumericasAprobadas.reduce((acc, item) => acc + item.calificacion, 0);
+  const promedio = materiasConNota > 0 ? Math.round((sumaNotas / materiasConNota) * 100) / 100 : null;
+  const promedioFormatted = promedio !== null ? promedio.toFixed(2) : 'S/C';
+
   return {
     estudiante,
     carrera,
@@ -755,7 +812,11 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
       adeudosReqEgreso: adeudosReqEgreso.length,
       omitidasReqEgreso: omitidasReqEgreso.length,
       esElegibleEstadia,
-      dictamenEstadia
+      dictamenEstadia,
+      promedio,
+      promedioFormatted,
+      materiasConNota,
+      sumaNotas
     },
     incidencias,
     materiasPrioritarias,

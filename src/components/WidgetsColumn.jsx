@@ -147,6 +147,32 @@ export default function WidgetsColumn({
                     </span>
                   </div>
                 </div>
+
+                {/* Promedio y Avance Curricular */}
+                <div className="grid grid-cols-2 gap-2.5 pt-2">
+                  <div className="bg-amber-50/60 dark:bg-amber-500/10 p-2.5 rounded-xl border border-amber-200 dark:border-amber-500/20">
+                    <span className="text-[9.5px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider block">
+                      Promedio
+                    </span>
+                    <span className="font-mono font-black text-amber-900 dark:text-amber-200 text-[15px] mt-0.5 block">
+                      {resumen?.promedioFormatted || 'S/C'}
+                    </span>
+                    <span className="text-[9.5px] text-amber-700/80 dark:text-amber-400/80 block">
+                      {resumen?.materiasConNota > 0 ? `${resumen.materiasConNota} asig. evaluadas` : 'Alumno en curso inicial'}
+                    </span>
+                  </div>
+                  <div className="bg-surface-2 p-2.5 rounded-xl border border-border">
+                    <span className="text-[9.5px] font-bold text-text-muted uppercase tracking-wider block">
+                      Avance Curricular
+                    </span>
+                    <span className="font-mono font-bold text-text-primary text-[15px] mt-0.5 block">
+                      {Math.round(((resumen?.totalAprobadas || 0) / (resumen?.totalMateriasMapa || 37)) * 100)}%
+                    </span>
+                    <span className="text-[9.5px] text-text-muted block">
+                      {resumen?.totalAprobadas || 0} de {resumen?.totalMateriasMapa || 37} asig.
+                    </span>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="py-8 text-center text-text-muted text-[12px]">

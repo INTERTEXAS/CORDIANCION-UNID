@@ -606,6 +606,92 @@ assert(
 assert(esMateriaIgnorada({ subj: 'CUPR', crse: 'ECCF1' }), 'esMateriaIgnorada filtra cursos no curriculares');
 assert(MATERIAS_IGNORADAS.includes('TPEG-0001'), 'MATERIAS_IGNORADAS incluye Taller de Pre-egreso');
 
+// Caso O: Promedio Aprobatorio (Opción A) - Alumno que apenas inicia su carrera sin notas concluidas
+const auditNuevoIngreso = runAcademicAudit(
+  { matricula: '00100001', nombre: 'ALUMNO NUEVO INGRESO', programa: 'LIC-COFI-18' },
+  [],
+  carreraCofi
+);
+assert(
+  auditNuevoIngreso.resumen.promedio === null &&
+  auditNuevoIngreso.resumen.promedioFormatted === 'S/C' &&
+  auditNuevoIngreso.resumen.materiasConNota === 0,
+  'Alumno de nuevo ingreso sin materias concluidas reporta promedio S/C y null'
+);
+
+// Caso P: Promedio Aprobatorio (Opción A) - Alumno con 1 sola materia recién aprobada
+const auditUnaMateria = runAcademicAudit(
+  { matricula: '00100002', nombre: 'ALUMNO 1 MATERIA', programa: 'LIC-COFI-18' },
+  [{ subj: 'LMFM', crse: 'HUS01', periodo: '202520', calificacion: '8.5', modalidad: 'RW' }],
+  carreraCofi
+);
+assert(
+  auditUnaMateria.resumen.promedio === 8.5 &&
+  auditUnaMateria.resumen.promedioFormatted === '8.50' &&
+  auditUnaMateria.resumen.materiasConNota === 1,
+  'Alumno con 1 materia aprobada calcula promedio exacto de 8.50'
+);
+
+// Caso Q: Promedio Aprobatorio (Opción A) - Alumno con múltiples materias aprobadas (10, 9, 8)
+const auditMultiples = runAcademicAudit(
+  { matricula: '00100003', nombre: 'ALUMNO MULTIPLES NOTAS', programa: 'LIC-COFI-18' },
+  [
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202520', calificacion: '10', modalidad: 'RW' },
+    { subj: 'LMAX', crse: 'FIS01', periodo: '202520', calificacion: '9', modalidad: 'RW' },
+    { subj: 'LMIX', crse: 'HTS01', periodo: '202520', calificacion: '8', modalidad: 'RW' }
+  ],
+  carreraCofi
+);
+assert(
+  auditMultiples.resumen.promedio === 9.0 &&
+  auditMultiples.resumen.promedioFormatted === '9.00' &&
+  auditMultiples.resumen.materiasConNota === 3,
+  'Alumno con 3 materias (10, 9, 8) calcula promedio exacto de 9.00'
+);
+
+// Caso R: Promedio Aprobatorio (Opción A) - Reprobación y recursamiento aprobado toma solo la nota aprobada
+const auditRecursoProm = runAcademicAudit(
+  { matricula: '00100004', nombre: 'ALUMNO RECURSO PROM', programa: 'LIC-COFI-18' },
+  [
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202510', calificacion: '5', modalidad: 'RW' },
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202520', calificacion: '9', modalidad: 'RW' }
+  ],
+  carreraCofi
+);
+assert(
+  auditRecursoProm.resumen.promedio === 9.0 &&
+  auditRecursoProm.resumen.materiasConNota === 1,
+  'Promedio Opción A toma únicamente la calificación aprobatoria definitiva ignorando reprobación previa'
+);
+
+// Caso S: Promedio Aprobatorio (Opción A) - Adeudo activo no solventado no se promedia como aprobada
+const auditAdeudoProm = runAcademicAudit(
+  { matricula: '00100005', nombre: 'ALUMNO SOLO ADEUDO', programa: 'LIC-COFI-18' },
+  [{ subj: 'LMFM', crse: 'HUS01', periodo: '202510', calificacion: '5', modalidad: 'RW' }],
+  carreraCofi
+);
+assert(
+  auditAdeudoProm.resumen.promedio === null &&
+  auditAdeudoProm.resumen.promedioFormatted === 'S/C' &&
+  auditAdeudoProm.resumen.materiasConNota === 0,
+  'Adeudo activo sin solventar no cuenta en promedio aprobatorio Opción A'
+);
+
+// Caso T: Promedio Aprobatorio (Opción A) - Calificaciones cualitativas (AC, EX) no distorsionan promedio
+const auditQualitativa = runAcademicAudit(
+  { matricula: '00100006', nombre: 'ALUMNO CUALITATIVO', programa: 'LIC-COFI-18' },
+  [
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202520', calificacion: '10', modalidad: 'RW' },
+    { subj: 'LENG', crse: '0008', periodo: '202520', calificacion: 'AC', modalidad: 'RW' }
+  ],
+  carreraCofi
+);
+assert(
+  auditQualitativa.resumen.promedio === 10.0 &&
+  auditQualitativa.resumen.materiasConNota === 1,
+  'Acreditaciones cualitativas (AC, EX) no distorsionan ni generan NaN en el promedio'
+);
+
 // ----------------------------------------------------
 // TEST SUITE 6: Compatibilidad Estructural de los 18 Mapas Curriculares Institucionales
 // ----------------------------------------------------

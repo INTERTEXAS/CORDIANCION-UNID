@@ -108,6 +108,21 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
               </span>
             </div>
           )}
+          <div className="border-l border-border-subtle pl-6">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Promedio:</span>
+            <div className="flex items-center space-x-1.5 mt-0.5">
+              <span className={`font-mono font-black text-[12px] px-2 py-0.5 rounded border inline-block ${
+                resumen?.promedio !== null
+                  ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-500/30'
+                  : 'bg-surface-1 text-text-muted border-border'
+              }`}>
+                {resumen?.promedioFormatted || 'S/C'}
+              </span>
+              <span className="text-[9.5px] text-text-muted font-medium whitespace-nowrap">
+                {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : '(En curso)'}
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className="text-right">
@@ -163,50 +178,61 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
             </span>
           </div>
 
-          <div className="grid grid-cols-4 gap-2.5 text-center text-xs">
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-text-muted block uppercase mb-0.5">Mapa Oficial</span>
-              <span className="text-[16px] font-extrabold text-text-primary">{totalMateriasMapa} Asig.</span>
+          <div className="grid grid-cols-5 gap-2 text-center text-xs">
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-text-muted block uppercase mb-0.5">Mapa Oficial</span>
+              <span className="text-[15px] font-extrabold text-text-primary">{totalMateriasMapa} Asig.</span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-text-muted block uppercase mb-0.5">Niveles Inglés</span>
-              <span className="text-[16px] font-extrabold text-text-primary">{resumen.inglesAcreditados} / {totalNivelesIngles}</span>
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-text-muted block uppercase mb-0.5">Niveles Inglés</span>
+              <span className="text-[15px] font-extrabold text-text-primary">{resumen.inglesAcreditados} / {totalNivelesIngles}</span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-purple-700 dark:text-purple-400 block uppercase mb-0.5">Req. Egreso</span>
-              <span className="text-[16px] font-extrabold text-purple-900 dark:text-purple-300">{resumen.coCurricularesAcreditados || 0} / {totalRequisitosEgreso}</span>
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-purple-700 dark:text-purple-400 block uppercase mb-0.5">Req. Egreso</span>
+              <span className="text-[15px] font-extrabold text-purple-900 dark:text-purple-300">{resumen.coCurricularesAcreditados || 0} / {totalRequisitosEgreso}</span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 block uppercase mb-0.5">1.ª Oportunidad</span>
-              <span className="text-[16px] font-extrabold text-[#059669]">{resumen.aprobadasOrd}</span>
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-emerald-700 dark:text-emerald-400 block uppercase mb-0.5">1.ª Oportunidad</span>
+              <span className="text-[15px] font-extrabold text-[#059669]">{resumen.aprobadasOrd}</span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-amber-700 dark:text-amber-400 block uppercase mb-0.5">Recursamientos</span>
-              <span className="text-[16px] font-extrabold text-[#D97706]">{resumen.aprobadasRec}</span>
+            {/* Promedio Aprobatorio Definitivo (Opción A) */}
+            <div className="bg-amber-50/70 dark:bg-amber-500/10 p-2 rounded-xl border border-amber-300 dark:border-amber-500/30 shadow-sm">
+              <span className="text-[9.5px] font-bold text-amber-800 dark:text-amber-300 block uppercase mb-0.5">Promedio</span>
+              <span className="text-[15px] font-black text-amber-900 dark:text-amber-200">
+                {resumen?.promedioFormatted || 'S/C'}
+              </span>
+              <span className="text-[8.5px] text-amber-700 dark:text-amber-400 block mt-0.5">
+                {resumen?.materiasConNota > 0 ? `${resumen.materiasConNota} asig.` : 'En curso'}
+              </span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-sky-700 dark:text-sky-400 block uppercase mb-0.5">Modalidad RE</span>
-              <span className="text-[16px] font-extrabold text-[#0284C7]">{resumen.aprobadasRe}</span>
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-amber-700 dark:text-amber-400 block uppercase mb-0.5">Recursamiento</span>
+              <span className="text-[15px] font-extrabold text-[#D97706]">{resumen.aprobadasRec}</span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-rose-700 dark:text-rose-400 block uppercase mb-0.5">Adeudos Activos</span>
-              <span className="text-[16px] font-extrabold text-[#DC2626]">{resumen.adeudos}</span>
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-sky-700 dark:text-sky-400 block uppercase mb-0.5">Modalidad RE</span>
+              <span className="text-[15px] font-extrabold text-[#0284C7]">{resumen.aprobadasRe}</span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-orange-700 dark:text-orange-400 block uppercase mb-0.5">Omitidas</span>
-              <span className="text-[16px] font-extrabold text-[#EA580C]">{resumen.omitidas}</span>
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-rose-700 dark:text-rose-400 block uppercase mb-0.5">Adeudos</span>
+              <span className="text-[15px] font-extrabold text-[#DC2626]">{resumen.adeudos}</span>
             </div>
 
-            <div className="bg-surface-1 p-2.5 rounded-xl border border-border shadow-sm">
-              <span className="text-[10px] font-semibold text-pink-700 dark:text-pink-400 block uppercase mb-0.5">En Curso Activo</span>
-              <span className="text-[16px] font-extrabold text-[#DB2777]">{resumen.cursando}</span>
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-orange-700 dark:text-orange-400 block uppercase mb-0.5">Omitidas</span>
+              <span className="text-[15px] font-extrabold text-[#EA580C]">{resumen.omitidas}</span>
+            </div>
+
+            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
+              <span className="text-[9.5px] font-semibold text-pink-700 dark:text-pink-400 block uppercase mb-0.5">En Curso</span>
+              <span className="text-[15px] font-extrabold text-[#DB2777]">{resumen.cursando}</span>
             </div>
           </div>
         </div>

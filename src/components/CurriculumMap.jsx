@@ -227,6 +227,21 @@ export default function CurriculumMap({
               </span>
             </div>
           )}
+          <div className="border-l border-border-subtle pl-5">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Promedio:</span>
+            <div className="flex items-center space-x-1.5 mt-0.5">
+              <span className={`font-mono font-black text-[12px] px-2 py-0.5 rounded border inline-block ${
+                resumen?.promedio !== null
+                  ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-500/30'
+                  : 'bg-surface-1 text-text-muted border-border'
+              }`}>
+                {resumen?.promedioFormatted || 'S/C'}
+              </span>
+              <span className="text-[9.5px] text-text-muted font-medium whitespace-nowrap">
+                {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : '(En curso)'}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Dictamen Compacto de Estadía */}

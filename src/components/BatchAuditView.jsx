@@ -60,6 +60,8 @@ export default function BatchAuditView({
     let conAdeudos = 0;
     let conOmitidas = 0;
     let promedioAvanceTotal = 0;
+    let sumaPromedios = 0;
+    let alumnosConPromedio = 0;
 
     for (const item of alumnos) {
       const res = item.auditData?.resumen;
@@ -71,14 +73,25 @@ export default function BatchAuditView({
       if (res.omitidas > 0) conOmitidas++;
       const totalAprobadas = res.totalAprobadas ?? ((res.aprobadasOrd || 0) + (res.aprobadasRec || 0) + (res.aprobadasRe || 0));
       promedioAvanceTotal += Math.round((totalAprobadas / (res.totalMateriasMapa || 37)) * 100);
+
+      if (typeof res.promedio === 'number' && !isNaN(res.promedio)) {
+        sumaPromedios += res.promedio;
+        alumnosConPromedio++;
+      }
     }
+
+    const promedioGeneracion = alumnosConPromedio > 0
+      ? (Math.round((sumaPromedios / alumnosConPromedio) * 100) / 100).toFixed(2)
+      : 'S/C';
 
     return {
       total: alumnos.length,
       elegibles,
       conAdeudos,
       conOmitidas,
-      promedioAvance: alumnos.length > 0 ? Math.round(promedioAvanceTotal / alumnos.length) : 0
+      promedioAvance: alumnos.length > 0 ? Math.round(promedioAvanceTotal / alumnos.length) : 0,
+      promedioGeneracion,
+      alumnosConPromedio
     };
   }, [alumnos]);
 
@@ -389,9 +402,9 @@ export default function BatchAuditView({
         </div>
 
         {/* Métricas Resumen de la Generación - Ribbon Estilo ERP */}
-        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 bg-surface-2 border border-border rounded-xl overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-border">
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 bg-surface-2 border border-border rounded-xl overflow-hidden divide-y sm:divide-y-0 divide-border">
           {/* Card 1: Total Alumnos */}
-          <div className="p-5 flex flex-col justify-center">
+          <div className="p-5 flex flex-col justify-center border-r border-border">
             <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1.5">
               Total Alumnos
             </div>
@@ -402,7 +415,7 @@ export default function BatchAuditView({
           </div>
 
           {/* Card 2: Aptos para Estadía */}
-          <div className="p-5 flex flex-col justify-center">
+          <div className="p-5 flex flex-col justify-center border-r border-border">
             <div className="flex items-center space-x-2 mb-1.5">
               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)] dark:shadow-[0_0_0_2px_rgba(16,185,129,0.4)]"></div>
               <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
@@ -416,7 +429,7 @@ export default function BatchAuditView({
           </div>
 
           {/* Card 3: Adeudos Previos */}
-          <div className="p-5 flex flex-col justify-center">
+          <div className="p-5 flex flex-col justify-center border-r border-border">
             <div className="flex items-center space-x-2 mb-1.5">
               <div className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_0_2px_rgba(244,63,94,0.2)] dark:shadow-[0_0_0_2px_rgba(244,63,94,0.4)]"></div>
               <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
@@ -430,7 +443,7 @@ export default function BatchAuditView({
           </div>
 
           {/* Card 4: Omitidas / En Curso */}
-          <div className="p-5 flex flex-col justify-center">
+          <div className="p-5 flex flex-col justify-center border-r border-border">
             <div className="flex items-center space-x-2 mb-1.5">
               <div className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.2)] dark:shadow-[0_0_0_2px_rgba(251,191,36,0.4)]"></div>
               <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
@@ -440,6 +453,24 @@ export default function BatchAuditView({
             <div className="flex items-baseline space-x-2">
               <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.conOmitidas}</span>
               <span className="text-[12px] font-bold text-amber-600 dark:text-amber-400">seguimiento</span>
+            </div>
+          </div>
+
+          {/* Card 5: Promedio Generacional */}
+          <div className="p-5 flex flex-col justify-center bg-amber-50/40 dark:bg-amber-500/5">
+            <div className="flex items-center space-x-2 mb-1.5">
+              <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_0_2px_rgba(245,158,11,0.2)] dark:shadow-[0_0_0_2px_rgba(245,158,11,0.4)]"></div>
+              <div className="text-[10px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-widest">
+                Promedio Grupo
+              </div>
+            </div>
+            <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-black text-amber-900 dark:text-amber-200 font-mono tracking-tight">
+                {stats.promedioGeneracion}
+              </span>
+              <span className="text-[11px] font-medium text-amber-700/80 dark:text-amber-400/80">
+                {stats.alumnosConPromedio > 0 ? `${stats.alumnosConPromedio} eval.` : 'En curso'}
+              </span>
             </div>
           </div>
         </div>
@@ -540,6 +571,7 @@ export default function BatchAuditView({
                     <th className="py-3.5 px-4">Alumno</th>
                     <th className="py-3.5 px-4 w-36 text-center">Dictamen</th>
                     <th className="py-3.5 px-4 w-32 text-center">Avance</th>
+                    <th className="py-3.5 px-3 w-24 text-center">Promedio</th>
                     <th className="py-3.5 px-4 text-center">Desempeño (Intentos)</th>
                     <th className="py-3.5 px-3 w-20 text-center">Inglés</th>
                     <th className="py-3.5 px-4 w-32 text-center">Expediente</th>
@@ -642,6 +674,20 @@ export default function BatchAuditView({
                           </div>
                         </td>
 
+                        {/* Promedio Aprobatorio */}
+                        <td className="py-3 px-3 text-center">
+                          <span className={`inline-block font-mono text-[12px] font-black px-2 py-0.5 rounded border ${
+                            res?.promedio !== null
+                              ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-500/30'
+                              : 'bg-surface-2 text-text-muted border-border'
+                          }`}>
+                            {res?.promedioFormatted || 'S/C'}
+                          </span>
+                          <span className="text-[9.5px] text-text-muted block mt-0.5 whitespace-nowrap">
+                            {res?.materiasConNota > 0 ? `${res.materiasConNota} asig.` : 'En curso'}
+                          </span>
+                        </td>
+
                         {/* Desempeño Combinado (ORD / REC) */}
                         <td className="py-3 px-4">
                           <div className="flex justify-center space-x-3">
@@ -709,7 +755,7 @@ export default function BatchAuditView({
         </div>
 
         {/* Resumen Métricas */}
-        <div className="grid grid-cols-4 gap-2 mb-3 text-xs">
+        <div className="grid grid-cols-5 gap-2 mb-3 text-xs">
           <div className="border border-gray-400 p-2 rounded">
             <span className="text-[8.5px] uppercase font-bold text-gray-600 block">Total Evaluados</span>
             <span className="text-base font-black text-black">{stats.total} alumnos</span>
@@ -719,12 +765,16 @@ export default function BatchAuditView({
             <span className="text-base font-black text-emerald-900">{stats.elegibles} ({Math.round((stats.elegibles / Math.max(1, stats.total)) * 100)}%)</span>
           </div>
           <div className="border border-rose-500 bg-rose-50 p-2 rounded">
-            <span className="text-[8.5px] uppercase font-bold text-rose-800 block">Adeudos Previos a Estadía (1.º - 6.º)</span>
+            <span className="text-[8.5px] uppercase font-bold text-rose-800 block">Adeudos Previos (1.º - 6.º)</span>
             <span className="text-base font-black text-rose-900">{stats.conAdeudos} alumnos</span>
           </div>
           <div className="border border-amber-500 bg-amber-50 p-2 rounded">
             <span className="text-[8.5px] uppercase font-bold text-amber-800 block">En Seguimiento</span>
             <span className="text-base font-black text-amber-900">{stats.conOmitidas} alumnos</span>
+          </div>
+          <div className="border border-amber-500 bg-amber-50 p-2 rounded">
+            <span className="text-[8.5px] uppercase font-bold text-amber-800 block">Promedio Grupo</span>
+            <span className="text-base font-black text-amber-900">{stats.promedioGeneracion}</span>
           </div>
         </div>
 
@@ -735,6 +785,7 @@ export default function BatchAuditView({
               <th className="p-1 border border-black text-center w-7">#</th>
               <th className="p-1 border border-black w-16">Matrícula</th>
               <th className="p-1 border border-black">Nombre del Estudiante</th>
+              <th className="p-1 border border-black text-center w-12">Prom.</th>
               <th className="p-1 border border-black text-center w-10">ORD</th>
               <th className="p-1 border border-black text-center w-12">REC/RE</th>
               <th className="p-1 border border-black text-center w-12">Inglés</th>
@@ -757,6 +808,7 @@ export default function BatchAuditView({
                   <td className="p-1 border border-gray-400 text-center font-bold">{idx + 1}</td>
                   <td className="p-1 border border-gray-400 font-mono font-bold">{item.estudiante.matricula}</td>
                   <td className="p-1 border border-gray-400 font-bold">{item.estudiante.nombre}</td>
+                  <td className="p-1 border border-gray-400 text-center font-mono font-bold">{res?.promedioFormatted || 'S/C'}</td>
                   <td className="p-1 border border-gray-400 text-center">{res?.aprobadasOrd || 0}</td>
                   <td className="p-1 border border-gray-400 text-center">{(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}</td>
                   <td className="p-1 border border-gray-400 text-center">{res?.inglesAcreditados ?? 0}/{res?.nivelesIngles ?? 5}</td>
