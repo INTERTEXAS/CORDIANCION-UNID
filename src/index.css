@@ -245,7 +245,7 @@
   }
 }
 
-/* === PDF & Physical Print Styling (unchanged for UNID compliance) === */
+/* === PDF & Physical Print Styling (Fuerza absoluta a tema claro para cualquier impresión o exportación) === */
 @media print {
   @page {
     size: landscape;
@@ -258,13 +258,47 @@
     color-adjust: exact !important;
   }
 
+  /* FORZAR TEMA CLARO ABSOLUTO EN TODA LA JERARQUÍA AL IMPRIMIR */
+  :root,
+  html,
+  body,
+  .dark,
+  html.dark,
+  body.dark,
+  .theme-super-admin,
+  .dark.theme-super-admin {
+    --surface-0: #FAFBFD !important;
+    --surface-1: #FFFFFF !important;
+    --surface-2: #F1F5F9 !important;
+    --surface-3: #E2E8F0 !important;
+
+    --border-color: #E2E8F0 !important;
+    --border-subtle: #F1F5F9 !important;
+
+    --text-primary: #0F172A !important;
+    --text-secondary: #475569 !important;
+    --text-muted: #64748B !important;
+
+    --accent: #F2B705 !important;
+    --accent-hover: #dfa500 !important;
+    --accent-soft: rgba(242, 183, 5, 0.1) !important;
+    --accent-text: #92400E !important;
+
+    --sidebar-bg: #0F1319 !important;
+    --sidebar-border: rgba(255,255,255,0.06) !important;
+
+    color-scheme: light !important;
+    background: #ffffff !important;
+    color: #0F172A !important;
+  }
+
   html, body {
     width: 100% !important;
     height: auto !important;
     margin: 0 !important;
     padding: 0 !important;
-    background: white !important;
-    color: #000 !important;
+    background: #ffffff !important;
+    color: #0F172A !important;
   }
 
   .no-print, [data-no-print], .print\:hidden {
@@ -280,6 +314,8 @@
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
+    background: #ffffff !important;
+    color: #0F172A !important;
     page-break-after: always;
     break-after: page;
   }

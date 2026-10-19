@@ -31,8 +31,22 @@ export async function exportarDictamenPdf(elementHoja1, elementHoja2, matricula 
     windowWidth: 1440,
     width: 1440,
     onclone: (clonedDoc) => {
+      // 1. Quitar incondicionalmente la clase 'dark' y 'theme-super-admin' de todo el documento clonado
+      // para garantizar que html2canvas capture estrictamente en tema claro institucional
+      clonedDoc.documentElement.classList.remove('dark', 'theme-super-admin');
+      if (clonedDoc.body) {
+        clonedDoc.body.classList.remove('dark', 'theme-super-admin');
+        clonedDoc.body.style.backgroundColor = '#ffffff';
+        clonedDoc.body.style.color = '#0F172A';
+        clonedDoc.body.style.colorScheme = 'light';
+      }
+      clonedDoc.documentElement.style.colorScheme = 'light';
+      clonedDoc.querySelectorAll('.dark').forEach(el => el.classList.remove('dark'));
+      clonedDoc.querySelectorAll('.theme-super-admin').forEach(el => el.classList.remove('theme-super-admin'));
+
       const wrapper = clonedDoc.getElementById('export-pdf-wrapper');
       if (wrapper) {
+        wrapper.classList.remove('dark', 'theme-super-admin');
         wrapper.style.opacity = '1';
         wrapper.style.zIndex = '1';
         wrapper.style.position = 'static';
@@ -40,14 +54,47 @@ export async function exportarDictamenPdf(elementHoja1, elementHoja2, matricula 
         wrapper.style.width = '1440px';
         wrapper.style.maxWidth = '1440px';
         wrapper.style.boxSizing = 'border-box';
+        wrapper.style.backgroundColor = '#ffffff';
+        wrapper.style.color = '#0F172A';
+        wrapper.style.colorScheme = 'light';
       }
 
-      // Inyectar hoja de estilos estricta para garantizar simetría total de márgenes
+      // Inyectar hoja de estilos estricta para forzar tema claro y garantizar simetría total
       const styleEl = clonedDoc.createElement('style');
       styleEl.innerHTML = `
         *, *::before, *::after {
           box-sizing: border-box !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
+
+        :root, html, body, #export-pdf-wrapper, #export-hoja1-container, #export-hoja2-container,
+        #hoja1-mapa-ejecucion, #hoja2-cedula-auditoria {
+          --surface-0: #FAFBFD !important;
+          --surface-1: #FFFFFF !important;
+          --surface-2: #F1F5F9 !important;
+          --surface-3: #E2E8F0 !important;
+
+          --border-color: #E2E8F0 !important;
+          --border-subtle: #F1F5F9 !important;
+
+          --text-primary: #0F172A !important;
+          --text-secondary: #475569 !important;
+          --text-muted: #64748B !important;
+
+          --accent: #F2B705 !important;
+          --accent-hover: #dfa500 !important;
+          --accent-soft: rgba(242, 183, 5, 0.1) !important;
+          --accent-text: #92400E !important;
+
+          --sidebar-bg: #0F1319 !important;
+          --sidebar-border: rgba(255,255,255,0.06) !important;
+
+          color-scheme: light !important;
+          background-color: #ffffff !important;
+          color: #0F172A !important;
+        }
+
         #export-pdf-wrapper {
           position: fixed !important;
           top: 0 !important;
@@ -57,6 +104,8 @@ export async function exportarDictamenPdf(elementHoja1, elementHoja2, matricula 
           box-sizing: border-box !important;
           margin: 0 !important;
           padding: 0 !important;
+          background-color: #ffffff !important;
+          color: #0F172A !important;
         }
         #export-hoja1-container, #export-hoja2-container {
           width: 1440px !important;
@@ -66,12 +115,16 @@ export async function exportarDictamenPdf(elementHoja1, elementHoja2, matricula 
           margin: 0 auto !important;
           overflow: hidden !important;
           background-color: #ffffff !important;
+          color: #0F172A !important;
         }
         #hoja1-mapa-ejecucion, #hoja2-cedula-auditoria {
           width: 100% !important;
           max-width: 1376px !important;
           box-sizing: border-box !important;
           margin: 0 auto !important;
+          background-color: #ffffff !important;
+          color: #0F172A !important;
+          border-color: #E2E8F0 !important;
         }
         #export-hoja1-container span, #export-hoja1-container p,
         #export-hoja2-container span, #export-hoja2-container p {

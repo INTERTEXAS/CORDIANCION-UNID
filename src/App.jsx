@@ -605,6 +605,7 @@ export default function App() {
       {effectiveAuditData && (
         <div 
           id="export-pdf-wrapper"
+          className="bg-white text-slate-900"
           style={{ 
             position: 'fixed', 
             top: 0, 
@@ -615,7 +616,23 @@ export default function App() {
             zIndex: -9999, 
             opacity: 0, 
             pointerEvents: 'none',
-            overflow: 'visible'
+            overflow: 'visible',
+            backgroundColor: '#ffffff',
+            color: '#0F172A',
+            colorScheme: 'light',
+            '--surface-0': '#FAFBFD',
+            '--surface-1': '#FFFFFF',
+            '--surface-2': '#F1F5F9',
+            '--surface-3': '#E2E8F0',
+            '--border-color': '#E2E8F0',
+            '--border-subtle': '#F1F5F9',
+            '--text-primary': '#0F172A',
+            '--text-secondary': '#475569',
+            '--text-muted': '#64748B',
+            '--accent': '#F2B705',
+            '--accent-hover': '#dfa500',
+            '--accent-soft': 'rgba(242, 183, 5, 0.1)',
+            '--accent-text': '#92400E'
           }}
         >
           <div 
