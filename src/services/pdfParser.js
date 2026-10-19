@@ -401,7 +401,7 @@ export async function parsePdfKardex(fileOrBuffer, allowGroup = false, carreras 
   };
 }
 
-function cleanGradeToken(raw) {
+export function cleanGradeToken(raw) {
   if (!raw && raw !== 0) return null;
   const s = String(raw).trim().replace(/[|]/g, '');
   if (!s || /^CAM/i.test(s) || /^(?:RW|RE)$/i.test(s)) return null;
@@ -425,7 +425,7 @@ function cleanGradeToken(raw) {
   return null;
 }
 
-function extractStudentMetadata(text) {
+export function extractStudentMetadata(text) {
   let matricula = '00000000';
   let nombre = 'ALUMNO UNID';
   let sede = 'CAM';
@@ -492,7 +492,7 @@ function getSubjFromCatalog(crse, carreras = CARRERAS_LOCAL, programa = '') {
   return 'LMAX';
 }
 
-function isGradePassing(calif) {
+export function isGradePassing(calif) {
   if (!calif && calif !== 0) return false;
   const s = String(calif).trim().toUpperCase();
   if (['AC', 'A', 'AP', 'EX'].includes(s)) return true;
@@ -500,7 +500,7 @@ function isGradePassing(calif) {
   return !isNaN(num) && num >= 6;
 }
 
-function isGradeFailing(calif) {
+export function isGradeFailing(calif) {
   if (!calif && calif !== 0) return false;
   const s = String(calif).trim().toUpperCase();
   if (['NP', 'NA', 'SD'].includes(s)) return true;

@@ -48,7 +48,7 @@ function isMaestria(carrera, estudiante) {
     /MAESTR[IÍ]A|POSGRADO/.test(nombres);
 }
 
-function checkPassed(calif, esMaestria = false) {
+export function checkPassed(calif, esMaestria = false) {
   if (!calif) return false;
   const s = String(calif).trim().toUpperCase();
   if (s === 'AC' || s === 'A' || s === 'AP' || s === 'EX') return true;
@@ -57,7 +57,7 @@ function checkPassed(calif, esMaestria = false) {
   return Number.isFinite(n) && n >= minimoAprobatorio;
 }
 
-function checkFailed(calif, esMaestria = false) {
+export function checkFailed(calif, esMaestria = false) {
   if (!calif) return false;
   const s = String(calif).trim().toUpperCase();
   if (s === 'NP' || s === 'NA' || s === 'SD') return true;
