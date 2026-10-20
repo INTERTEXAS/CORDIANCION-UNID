@@ -459,7 +459,9 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         (r.crse === codigoInglesHistorico && ['LENG', 'INHH'].includes(r.subj))
       );
 
-      const tuvoAcreditacionHistorica = attempts.some(r => checkPassed((r.calificacion || '').trim().toUpperCase(), esProgramaMaestria));
+      const tuvoAcreditacionHistorica = esProgramaMaestria
+        ? attempts.length > 0 && checkPassed(attempts[attempts.length - 1].calificacion, true)
+        : attempts.some(r => checkPassed((r.calificacion || '').trim().toUpperCase()));
       const evalIngles = tuvoAcreditacionHistorica
         ? {
             estado: 'ORD',
@@ -805,8 +807,10 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
   const primerIntento = attempts[0];
   const ultimoIntento = attempts[numIntentos - 1];
 
-  // Comprobar si la materia fue acreditada en CUALQUIERA de sus intentos registrados
-  const intentosAprobados = attempts.filter(a => checkPassed(a.calificacion, esMaestria));
+  // En maestría, la calificación del intento más reciente determina el estado vigente.
+  const intentosAprobados = esMaestria
+    ? (checkPassed(ultimoIntento.calificacion, true) ? [ultimoIntento] : [])
+    : attempts.filter(a => checkPassed(a.calificacion));
   const tieneAprobada = intentosAprobados.length > 0;
 
   // Detectar si una materia de 1.º cuatrimestre se cargó con desfase en periodos posteriores
@@ -825,7 +829,7 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
   // 1. SI LA MATERIA FUE ACREDITADA (en RE, Recursamiento u Ordinario)
   if (tieneAprobada) {
     const intentoExitoso = intentosAprobados[intentosAprobados.length - 1];
-    const esModoRE = intentoExitoso.modalidad === 'RE' || attempts.some(a => a.modalidad === 'RE' && checkPassed(a.calificacion, esMaestria));
+    const esModoRE = intentoExitoso.modalidad === 'RE' || (!esMaestria && attempts.some(a => a.modalidad === 'RE' && checkPassed(a.calificacion)));
 
     if (esModoRE) {
       return {

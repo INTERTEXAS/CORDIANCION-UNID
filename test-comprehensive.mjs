@@ -225,6 +225,22 @@ const auditoriaMaestria7 = runAcademicAudit(
   [{ subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '7', modalidad: 'RW' }],
   carreraMaestria
 );
+const auditoriaMaestriaRecursamientoReprobado = runAcademicAudit(
+  { matricula: 'MAE-005', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '80', modalidad: 'RW' },
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202220', grde: '60', modalidad: 'RW' }
+  ],
+  carreraMaestria
+);
+const auditoriaMaestriaRecursamientoAprobado = runAcademicAudit(
+  { matricula: 'MAE-006', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '60', modalidad: 'RW' },
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202220', grde: '70', modalidad: 'RW' }
+  ],
+  carreraMaestria
+);
 assert(
   auditoriaMaestria60.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ADEUDO' &&
   auditoriaMaestria70.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ORD',
@@ -234,6 +250,15 @@ assert(
   auditoriaMaestria6.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ADEUDO' &&
   auditoriaMaestria7.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ORD',
   'En maestría, 6 reprueba y 7 acredita en escala de 0 a 10'
+);
+assert(
+  auditoriaMaestriaRecursamientoReprobado.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ADEUDO' &&
+  auditoriaMaestriaRecursamientoReprobado.resumen.adeudos >= 1,
+  'En maestría, un recursamiento reprobado queda como ADEUDO aunque hubiera aprobado antes'
+);
+assert(
+  auditoriaMaestriaRecursamientoAprobado.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'REC',
+  'En maestría, un recursamiento aprobado queda como REC'
 );
 const auditoriaLicenciatura60 = runAcademicAudit(
   { matricula: 'LIC-001', nombre: 'ALUMNO DE LICENCIATURA', programa: 'LIC-COFI-18' },
