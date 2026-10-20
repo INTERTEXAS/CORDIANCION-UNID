@@ -35,20 +35,35 @@ function resolveNivelesIngles(carrera, mapa) {
   return getDefaultNivelesIngles();
 }
 
-function checkPassed(calif) {
+function isMaestria(carrera, estudiante) {
+  const codigos = [carrera?.codigo, estudiante?.programa]
+    .filter(Boolean)
+    .map(codigo => String(codigo).trim().toUpperCase());
+  const nombres = [carrera?.nombre, estudiante?.programa]
+    .filter(Boolean)
+    .join(' ')
+    .toUpperCase();
+
+  return codigos.some(codigo => codigo.startsWith('MAE-')) ||
+    /MAESTR[IÍ]A|POSGRADO/.test(nombres);
+}
+
+function checkPassed(calif, esMaestria = false) {
   if (!calif) return false;
   const s = String(calif).trim().toUpperCase();
   if (s === 'AC' || s === 'A' || s === 'AP' || s === 'EX') return true;
-  const n = parseFloat(s);
-  return !isNaN(n) && n >= 6;
+  const n = Number.parseFloat(s);
+  const minimoAprobatorio = esMaestria ? (n > 10 ? 70 : 7) : 6;
+  return Number.isFinite(n) && n >= minimoAprobatorio;
 }
 
-function checkFailed(calif) {
+function checkFailed(calif, esMaestria = false) {
   if (!calif) return false;
   const s = String(calif).trim().toUpperCase();
   if (s === 'NP' || s === 'NA' || s === 'SD') return true;
-  const n = parseFloat(s);
-  return !isNaN(n) && n < 6;
+  const n = Number.parseFloat(s);
+  const minimoAprobatorio = esMaestria ? (n > 10 ? 70 : 7) : 6;
+  return Number.isFinite(n) && n < minimoAprobatorio;
 }
 
 export function detectarModalidad(estudiante, registros = [], carreras = CARRERAS_LOCAL) {
@@ -173,6 +188,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   if (!carreraEfectiva && carrera) {
     carreraEfectiva = carrera;
   }
+  const esProgramaMaestria = isMaestria(carreraEfectiva, estudiante);
 
   // Normalizar el mapa curricular (soporta tanto objeto con cuatrimestres como arreglo plano de materias)
   let mapa = normalizarMapaCurricular(carreraEfectiva?.mapa_json);
@@ -239,8 +255,8 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     const subj = (r.subj || '').toUpperCase().trim();
     const rawCalif = r.calificacion !== undefined && r.calificacion !== null ? r.calificacion : r.grde;
     const calif = rawCalif !== undefined && rawCalif !== null ? String(rawCalif).trim() : '';
-    const esAprob = checkPassed(calif);
-    const esReprob = checkFailed(calif);
+    const esAprob = checkPassed(calif, esProgramaMaestria);
+    const esReprob = checkFailed(calif, esProgramaMaestria);
     const estaCurs = !calif || calif === '';
     return {
       ...r,
@@ -348,7 +364,8 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         attempts,
         cuat.numero,
         maxCuatrimestreAlcanzado,
-        primerPeriodoAlumno
+        primerPeriodoAlumno,
+        esProgramaMaestria
       );
 
       switch (auditResult.estado) {
@@ -442,7 +459,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         (r.crse === codigoInglesHistorico && ['LENG', 'INHH'].includes(r.subj))
       );
 
-      const tuvoAcreditacionHistorica = attempts.some(r => checkPassed((r.calificacion || '').trim().toUpperCase()));
+      const tuvoAcreditacionHistorica = attempts.some(r => checkPassed((r.calificacion || '').trim().toUpperCase(), esProgramaMaestria));
       const evalIngles = tuvoAcreditacionHistorica
         ? {
             estado: 'ORD',
@@ -465,7 +482,8 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
             attempts,
             item.cuatrimestre,
             maxCuatrimestreAlcanzado,
-            primerPeriodoAlumno
+            primerPeriodoAlumno,
+            esProgramaMaestria
           );
 
       if (['ORD', 'REC', 'RE'].includes(evalIngles.estado) || tuvoAcreditacionHistorica) {
@@ -547,7 +565,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     const attempts = normalizedRecords.filter(r => r.crse === reqCrse);
 
     if (attempts.length > 0) {
-      const evalReq = evaluateSubjectAttempts(req, attempts, 9, maxCuatrimestreAlcanzado, primerPeriodoAlumno);
+      const evalReq = evaluateSubjectAttempts(req, attempts, 9, maxCuatrimestreAlcanzado, primerPeriodoAlumno, esProgramaMaestria);
 
       if (['ORD', 'REC', 'RE'].includes(evalReq.estado)) {
         coCurricularesAcreditados++;
@@ -749,7 +767,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   };
 }
 
-function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrimestreAlcanzado, primerPeriodoAlumno) {
+function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrimestreAlcanzado, primerPeriodoAlumno, esMaestria = false) {
   if (!attempts || attempts.length === 0) {
     if (cuatrimestreNum <= maxCuatrimestreAlcanzado) {
       return {
@@ -788,7 +806,7 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
   const ultimoIntento = attempts[numIntentos - 1];
 
   // Comprobar si la materia fue acreditada en CUALQUIERA de sus intentos registrados
-  const intentosAprobados = attempts.filter(a => checkPassed(a.calificacion));
+  const intentosAprobados = attempts.filter(a => checkPassed(a.calificacion, esMaestria));
   const tieneAprobada = intentosAprobados.length > 0;
 
   // Detectar si una materia de 1.º cuatrimestre se cargó con desfase en periodos posteriores
@@ -807,7 +825,7 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
   // 1. SI LA MATERIA FUE ACREDITADA (en RE, Recursamiento u Ordinario)
   if (tieneAprobada) {
     const intentoExitoso = intentosAprobados[intentosAprobados.length - 1];
-    const esModoRE = intentoExitoso.modalidad === 'RE' || attempts.some(a => a.modalidad === 'RE' && checkPassed(a.calificacion));
+    const esModoRE = intentoExitoso.modalidad === 'RE' || attempts.some(a => a.modalidad === 'RE' && checkPassed(a.calificacion, esMaestria));
 
     if (esModoRE) {
       return {
@@ -899,7 +917,7 @@ function evaluateSubjectAttempts(materia, attempts, cuatrimestreNum, maxCuatrime
     };
   }
 
-  const esReprobada = checkFailed(ultimaCalif);
+  const esReprobada = checkFailed(ultimaCalif, esMaestria);
   if (esReprobada) {
     return {
       estado: 'ADEUDO',

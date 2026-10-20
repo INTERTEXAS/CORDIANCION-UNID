@@ -199,6 +199,52 @@ assert(
   'Motor identifica y contabiliza reprobaciones activas (adeudos)'
 );
 
+const carreraMaestria = {
+  ...carreraCofi,
+  codigo: 'MAE-MPAC',
+  nombre: 'MAESTRÍA EN PRUEBAS',
+  requisitos_egreso: []
+};
+const auditoriaMaestria60 = runAcademicAudit(
+  { matricula: 'MAE-001', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [{ subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '60', modalidad: 'RW' }],
+  carreraMaestria
+);
+const auditoriaMaestria70 = runAcademicAudit(
+  { matricula: 'MAE-002', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [{ subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '70', modalidad: 'RW' }],
+  carreraMaestria
+);
+const auditoriaMaestria6 = runAcademicAudit(
+  { matricula: 'MAE-003', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [{ subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '6', modalidad: 'RW' }],
+  carreraMaestria
+);
+const auditoriaMaestria7 = runAcademicAudit(
+  { matricula: 'MAE-004', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [{ subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '7', modalidad: 'RW' }],
+  carreraMaestria
+);
+assert(
+  auditoriaMaestria60.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ADEUDO' &&
+  auditoriaMaestria70.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ORD',
+  'En maestría, 60 reprueba y 70 acredita en escala de 0 a 100'
+);
+assert(
+  auditoriaMaestria6.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ADEUDO' &&
+  auditoriaMaestria7.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ORD',
+  'En maestría, 6 reprueba y 7 acredita en escala de 0 a 10'
+);
+const auditoriaLicenciatura60 = runAcademicAudit(
+  { matricula: 'LIC-001', nombre: 'ALUMNO DE LICENCIATURA', programa: 'LIC-COFI-18' },
+  [{ subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '60', modalidad: 'RW' }],
+  carreraCofi
+);
+assert(
+  auditoriaLicenciatura60.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ORD',
+  'El criterio de licenciatura continúa acreditando una calificación de 60'
+);
+
 // Alumno C: Verificación de filtro de ruido institucional
 assert(
   esMateriaIgnorada({ subj: 'CUPR', crse: 'ECCF1', nombre: 'CURSO DE PREPARACIÓN EGEL' }),
