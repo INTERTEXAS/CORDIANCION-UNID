@@ -296,7 +296,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   );
 
   // 3. Mapear cada una de las 37 materias del mapa por su CRSE único
-  let maxCuatrimestreAlcanzado = 1;
+  let maxCuatrimestreAlcanzado = esProgramaMaestria ? 0 : 1;
   const periodosCursados = [...new Set(normalizedRecords.map(r => r.periodo).filter(Boolean))].sort();
 
   // Un mismo CRSE puede repetirse en un mapa (p.ej. materia LM- y su variante EC- de 14 semanas).
@@ -333,7 +333,7 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     }
   }
 
-  if (periodosCursados.length >= 6) {
+  if (!esProgramaMaestria && periodosCursados.length >= 6) {
     maxCuatrimestreAlcanzado = Math.max(maxCuatrimestreAlcanzado, 6);
   }
   if (estudiante.estatus === 'EG') {
@@ -603,7 +603,11 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
         ...evalReq
       });
     } else {
-      const esEgresadoOAvanzado = (estudiante.estatus === 'EG' || maxCuatrimestreAlcanzado >= 6);
+      const ultimoCuatrimestre = cuatrimestres.at(-1)?.numero || 0;
+      const cuatrimestreFinalAlcanzado = esProgramaMaestria
+        ? maxCuatrimestreAlcanzado >= ultimoCuatrimestre
+        : maxCuatrimestreAlcanzado >= 6;
+      const esEgresadoOAvanzado = estudiante.estatus === 'EG' || cuatrimestreFinalAlcanzado;
 
       if (esEgresadoOAvanzado) {
         const auditOmitida = {

@@ -81,8 +81,8 @@ Cada asignatura identificada en el mapa curricular oficial se dictamina bajo la 
 | **CURS** | En Curso Activo | Asignatura inscrita en el ciclo escolar actual sin calificación numérica final. |
 | **REC · CURSO** | Recursamiento en Curso | Asignatura inscrita actualmente que registra antecedentes reprobatorios. |
 | **ADEUDO** | Reprobada Activa | Último intento registrado con estatus reprobatorio (`NA`, `NP` o calificación inferior al mínimo aprobatorio del programa: 6.0 en licenciatura y 7.0 en maestría; también admite escalas de 0 a 100). |
-| **OMITIDA** | Asignatura No Cursada | Materia correspondiente a cuatrimestres anteriores al actual que no registra inscripción previa. |
-| **PEND.** | Pendiente Curricular | Materia programada para cuatrimestres posteriores de la trayectoria. |
+| **OMITIDA** | Asignatura No Cursada | Materia sin inscripción cuyo cuatrimestre curricular ya fue alcanzado; en maestría, el avance se determina por materias del mapa registradas, no por cantidad de periodos del kárdex. |
+| **PEND.** | Pendiente Curricular | Materia de cuatrimestres posteriores al avance del estudiante; las materias de maestría sin historial también quedan pendientes. |
 
 ---
 

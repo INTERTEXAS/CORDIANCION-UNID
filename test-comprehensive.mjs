@@ -241,6 +241,50 @@ const auditoriaMaestriaRecursamientoAprobado = runAcademicAudit(
   ],
   carreraMaestria
 );
+const auditoriaMaestriaSinCursar = runAcademicAudit(
+  { matricula: 'MAE-007', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [],
+  carreraMaestria
+);
+const auditoriaMaestriaAvanceInicial = runAcademicAudit(
+  { matricula: 'MAE-008', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestria.codigo },
+  [
+    { subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '80', modalidad: 'RW' },
+    { subj: 'OTRO', crse: 'NO-MAPEADO-1', periodo: '202220', grde: 'AC', modalidad: 'RW' },
+    { subj: 'OTRO', crse: 'NO-MAPEADO-2', periodo: '202230', grde: 'AC', modalidad: 'RW' },
+    { subj: 'OTRO', crse: 'NO-MAPEADO-3', periodo: '202240', grde: 'AC', modalidad: 'RW' },
+    { subj: 'OTRO', crse: 'NO-MAPEADO-4', periodo: '202250', grde: 'AC', modalidad: 'RW' },
+    { subj: 'OTRO', crse: 'NO-MAPEADO-5', periodo: '202260', grde: 'AC', modalidad: 'RW' }
+  ],
+  carreraMaestria
+);
+const carreraMaestriaCatalogo = CARRERAS_LOCAL.find(c => c.codigo === 'MAE-MADP-22');
+const primerCuatrimestreMaestria = carreraMaestriaCatalogo.mapa_json.cuatrimestres[0];
+const auditoriaMaestriaCatalogoSinHistorial = runAcademicAudit(
+  { matricula: 'MAE-009', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestriaCatalogo.codigo },
+  [],
+  carreraMaestriaCatalogo
+);
+const auditoriaMaestriaCatalogoAvanceInicial = runAcademicAudit(
+  { matricula: 'MAE-010', nombre: 'ALUMNO DE MAESTRÍA', programa: carreraMaestriaCatalogo.codigo },
+  [
+    {
+      subj: primerCuatrimestreMaestria.materias[0].subj,
+      crse: primerCuatrimestreMaestria.materias[0].crse,
+      periodo: '202210',
+      grde: '80',
+      modalidad: 'RW'
+    },
+    ...['202220', '202230', '202240', '202250', '202260'].map((periodo, index) => ({
+      subj: 'OTRO',
+      crse: `NO-MAPEADO-${index}`,
+      periodo,
+      grde: 'AC',
+      modalidad: 'RW'
+    }))
+  ],
+  carreraMaestriaCatalogo
+);
 assert(
   auditoriaMaestria60.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ADEUDO' &&
   auditoriaMaestria70.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'ORD',
@@ -259,6 +303,29 @@ assert(
 assert(
   auditoriaMaestriaRecursamientoAprobado.cuatrimestres[0].materias.find(m => m.crse === 'HUS01')?.audit?.estado === 'REC',
   'En maestría, un recursamiento aprobado queda como REC'
+);
+assert(
+  auditoriaMaestriaSinCursar.cuatrimestres
+    .flatMap(cuat => cuat.materias)
+    .every(materia => materia.audit?.estado === 'PENDIENTE') &&
+  auditoriaMaestriaSinCursar.resumen.omitidas === 0,
+  'Materias de maestría sin historial quedan PENDIENTES, no OMITIDAS'
+);
+assert(
+  auditoriaMaestriaAvanceInicial.cuatrimestres[0].materias.find(m => m.crse === 'FIS01')?.audit?.estado === 'OMITIDA' &&
+  auditoriaMaestriaAvanceInicial.cuatrimestres[1].materias[0]?.audit?.estado === 'PENDIENTE',
+  'En maestría, materias de periodos ya alcanzados pueden ser OMITIDAS y las posteriores siguen PENDIENTES'
+);
+assert(
+  auditoriaMaestriaCatalogoSinHistorial.cuatrimestres
+    .flatMap(cuat => cuat.materias)
+    .every(materia => materia.audit?.estado === 'PENDIENTE'),
+  'El mapa real de maestría deja todas las materias PENDIENTES cuando no hay historial'
+);
+assert(
+  auditoriaMaestriaCatalogoAvanceInicial.cuatrimestres[0].materias[1]?.audit?.estado === 'OMITIDA' &&
+  auditoriaMaestriaCatalogoAvanceInicial.cuatrimestres[1].materias[0]?.audit?.estado === 'PENDIENTE',
+  'El mapa real de maestría omite solo lo anterior al avance y deja periodos futuros PENDIENTES'
 );
 const auditoriaLicenciatura60 = runAcademicAudit(
   { matricula: 'LIC-001', nombre: 'ALUMNO DE LICENCIATURA', programa: 'LIC-COFI-18' },
