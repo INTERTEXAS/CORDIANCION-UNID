@@ -37,7 +37,16 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     }
   }
 
-  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17') {
+  const esProgramaEjecutivo = Boolean(
+    (estudiante.programa && (estudiante.programa.includes('EJ') || /EJECUTIVO/i.test(estudiante.programa))) ||
+    catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
+      (carrera.codigo && carrera.codigo.includes('EJ')) ||
+      (carrera.nombre && /EJECUTIVO/i.test(carrera.nombre)) ||
+      (carrera.encabezado_plan && /EJECUTIVO/i.test(carrera.encabezado_plan))
+    ))
+  );
+
+  if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
     estudiante.modalidadDetectada = 'EJECUTIVO';
     if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'LIC-EJCO-17';
   } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {

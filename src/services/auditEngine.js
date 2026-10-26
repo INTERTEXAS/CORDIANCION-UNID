@@ -98,7 +98,16 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     }
   }
 
-  if (conteoEjecutivo > conteoEscolarizado || estudiante.programa === 'LIC-EJCO-17' || (estudiante.programa && estudiante.programa.includes('EJ'))) {
+  const esProgramaEjecutivo = Boolean(
+    (estudiante.programa && (estudiante.programa.includes('EJ') || /EJECUTIVO/i.test(estudiante.programa))) ||
+    catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
+      (carrera.codigo && carrera.codigo.includes('EJ')) ||
+      (carrera.nombre && /EJECUTIVO/i.test(carrera.nombre)) ||
+      (carrera.encabezado_plan && /EJECUTIVO/i.test(carrera.encabezado_plan))
+    ))
+  );
+
+  if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
     estudiante.modalidadDetectada = 'EJECUTIVO';
     if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
   } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
@@ -187,6 +196,14 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   }
   if (!carreraEfectiva && carrera) {
     carreraEfectiva = carrera;
+  }
+  const esCarreraEjecutiva = Boolean(
+    carreraEfectiva?.codigo?.includes('EJ') ||
+    /EJECUTIVO/i.test(carreraEfectiva?.nombre || '') ||
+    /EJECUTIVO/i.test(carreraEfectiva?.encabezado_plan || '')
+  );
+  if (esCarreraEjecutiva && (!estudiante.programa || estudiante.programa.includes('EJ') || estudiante.programa === carreraEfectiva?.codigo)) {
+    estudiante.modalidadDetectada = 'EJECUTIVO';
   }
   const esProgramaMaestria = isMaestria(carreraEfectiva, estudiante);
 

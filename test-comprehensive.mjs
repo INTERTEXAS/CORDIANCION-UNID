@@ -108,6 +108,21 @@ assert(
 );
 
 assert(
+  detectarModalidad({ programa: 'LIC-EJAD-17' }).modalidadDetectada === 'EJECUTIVO',
+  'Detecta modalidad EJECUTIVO para LIC-EJAD-17 (Administración de Empresas Ejecutivo)'
+);
+
+assert(
+  detectarModalidad({ programa: 'LIC-EJDE-17' }).modalidadDetectada === 'EJECUTIVO',
+  'Detecta modalidad EJECUTIVO para LIC-EJDE-17 (Derecho Ejecutivo)'
+);
+
+assert(
+  detectarModalidad({ programa: 'LIC-EJED-17' }).modalidadDetectada === 'EJECUTIVO',
+  'Detecta modalidad EJECUTIVO para LIC-EJED-17 (Educación Ejecutivo)'
+);
+
+assert(
   detectarModalidad({ programa: 'LIC-DERE-18' }, [{ subj: 'EDER', crse: 'EDER01' }]).modalidadDetectada === 'EJECUTIVO',
   'Detecta modalidad EJECUTIVO por prefijo de asignatura de posgrado/ejecutivo'
 );
