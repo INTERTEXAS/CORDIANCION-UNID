@@ -98,6 +98,14 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     }
   }
 
+  const esProgramaMaestria = Boolean(
+    (estudiante.programa && (estudiante.programa.startsWith('MAE-') || /MAESTR[IÍ]A|POSGRADO/i.test(estudiante.programa))) ||
+    catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
+      (carrera.codigo && carrera.codigo.startsWith('MAE-')) ||
+      (carrera.nombre && /MAESTR[IÍ]A|POSGRADO/i.test(carrera.nombre))
+    ))
+  );
+
   const esProgramaEjecutivo = Boolean(
     (estudiante.programa && (estudiante.programa.includes('EJ') || /EJECUTIVO/i.test(estudiante.programa))) ||
     catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
@@ -107,7 +115,10 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     ))
   );
 
-  if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
+  if (esProgramaMaestria) {
+    estudiante.modalidadDetectada = 'MAESTRÍA';
+    if (!programaDeclarado) estudiante.programa = 'MAE-EDUP-22';
+  } else if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
     estudiante.modalidadDetectada = 'EJECUTIVO';
     if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';
   } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
@@ -206,6 +217,9 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     estudiante.modalidadDetectada = 'EJECUTIVO';
   }
   const esProgramaMaestria = isMaestria(carreraEfectiva, estudiante);
+  if (esProgramaMaestria) {
+    estudiante.modalidadDetectada = 'MAESTRÍA';
+  }
 
   // Normalizar el mapa curricular (soporta tanto objeto con cuatrimestres como arreglo plano de materias)
   let mapa = normalizarMapaCurricular(carreraEfectiva?.mapa_json);
@@ -752,18 +766,24 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   // Si el estudiante apenas inicia su carrera y no tiene materias numéricas concluidas,
   // promedio es null y se muestra formalmente como 'S/C' (Sin Calificaciones).
   const notasNumericasAprobadas = [];
+  const minAprobatorio = esProgramaMaestria ? 7.0 : 6.0;
 
   for (const cuat of auditedCuatrimestres) {
     for (const m of cuat.materias) {
       if (['ORD', 'REC', 'RE'].includes(m.audit?.estado)) {
         const rawGrade = (m.audit?.calificacion || '').toString().trim();
-        const numGrade = parseFloat(rawGrade);
-        if (!isNaN(numGrade) && numGrade >= 6.0 && numGrade <= 10.0) {
-          notasNumericasAprobadas.push({
-            clave: m.clave,
-            nombre: m.nombre,
-            calificacion: numGrade
-          });
+        let numGrade = parseFloat(rawGrade);
+        if (!isNaN(numGrade)) {
+          if (numGrade > 10.0 && numGrade <= 100.0) {
+            numGrade = numGrade / 10.0;
+          }
+          if (numGrade >= minAprobatorio && numGrade <= 10.0) {
+            notasNumericasAprobadas.push({
+              clave: m.clave,
+              nombre: m.nombre,
+              calificacion: numGrade
+            });
+          }
         }
       }
     }
@@ -772,13 +792,18 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   for (const elec of auditedElectivas) {
     if (elec.cursada) {
       const rawGrade = (elec.calificacion || '').toString().trim();
-      const numGrade = parseFloat(rawGrade);
-      if (!isNaN(numGrade) && numGrade >= 6.0 && numGrade <= 10.0) {
-        notasNumericasAprobadas.push({
-          clave: elec.clave,
-          nombre: elec.nombre,
-          calificacion: numGrade
-        });
+      let numGrade = parseFloat(rawGrade);
+      if (!isNaN(numGrade)) {
+        if (numGrade > 10.0 && numGrade <= 100.0) {
+          numGrade = numGrade / 10.0;
+        }
+        if (numGrade >= minAprobatorio && numGrade <= 10.0) {
+          notasNumericasAprobadas.push({
+            clave: elec.clave,
+            nombre: elec.nombre,
+            calificacion: numGrade
+          });
+        }
       }
     }
   }
@@ -786,13 +811,18 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   for (const ing of auditedIngles) {
     if (['ORD', 'REC', 'RE'].includes(ing.estado)) {
       const rawGrade = (ing.calificacion || '').toString().trim();
-      const numGrade = parseFloat(rawGrade);
-      if (!isNaN(numGrade) && numGrade >= 6.0 && numGrade <= 10.0) {
-        notasNumericasAprobadas.push({
-          clave: ing.clave,
-          nombre: ing.nombre,
-          calificacion: numGrade
-        });
+      let numGrade = parseFloat(rawGrade);
+      if (!isNaN(numGrade)) {
+        if (numGrade > 10.0 && numGrade <= 100.0) {
+          numGrade = numGrade / 10.0;
+        }
+        if (numGrade >= 6.0 && numGrade <= 10.0) {
+          notasNumericasAprobadas.push({
+            clave: ing.clave,
+            nombre: ing.nombre,
+            calificacion: numGrade
+          });
+        }
       }
     }
   }

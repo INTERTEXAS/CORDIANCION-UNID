@@ -133,13 +133,15 @@ assert(
 );
 
 assert(
-  detectarModalidad({ programa: 'MAE-EDUP-22' }).programa === 'MAE-EDUP-22',
-  'Preserva programa de maestría MAE-EDUP-22 sin sobreescribirlo a LIC-COFI-18'
+  detectarModalidad({ programa: 'MAE-EDUP-22' }).programa === 'MAE-EDUP-22' &&
+  detectarModalidad({ programa: 'MAE-EDUP-22' }).modalidadDetectada === 'MAESTRÍA',
+  'Preserva programa MAE-EDUP-22 y detecta modalidad MAESTRÍA'
 );
 
 assert(
-  detectarModalidad({ programa: 'MAE-MADP-22' }).programa === 'MAE-MADP-22',
-  'Preserva programa de maestría MAE-MADP-22 sin sobreescribirlo'
+  detectarModalidad({ programa: 'MAE-MADP-22' }).programa === 'MAE-MADP-22' &&
+  detectarModalidad({ programa: 'MAE-MADP-22' }).modalidadDetectada === 'MAESTRÍA',
+  'Preserva programa MAE-MADP-22 y detecta modalidad MAESTRÍA'
 );
 
 assert(
@@ -705,6 +707,35 @@ assert(
   auditQualitativa.resumen.promedio === 10.0 &&
   auditQualitativa.resumen.materiasConNota === 1,
   'Acreditaciones cualitativas (AC, EX) no distorsionan ni generan NaN en el promedio'
+);
+
+// Caso U: Promedio Aprobatorio en Maestría (MAE-MADP-22) con 12 asignaturas acreditadas (9 y 10)
+const carMaeMadp = CARRERAS_LOCAL.find(c => c.codigo === 'MAE-MADP-22');
+const registrosMaeMadp = [
+  { crse: 'ADV02', subj: 'MPAC', calificacion: '9', periodo: '202210', modalidad: 'RW' },
+  { crse: 'ADV03', subj: 'MPAC', calificacion: '9', periodo: '202210', modalidad: 'RW' },
+  { crse: 'ADV04', subj: 'MPAC', calificacion: '10', periodo: '202210', modalidad: 'RW' },
+  { crse: 'FIV01', subj: 'MPAC', calificacion: '9', periodo: '202220', modalidad: 'RW' },
+  { crse: 'NEV02', subj: 'MPAC', calificacion: '10', periodo: '202220', modalidad: 'RW' },
+  { crse: 'ADV05', subj: 'MPAC', calificacion: '10', periodo: '202220', modalidad: 'RW' },
+  { crse: 'FIV02', subj: 'MPAC', calificacion: '9', periodo: '202230', modalidad: 'RW' },
+  { crse: 'MKV01', subj: 'MPAC', calificacion: '10', periodo: '202230', modalidad: 'RW' },
+  { crse: 'ADV01', subj: 'MPAC', calificacion: '10', periodo: '202230', modalidad: 'RW' },
+  { crse: 'ADV07', subj: 'MPAC', calificacion: '10', periodo: '202310', modalidad: 'RW' },
+  { crse: 'ADV06', subj: 'MPAC', calificacion: '9', periodo: '202310', modalidad: 'RW' },
+  { crse: 'NEV03', subj: 'MPAC', calificacion: '10', periodo: '202310', modalidad: 'RW' }
+];
+const auditMaeMadp = runAcademicAudit(
+  { matricula: '00285759', nombre: 'Noj Ortiz Dariana Guadalupe', programa: 'MAE-MADP-22' },
+  registrosMaeMadp,
+  carMaeMadp
+);
+assert(
+  auditMaeMadp.estudiante.modalidadDetectada === 'MAESTRÍA' &&
+  auditMaeMadp.resumen.promedio === 9.58 &&
+  auditMaeMadp.resumen.promedioFormatted === '9.58' &&
+  auditMaeMadp.resumen.materiasConNota === 12,
+  'Maestría MAE-MADP-22 calcula promedio exacto de 9.58 con 12 materias y modalidad MAESTRÍA'
 );
 
 // ----------------------------------------------------

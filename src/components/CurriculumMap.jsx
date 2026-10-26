@@ -231,7 +231,7 @@ export default function CurriculumMap({
             <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Promedio:</span>
             <div className="flex items-center space-x-1.5 mt-0.5">
               <span className={`font-mono font-black text-[12px] px-2 py-0.5 rounded border inline-block ${
-                resumen?.promedio !== null
+                resumen?.promedio !== null && resumen?.promedio !== undefined
                   ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-500/30'
                   : 'bg-surface-1 text-text-muted border-border'
               }`}>

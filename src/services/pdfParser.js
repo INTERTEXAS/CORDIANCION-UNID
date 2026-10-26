@@ -37,6 +37,14 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     }
   }
 
+  const esProgramaMaestria = Boolean(
+    (estudiante.programa && (estudiante.programa.startsWith('MAE-') || /MAESTR[IÍ]A|POSGRADO/i.test(estudiante.programa))) ||
+    catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
+      (carrera.codigo && carrera.codigo.startsWith('MAE-')) ||
+      (carrera.nombre && /MAESTR[IÍ]A|POSGRADO/i.test(carrera.nombre))
+    ))
+  );
+
   const esProgramaEjecutivo = Boolean(
     (estudiante.programa && (estudiante.programa.includes('EJ') || /EJECUTIVO/i.test(estudiante.programa))) ||
     catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
@@ -46,7 +54,10 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     ))
   );
 
-  if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
+  if (esProgramaMaestria) {
+    estudiante.modalidadDetectada = 'MAESTRÍA';
+    if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'MAE-EDUP-22';
+  } else if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
     estudiante.modalidadDetectada = 'EJECUTIVO';
     if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'LIC-EJCO-17';
   } else if (conteoEscolarizado >= conteoEjecutivo && tieneDual) {
@@ -425,10 +436,15 @@ export function cleanGradeToken(raw) {
   // Códigos de acreditación o estatus institucional
   if (/^(?:AC|NP|NA|SD|AP|EX|OU|BA)$/i.test(s)) return s.toUpperCase();
 
-  // Calificaciones numéricas (enteros o decimales: 10, 10.0, 9.5, 8.0, 7.5, 6.0, 5.0, 0, etc.)
+  // Calificaciones numéricas (enteros o decimales: 10, 10.0, 9.5, 8.0, 7.5, 6.0, 5.0, 0, o escala 60-100)
   const num = parseFloat(s.replace(',', '.'));
-  if (!isNaN(num) && num >= 0 && num <= 10) {
-    return Number.isInteger(num) ? String(num) : String(num);
+  if (!isNaN(num)) {
+    if (num >= 0 && num <= 10) {
+      return Number.isInteger(num) ? String(num) : String(num);
+    }
+    if (num >= 60 && num <= 100) {
+      return Number.isInteger(num) ? String(num) : String(num);
+    }
   }
 
   return null;
