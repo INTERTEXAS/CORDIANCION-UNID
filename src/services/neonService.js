@@ -131,14 +131,15 @@ export async function guardarAuditoriasLote({
   const sql = neon(databaseUrl);
 
   try {
-    // 1. Eliminar auditorías previas del mismo ciclo y cuatrimestre para evitar duplicidad
+    // 1. Eliminar auditorías previas de la misma carrera y ciclo escolar para evitar duplicidad
     const cicloLimpio = String(cicloEscolar || '').trim().substring(0, 50);
-    const cuatriLimpio = Number.isFinite(Number(cuatrimestreGrupo)) ? Math.trunc(Number(cuatrimestreGrupo)) : 6;
+    const carreraCodigoSegura = String(carreraCodigo || 'LIC-COFI-18').trim().substring(0, 255);
+    const cuatriLimpio = Number.isFinite(Number(cuatrimestreGrupo)) ? Math.trunc(Number(cuatrimestreGrupo)) : 0;
 
     await sql`
       DELETE FROM auditorias_estudiantes 
       WHERE ciclo_escolar = ${cicloLimpio} 
-        AND cuatrimestre_grupo = ${cuatriLimpio}
+        AND carrera_codigo = ${carreraCodigoSegura}
     `;
 
     // 2. Insertar cada expediente del lote con truncamiento defensivo
@@ -150,7 +151,6 @@ export async function guardarAuditoriasLote({
       // Truncamiento preventivo para garantizar que anomalías de lectura OCR/PDF no tiren el guardado
       const matriculaSegura = String(estudiante.matricula || 'SIN_MATRICULA').trim().substring(0, 50);
       const nombreSeguro = String(estudiante.nombre || 'SIN_NOMBRE').trim().substring(0, 255);
-      const carreraCodigoSegura = String(carreraCodigo || 'LIC-COFI-18').trim().substring(0, 255);
       const estatusSeguro = String(rawEstatus).trim().substring(0, 255);
 
       await sql`
@@ -178,8 +178,8 @@ export async function guardarAuditoriasLote({
     return {
       success: true,
       totalGuardados: alumnos.length,
-      cicloEscolar,
-      cuatrimestreGrupo
+      cicloEscolar: cicloLimpio,
+      carreraCodigo: carreraCodigoSegura
     };
   } catch (error) {
     console.error('[NeonService] Error al guardar lote de auditorías:', error);
@@ -188,7 +188,7 @@ export async function guardarAuditoriasLote({
 }
 
 /**
- * Obtiene el resumen consolidado de todos los ciclos escolares y cuatrimestres guardados en Neon.
+ * Obtiene el resumen consolidado de todos los ciclos escolares y programas guardados en Neon.
  */
 export async function obtenerResumenCiclos() {
   const databaseUrl = getDatabaseUrl();
@@ -200,15 +200,15 @@ export async function obtenerResumenCiclos() {
     const rows = await sql`
       SELECT 
         ciclo_escolar,
-        cuatrimestre_grupo,
         carrera_codigo,
+        COALESCE(MAX(cuatrimestre_grupo), 0) as cuatrimestre_grupo,
         COUNT(*)::int as total_alumnos,
         COUNT(*) FILTER (WHERE estatus_estadia ILIKE '%APROBADO%' OR estatus_estadia ILIKE '%ELEGIBLE%')::int as aptos,
         COUNT(*) FILTER (WHERE NOT (estatus_estadia ILIKE '%APROBADO%' OR estatus_estadia ILIKE '%ELEGIBLE%'))::int as con_adeudos,
         MIN(creado_en) as fecha_registro,
         MAX(creado_en) as ultima_actualizacion
       FROM auditorias_estudiantes
-      GROUP BY ciclo_escolar, cuatrimestre_grupo, carrera_codigo
+      GROUP BY ciclo_escolar, carrera_codigo
       ORDER BY MAX(creado_en) DESC
     `;
 
@@ -220,22 +220,35 @@ export async function obtenerResumenCiclos() {
 }
 
 /**
- * Carga todos los alumnos auditados de un ciclo escolar y cuatrimestre específico directamente desde Neon.
+ * Carga todos los alumnos auditados de un ciclo escolar y programa específico directamente desde Neon.
  */
-export async function cargarAuditoriasPorCiclo(cicloEscolar, cuatrimestreGrupo) {
+export async function cargarAuditoriasPorCiclo(cicloEscolar, carreraCodigoOrCuatri, fallbackCuatri) {
   const databaseUrl = getDatabaseUrl();
   if (!databaseUrl) throw new Error('No hay URL de conexión a Neon.');
 
   const sql = neon(databaseUrl);
 
   try {
-    const rows = await sql`
-      SELECT datos_completos 
-      FROM auditorias_estudiantes
-      WHERE ciclo_escolar = ${cicloEscolar} 
-        AND cuatrimestre_grupo = ${Number(cuatrimestreGrupo)}
-      ORDER BY nombre ASC
-    `;
+    let rows;
+    // Si el segundo argumento es una cadena de código de carrera (ej. MAE-MADP-22 o LIC-COFI-18)
+    if (typeof carreraCodigoOrCuatri === 'string' && isNaN(Number(carreraCodigoOrCuatri))) {
+      rows = await sql`
+        SELECT datos_completos 
+        FROM auditorias_estudiantes
+        WHERE ciclo_escolar = ${cicloEscolar} 
+          AND carrera_codigo = ${carreraCodigoOrCuatri}
+        ORDER BY nombre ASC
+      `;
+    } else {
+      const cuatri = Number(carreraCodigoOrCuatri || fallbackCuatri || 0);
+      rows = await sql`
+        SELECT datos_completos 
+        FROM auditorias_estudiantes
+        WHERE ciclo_escolar = ${cicloEscolar} 
+          AND (cuatrimestre_grupo = ${cuatri} OR ${cuatri} = 0)
+        ORDER BY nombre ASC
+      `;
+    }
 
     return rows.map(r => r.datos_completos);
   } catch (error) {
@@ -245,25 +258,34 @@ export async function cargarAuditoriasPorCiclo(cicloEscolar, cuatrimestreGrupo) 
 }
 
 /**
- * Elimina las auditorías de un ciclo escolar y cuatrimestre específicos (Borrado selectivo por Coordinación).
+ * Elimina las auditorías de un ciclo escolar y programa específicos (Borrado selectivo por Coordinación).
  */
-export async function eliminarAuditoriasPorCiclo(cicloEscolar, cuatrimestreGrupo) {
+export async function eliminarAuditoriasPorCiclo(cicloEscolar, carreraCodigoOrCuatri, fallbackCuatri) {
   const databaseUrl = getDatabaseUrl();
   if (!databaseUrl) throw new Error('No hay URL de conexión a Neon.');
 
   const sql = neon(databaseUrl);
 
   try {
-    const res = await sql`
-      DELETE FROM auditorias_estudiantes
-      WHERE ciclo_escolar = ${cicloEscolar} 
-        AND cuatrimestre_grupo = ${Number(cuatrimestreGrupo)}
-    `;
+    if (typeof carreraCodigoOrCuatri === 'string' && isNaN(Number(carreraCodigoOrCuatri))) {
+      await sql`
+        DELETE FROM auditorias_estudiantes
+        WHERE ciclo_escolar = ${cicloEscolar} 
+          AND carrera_codigo = ${carreraCodigoOrCuatri}
+      `;
+    } else {
+      const cuatri = Number(carreraCodigoOrCuatri || fallbackCuatri || 0);
+      await sql`
+        DELETE FROM auditorias_estudiantes
+        WHERE ciclo_escolar = ${cicloEscolar} 
+          AND (cuatrimestre_grupo = ${cuatri} OR ${cuatri} = 0)
+      `;
+    }
 
     return {
       success: true,
       cicloEscolar,
-      cuatrimestreGrupo
+      carreraCodigo: carreraCodigoOrCuatri
     };
   } catch (error) {
     console.error('[NeonService] Error al eliminar auditorías por ciclo:', error);

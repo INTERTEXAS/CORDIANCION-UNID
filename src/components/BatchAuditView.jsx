@@ -356,7 +356,7 @@ export default function BatchAuditView({
                   setIsNeonModalOpen(true);
                 }}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold rounded-lg shadow-sm transition-all cursor-pointer flex items-center space-x-2"
-                title="Guardar este grupo en Neon Database clasificándolo por ciclo escolar y cuatrimestre"
+                title="Guardar esta auditoría integral en Neon Database organizada por ciclo escolar y carrera"
               >
                 <Database className="w-4 h-4 text-indigo-200" strokeWidth={2} />
                 <span>Guardar en BD (Neon)</span>
@@ -367,7 +367,7 @@ export default function BatchAuditView({
                   setIsNeonModalOpen(true);
                 }}
                 className="px-4 py-2 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[13px] font-semibold rounded-lg transition-colors cursor-pointer flex items-center space-x-2 ml-1"
-                title="Ver grupos guardados en Neon, cargar otro cuatrimestre o depurar a 5 meses"
+                title="Ver auditorías guardadas en Neon, cargar en pantalla o depurar registros a 5 meses"
               >
                 <Calendar className="w-4 h-4" strokeWidth={2} />
                 <span>Gestionar Ciclos</span>

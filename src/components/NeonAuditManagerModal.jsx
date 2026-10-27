@@ -40,7 +40,6 @@ export default function NeonAuditManagerModal({
 
   // Formulario para guardar
   const [cicloInput, setCicloInput] = useState('2026-1');
-  const [cuatrimestreInput, setCuatrimestreInput] = useState(6);
 
   const fetchCiclos = React.useCallback(async () => {
     setLoading(true);
@@ -84,13 +83,12 @@ export default function NeonAuditManagerModal({
       await guardarAuditoriasLote({
         alumnos: batchData.alumnos,
         cicloEscolar: cicloInput.trim(),
-        cuatrimestreGrupo: Number(cuatrimestreInput),
         carreraCodigo
       });
 
       setStatusMessage({
         type: 'success',
-        text: `Se guardaron correctamente ${batchData.alumnos.length} expedientes en Neon para el Ciclo ${cicloInput.trim()}, ${cuatrimestreInput}.º Cuatrimestre.`
+        text: `Se guardaron correctamente ${batchData.alumnos.length} expedientes en Neon para el Ciclo ${cicloInput.trim()} (${carreraCodigo}).`
       });
 
       await fetchCiclos();
@@ -112,7 +110,7 @@ export default function NeonAuditManagerModal({
     try {
       const loadedAlumnos = await cargarAuditoriasPorCiclo(
         cicloItem.ciclo_escolar,
-        cicloItem.cuatrimestre_grupo
+        cicloItem.carrera_codigo
       );
 
       if (onLoadBatchData && loadedAlumnos.length > 0) {
@@ -165,25 +163,27 @@ export default function NeonAuditManagerModal({
   };
 
   const handleEliminarCiclo = async (cicloItem) => {
+    const carreraObj = CARRERAS_LOCAL.find(c => c.codigo === cicloItem.carrera_codigo);
+    const carreraNombre = carreraObj?.nombre || cicloItem.carrera_codigo;
     const confirmar = window.confirm(
-      `¿Desea eliminar permanentemente las auditorías del Ciclo ${cicloItem.ciclo_escolar} (${cicloItem.cuatrimestre_grupo}.º Cuatrimestre) de Neon Database? Esta acción liberará espacio de forma inmediata.`
+      `¿Desea eliminar permanentemente las auditorías del Ciclo ${cicloItem.ciclo_escolar} (${carreraNombre}) de Neon Database? Esta acción liberará espacio de forma inmediata.`
     );
     if (!confirmar) return;
 
     setLoading(true);
     setStatusMessage(null);
     try {
-      await eliminarAuditoriasPorCiclo(cicloItem.ciclo_escolar, cicloItem.cuatrimestre_grupo);
+      await eliminarAuditoriasPorCiclo(cicloItem.ciclo_escolar, cicloItem.carrera_codigo);
       setStatusMessage({
         type: 'success',
-        text: `Cuatrimestre ${cicloItem.cuatrimestre_grupo}.º del Ciclo ${cicloItem.ciclo_escolar} eliminado exitosamente de Neon.`
+        text: `Auditorías del Ciclo ${cicloItem.ciclo_escolar} (${cicloItem.carrera_codigo}) eliminadas exitosamente de Neon.`
       });
       await fetchCiclos();
     } catch (error) {
-      console.error('Error al eliminar ciclo:', error);
+      console.error('Error al eliminar ciclo de Neon:', error);
       setStatusMessage({
         type: 'error',
-        text: `Error al eliminar registros: ${error.message}`
+        text: `Error al eliminar expedientes: ${error.message}`
       });
     } finally {
       setLoading(false);
@@ -325,38 +325,52 @@ export default function NeonAuditManagerModal({
                     className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     required
                   />
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    Periodo cuatrimestral oficial (Ej. 2026-1)
-                  </p>
+                  <div className="flex items-center space-x-1.5 mt-2">
+                    <span className="text-[10px] text-slate-500 font-semibold">Sugerencias:</span>
+                    {['2026-1', '2026-2', '2026-3', '2025-3'].map((sug) => (
+                      <button
+                        key={sug}
+                        type="button"
+                        onClick={() => setCicloInput(sug)}
+                        className={`px-2 py-0.5 text-[10px] font-bold rounded border transition-colors cursor-pointer ${
+                          cicloInput === sug
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
+                        }`}
+                      >
+                        {sug}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Cuatrimestre del Grupo
-                  </label>
-                  <select
-                    value={cuatrimestreInput}
-                    onChange={(e) => setCuatrimestreInput(Number(e.target.value))}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((q) => (
-                      <option key={q} value={q}>
-                        {q}.º Cuatrimestre {q === 6 ? '(Revisión de Estadía)' : ''}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    Permite seleccionar y borrar específicamente este cuatrimestre después.
-                  </p>
+                <div className="bg-slate-50/90 border border-slate-200 rounded-lg p-3.5 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                      Alcance de Auditoría
+                    </span>
+                    <span className="text-xs font-bold text-slate-800 block mt-0.5">
+                      Trayectoria Académica Integral
+                    </span>
+                    <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                      El kárdex Banner consolida toda la carrera del alumno. El avance y dictamen normativo se calculan individualmente por estudiante.
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs flex items-center justify-between">
                 <div>
                   <span className="text-slate-500 block font-semibold">Carrera Asociada:</span>
-                  <span className="font-bold text-slate-900 font-mono">
-                    {batchData.carrera?.codigo || 'LIC-COFI-18'} · {batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}
-                  </span>
+                  <div className="flex items-center space-x-2 mt-0.5">
+                    <span className="font-bold text-slate-900 font-mono">
+                      {batchData.carrera?.codigo || 'LIC-COFI-18'}
+                    </span>
+                    <span className="text-slate-400">·</span>
+                    <span className="font-semibold text-slate-800">
+                      {batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}
+                    </span>
+                  </div>
                 </div>
                 <div className="text-right">
                   <span className="text-slate-500 block font-semibold">Total Expedientes:</span>
@@ -415,7 +429,7 @@ export default function NeonAuditManagerModal({
                 <div className="flex items-center justify-between mb-2.5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center space-x-1.5">
                     <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Grupos Guardados en la Base de Datos</span>
+                    <span>Auditorías Guardadas en la Base de Datos</span>
                   </h3>
                   <button
                     onClick={fetchCiclos}
@@ -435,66 +449,92 @@ export default function NeonAuditManagerModal({
                 ) : ciclos.length === 0 ? (
                   <div className="py-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-300 p-6 space-y-2">
                     <Archive className="w-8 h-8 text-slate-400 mx-auto" />
-                    <p className="text-xs font-bold text-slate-700">No hay cuatrimestres guardados aún</p>
+                    <p className="text-xs font-bold text-slate-700">No hay auditorías guardadas aún</p>
                     <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
                       Al subir un catálogo de alumnos en la vista de grupo, presiona el botón <strong>"Guardar en BD"</strong> para archivarlo aquí.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-2.5">
-                    {ciclos.map((item, idx) => (
-                      <div 
-                        key={`${item.ciclo_escolar}-${item.cuatrimestre_grupo}-${idx}`}
-                        className="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-3.5 shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                      >
-                        <div className="space-y-1">
-                          <div className="flex items-center space-x-2">
-                            <span className="px-2 py-0.5 bg-indigo-50 border border-indigo-200 text-indigo-700 text-[11px] font-bold rounded-md font-mono">
-                              Ciclo {item.ciclo_escolar}
-                            </span>
-                            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-bold rounded-md">
-                              {item.cuatrimestre_grupo}.º Cuatrimestre
-                            </span>
-                            <span className="text-[10px] font-mono text-slate-400">
-                              {item.carrera_codigo}
-                            </span>
+                    {ciclos.map((item, idx) => {
+                      const carreraObj = CARRERAS_LOCAL.find(c => c.codigo === item.carrera_codigo || c.clave === item.carrera_codigo);
+                      const esMaestria = item.carrera_codigo?.startsWith('MAE-') || carreraObj?.modalidad === 'MAESTRIA';
+                      const esEjecutivo = item.carrera_codigo?.includes('EJ') || carreraObj?.modalidad === 'EJECUTIVO';
+                      const modalidadLabel = esMaestria ? 'Maestría' : (esEjecutivo ? 'Plan Ejecutivo' : 'Licenciatura Escolarizada');
+                      const carreraNombre = carreraObj?.nombre || item.carrera_codigo;
+
+                      return (
+                        <div 
+                          key={`${item.ciclo_escolar}-${item.carrera_codigo}-${idx}`}
+                          className="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-3.5 shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="px-2 py-0.5 bg-indigo-50 border border-indigo-200 text-indigo-700 text-[11px] font-bold rounded-md font-mono">
+                                Ciclo {item.ciclo_escolar}
+                              </span>
+                              <span className={`px-2 py-0.5 border text-[11px] font-bold rounded-md ${
+                                esMaestria
+                                  ? 'bg-purple-50 border-purple-200 text-purple-700'
+                                  : esEjecutivo
+                                  ? 'bg-amber-50 border-amber-200 text-amber-700'
+                                  : 'bg-sky-50 border-sky-200 text-sky-700'
+                              }`}>
+                                {modalidadLabel}
+                              </span>
+                              <span className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 text-slate-500 text-[10px] font-mono rounded">
+                                {item.carrera_codigo}
+                              </span>
+                            </div>
+
+                            <div className="text-xs font-bold text-slate-900">
+                              {carreraNombre}
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
+                              <span className="font-black text-slate-900">{item.total_alumnos} alumnos</span>
+                              <span>·</span>
+                              <span className="text-emerald-700 font-semibold">{item.aptos} aptos / elegibles</span>
+                              <span>·</span>
+                              <span className="text-rose-700 font-semibold">{item.con_adeudos} con adeudo</span>
+                              {item.ultima_actualizacion && (
+                                <>
+                                  <span>·</span>
+                                  <span className="text-slate-400 text-[11px]">
+                                    {new Date(item.ultima_actualizacion).toLocaleDateString()}
+                                  </span>
+                                </>
+                              )}
+                            </div>
                           </div>
 
-                          <div className="flex items-center space-x-3 text-xs text-slate-600">
-                            <span className="font-black text-slate-900">{item.total_alumnos} alumnos</span>
-                            <span>·</span>
-                            <span className="text-emerald-700 font-semibold">{item.aptos} aptos</span>
-                            <span>·</span>
-                            <span className="text-rose-700 font-semibold">{item.con_adeudos} con adeudo</span>
-                          </div>
-                        </div>
+                          {/* Botones de acción para este ciclo y carrera */}
+                          <div className="flex items-center space-x-2 self-end sm:self-center shrink-0">
+                            {onLoadBatchData && (
+                              <button
+                                onClick={() => handleCargarCiclo(item)}
+                                disabled={loading}
+                                className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-200 transition-colors cursor-pointer flex items-center space-x-1.5"
+                                title="Cargar estos alumnos en pantalla sin volver a subir el PDF"
+                              >
+                                <FolderOpen className="w-3.5 h-3.5" />
+                                <span>Cargar en Pantalla</span>
+                              </button>
+                            )}
 
-                        {/* Botones de acción para este cuatrimestre */}
-                        <div className="flex items-center space-x-2 self-end sm:self-center">
-                          {onLoadBatchData && (
                             <button
-                              onClick={() => handleCargarCiclo(item)}
+                              onClick={() => handleEliminarCiclo(item)}
                               disabled={loading}
-                              className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-200 transition-colors cursor-pointer flex items-center space-x-1.5"
-                              title="Cargar estos alumnos en pantalla sin volver a subir el PDF"
+                              className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-lg border border-rose-200 transition-colors cursor-pointer flex items-center space-x-1"
+                              title="Eliminar este grupo y carrera de Neon"
                             >
-                              <FolderOpen className="w-3.5 h-3.5" />
-                              <span>Cargar en Pantalla</span>
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>Borrar</span>
                             </button>
-                          )}
-
-                          <button
-                            onClick={() => handleEliminarCiclo(item)}
-                            disabled={loading}
-                            className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-lg border border-rose-200 transition-colors cursor-pointer flex items-center space-x-1"
-                            title="Eliminar únicamente este cuatrimestre de Neon"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            <span>Borrar</span>
-                          </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
