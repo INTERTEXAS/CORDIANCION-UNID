@@ -738,6 +738,47 @@ assert(
   'Maestría MAE-MADP-22 calcula promedio exacto de 9.58 con 12 materias y modalidad MAESTRÍA'
 );
 
+// Caso V: Alumna Aguilar Aguilar Yessica Estefania (00312175) en MAE-MADP-22 (Promedio 9.17)
+const registrosYessica = [
+  { crse: 'ADV01', subj: 'MPAC', calificacion: '10', periodo: '202620', modalidad: 'RW' },
+  { crse: 'ADV02', subj: 'MPAC', calificacion: '9', periodo: '202540', modalidad: 'RW' },
+  { crse: 'ADV03', subj: 'MPAC', calificacion: '7', periodo: '202540', modalidad: 'RW' },
+  { crse: 'ADV04', subj: 'MPAC', calificacion: '10', periodo: '202540', modalidad: 'RW' },
+  { crse: 'ADV05', subj: 'MPAC', calificacion: '10', periodo: '202560', modalidad: 'RW' },
+  { crse: 'ADV06', subj: 'MPAC', calificacion: '9', periodo: '202640', modalidad: 'RW' },
+  { crse: 'ADV07', subj: 'MPAC', calificacion: '10', periodo: '202640', modalidad: 'RW' },
+  { crse: 'FIV01', subj: 'MPAC', calificacion: '8', periodo: '202560', modalidad: 'RW' },
+  { crse: 'FIV02', subj: 'MPAC', calificacion: '8', periodo: '202620', modalidad: 'RW' },
+  { crse: 'MKV01', subj: 'MPAC', calificacion: '10', periodo: '202620', modalidad: 'RW' },
+  { crse: 'NEV02', subj: 'MPAC', calificacion: '10', periodo: '202560', modalidad: 'RW' },
+  { crse: 'NEV03', subj: 'MPAC', calificacion: '9', periodo: '202640', modalidad: 'RW' }
+];
+const auditYessica = runAcademicAudit(
+  { matricula: '00312175', nombre: 'Aguilar Aguilar Yessica Estefania', programa: 'MAE-MADP-22' },
+  registrosYessica,
+  carMaeMadp
+);
+assert(
+  auditYessica.estudiante.modalidadDetectada === 'MAESTRÍA' &&
+  auditYessica.resumen.promedio === 9.17 &&
+  auditYessica.resumen.promedioFormatted === '9.17' &&
+  auditYessica.resumen.materiasConNota === 12,
+  'Alumna Yessica Estefania (00312175) calcula promedio exacto de 9.17 y modalidad MAESTRÍA'
+);
+
+// Caso W: Detección automática de MAESTRÍA por asignaturas MPAC aun cuando programa viene vacío
+const auditSinProg = runAcademicAudit(
+  { matricula: '00312175', nombre: 'Aguilar Aguilar Yessica Estefania', programa: '' },
+  registrosYessica,
+  carMaeMadp
+);
+assert(
+  auditSinProg.estudiante.modalidadDetectada === 'MAESTRÍA' &&
+  auditSinProg.estudiante.programa === 'MAE-MADP-22' &&
+  auditSinProg.resumen.promedio === 9.17,
+  'Reconoce modalidad MAESTRÍA y asigna MAE-MADP-22 automáticamente por prefijo de materia MPAC'
+);
+
 // ----------------------------------------------------
 // TEST SUITE 6: Compatibilidad Estructural de los 18 Mapas Curriculares Institucionales
 // ----------------------------------------------------

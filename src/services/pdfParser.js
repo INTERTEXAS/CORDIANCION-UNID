@@ -22,11 +22,19 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
   const programaDeclarado = catalogo.some(carrera => carrera.codigo === estudiante.programa) ||
     /^(?:LIC|MAE|DOC|ESP)-[A-Z0-9-]+$/i.test(estudiante.programa || '');
 
+  let conteoMaestria = 0;
+  let subjMaestriaEncontrado = null;
+
   for (const r of (registros || [])) {
-    const subj = r?.subj || '';
-    const crse = r?.crse || '';
+    const subj = (r?.subj || '').toUpperCase();
+    const crse = (r?.crse || '').toUpperCase();
     
-    if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
+    if (['MPAC', 'MEDU', 'MDEC', 'MMER'].includes(subj) || subj.startsWith('M') || /^M[A-Z0-9]{2,4}/.test(subj)) {
+      conteoMaestria++;
+      if (!subjMaestriaEncontrado && ['MPAC', 'MEDU', 'MDEC', 'MMER'].includes(subj)) {
+        subjMaestriaEncontrado = subj;
+      }
+    } else if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
       conteoEjecutivo++;
     } else if (subj.startsWith('L') || /^[A-Z]{2}[ST]\d{2}$/.test(crse)) {
       conteoEscolarizado++;
@@ -38,7 +46,8 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
   }
 
   const esProgramaMaestria = Boolean(
-    (estudiante.programa && (estudiante.programa.startsWith('MAE-') || /MAESTR[IÍ]A|POSGRADO/i.test(estudiante.programa))) ||
+    conteoMaestria > 0 ||
+    (estudiante.programa && (estudiante.programa.startsWith('MAE-') || /MAESTR[IÍ]A|POSGRADO/i.test(estudiante.programa) || /^(?:MADP|EDUP|MDEC|MERP)/i.test(estudiante.programa))) ||
     catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
       (carrera.codigo && carrera.codigo.startsWith('MAE-')) ||
       (carrera.nombre && /MAESTR[IÍ]A|POSGRADO/i.test(carrera.nombre))
@@ -56,7 +65,19 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
 
   if (esProgramaMaestria) {
     estudiante.modalidadDetectada = 'MAESTRÍA';
-    if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'MAE-EDUP-22';
+    if (!programaDeclarado && !estudiante.programa) {
+      if (subjMaestriaEncontrado === 'MPAC' || /MADP/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-MADP-22';
+      } else if (subjMaestriaEncontrado === 'MEDU' || /EDUP/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-EDUP-22';
+      } else if (subjMaestriaEncontrado === 'MDEC' || /MDEC/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-MDEC-20';
+      } else if (subjMaestriaEncontrado === 'MMER' || /MERP/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-MERP-22';
+      } else {
+        estudiante.programa = 'MAE-MADP-22';
+      }
+    }
   } else if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
     estudiante.modalidadDetectada = 'EJECUTIVO';
     if (!programaDeclarado && !estudiante.programa) estudiante.programa = 'LIC-EJCO-17';
@@ -478,7 +499,19 @@ export function extractStudentMetadata(text) {
 
   const progMatch = text.match(/\(((?:LIC|MAE|DOC|ESP)-[A-Z0-9-]+)\)/i) ||
                     text.match(/\b((?:LIC|MAE|DOC|ESP)-[A-Z0-9-]+)\b/i);
-  if (progMatch) programa = progMatch[1].toUpperCase();
+  if (progMatch) {
+    programa = progMatch[1].toUpperCase();
+  } else {
+    if (/\b(?:MAE-MADP-22|MADP-22)\b/i.test(text) || /ADMINISTRACI[OÓ]N\s+DE\s+NEGOCIOS/i.test(text)) {
+      programa = 'MAE-MADP-22';
+    } else if (/\b(?:MAE-EDUP-22|EDUP-22)\b/i.test(text) || /MAESTR[IÍ]A\s+EN\s+EDUCACI[OÓ]N/i.test(text)) {
+      programa = 'MAE-EDUP-22';
+    } else if (/\b(?:MAE-MDEC-20|MDEC-20)\b/i.test(text) || /DERECHO\s+CONSTITUCIONAL\s+Y\s+AMPARO/i.test(text)) {
+      programa = 'MAE-MDEC-20';
+    } else if (/\b(?:MAE-MERP-22|MERP-22)\b/i.test(text) || /MERCADOTECNIA\s+Y\s+MEDIOS\s+DIGITALES/i.test(text)) {
+      programa = 'MAE-MERP-22';
+    }
+  }
 
   const estMatch = text.match(/\)\s*[^\n|]*\|?\s*\b(EG|AC|BA|IN)\b/i) || text.match(/\b(EG|AC|BA|IN)\b/);
   if (estMatch) estatus = estMatch[1].toUpperCase();

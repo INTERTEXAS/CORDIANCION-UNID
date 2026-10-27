@@ -22,6 +22,8 @@ import {
   eliminarAuditoriasPorCiclo, 
   eliminarAuditoriasAntiguas 
 } from '../services/neonService';
+import { runAcademicAudit } from '../services/auditEngine';
+import { CARRERAS_LOCAL } from '../data/carrerasData';
 
 export default function NeonAuditManagerModal({
   isOpen,
@@ -114,10 +116,35 @@ export default function NeonAuditManagerModal({
       );
 
       if (onLoadBatchData && loadedAlumnos.length > 0) {
+        const targetCarrera = CARRERAS_LOCAL.find(c => c.codigo === cicloItem.carrera_codigo || c.clave === cicloItem.carrera_codigo)
+          || batchData?.carrera
+          || { codigo: cicloItem.carrera_codigo };
+
+        const freshAlumnos = loadedAlumnos.map(item => {
+          const est = item.estudiante || {};
+          const registros = est.registros || item.auditData?.estudiante?.registros || [];
+          const studentCarrera = CARRERAS_LOCAL.find(c => c.codigo === est.programa || c.clave === est.programa)
+            || targetCarrera;
+
+          const estToAudit = { ...est };
+          delete estToAudit.modalidadDetectada;
+          if (!estToAudit.programa && studentCarrera?.codigo) {
+            estToAudit.programa = studentCarrera.codigo;
+          }
+
+          const freshAudit = runAcademicAudit(estToAudit, registros, studentCarrera);
+          return {
+            ...item,
+            estudiante: freshAudit.estudiante,
+            auditData: freshAudit,
+            carrera: studentCarrera
+          };
+        });
+
         onLoadBatchData({
-          totalAlumnos: loadedAlumnos.length,
-          alumnos: loadedAlumnos,
-          carrera: batchData?.carrera || { codigo: cicloItem.carrera_codigo }
+          totalAlumnos: freshAlumnos.length,
+          alumnos: freshAlumnos,
+          carrera: targetCarrera
         });
         onClose();
       } else {

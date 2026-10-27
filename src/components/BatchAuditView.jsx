@@ -20,6 +20,32 @@ import CurriculumMap from './CurriculumMap';
 import AuditCedula from './AuditCedula';
 import FilterPills from './FilterPills';
 import NeonAuditManagerModal from './NeonAuditManagerModal';
+import { runAcademicAudit } from '../services/auditEngine';
+import { CARRERAS_LOCAL } from '../data/carrerasData';
+
+function getResolvedAudit(item, batchCarrera) {
+  if (!item) return null;
+  if (
+    item.auditData?.resumen?.promedioFormatted !== undefined &&
+    item.auditData?.estudiante?.modalidadDetectada &&
+    item.auditData.estudiante.modalidadDetectada !== 'ESCOLARIZADO' ||
+    (item.auditData?.resumen?.promedioFormatted !== undefined && !item.carrera?.codigo?.startsWith('MAE-') && !batchCarrera?.codigo?.startsWith('MAE-'))
+  ) {
+    return item.auditData;
+  }
+  const est = item.estudiante || {};
+  const registros = est.registros || item.auditData?.estudiante?.registros || [];
+  const studentCarrera = item.carrera || batchCarrera || CARRERAS_LOCAL[0];
+  const estToAudit = { ...est };
+  delete estToAudit.modalidadDetectada;
+  if (!estToAudit.programa && studentCarrera?.codigo) {
+    estToAudit.programa = studentCarrera.codigo;
+  }
+  const fresh = runAcademicAudit(estToAudit, registros, studentCarrera);
+  item.auditData = fresh;
+  item.estudiante = fresh.estudiante;
+  return fresh;
+}
 
 export default function BatchAuditView({
   batchData, // { totalAlumnos, alumnos: [ { estudiante, auditData, carrera } ], carrera }
@@ -48,11 +74,12 @@ export default function BatchAuditView({
   // Sincronizar el alumno actualmente auditado con el componente padre (para habilitar exportación de PDF)
   useEffect(() => {
     if (selectedStudentIndex !== null && alumnos[selectedStudentIndex]) {
-      onActiveStudentAuditChange?.(alumnos[selectedStudentIndex].auditData);
+      const resolved = getResolvedAudit(alumnos[selectedStudentIndex], batchData?.carrera);
+      onActiveStudentAuditChange?.(resolved);
     } else {
       onActiveStudentAuditChange?.(null);
     }
-  }, [selectedStudentIndex, alumnos, onActiveStudentAuditChange]);
+  }, [selectedStudentIndex, alumnos, batchData?.carrera, onActiveStudentAuditChange]);
 
   // Métricas globales de la generación
   const stats = useMemo(() => {
@@ -64,7 +91,8 @@ export default function BatchAuditView({
     let alumnosConPromedio = 0;
 
     for (const item of alumnos) {
-      const res = item.auditData?.resumen;
+      const audit = getResolvedAudit(item, batchData?.carrera);
+      const res = audit?.resumen;
       if (!res) continue;
       if (res.dictamenEstadia?.includes('APROBADO') || res.dictamenEstadia?.includes('ELEGIBLE')) {
         elegibles++;
@@ -93,12 +121,15 @@ export default function BatchAuditView({
       promedioGeneracion,
       alumnosConPromedio
     };
-  }, [alumnos]);
+  }, [alumnos, batchData?.carrera]);
 
   // Filtrado y ordenamiento de alumnos
   const filteredAlumnos = useMemo(() => {
     return alumnos
-      .map((item, originalIndex) => ({ ...item, originalIndex }))
+      .map((item, originalIndex) => {
+        getResolvedAudit(item, batchData?.carrera);
+        return { ...item, originalIndex };
+      })
       .filter(({ estudiante, auditData }) => {
         // Búsqueda por texto (nombre o matrícula)
         const q = searchQuery.toLowerCase().trim();
@@ -142,12 +173,12 @@ export default function BatchAuditView({
         }
         return 0;
       });
-  }, [alumnos, searchQuery, filterStatus, sortBy]);
+  }, [alumnos, searchQuery, filterStatus, sortBy, batchData?.carrera]);
 
   // Si hay un alumno seleccionado, mostrar el visor detallado de sus dos hojas
   if (selectedStudentIndex !== null && alumnos[selectedStudentIndex]) {
     const selectedItem = alumnos[selectedStudentIndex];
-    const currentAudit = selectedItem.auditData;
+    const currentAudit = getResolvedAudit(selectedItem, batchData?.carrera);
     const filterCounts = currentAudit?.resumen ? {
       todas: currentAudit.resumen.totalMateriasMapa,
       ord: currentAudit.resumen.aprobadasOrd,

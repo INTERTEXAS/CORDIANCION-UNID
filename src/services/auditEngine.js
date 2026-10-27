@@ -83,11 +83,19 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
     estudiante.programa.startsWith('MAE-')
   ));
 
+  let conteoMaestria = 0;
+  let subjMaestriaEncontrado = null;
+
   for (const r of (registros || [])) {
-    const subj = r?.subj || '';
-    const crse = r?.crse || '';
+    const subj = (r?.subj || '').toUpperCase();
+    const crse = (r?.crse || '').toUpperCase();
     
-    if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
+    if (['MPAC', 'MEDU', 'MDEC', 'MMER'].includes(subj) || subj.startsWith('M') || /^M[A-Z0-9]{2,4}/.test(subj)) {
+      conteoMaestria++;
+      if (!subjMaestriaEncontrado && ['MPAC', 'MEDU', 'MDEC', 'MMER'].includes(subj)) {
+        subjMaestriaEncontrado = subj;
+      }
+    } else if (subj.startsWith('E') || /^[A-Z]{2}R\d{2}$/.test(crse)) {
       conteoEjecutivo++;
     } else if (subj.startsWith('L') || /^[A-Z]{2}[ST]\d{2}$/.test(crse)) {
       conteoEscolarizado++;
@@ -99,7 +107,8 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
   }
 
   const esProgramaMaestria = Boolean(
-    (estudiante.programa && (estudiante.programa.startsWith('MAE-') || /MAESTR[IÍ]A|POSGRADO/i.test(estudiante.programa))) ||
+    conteoMaestria > 0 ||
+    (estudiante.programa && (estudiante.programa.startsWith('MAE-') || /MAESTR[IÍ]A|POSGRADO/i.test(estudiante.programa) || /^(?:MADP|EDUP|MDEC|MERP)/i.test(estudiante.programa))) ||
     catalogo.some(carrera => (carrera.codigo === estudiante.programa || carrera.clave === estudiante.programa) && (
       (carrera.codigo && carrera.codigo.startsWith('MAE-')) ||
       (carrera.nombre && /MAESTR[IÍ]A|POSGRADO/i.test(carrera.nombre))
@@ -117,7 +126,19 @@ export function detectarModalidad(estudiante, registros = [], carreras = CARRERA
 
   if (esProgramaMaestria) {
     estudiante.modalidadDetectada = 'MAESTRÍA';
-    if (!programaDeclarado) estudiante.programa = 'MAE-EDUP-22';
+    if (!programaDeclarado) {
+      if (subjMaestriaEncontrado === 'MPAC' || /MADP/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-MADP-22';
+      } else if (subjMaestriaEncontrado === 'MEDU' || /EDUP/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-EDUP-22';
+      } else if (subjMaestriaEncontrado === 'MDEC' || /MDEC/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-MDEC-20';
+      } else if (subjMaestriaEncontrado === 'MMER' || /MERP/i.test(estudiante.programa || '')) {
+        estudiante.programa = 'MAE-MERP-22';
+      } else {
+        estudiante.programa = 'MAE-MADP-22';
+      }
+    }
   } else if (conteoEjecutivo > conteoEscolarizado || esProgramaEjecutivo) {
     estudiante.modalidadDetectada = 'EJECUTIVO';
     if (!programaDeclarado) estudiante.programa = 'LIC-EJCO-17';

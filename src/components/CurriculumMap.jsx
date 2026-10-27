@@ -221,6 +221,7 @@ export default function CurriculumMap({
               <span className={`font-extrabold px-2 py-0.5 mt-0.5 inline-block rounded text-[10px] uppercase border ${
                 estudiante.modalidadDetectada === 'EJECUTIVO' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20' :
                 estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20' :
+                estudiante.modalidadDetectada === 'MAESTRÍA' || estudiante.modalidadDetectada === 'POSGRADO' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-500/20' :
                 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20'
               }`}>
                 {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'DUAL' : estudiante.modalidadDetectada}
