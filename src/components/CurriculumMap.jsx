@@ -496,7 +496,7 @@ export default function CurriculumMap({
 
               <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
                 <div className="flex items-center space-x-1.5 py-0.5">
-                  <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
+                  <span className="w-2 h-2 rounded-full bg-[#059669] shrink-0" />
                   <span className="font-bold text-slate-800 font-mono text-[11px]">ORD:</span>
                   <span className="text-slate-600 text-[11px]">Acreditada 1.er intento</span>
                 </div>
@@ -538,7 +538,7 @@ export default function CurriculumMap({
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
-                  <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
+                  <span className="w-2 h-2 rounded-full bg-slate-400 border border-slate-300 shrink-0" />
                   <span className="font-bold text-slate-800 font-mono text-[11px]">PEND:</span>
                   <span className="text-slate-600 text-[11px]">Por cursar</span>
                 </div>
