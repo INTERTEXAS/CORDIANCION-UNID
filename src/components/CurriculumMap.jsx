@@ -74,10 +74,11 @@ export default function CurriculumMap({
       case 'ORD':
         return { 
           isRegular: true,
-          cardStyle: 'bg-white border-slate-200/90 hover:border-slate-300 hover:shadow-2xs', 
+          cardStyle: 'bg-white border-slate-200 border-l-[3px] border-l-emerald-500 hover:border-slate-300 hover:shadow-2xs', 
+          dotColor: 'bg-emerald-500', 
           gradeColor: 'text-slate-800 font-bold',
-          badgeClass: '',
-          label: 'Ordinario' 
+          badgeClass: 'text-emerald-700 font-semibold bg-emerald-50/70 border border-emerald-200/60',
+          label: 'Acreditada' 
         };
       case 'REC':
         return { 
@@ -119,7 +120,7 @@ export default function CurriculumMap({
         return { 
           isRegular: false,
           cardStyle: 'bg-slate-50/40 border-slate-200 border-dashed hover:bg-white', 
-          dotColor: 'bg-slate-300', 
+          dotColor: 'bg-slate-400', 
           gradeColor: 'text-slate-400 font-normal',
           badgeClass: 'bg-slate-100 text-slate-500',
           label: 'Por cursar' 
@@ -317,7 +318,7 @@ export default function CurriculumMap({
                           </div>
                         </div>
 
-                        {/* Calificación y Estado (Solo se muestra etiqueta si hay anomalía) */}
+                        {/* Calificación y Estado con indicador de color correspondiente */}
                         <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-100">
                           <span className={`font-mono text-xs ${visual.gradeColor}`}>
                             {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
@@ -327,15 +328,10 @@ export default function CurriculumMap({
                             )}
                           </span>
 
-                          {/* Diseño por Excepción: Solo muestra badge si NO es ordinario */}
-                          {!visual.isRegular ? (
-                            <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1 py-0.2 rounded leading-none ${visual.badgeClass}`}>
-                              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
-                              {visual.label}
-                            </span>
-                          ) : (
-                            <span className="text-[9px] text-slate-300 font-mono">AC</span>
-                          )}
+                          <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                            {visual.label}
+                          </span>
                         </div>
                       </div>
                     );
@@ -397,14 +393,10 @@ export default function CurriculumMap({
                       <span className={`font-mono text-xs ${visual.gradeColor}`}>
                         {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-slate-300 font-normal">--</span>}
                       </span>
-                      {!visual.isRegular ? (
-                        <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1 py-0.2 rounded leading-none ${visual.badgeClass}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
-                          {visual.label}
-                        </span>
-                      ) : (
-                        <span className="text-[9px] text-slate-300 font-mono">AC</span>
-                      )}
+                      <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                        {visual.label}
+                      </span>
                     </div>
                   </div>
                 );
@@ -449,14 +441,10 @@ export default function CurriculumMap({
                           ? <span className="text-[9px] text-slate-400">NC</span> 
                           : <span className="text-slate-300 font-normal">--</span>}
                       </span>
-                      {!visual.isRegular ? (
-                        <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1 py-0.2 rounded leading-none ${visual.badgeClass}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
-                          {visual.label}
-                        </span>
-                      ) : (
-                        <span className="text-[9px] text-slate-300 font-mono">AC</span>
-                      )}
+                      <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                        {visual.label}
+                      </span>
                     </div>
                   </div>
                 );
