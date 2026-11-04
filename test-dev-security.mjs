@@ -8,8 +8,21 @@
  * 5. Telemetría de IP, Ciudad y Proveedor ISP
  */
 
+import fs from 'fs';
 import { neon } from '@neondatabase/serverless';
-import 'dotenv/config';
+
+// Cargar variables de entorno desde .env si existe (sin dependencias externas requeridas)
+if (fs.existsSync('.env')) {
+  const envContent = fs.readFileSync('.env', 'utf8');
+  envContent.split('\n').forEach(line => {
+    const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+    if (match) {
+      let value = match[2] || '';
+      value = value.trim().replace(/^['"](.*)['"]$/, '$1');
+      process.env[match[1]] = value;
+    }
+  });
+}
 import { 
   esIpAutorizada, 
   registrarAccesoDevLog, 
