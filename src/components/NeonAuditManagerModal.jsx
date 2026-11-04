@@ -13,8 +13,7 @@ import {
   X, 
   Archive,
   ChevronDown,
-  ChevronUp,
-  Server
+  ChevronUp
 } from 'lucide-react';
 import { 
   guardarAuditoriasLote, 
@@ -235,22 +234,22 @@ export default function NeonAuditManagerModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fadeIn">
       <div 
-        className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]"
+        className="bg-white rounded-xl shadow-2xl border-t-4 border-t-amber-500 border-x border-b border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 1. Cabecera Institucional Unificada */}
+        {/* 1. Cabecera Institucional con Acentos UNID y Neon */}
         <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-white">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0">
-              <Database className="w-4 h-4 text-slate-800" />
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
+              <Database className="w-4 h-4 text-emerald-600" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
                   Control Escolar · Neon PostgreSQL
                 </span>
-                <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.2 rounded">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span className="inline-flex items-center gap-1.5 text-[9px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   Conectado
                 </span>
               </div>
@@ -270,21 +269,24 @@ export default function NeonAuditManagerModal({
           </button>
         </div>
 
-        {/* 2. Selector Segmentado de Pestañas */}
+        {/* 2. Selector Segmentado de Pestañas con Acento UNID */}
         <div className="px-5 pt-3 pb-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-          <div className="inline-flex items-center bg-slate-200/60 p-0.5 rounded-lg text-xs font-semibold">
+          <div className="inline-flex items-center bg-slate-200/70 p-0.5 rounded-lg text-xs font-semibold">
             {batchData && (
               <button
                 type="button"
                 onClick={() => setActiveTab('guardar')}
                 className={`px-3 py-1 rounded-md transition-all cursor-pointer flex items-center space-x-1.5 ${
                   activeTab === 'guardar'
-                    ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                    ? 'bg-white text-slate-900 shadow-2xs font-bold border-b-2 border-b-amber-500'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <Save className="w-3.5 h-3.5" />
-                <span>Guardar Grupo Actual ({batchData.alumnos?.length || 0})</span>
+                <Save className="w-3.5 h-3.5 text-amber-600" />
+                <span>Guardar Grupo Actual</span>
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-100 text-amber-900 font-bold">
+                  {batchData.alumnos?.length || 0}
+                </span>
               </button>
             )}
 
@@ -293,18 +295,24 @@ export default function NeonAuditManagerModal({
               onClick={() => setActiveTab('gestionar')}
               className={`px-3 py-1 rounded-md transition-all cursor-pointer flex items-center space-x-1.5 ${
                 activeTab === 'gestionar'
-                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold border-b-2 border-b-amber-500'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Archive className="w-3.5 h-3.5" />
-              <span>Ciclos Guardados ({ciclos.length})</span>
+              <Archive className="w-3.5 h-3.5 text-slate-600" />
+              <span>Ciclos Guardados</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                ciclos.length > 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-slate-100 text-slate-600'
+              }`}>
+                {ciclos.length}
+              </span>
             </button>
           </div>
 
-          <span className="text-[10px] font-mono text-slate-400 hidden sm:inline-block">
-            Pooler Serverless
-          </span>
+          <div className="flex items-center space-x-1.5 text-[10px] font-mono text-slate-500 hidden sm:flex">
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Serverless Pooler</span>
+          </div>
         </div>
 
         {/* Notificaciones de Estado */}
@@ -328,12 +336,12 @@ export default function NeonAuditManagerModal({
           {/* TAB 1: Guardar Grupo */}
           {activeTab === 'guardar' && batchData && (
             <form onSubmit={handleGuardar} className="space-y-4">
-              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 flex items-start space-x-3">
-                <Database className="w-4 h-4 text-slate-600 mt-0.5 shrink-0" />
+              <div className="bg-amber-50/70 border border-amber-200 rounded-lg p-3.5 flex items-start space-x-3">
+                <Database className="w-4 h-4 text-amber-700 mt-0.5 shrink-0" />
                 <div className="space-y-0.5">
-                  <p className="font-semibold text-slate-900">Almacenamiento Estructurado y Permanente</p>
-                  <p className="text-slate-500 leading-relaxed text-[11px]">
-                    Se guardará la nómina de <strong>{batchData.alumnos?.length} alumnos</strong> con sus materias acreditadas, promedios y dictámenes oficiales. Peso estimado: <strong>~0.2 MB</strong>.
+                  <p className="font-semibold text-amber-950">Almacenamiento Estructurado UNID</p>
+                  <p className="text-amber-900/80 leading-relaxed text-[11px]">
+                    Se archivará la nómina de <strong>{batchData.alumnos?.length} alumnos</strong> con sus materias acreditadas, promedios y dictámenes oficiales. Peso estimado: <strong>~0.2 MB</strong>.
                   </p>
                 </div>
               </div>
@@ -349,7 +357,7 @@ export default function NeonAuditManagerModal({
                       value={cicloInput}
                       onChange={(e) => setCicloInput(e.target.value)}
                       placeholder="Ej. 2026-1, 2026-2, 2025-3"
-                      className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-md text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-slate-500 focus:bg-white transition-colors"
+                      className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-md text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                       required
                     />
                     <div className="flex items-center space-x-1 shrink-0">
@@ -360,7 +368,7 @@ export default function NeonAuditManagerModal({
                           onClick={() => setCicloInput(sug)}
                           className={`px-2 py-1 text-[11px] font-mono rounded border transition-colors cursor-pointer ${
                             cicloInput === sug
-                              ? 'bg-slate-900 text-white border-slate-900 font-semibold'
+                              ? 'bg-amber-500 text-slate-950 border-amber-500 font-bold shadow-2xs'
                               : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                           }`}
                         >
@@ -377,7 +385,7 @@ export default function NeonAuditManagerModal({
                     <span className="font-semibold text-slate-900 text-xs">
                       {batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}
                     </span>
-                    <span className="font-mono text-slate-400 text-[11px] ml-1.5">
+                    <span className="font-mono text-amber-800 text-[11px] ml-1.5 font-semibold">
                       ({batchData.carrera?.codigo || 'LIC-COFI-18'})
                     </span>
                   </div>
@@ -401,7 +409,7 @@ export default function NeonAuditManagerModal({
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-md shadow-2xs transition-colors cursor-pointer flex items-center space-x-1.5 disabled:opacity-50"
+                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-md shadow-2xs transition-colors cursor-pointer flex items-center space-x-1.5 disabled:opacity-50"
                 >
                   {saving ? (
                     <>
@@ -421,30 +429,35 @@ export default function NeonAuditManagerModal({
 
           {/* TAB 2: Gestionar Ciclos Guardados */}
           {activeTab === 'gestionar' && (
-            <div className="space-y-4">
-              {/* Barra superior de lista */}
-              <div className="flex items-center justify-between text-xs">
+            <div className="space-y-3.5">
+              {/* Barra superior de lista con información del servidor */}
+              <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs">
                 <div className="flex items-center space-x-2">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="font-semibold text-slate-800">
-                    Grupos Archivados ({ciclos.length})
-                  </span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="font-semibold text-slate-800">Servidor Neon PostgreSQL:</span>
+                  <span className="text-emerald-700 font-medium">Activo (Plan Gratuito Serverless)</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={fetchCiclos}
-                  disabled={loading}
-                  className="text-[11px] font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1 cursor-pointer transition-colors"
-                >
-                  <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
-                  <span>Actualizar</span>
-                </button>
+                <div className="flex items-center space-x-3 text-[11px]">
+                  <div className="flex items-center space-x-1 text-slate-500">
+                    <Clock className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Retención: 5 meses</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={fetchCiclos}
+                    disabled={loading}
+                    className="text-[11px] font-semibold text-amber-800 hover:text-amber-900 flex items-center space-x-1 cursor-pointer transition-colors"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
+                    <span>Actualizar</span>
+                  </button>
+                </div>
               </div>
 
               {/* Lista de Registros */}
               {loading && ciclos.length === 0 ? (
                 <div className="py-12 text-center text-xs text-slate-400 flex items-center justify-center space-x-2">
-                  <RefreshCw className="w-4 h-4 animate-spin text-slate-600" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-amber-600" />
                   <span>Consultando Neon Database...</span>
                 </div>
               ) : ciclos.length === 0 ? (
@@ -467,55 +480,63 @@ export default function NeonAuditManagerModal({
                     return (
                       <div 
                         key={`${item.ciclo_escolar}-${item.carrera_codigo}-${idx}`}
-                        className="bg-white border border-slate-200 hover:border-slate-300 rounded-lg p-3 shadow-2xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                        className="bg-white border border-slate-200 hover:border-amber-300/80 rounded-lg p-3 shadow-2xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group border-l-4 border-l-amber-500"
                       >
-                        <div className="space-y-1">
+                        <div className="space-y-1.5">
                           <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="font-mono text-xs font-bold text-slate-900">
+                            <span className="font-mono text-xs font-bold text-amber-950 bg-amber-50 border border-amber-200/80 px-2 py-0.2 rounded">
                               Ciclo {item.ciclo_escolar}
                             </span>
-                            <span className="text-slate-300">·</span>
-                            <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.2 rounded">
+                            <span className="text-[10px] font-mono text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded font-semibold">
                               {item.carrera_codigo}
                             </span>
-                            <span className="text-[10px] font-medium text-slate-600 bg-slate-50 border border-slate-200 px-1.5 py-0.2 rounded">
+                            <span className={`text-[10px] font-semibold border px-1.5 py-0.2 rounded ${
+                              esMaestria
+                                ? 'bg-purple-50 text-purple-700 border-purple-200'
+                                : esEjecutivo
+                                ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                : 'bg-blue-50 text-blue-700 border-blue-200'
+                            }`}>
                               {modalidadLabel}
                             </span>
                           </div>
 
-                          <div className="text-xs font-semibold text-slate-900">
+                          <div className="text-xs font-bold text-slate-900">
                             {formatProgramName(carreraNombre)}
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 font-mono">
-                            <span className="font-bold text-slate-800">{item.total_alumnos} alumnos</span>
-                            <span>·</span>
-                            <span className="text-emerald-700 font-medium">{item.aptos} aptos</span>
-                            <span>·</span>
-                            <span className="text-rose-700 font-medium">{item.con_adeudos} con adeudo</span>
+                          <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+                            <span className="font-bold text-slate-900 bg-slate-100 px-1.5 py-0.2 rounded">
+                              {item.total_alumnos} alumnos
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold bg-emerald-50 border border-emerald-200/70 px-1.5 py-0.2 rounded text-[11px]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              {item.aptos} aptos
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-rose-700 font-semibold bg-rose-50 border border-rose-200/70 px-1.5 py-0.2 rounded text-[11px]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                              {item.con_adeudos} con adeudo
+                            </span>
                             {item.ultima_actualizacion && (
-                              <>
-                                <span>·</span>
-                                <span className="text-slate-400">
-                                  {new Date(item.ultima_actualizacion).toLocaleDateString()}
-                                </span>
-                              </>
+                              <span className="text-slate-400 text-[11px] font-sans">
+                                · {new Date(item.ultima_actualizacion).toLocaleDateString()}
+                              </span>
                             )}
                           </div>
                         </div>
 
-                        {/* Botones de acción */}
+                        {/* Botones de acción con estilo UNID */}
                         <div className="flex items-center space-x-1.5 self-end sm:self-center shrink-0">
                           {onLoadBatchData && (
                             <button
                               type="button"
                               onClick={() => handleCargarCiclo(item)}
                               disabled={loading}
-                              className="px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold rounded border border-slate-300 hover:border-slate-400 transition-colors cursor-pointer flex items-center space-x-1 shadow-2xs"
+                              className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded shadow-2xs transition-colors cursor-pointer flex items-center space-x-1.5"
                               title="Cargar estos alumnos en pantalla"
                             >
-                              <FolderOpen className="w-3.5 h-3.5 text-slate-500" />
-                              <span>Cargar</span>
+                              <FolderOpen className="w-3.5 h-3.5 text-slate-950" />
+                              <span>Cargar en Pantalla</span>
                             </button>
                           )}
 
@@ -523,7 +544,7 @@ export default function NeonAuditManagerModal({
                             type="button"
                             onClick={() => handleEliminarCiclo(item)}
                             disabled={loading}
-                            className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded border border-transparent hover:border-rose-200 transition-colors cursor-pointer"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded border border-transparent hover:border-rose-200 transition-colors cursor-pointer"
                             title="Eliminar este grupo de Neon"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -543,15 +564,15 @@ export default function NeonAuditManagerModal({
                   className="w-full flex items-center justify-between text-[11px] text-slate-500 hover:text-slate-800 font-medium py-1 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-1.5">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                    <Clock className="w-3.5 h-3.5 text-amber-600" />
                     <span>Mantenimiento y Depuración Automática (Política 5 Meses)</span>
                   </div>
                   {showPurgeSection ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                 </button>
 
                 {showPurgeSection && (
-                  <div className="mt-2 p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2 text-xs">
-                    <p className="text-slate-600 leading-relaxed text-[11px]">
+                  <div className="mt-2 p-3 bg-rose-50/50 border border-rose-200 rounded-lg space-y-2 text-xs">
+                    <p className="text-rose-900/80 leading-relaxed text-[11px]">
                       Conforme al calendario académico UNID (4 meses del periodo + 1 mes de aclaraciones), puedes depurar con un clic los registros antiguos que superen los 5 meses para mantener la base de datos libre de sobrecarga.
                     </p>
                     <div className="flex justify-end pt-1">
@@ -559,7 +580,7 @@ export default function NeonAuditManagerModal({
                         type="button"
                         onClick={handleDepurar5Meses}
                         disabled={loading}
-                        className="px-3 py-1 bg-white hover:bg-rose-50 text-rose-700 hover:text-rose-800 border border-slate-300 hover:border-rose-300 rounded text-xs font-semibold transition-colors cursor-pointer flex items-center space-x-1.5 shadow-2xs"
+                        className="px-3 py-1 bg-white hover:bg-rose-50 text-rose-700 hover:text-rose-800 border border-rose-300 rounded text-xs font-semibold transition-colors cursor-pointer flex items-center space-x-1.5 shadow-2xs"
                       >
                         <Trash2 className="w-3.5 h-3.5 text-rose-600" />
                         <span>Depurar registros con más de 5 meses</span>
