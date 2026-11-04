@@ -24,10 +24,10 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
 
   if (!auditData) {
     return (
-      <div className="bg-surface-1 rounded-3xl border border-border p-12 text-center text-text-muted shadow-card transition-theme">
-        <FileSpreadsheet className="w-12 h-12 mx-auto text-text-muted/50 mb-3" strokeWidth={1.8} />
-        <h3 className="text-base font-bold text-text-primary">Sin cédula de auditoría</h3>
-        <p className="text-[13px] text-text-secondary mt-1 max-w-md mx-auto">
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-500 shadow-2xs">
+        <FileSpreadsheet className="w-10 h-10 mx-auto text-slate-300 mb-2.5" strokeWidth={1.5} />
+        <h3 className="text-sm font-semibold text-slate-900">Sin cédula de auditoría</h3>
+        <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
           Cargue el expediente del estudiante para generar la cédula ejecutiva y la bitácora de trazabilidad.
         </p>
       </div>
@@ -39,277 +39,276 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
   const totalMateriasMapa = resumen?.totalMateriasMapa ?? 37;
   const totalNivelesIngles = resumen?.nivelesIngles ?? 5;
   const totalRequisitosEgreso = resumen?.requisitosEgresoTotal ?? 4;
+  const totalAprobadas = resumen?.totalAprobadas ?? ((resumen?.aprobadasOrd || 0) + (resumen?.aprobadasRec || 0) + (resumen?.aprobadasRe || 0));
 
   return (
     <div 
       ref={forwardedRef} 
-      className="bg-surface-1 rounded-2xl border border-border p-6 space-y-6 w-full max-w-[1380px] mx-auto box-border transition-theme print:p-2 print:shadow-none print:border-none print:bg-white print:text-black"
+      className="bg-white rounded-xl border border-slate-200 p-5 space-y-4 w-full max-w-[1400px] mx-auto box-border shadow-2xs print:p-2 print:shadow-none print:border-none print:bg-white print:text-black"
       id="hoja2-cedula-auditoria"
     >
       {/* 1. ENCABEZADO INSTITUCIONAL OFICIAL UNID */}
-      <div className="flex items-start justify-between border-b-2 border-slate-900 dark:border-slate-500 pb-3 select-none">
+      <div className="flex items-start justify-between border-b border-slate-200 pb-3 select-none">
         <div className="space-y-0.5">
-          <div className="text-[10px] font-black tracking-widest text-text-primary uppercase">
+          <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
             UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO
           </div>
-          <div className="text-xs font-black text-text-secondary uppercase tracking-tight">
+          <div className="text-xs font-semibold text-slate-600 uppercase tracking-tight">
             CÉDULA OFICIAL DE AUDITORÍA ACADÉMICA Y TRAZABILIDAD DE CRÉDITOS
           </div>
-          <div className="text-sm font-black text-text-primary uppercase tracking-normal">
+          <div className="text-sm font-bold text-slate-900 uppercase tracking-normal">
             {carrera?.nombre || 'LICENCIATURA EN CONTABILIDAD Y FINANZAS (MIXTO) - FEDERAL'}
           </div>
-          <div className="flex items-center space-x-4 pt-1 text-[10px] text-text-muted font-medium">
+          <div className="flex items-center space-x-3 pt-0.5 text-[10px] text-slate-400 font-mono">
             <span>RVOE Federal 2018 · Sede CAM</span>
             <span>·</span>
-            <span>Fecha de dictamen: <strong className="text-text-primary">{fechaConsulta}</strong></span>
+            <span>Fecha de dictamen: <strong className="text-slate-700">{fechaConsulta}</strong></span>
           </div>
         </div>
 
         {/* Emblema UNID */}
-        <div className="flex items-center space-x-3 text-right">
+        <div className="flex items-center space-x-2.5 text-right">
           <div className="flex flex-col items-end">
-            <span className="text-sm font-black text-text-primary tracking-wider">UNID</span>
-            <span className="text-[9px] font-extrabold text-text-muted tracking-widest uppercase">
+            <span className="text-xs font-bold text-slate-900 tracking-wider">UNID</span>
+            <span className="text-[8px] font-semibold text-slate-400 tracking-widest uppercase">
               FORMANDO CON VALORES
             </span>
           </div>
           <img 
             src="/unid-logo.png" 
             alt="UNID" 
-            className="w-10 h-10 rounded-xl object-contain shadow-sm border border-border flex-shrink-0" 
+            className="w-9 h-9 rounded-lg object-contain border border-slate-200 flex-shrink-0" 
           />
         </div>
       </div>
 
       {/* 2. CINTILLA FORMAL DEL ESTUDIANTE */}
-      <div className="bg-surface-2 border border-border rounded-xl px-5 py-3.5 flex items-center justify-between text-xs select-none">
-        <div className="flex items-center space-x-8">
+      <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 flex items-center justify-between text-xs select-none">
+        <div className="flex items-center space-x-6">
           <div>
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Matrícula:</span>
-            <span className="font-mono font-bold text-text-primary text-[13px] block mt-1">{estudiante.matricula}</span>
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Matrícula</span>
+            <span className="font-mono font-bold text-slate-900 text-xs block">{estudiante.matricula}</span>
           </div>
-          <div className="border-l border-border-subtle pl-6">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Estudiante:</span>
-            <span className="font-bold text-text-primary text-[13px] block mt-1">{estudiante.nombre}</span>
+          <div className="border-l border-slate-200 pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Estudiante</span>
+            <span className="font-semibold text-slate-900 text-xs block">{estudiante.nombre}</span>
           </div>
-          <div className="border-l border-border-subtle pl-6">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Sede y Plan:</span>
-            <span className="font-semibold text-text-secondary text-[13px] block mt-1">{estudiante.sede} · {carrera?.codigo || 'LIC-COFI-18'}</span>
+          <div className="border-l border-slate-200 pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Sede y Plan</span>
+            <span className="font-medium text-slate-700 text-xs block">{estudiante.sede} · {carrera?.codigo || 'LIC-COFI-18'}</span>
           </div>
           {estudiante.modalidadDetectada && (
-            <div className="border-l border-border-subtle pl-6">
-              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Modalidad:</span>
-              <span className={`font-extrabold px-2 py-0.5 rounded text-[10px] uppercase border inline-block mt-0.5 ${
-                estudiante.modalidadDetectada === 'EJECUTIVO' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20' :
-                estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20' :
-                estudiante.modalidadDetectada === 'MAESTRÍA' || estudiante.modalidadDetectada === 'POSGRADO' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-500/20' :
-                'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20'
-              }`}>
-                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'DUAL' : estudiante.modalidadDetectada}
+            <div className="border-l border-slate-200 pl-4">
+              <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Modalidad</span>
+              <span className="text-[11px] font-semibold text-slate-700 uppercase">
+                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'Modalidad Dual' : estudiante.modalidadDetectada === 'EJECUTIVO' ? 'Plan Ejecutivo' : estudiante.modalidadDetectada}
               </span>
             </div>
           )}
-          <div className="border-l border-border-subtle pl-6">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Promedio:</span>
-            <div className="flex items-center space-x-1.5 mt-0.5">
-              <span className={`font-mono font-black text-[12px] px-2 py-0.5 rounded border inline-block ${
-                resumen?.promedio !== null && resumen?.promedio !== undefined
-                  ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-500/30'
-                  : 'bg-surface-1 text-text-muted border-border'
-              }`}>
+          <div className="border-l border-slate-200 pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Promedio</span>
+            <div className="flex items-baseline space-x-1">
+              <span className="font-mono font-bold text-xs text-slate-900">
                 {resumen?.promedioFormatted || 'S/C'}
               </span>
-              <span className="text-[9.5px] text-text-muted font-medium whitespace-nowrap">
-                {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : '(En curso)'}
+              <span className="text-[10px] text-slate-400 font-mono">
+                {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : ''}
               </span>
             </div>
           </div>
         </div>
 
         <div className="text-right">
-          <span className="text-[10px] font-extrabold text-text-muted uppercase tracking-widest block">Documento:</span>
-          <span className="text-[13px] font-bold text-text-primary font-mono">HOJA 2 DE 2</span>
+          <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider block">Documento</span>
+          <span className="text-xs font-bold text-slate-800 font-mono">HOJA 2 DE 2</span>
         </div>
       </div>
 
       {/* 3. DICTAMEN EJECUTIVO Y RESUMEN CUANTITATIVO */}
-      <div className="grid grid-cols-12 gap-5 select-none">
-        {/* Recuadro de Dictamen Normativo */}
-        <div className={`col-span-5 rounded-2xl border p-5 flex flex-col justify-between ${
+      <div className="grid grid-cols-12 gap-3.5 select-none">
+        {/* Recuadro de Dictamen Normativo (5 cols) */}
+        <div className={`col-span-5 rounded-lg border p-4 flex flex-col justify-between ${
           esElegible 
-            ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-900 dark:text-emerald-300' 
-            : 'bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20 text-rose-900 dark:text-rose-300'
+            ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950' 
+            : 'bg-rose-50/70 border-rose-200 text-rose-950'
         }`}>
           <div>
-            <div className="flex items-center space-x-2 text-[11px] font-bold uppercase tracking-wider pb-1.5">
+            <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider pb-1">
               {esElegible ? (
-                <ShieldCheck className="w-5 h-5 text-emerald-700 dark:text-emerald-400" strokeWidth={1.8} />
+                <ShieldCheck className="w-4 h-4 text-emerald-700" />
               ) : (
-                <ShieldAlert className="w-5 h-5 text-rose-700 dark:text-rose-400" strokeWidth={1.8} />
+                <ShieldAlert className="w-4 h-4 text-rose-700" />
               )}
               <span>Dictamen Normativo Institucional</span>
             </div>
 
-            <div className="text-[14px] font-black uppercase tracking-tight mt-1 leading-snug break-words">
+            <div className="text-sm font-bold uppercase tracking-tight mt-1 leading-snug">
               {resumen.dictamenEstadia}
             </div>
 
-            <p className="text-[12.5px] mt-2.5 leading-relaxed opacity-90">
+            <p className="text-xs mt-2 leading-relaxed opacity-90">
               {esElegible 
-                ? 'El expediente del estudiante valida el 100% de los requisitos curriculares, idioma inglés y requisitos co-curriculares / egreso sin registrar materias en adeudo activo ni materias omitidas. Se autoriza la asignación e inscripción de la Estadía Empresarial y proceso de titulación.'
+                ? 'Expediente académico con 100% de créditos acreditados, idioma inglés y requisitos de egreso completados sin adeudos. Acreditado para inscripción de Estadía Empresarial y Titulación.'
                 : (resumen.adeudosReqEgreso > 0 || resumen.omitidasReqEgreso > 0)
-                ? `El expediente presenta restricciones de titulación: ${resumen.adeudosReqEgreso || 0} adeudo(s) activo(s) y/o ${resumen.omitidasReqEgreso || 0} materia(s) omitida(s) en Requisitos Co-Curriculares y de Egreso (EGEL / Ortografía / Comprensión). Requiere solventar los adeudos para acreditar el dictamen.`
-                : `El expediente presenta restricciones académicas: ${resumen.adeudosQ1toQ6} asignatura(s) en adeudo activo y/o ${resumen.omitidasQ1toQ6} asignatura(s) omitida(s) dentro del bloque 1.º a 6.º cuatrimestre. Conforme al reglamento escolar UNID, no es posible inscribir Estadía Empresarial hasta solventar dichos adeudos.`
+                ? `Presenta ${resumen.adeudosReqEgreso || 0} adeudo(s) y/o ${resumen.omitidasReqEgreso || 0} omisión(es) en Requisitos Co-Curriculares/Egreso. Requiere solventar para acreditar dictamen.`
+                : `Presenta ${resumen.adeudosQ1toQ6} adeudo(s) y/o ${resumen.omitidasQ1toQ6} asignatura(s) omitida(s) en 1.º a 6.º cuatrimestre. Conforme al reglamento escolar, bloquea Estadía Empresarial.`
               }
             </p>
           </div>
 
-          <div className="pt-3.5 mt-2 border-t border-current/20 text-[11px] flex items-center justify-between font-bold">
+          <div className="pt-2 mt-2 border-t border-current/15 text-[11px] flex items-center justify-between font-semibold">
             <span>Validación: Coordinación de Licenciaturas</span>
-            <span>Estatus: {esElegible ? 'AUTORIZADO' : 'NO ACREDITADO / BLOQUEO'}</span>
+            <span>Estatus: {esElegible ? 'AUTORIZADO' : 'BLOQUEADO'}</span>
           </div>
         </div>
 
-        {/* Resumen Cuantitativo de Avance Curricular */}
-        <div className="col-span-7 bg-surface-2 border border-border rounded-2xl p-5">
-          <div className="text-[11px] font-black uppercase text-text-primary tracking-wider mb-3 flex items-center justify-between border-b border-border-subtle pb-2">
-            <span>Resumen Cuantitativo de Créditos y Materias</span>
-            <span className="text-[10px] font-bold text-text-muted">
-              Plan {totalMateriasMapa} Asignaturas + {totalNivelesIngles} Inglés + {totalRequisitosEgreso} Egreso
+        {/* Resumen Cuantitativo de Avance Curricular (7 cols) */}
+        <div className="col-span-7 bg-slate-50 border border-slate-200 rounded-lg p-3.5 flex flex-col justify-between">
+          <div className="text-[10px] font-bold uppercase text-slate-700 tracking-wider flex items-center justify-between border-b border-slate-200 pb-1 mb-2">
+            <span>Resumen Cuantitativo de Avance</span>
+            <span className="text-[9.5px] font-mono text-slate-400">
+              Plan {totalMateriasMapa} Asig. + {totalNivelesIngles} Inglés + {totalRequisitosEgreso} Egreso
             </span>
           </div>
 
-          <div className="grid grid-cols-5 gap-2 text-center text-xs">
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-text-muted block uppercase mb-0.5">Mapa Oficial</span>
-              <span className="text-[15px] font-extrabold text-text-primary">{totalMateriasMapa} Asig.</span>
+          {/* Nivel 1: 4 KPIs Principales Destacados */}
+          <div className="grid grid-cols-4 gap-2 mb-2">
+            {/* 1. Avance Mapa */}
+            <div className="bg-white p-2 rounded-md border border-slate-200 shadow-2xs">
+              <span className="text-[9px] font-semibold text-slate-400 uppercase block mb-0.5">Avance Plan</span>
+              <div className="flex items-baseline space-x-1 font-mono">
+                <span className="text-sm font-bold text-slate-900">{totalAprobadas}</span>
+                <span className="text-[11px] text-slate-400">/{totalMateriasMapa}</span>
+              </div>
+              <span className="text-[8.5px] text-slate-400 block mt-0.5">Aprobadas</span>
             </div>
 
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-text-muted block uppercase mb-0.5">Niveles Inglés</span>
-              <span className="text-[15px] font-extrabold text-text-primary">{resumen.inglesAcreditados} / {totalNivelesIngles}</span>
+            {/* 2. Inglés */}
+            <div className="bg-white p-2 rounded-md border border-slate-200 shadow-2xs">
+              <span className="text-[9px] font-semibold text-slate-400 uppercase block mb-0.5">Inglés</span>
+              <div className="flex items-baseline space-x-1 font-mono">
+                <span className="text-sm font-bold text-slate-900">{resumen.inglesAcreditados}</span>
+                <span className="text-[11px] text-slate-400">/{totalNivelesIngles}</span>
+              </div>
+              <span className="text-[8.5px] text-slate-400 block mt-0.5">Acreditados</span>
             </div>
 
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-purple-700 dark:text-purple-400 block uppercase mb-0.5">Req. Egreso</span>
-              <span className="text-[15px] font-extrabold text-purple-900 dark:text-purple-300">{resumen.coCurricularesAcreditados || 0} / {totalRequisitosEgreso}</span>
+            {/* 3. Requisitos Egreso */}
+            <div className="bg-white p-2 rounded-md border border-slate-200 shadow-2xs">
+              <span className="text-[9px] font-semibold text-slate-400 uppercase block mb-0.5">Req. Egreso</span>
+              <div className="flex items-baseline space-x-1 font-mono">
+                <span className="text-sm font-bold text-slate-900">{resumen.coCurricularesAcreditados || 0}</span>
+                <span className="text-[11px] text-slate-400">/{totalRequisitosEgreso}</span>
+              </div>
+              <span className="text-[8.5px] text-slate-400 block mt-0.5">Co-curriculares</span>
             </div>
 
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-emerald-700 dark:text-emerald-400 block uppercase mb-0.5">1.ª Oportunidad</span>
-              <span className="text-[15px] font-extrabold text-[#059669]">{resumen.aprobadasOrd}</span>
-            </div>
-
-            {/* Promedio Aprobatorio Definitivo (Opción A) */}
-            <div className="bg-amber-50/70 dark:bg-amber-500/10 p-2 rounded-xl border border-amber-300 dark:border-amber-500/30 shadow-sm">
-              <span className="text-[9.5px] font-bold text-amber-800 dark:text-amber-300 block uppercase mb-0.5">Promedio</span>
-              <span className="text-[15px] font-black text-amber-900 dark:text-amber-200">
-                {resumen?.promedioFormatted || 'S/C'}
-              </span>
-              <span className="text-[8.5px] text-amber-700 dark:text-amber-400 block mt-0.5">
+            {/* 4. Promedio General */}
+            <div className="bg-white p-2 rounded-md border border-slate-200 shadow-2xs">
+              <span className="text-[9px] font-semibold text-slate-400 uppercase block mb-0.5">Promedio</span>
+              <div className="flex items-baseline space-x-1 font-mono">
+                <span className="text-sm font-bold text-slate-900">{resumen?.promedioFormatted || 'S/C'}</span>
+                <span className="text-[11px] text-slate-400">/10</span>
+              </div>
+              <span className="text-[8.5px] text-slate-400 block mt-0.5 font-mono">
                 {resumen?.materiasConNota > 0 ? `${resumen.materiasConNota} asig.` : 'En curso'}
               </span>
             </div>
+          </div>
 
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-amber-700 dark:text-amber-400 block uppercase mb-0.5">Recursamiento</span>
-              <span className="text-[15px] font-extrabold text-[#D97706]">{resumen.aprobadasRec}</span>
+          {/* Nivel 2: Trazabilidad Técnica Ejecutiva (Sin cajas vacías en cero) */}
+          <div className="bg-white rounded-md border border-slate-200 px-3 py-1.5 flex items-center justify-between text-xs shadow-2xs">
+            <div className="flex items-center space-x-3 text-slate-700 font-mono">
+              <span><strong className="text-slate-900 font-bold">{resumen.aprobadasOrd}</strong> <span className="text-slate-400 font-sans text-[11px]">Ordinarias</span></span>
+              <span className="text-slate-200">·</span>
+              <span><strong className="text-amber-800 font-bold">{resumen.aprobadasRec}</strong> <span className="text-slate-400 font-sans text-[11px]">Recursadas</span></span>
+              {resumen.aprobadasRe > 0 && (
+                <>
+                  <span className="text-slate-200">·</span>
+                  <span><strong className="text-sky-800 font-bold">{resumen.aprobadasRe}</strong> <span className="text-slate-400 font-sans text-[11px]">Modo RE</span></span>
+                </>
+              )}
             </div>
-
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-sky-700 dark:text-sky-400 block uppercase mb-0.5">Modalidad RE</span>
-              <span className="text-[15px] font-extrabold text-[#0284C7]">{resumen.aprobadasRe}</span>
-            </div>
-
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-rose-700 dark:text-rose-400 block uppercase mb-0.5">Adeudos</span>
-              <span className="text-[15px] font-extrabold text-[#DC2626]">{resumen.adeudos}</span>
-            </div>
-
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-orange-700 dark:text-orange-400 block uppercase mb-0.5">Omitidas</span>
-              <span className="text-[15px] font-extrabold text-[#EA580C]">{resumen.omitidas}</span>
-            </div>
-
-            <div className="bg-surface-1 p-2 rounded-xl border border-border shadow-sm">
-              <span className="text-[9.5px] font-semibold text-pink-700 dark:text-pink-400 block uppercase mb-0.5">En Curso</span>
-              <span className="text-[15px] font-extrabold text-[#DB2777]">{resumen.cursando}</span>
+            <div>
+              {resumen.adeudos === 0 && resumen.omitidas === 0 ? (
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  Sin Adeudos Activos
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-700">
+                  <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+                  {resumen.adeudos} Adeudo(s) · {resumen.omitidas} Omitida(s)
+                </span>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* 4. BITÁCORA DE INCIDENCIAS Y TRAZABILIDAD DE INTENTOS */}
-      <div className="space-y-3 select-none pt-2">
-        <div className="flex items-center justify-between border-b border-border pb-2">
-          <div className="flex items-center space-x-2">
-            <FileSpreadsheet className="w-5 h-5 text-text-secondary" strokeWidth={1.8} />
-            <h3 className="text-[13px] font-black uppercase text-text-primary tracking-wider">
+      <div className="space-y-2 select-none pt-1">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-1">
+          <div className="flex items-center space-x-1.5">
+            <FileSpreadsheet className="w-4 h-4 text-slate-500" strokeWidth={1.5} />
+            <h3 className="text-xs font-bold uppercase text-slate-800 tracking-wider">
               Bitácora de Incidencias y Trazabilidad de Intentos
             </h3>
           </div>
-          <span className="text-[11px] text-text-muted">
+          <span className="text-[10px] text-slate-400 font-mono">
             {incidencias.length > 0 
-              ? `Registra ${incidencias.length} asignatura(s) con eventos académicos relevantes` 
-              : 'Sin incidencias curriculares detectadas'}
+              ? `${incidencias.length} evento(s) académico(s) relevante(s)` 
+              : 'Sin incidencias curriculares'}
           </span>
         </div>
 
         {incidencias.length > 0 ? (
-          <div className="border border-border rounded-xl overflow-x-auto shadow-sm">
-            <table className="w-full min-w-[720px] text-left text-[12px] border-collapse">
+          <div className="border border-slate-200 rounded-md overflow-x-auto shadow-2xs">
+            <table className="w-full min-w-[720px] text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-surface-2 text-text-secondary text-[11px] uppercase font-bold tracking-wider border-b border-border">
-                  <th className="py-2.5 px-3 text-center w-14">Cuat.</th>
-                  <th className="py-2.5 px-3 w-28">Clave</th>
-                  <th className="py-2.5 px-3">Asignatura</th>
-                  <th className="py-2.5 px-3 text-center w-32">Clasificación</th>
-                  <th className="py-2.5 px-3 text-center w-20">Intentos</th>
-                  <th className="py-2.5 px-3">Trazabilidad por Periodo, CRN y Calificación</th>
-                  <th className="py-2.5 px-3 w-64">Motivo / Dictamen</th>
+                <tr className="bg-slate-50 text-slate-600 text-[10px] uppercase font-semibold tracking-wider border-b border-slate-200">
+                  <th className="py-1.5 px-3 text-center w-12 font-mono">Cuat.</th>
+                  <th className="py-1.5 px-3 w-28">Clave</th>
+                  <th className="py-1.5 px-3">Asignatura</th>
+                  <th className="py-1.5 px-3 text-center w-28">Clasificación</th>
+                  <th className="py-1.5 px-3 text-center w-16 font-mono">Intentos</th>
+                  <th className="py-1.5 px-3">Trazabilidad por Periodo, CRN y Calificación</th>
+                  <th className="py-1.5 px-3 w-60">Motivo / Dictamen</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border-subtle bg-surface-1">
+              <tbody className="divide-y divide-slate-100 bg-white">
                 {incidencias.map((inc, index) => {
-                  let badgeClass = 'bg-surface-2 text-text-secondary border-border';
-                  if (inc.estado === 'REC') badgeClass = 'bg-amber-100 dark:bg-amber-500/10 text-amber-900 dark:text-amber-300 border-amber-300 dark:border-amber-500/20';
-                  if (inc.estado === 'RE') badgeClass = 'bg-sky-100 dark:bg-sky-500/10 text-sky-900 dark:text-sky-300 border-sky-300 dark:border-sky-500/20';
-                  if (inc.estado === 'ADEUDO') badgeClass = 'bg-red-100 dark:bg-red-500/10 text-red-900 dark:text-red-300 border-red-300 dark:border-red-500/20';
-                  if (inc.estado === 'OMITIDA') badgeClass = 'bg-orange-100 dark:bg-orange-500/10 text-orange-900 dark:text-orange-300 border-orange-300 dark:border-orange-500/20';
-                  if (inc.estado === 'RECURSANDO') badgeClass = 'bg-pink-100 dark:bg-pink-500/10 text-pink-900 dark:text-pink-300 border-pink-300 dark:border-pink-500/20';
-                  if (inc.estado === 'OU') badgeClass = 'bg-purple-100 dark:bg-purple-500/10 text-purple-900 dark:text-purple-300 border-purple-300 dark:border-purple-500/20';
-
                   return (
-                    <tr key={index} className="hover:bg-surface-2/50 transition-colors">
-                      <td className="py-2.5 px-3 text-center font-bold text-text-secondary">
+                    <tr key={index} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-2 px-3 text-center font-mono font-semibold text-slate-500">
                         {inc.cuatrimestre}.º
                       </td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-text-primary text-[12px]">
+                      <td className="py-2 px-3 font-mono font-semibold text-slate-900 text-xs">
                         {inc.clave}
                       </td>
-                      <td className="py-2.5 px-3 font-medium text-text-primary">
+                      <td className="py-2 px-3 font-medium text-slate-900">
                         <span>{inc.nombre}</span>
                         {inc.conecta && (
-                          <span className="ml-1.5 text-[9px] font-black text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-200 dark:border-cyan-500/20">
+                          <span className="ml-1.5 text-[8px] font-bold text-cyan-800 bg-cyan-50 px-1 py-0.2 rounded border border-cyan-200">
                             CONECTA
                           </span>
                         )}
                       </td>
-                      <td className="py-2.5 px-3 text-center">
+                      <td className="py-2 px-3 text-center">
                         <span 
                           data-badge="true"
-                          className={`badge-pill inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] font-black tracking-wide leading-none whitespace-nowrap shadow-sm border ${badgeClass}`}
+                          className="badge-pill inline-flex items-center justify-center px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide leading-none whitespace-nowrap border bg-slate-50 text-slate-700 border-slate-200 shadow-2xs"
                         >
                           {inc.etiquetaCorta}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-center font-mono font-bold text-text-primary">
+                      <td className="py-2 px-3 text-center font-mono font-bold text-slate-900">
                         {inc.intentosTotal}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-[12px] text-text-secondary">
+                      <td className="py-2 px-3 font-mono text-xs text-slate-600">
                         {inc.historialTexto}
                       </td>
-                      <td className="py-2.5 px-3 text-[11px] text-text-muted italic">
+                      <td className="py-2 px-3 text-[11px] text-slate-500">
                         {inc.motivoIncidencia || 'Registro académico validado'}
                       </td>
                     </tr>
@@ -319,44 +318,44 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
             </table>
           </div>
         ) : (
-          <div className="p-6 bg-emerald-50/60 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/10 rounded-xl text-center text-[13px] text-emerald-900 dark:text-emerald-300">
-            <CheckCircle2 className="w-7 h-7 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" strokeWidth={1.8} />
-            <span className="font-bold">Trayectoria Regular Limpia:</span> No se registran recursamientos, exámenes extraordinarios ni adeudos activos en el expediente.
+          <div className="p-3.5 bg-emerald-50/60 border border-emerald-200 rounded-md text-center text-xs text-emerald-900">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto mb-0.5" strokeWidth={1.5} />
+            <span className="font-semibold">Trayectoria Regular Limpia:</span> Sin recursamientos ni adeudos activos registrados.
           </div>
         )}
       </div>
 
       {/* 5. PIE DE PÁGINA FORMAL Y LÍNEAS DE VALIDACIÓN */}
-      <div className="pt-5 mt-2 border-t-2 border-slate-900 dark:border-slate-500 grid grid-cols-3 gap-6 items-end select-none text-[12px]">
+      <div className="pt-2.5 mt-1 border-t border-slate-200 grid grid-cols-3 gap-6 items-end select-none text-xs">
         <div>
-          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">
-            Coordinación Emisora:
+          <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block">
+            Coordinación Emisora
           </span>
-          <span className="font-bold text-text-primary block mt-0.5">
+          <span className="font-semibold text-slate-900 block mt-0.5">
             Coordinación de Licenciaturas Mixtas
           </span>
-          <span className="text-[11px] text-text-muted mt-0.5 block">
+          <span className="text-[10px] text-slate-500 mt-0.5 block">
             Sede CAM · Universidad Interamericana para el Desarrollo
           </span>
         </div>
 
         {/* Línea de Firma y Validación */}
         <div className="text-center">
-          <div className="border-b border-text-muted w-48 mx-auto mb-1.5"></div>
-          <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">
+          <div className="border-b border-slate-300 w-44 mx-auto mb-1"></div>
+          <span className="text-[9.5px] font-semibold text-slate-600 uppercase tracking-wider block">
             Firma y Sello de Validación Académica
           </span>
-          <span className="text-[10px] text-text-muted">
+          <span className="text-[9px] text-slate-400">
             Control Escolar y Coordinación de Sede
           </span>
         </div>
 
         {/* Numeración y Cadena */}
-        <div className="text-right space-y-1">
-          <div className="text-[11px] text-text-muted">
-            Cadena de Certificación: <span className="font-mono text-text-secondary font-semibold">{estudiante.matricula}-CAM-2026</span>
+        <div className="text-right space-y-0.5">
+          <div className="text-[10px] text-slate-400 font-mono">
+            Cadena: <span className="text-slate-700 font-semibold">{estudiante.matricula}-CAM-2026</span>
           </div>
-          <div className="text-[13px] font-black text-text-primary font-mono">
+          <div className="text-xs font-bold text-slate-900 font-mono">
             HOJA 2 DE 2
           </div>
         </div>

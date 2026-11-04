@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import { 
-  ShieldCheck,
-  ShieldAlert,
-  Award,
-  BookOpen,
-  AlertTriangle,
-  CheckCircle2,
-  RotateCcw,
-  AlertCircle,
-  Clock,
-  Circle,
-  Info
+  ShieldCheck, 
+  ShieldAlert, 
+  Award, 
+  BookOpen, 
+  AlertTriangle, 
+  ChevronDown, 
+  ChevronUp,
+  CheckCircle2
 } from 'lucide-react';
+
+// Formateador inteligente a Title Case institucional
+function formatTitle(str) {
+  if (!str) return '';
+  const lowerWords = new Set(['de', 'en', 'y', 'el', 'la', 'los', 'las', 'del', 'para', 'lo', 'al', 'con', 'e', 'a']);
+  const romanNumerals = new Set(['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']);
+  return str.toLowerCase().split(' ').map((word, i) => {
+    if (romanNumerals.has(word)) return word.toUpperCase();
+    if (i > 0 && lowerWords.has(word)) return word;
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+}
 
 export default function CurriculumMap({ 
   auditData, 
@@ -20,13 +29,14 @@ export default function CurriculumMap({
   onStatusChange: _onStatusChange
 }) {
   const [selectedMateriaModal, setSelectedMateriaModal] = useState(null);
+  const [isAuxiliaryExpanded, setIsAuxiliaryExpanded] = useState(false);
 
   if (!auditData) {
     return (
-      <div className="bg-surface-1 rounded-3xl border border-border p-12 text-center text-text-muted shadow-card transition-theme">
-        <BookOpen className="w-12 h-12 mx-auto text-text-muted/50 mb-3" strokeWidth={1.8} />
-        <h3 className="text-base font-bold text-text-primary">Sin datos de auditoría cargados</h3>
-        <p className="text-[13px] text-text-secondary mt-1 max-w-md mx-auto">
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-500 shadow-2xs">
+        <BookOpen className="w-10 h-10 mx-auto text-slate-300 mb-2.5" strokeWidth={1.5} />
+        <h3 className="text-sm font-semibold text-slate-900">Sin datos de auditoría cargados</h3>
+        <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
           Seleccione una licenciatura y cargue el kárdex del alumno en PDF o elija uno de los casos de prueba institucionales para visualizar el mapa curricular oficial.
         </p>
       </div>
@@ -57,77 +67,90 @@ export default function CurriculumMap({
     return true;
   };
 
+  // Principio de Diseño por Excepción:
+  // Lo ordinario (ORD) es transparente y limpio. Solo la anomalía levanta la mano.
   const getMateriaVisuals = (estado) => {
     switch (estado) {
       case 'ORD':
         return { 
-          cardBorder: 'border-emerald-300 dark:border-emerald-500/40', 
-          badgeBg: 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300', 
-          gradeColor: 'text-emerald-700 dark:text-emerald-400',
-          icon: CheckCircle2, 
+          isRegular: true,
+          cardStyle: 'bg-white border-slate-200/90 hover:border-slate-300 hover:shadow-2xs', 
+          gradeColor: 'text-slate-800 font-bold',
+          badgeClass: '',
           label: 'Ordinario' 
         };
       case 'REC':
+        return { 
+          isRegular: false,
+          cardStyle: 'bg-amber-50/40 border-amber-300 border-l-[3px] border-l-amber-500 hover:border-amber-400', 
+          dotColor: 'bg-amber-500', 
+          gradeColor: 'text-amber-950 font-bold',
+          badgeClass: 'bg-amber-100/80 text-amber-900 border border-amber-200',
+          label: 'Recursamiento' 
+        };
       case 'RE':
         return { 
-          cardBorder: 'border-blue-300 dark:border-blue-500/40', 
-          badgeBg: 'bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300', 
-          gradeColor: 'text-blue-700 dark:text-blue-400',
-          icon: RotateCcw, 
-          label: 'Recup.' 
+          isRegular: false,
+          cardStyle: 'bg-sky-50/40 border-sky-300 border-l-[3px] border-l-sky-500 hover:border-sky-400', 
+          dotColor: 'bg-sky-500', 
+          gradeColor: 'text-sky-950 font-bold',
+          badgeClass: 'bg-sky-100/80 text-sky-900 border border-sky-200',
+          label: 'Regularización' 
         };
       case 'ADEUDO':
         return { 
-          cardBorder: 'border-rose-300 dark:border-rose-500/40', 
-          badgeBg: 'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300', 
-          gradeColor: 'text-rose-700 dark:text-rose-400',
-          icon: AlertCircle, 
+          isRegular: false,
+          cardStyle: 'bg-rose-50/60 border-rose-300 border-l-[3px] border-l-rose-600 hover:border-rose-400', 
+          dotColor: 'bg-rose-600', 
+          gradeColor: 'text-rose-700 font-bold',
+          badgeClass: 'bg-rose-100 text-rose-800 border border-rose-200',
           label: 'Adeudo' 
         };
       case 'OMITIDA':
         return { 
-          cardBg: 'bg-orange-50/60 dark:bg-orange-950/20',
-          cardBorder: 'border-orange-300 dark:border-orange-500/40', 
-          badgeBg: 'bg-orange-100 dark:bg-orange-500/20 text-orange-800 dark:text-orange-300', 
-          gradeColor: 'text-orange-700 dark:text-orange-400',
-          icon: AlertTriangle, 
+          isRegular: false,
+          cardStyle: 'bg-orange-50/60 border-orange-300 border-l-[3px] border-l-orange-500 hover:border-orange-400', 
+          dotColor: 'bg-orange-500', 
+          gradeColor: 'text-orange-700 font-bold',
+          badgeClass: 'bg-orange-100 text-orange-800 border border-orange-200',
           label: 'Omitida' 
         };
       case 'PENDIENTE':
         return { 
-          cardBg: 'bg-surface-1',
-          cardBorder: 'border-border/60', 
-          badgeBg: 'bg-surface-2 text-text-muted', 
-          gradeColor: 'text-text-muted/40',
-          icon: Clock, 
-          label: 'Pendiente' 
+          isRegular: false,
+          cardStyle: 'bg-slate-50/40 border-slate-200 border-dashed hover:bg-white', 
+          dotColor: 'bg-slate-300', 
+          gradeColor: 'text-slate-400 font-normal',
+          badgeClass: 'bg-slate-100 text-slate-500',
+          label: 'Por cursar' 
         };
       case 'OU':
         return {
-          cardBorder: 'border-purple-300 dark:border-purple-500/40',
-          badgeBg: 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300',
-          gradeColor: 'text-purple-700 dark:text-purple-400',
-          icon: Info,
-          label: 'OU · Oportunidad utilizada'
+          isRegular: false,
+          cardStyle: 'bg-purple-50/40 border-purple-300 border-l-[3px] border-l-purple-600 hover:border-purple-400',
+          dotColor: 'bg-purple-500',
+          gradeColor: 'text-purple-900 font-bold',
+          badgeClass: 'bg-purple-100 text-purple-800 border border-purple-200',
+          label: 'Oport. Utilizada'
         };
       case 'CURS':
       case 'CURSANDO':
       case 'RECURSANDO':
         return { 
-          cardBg: 'bg-pink-50 dark:bg-pink-950/20',
-          cardBorder: 'border-pink-300 dark:border-pink-500/40', 
-          badgeBg: 'bg-pink-100 dark:bg-pink-500/20 text-pink-800 dark:text-pink-300', 
-          gradeColor: 'text-pink-700 dark:text-pink-400',
-          icon: BookOpen, 
+          isRegular: false,
+          cardStyle: 'bg-pink-50/30 border-pink-300 border-l-[3px] border-l-pink-500 hover:border-pink-400', 
+          dotColor: 'bg-pink-500', 
+          gradeColor: 'text-pink-900 font-bold',
+          badgeClass: 'bg-pink-100 text-pink-800 border border-pink-200',
           label: estado === 'RECURSANDO' ? 'Recursando' : 'En Curso' 
         };
       default:
         return { 
-          cardBg: 'bg-surface-1',
-          cardBorder: 'border-border', 
-          badgeBg: 'bg-surface-2 text-text-secondary', 
-          gradeColor: 'text-text-primary',
-          icon: Circle, 
+          isRegular: true,
+          cardStyle: 'bg-white border-slate-200 hover:border-slate-300', 
+          dotColor: 'bg-slate-400', 
+          gradeColor: 'text-slate-800 font-bold',
+          badgeClass: 'bg-slate-100 text-slate-700',
           label: estado 
         };
     }
@@ -136,515 +159,493 @@ export default function CurriculumMap({
   return (
     <div 
       ref={forwardedRef} 
-      className="bg-surface-1 rounded-2xl border border-border p-6 space-y-5 w-full max-w-[1380px] mx-auto box-border transition-theme print:p-2 print:shadow-none print:border-none print:bg-white print:text-black"
+      className="bg-white rounded-xl border border-slate-200 p-5 space-y-3.5 w-full max-w-[1400px] mx-auto box-border shadow-2xs print:p-2 print:shadow-none print:border-none print:bg-white print:text-black"
       id="hoja1-mapa-ejecucion"
     >
       {/* 1. ENCABEZADO INSTITUCIONAL OFICIAL UNID */}
-      <div className="flex items-start justify-between border-b-2 border-slate-900 dark:border-slate-500 pb-3">
-        {/* Izquierda: Textos Institucionales */}
+      <div className="flex items-start justify-between border-b border-slate-200 pb-2.5">
         <div className="space-y-0.5">
-          <div className="text-[10px] font-black tracking-widest text-text-primary uppercase">
+          <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
             UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO
           </div>
-          <div className="text-xs font-black text-text-secondary uppercase tracking-tight">
+          <div className="text-xs font-semibold text-slate-600 uppercase tracking-tight">
             {carrera?.encabezado_plan || 'MAPA DE EJECUCIÓN PARA EL PLAN 2018'}
           </div>
-          <div className="text-sm font-black text-text-primary uppercase tracking-normal">
+          <div className="text-sm font-bold text-slate-900 uppercase tracking-normal">
             {carrera?.nombre || 'LICENCIATURA EN CONTABILIDAD Y FINANZAS (MIXTO) - FEDERAL'}
           </div>
-          <div className="flex items-center space-x-4 pt-1 text-[10px] text-text-muted font-medium">
-            <span>Última actualización CPA: <strong className="text-text-primary">{carrera?.ultima_actualizacion_cpa || '31-julio-2026'}</strong></span>
+          <div className="flex items-center space-x-3 pt-0.5 text-[10px] text-slate-400 font-mono">
+            <span>Última actualización CPA: <strong className="text-slate-700">{carrera?.ultima_actualizacion_cpa || '31-julio-2026'}</strong></span>
             <span>·</span>
-            <span>Fecha de consulta: <strong className="text-text-primary">{fechaConsulta}</strong></span>
+            <span>Fecha de consulta: <strong className="text-slate-700">{fechaConsulta}</strong></span>
           </div>
         </div>
 
-        {/* Derecha: Emblema Oficial UNID */}
-        <div className="flex items-center space-x-3 text-right">
+        <div className="flex items-center space-x-2.5 text-right">
           <div className="flex flex-col items-end">
-            <span className="text-sm font-black text-text-primary tracking-wider">UNID</span>
-            <span className="text-[9px] font-extrabold text-text-muted tracking-widest uppercase">
+            <span className="text-xs font-bold text-slate-900 tracking-wider">UNID</span>
+            <span className="text-[8px] font-semibold text-slate-400 tracking-widest uppercase">
               FORMANDO CON VALORES
             </span>
           </div>
           <img 
             src="/unid-logo.png" 
             alt="UNID" 
-            className="w-10 h-10 rounded-xl object-contain shadow-sm border border-border flex-shrink-0" 
+            className="w-9 h-9 rounded-lg object-contain border border-slate-200 flex-shrink-0" 
           />
         </div>
       </div>
 
       {/* BANNER DE INCONSISTENCIA DE KÁRDEX */}
       {coherencia?.materiasHuerfanas?.length > 4 && coherencia?.alertaCarreraAjena && (
-        <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl p-4 text-rose-800 dark:text-rose-300 text-[13px]">
-          <div className="flex items-start space-x-3">
-            <AlertTriangle className="w-5 h-5 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
+        <div className="bg-rose-50 border border-rose-200 rounded-lg p-2.5 text-rose-800 text-xs">
+          <div className="flex items-start space-x-2">
+            <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
             <div>
-              <p className="font-bold uppercase tracking-wide text-rose-900 dark:text-rose-200">Inconsistencia de Kárdex Detectada</p>
-              <p className="mt-1 leading-relaxed text-rose-800 dark:text-rose-300">
-                Aunque el expediente indica {estudiante.programa}, el alumno registra <strong className="font-bold">{coherencia.materiasHuerfanas.length}</strong> asignaturas pertenecientes a <strong className="font-bold">Licenciatura en {coherencia.alertaCarreraAjena}</strong> que no corresponden a este mapa curricular.
+              <p className="font-bold uppercase tracking-wide text-rose-900">Inconsistencia de Kárdex Detectada</p>
+              <p className="mt-0.5 leading-relaxed text-rose-800">
+                El alumno registra <strong className="font-bold">{coherencia.materiasHuerfanas.length}</strong> asignaturas pertenecientes a <strong className="font-bold">Licenciatura en {coherencia.alertaCarreraAjena}</strong> que no corresponden a este mapa curricular.
               </p>
-              <details className="mt-2 cursor-pointer group">
-                <summary className="font-semibold underline decoration-rose-300 dark:decoration-rose-500/50 group-hover:decoration-rose-500 dark:group-hover:decoration-rose-400">Ver asignaturas ajenas detectadas</summary>
-                <div className="mt-2 text-[11px] bg-white dark:bg-surface-2 p-3 rounded-lg border border-rose-100 dark:border-rose-500/10 max-h-32 overflow-y-auto">
-                  {coherencia.materiasHuerfanas.map(m => (
-                    <div key={m.claveCompleta} className="font-mono text-text-secondary border-b border-border-subtle py-1.5 last:border-0">
-                      {m.claveCompleta} - {m.calificacion || 'SC'}
-                    </div>
-                  ))}
-                </div>
-              </details>
             </div>
           </div>
         </div>
       )}
 
       {/* 2. CINTILLA FORMAL DEL ESTUDIANTE */}
-      <div className="bg-surface-2 border border-border rounded-xl px-5 py-3 flex flex-wrap items-center justify-between gap-4 text-xs select-none transition-theme">
-        <div className="flex flex-wrap items-center space-x-6 gap-y-2">
+      <div className="bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none">
+        <div className="flex flex-wrap items-center space-x-5 gap-y-1">
           <div>
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Matrícula:</span>
-            <span className="font-mono font-bold text-text-primary text-[13px] block mt-1">{estudiante.matricula}</span>
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Matrícula</span>
+            <span className="font-mono font-bold text-slate-900 text-xs block">{estudiante.matricula}</span>
           </div>
-          <div className="border-l border-border-subtle pl-5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Alumno:</span>
-            <span className="font-bold text-text-primary text-[13px] block mt-1">{estudiante.nombre}</span>
+          <div className="border-l border-slate-200 pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Alumno</span>
+            <span className="font-semibold text-slate-900 text-xs block">{estudiante.nombre}</span>
           </div>
-          <div className="border-l border-border-subtle pl-5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Sede:</span>
-            <span className="font-semibold text-text-secondary text-[13px] block mt-1">{estudiante.sede || 'CAM'}</span>
+          <div className="border-l border-slate-200 pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Sede</span>
+            <span className="font-medium text-slate-700 text-xs block">{estudiante.sede || 'CAM'}</span>
           </div>
           {estudiante.modalidadDetectada && (
-            <div className="border-l border-border-subtle pl-5">
-              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Modalidad:</span>
-              <span className={`font-extrabold px-2 py-0.5 mt-0.5 inline-block rounded text-[10px] uppercase border ${
-                estudiante.modalidadDetectada === 'EJECUTIVO' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20' :
-                estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20' :
-                estudiante.modalidadDetectada === 'MAESTRÍA' || estudiante.modalidadDetectada === 'POSGRADO' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-500/20' :
-                'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20'
-              }`}>
-                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'DUAL' : estudiante.modalidadDetectada}
+            <div className="border-l border-slate-200 pl-4">
+              <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Modalidad</span>
+              <span className="text-[11px] font-semibold text-slate-700 uppercase">
+                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'Modalidad Dual' : estudiante.modalidadDetectada === 'EJECUTIVO' ? 'Plan Ejecutivo' : estudiante.modalidadDetectada}
               </span>
             </div>
           )}
-          <div className="border-l border-border-subtle pl-5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Promedio:</span>
-            <div className="flex items-center space-x-1.5 mt-0.5">
-              <span className={`font-mono font-black text-[12px] px-2 py-0.5 rounded border inline-block ${
-                resumen?.promedio !== null && resumen?.promedio !== undefined
-                  ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-500/30'
-                  : 'bg-surface-1 text-text-muted border-border'
-              }`}>
+          <div className="border-l border-slate-200 pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Promedio</span>
+            <div className="flex items-baseline space-x-1">
+              <span className="font-mono font-bold text-xs text-slate-900">
                 {resumen?.promedioFormatted || 'S/C'}
               </span>
-              <span className="text-[9.5px] text-text-muted font-medium whitespace-nowrap">
-                {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : '(En curso)'}
+              <span className="text-[10px] text-slate-400 font-mono">
+                {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : ''}
               </span>
             </div>
           </div>
         </div>
 
         {/* Dictamen Compacto de Estadía */}
-        <div className="flex items-center space-x-3 pl-5 border-l border-border-subtle shrink-0">
-          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider whitespace-nowrap">DICTAMEN DE ESTADÍA:</span>
-          <span className={`px-3 py-1.5 rounded-lg text-[11px] font-extrabold tracking-tight border flex items-center space-x-1.5 whitespace-nowrap ${
+        <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 shrink-0">
+          <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">Dictamen:</span>
+          <span className={`px-2.5 py-0.5 rounded text-xs font-semibold border flex items-center space-x-1.5 whitespace-nowrap ${
             esElegible 
-              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20' 
-              : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-500/20'
+              ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+              : 'bg-rose-50 text-rose-800 border-rose-200'
           }`}>
             {esElegible ? (
-              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.8} />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             ) : (
-              <ShieldAlert className="w-4 h-4 text-rose-600 dark:text-rose-400" strokeWidth={1.8} />
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
             )}
             <span>{resumen.dictamenEstadia}</span>
           </span>
         </div>
       </div>
 
-      {/* CONTENEDOR RESPONSIVO AL ZOOM PARA CUADRÍCULA DE CUATRIMESTRES */}
-      <div className="overflow-x-auto pb-2 -mx-1 px-1">
-        <div className="min-w-[860px] space-y-4">
+      {/* CONTENEDOR RESPONSIVO PARA CUADRÍCULA DE CUATRIMESTRES */}
+      <div className="overflow-x-auto pb-1 -mx-0.5 px-0.5">
+        <div className="min-w-[880px] space-y-2.5">
           {/* 3. CUADRÍCULA DE LOS CUATRIMESTRES */}
-          <div className={`grid gap-2 select-none ${cuatrimestres.length === 10 ? 'grid-cols-10' : 'grid-cols-9'}`}>
+          <div className={`grid gap-1.5 select-none ${cuatrimestres.length === 10 ? 'grid-cols-10' : 'grid-cols-9'}`}>
             {cuatrimestres.map((cuat) => (
-          <div key={cuat.numero} className="flex flex-col space-y-2">
-            {/* Cabecera del Cuatrimestre */}
-            <div className="bg-[#181C24] dark:bg-surface-2 text-white dark:text-text-primary text-center py-2 px-1 rounded-lg shadow-sm border dark:border-border transition-theme">
-              <span className="block text-[12px] font-bold tracking-tight whitespace-nowrap">
-                {cuat.numero}.º Cuat.
-              </span>
-              <span className="text-[9px] font-medium text-slate-300 dark:text-text-muted block whitespace-nowrap mt-0.5">
-                {cuat.con_ingles ? 'Con Inglés' : 'Sin Inglés'}
-              </span>
+              <div key={cuat.numero} className="flex flex-col space-y-1.5">
+                {/* Cabecera del Cuatrimestre */}
+                <div className="bg-slate-900 text-white text-center py-1 px-1 rounded-md shadow-2xs">
+                  <span className="block text-[11px] font-bold tracking-tight whitespace-nowrap">
+                    {cuat.numero}.º Cuat.
+                  </span>
+                  <span className="text-[8px] font-mono text-slate-300 block whitespace-nowrap">
+                    {cuat.con_ingles ? 'Con Inglés' : 'Sin Inglés'}
+                  </span>
+                </div>
+
+                {/* Materias del Cuatrimestre */}
+                <div className="flex flex-col space-y-1.5 flex-1">
+                  {cuat.materias.filter((materia) => !debeOcultarseDelMapa(materia)).map((materia) => {
+                    const audit = materia.audit;
+                    const dimmed = isMateriaDimmed(audit.estado);
+                    const visual = getMateriaVisuals(audit.estado);
+
+                    return (
+                      <div
+                        key={materia.clave}
+                        onClick={() => setSelectedMateriaModal({ materia, audit })}
+                        className={`p-2 rounded-md border transition-all duration-150 cursor-pointer flex flex-col justify-between min-h-[86px] box-border ${visual.cardStyle} ${
+                          dimmed ? 'opacity-20 grayscale' : 'opacity-100'
+                        }`}
+                        title="Haga clic para ver el historial detallado de intentos"
+                      >
+                        <div>
+                          {/* Clave y Conecta */}
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="font-mono text-[8.5px] text-slate-400 tracking-wider">
+                              {materia.subj}-{materia.crse}
+                            </span>
+                            {materia.conecta && (
+                              <span className="px-1 py-0.2 text-[7.5px] font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 rounded" title="Asignatura Institucional Virtual (Clase Conecta)">
+                                CONECTA
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Nombre de la Asignatura en Title Case para descansar la vista */}
+                          <div className="text-[11px] font-semibold text-slate-800 leading-tight">
+                            {formatTitle(materia.nombre)}
+                          </div>
+                        </div>
+
+                        {/* Calificación y Estado (Solo se muestra etiqueta si hay anomalía) */}
+                        <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-100">
+                          <span className={`font-mono text-xs ${visual.gradeColor}`}>
+                            {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
+                              audit.calificacion
+                            ) : (
+                              <span className="text-slate-300 font-normal">--</span>
+                            )}
+                          </span>
+
+                          {/* Diseño por Excepción: Solo muestra badge si NO es ordinario */}
+                          {!visual.isRegular ? (
+                            <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                              {visual.label}
+                            </span>
+                          ) : (
+                            <span className="text-[9px] text-slate-300 font-mono">AC</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Relleno de altura para cuatrimestres con estadía de bloque completo */}
+                  {cuat.materias.length === 1 && cuat.materias[0].es_estadia && (
+                    <div key={`filler-${cuat.numero}`} className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-md p-2 flex flex-col items-center justify-center text-center text-slate-400 text-xs">
+                      <Award className="w-5 h-5 text-slate-300 mb-1" strokeWidth={1.5} />
+                      <span className="font-semibold text-slate-700 text-[11px]">Bloque Completo</span>
+                      <span className="text-[9px] text-slate-400">Estadía Empresarial</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 4. FILA DE NIVELES DE INGLÉS (COLS 1-5) Y REQUISITOS CO-CURRICULARES / EGRESO (COLS 6-9) */}
+          <div className="pt-2 select-none border-t border-slate-100">
+            <div className="grid grid-cols-9 gap-1.5 mb-1 text-[9.5px] font-bold uppercase text-slate-400 tracking-wider">
+              <div className="col-span-5 flex items-center space-x-2">
+                <span>Requisito de Inglés (1.º al 5.º)</span>
+                {auditData.exentoIngles && (
+                  <span className="text-[8.5px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-1 py-0.2 rounded">
+                    Exento
+                  </span>
+                )}
+              </div>
+              <div className="col-span-4 flex items-center space-x-2">
+                <span>Requisitos de Egreso y Titulación</span>
+              </div>
             </div>
 
-            {/* Materias del Cuatrimestre */}
-            <div className="flex flex-col space-y-2 flex-1">
-              {cuat.materias.filter((materia) => !debeOcultarseDelMapa(materia)).map((materia) => {
-                const audit = materia.audit;
-                const dimmed = isMateriaDimmed(audit.estado);
-                const visual = getMateriaVisuals(audit.estado);
-
-                const Icon = visual.icon;
-
+            <div className="grid grid-cols-9 gap-1.5">
+              {/* Niveles de Inglés (1.º al 5.º Cuatrimestre) */}
+              {ingles.length > 0 ? ingles.map((ing) => {
+                const dimmed = isMateriaDimmed(ing.estado);
+                const visual = getMateriaVisuals(ing.estado);
                 return (
                   <div
-                    key={materia.clave}
-                    onClick={() => setSelectedMateriaModal({ materia, audit })}
-                    className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[110px] box-border ${visual.cardBg || 'bg-surface-1'} ${visual.cardBorder} ${
-                      dimmed ? 'opacity-30 grayscale' : 'opacity-100'
+                    key={`ing-${ing.nivel || ing.clave}`}
+                    onClick={() => setSelectedMateriaModal({ materia: { clave: `LENG-${ing.clave}`, nombre: ing.nombre }, audit: ing })}
+                    className={`p-2 rounded-md border transition-all duration-150 cursor-pointer flex flex-col justify-between min-h-[76px] box-border ${visual.cardStyle} ${
+                      dimmed ? 'opacity-20 grayscale' : 'opacity-100'
                     }`}
-                    title="Haga clic para ver el historial detallado de intentos"
+                    title="Haga clic para ver el detalle de intentos de inglés"
                   >
                     <div>
-                      {/* Clave y Conecta */}
-                      <div className="flex items-start justify-between mb-2">
-                        <span className="font-mono font-bold text-[10px] text-text-muted tracking-widest uppercase">
-                          {materia.subj}-{materia.crse}
-                        </span>
-                        {materia.conecta && (
-                          <span className="px-1.5 py-0.5 text-[8px] font-black text-cyan-700 dark:text-cyan-300 bg-cyan-100 dark:bg-cyan-500/15 border border-cyan-200 dark:border-cyan-500/20 rounded-sm shadow-sm tracking-wider" title="Asignatura Institucional Virtual (Clase Conecta)">
-                            CONECTA
-                          </span>
-                        )}
+                      <div className="font-mono text-[8.5px] text-slate-400 mb-0.5">
+                        LENG-{ing.clave}
                       </div>
-
-                      {/* Nombre oficial */}
-                      <div className="text-[11px] leading-tight font-black text-text-primary">
-                        {materia.nombre}
+                      <div className="text-[10px] font-semibold text-slate-800 leading-tight">
+                        {formatTitle(ing.nombre)}
                       </div>
                     </div>
 
-                    {/* Calificación y Etiqueta corta de estado */}
-                    <div className="flex items-end justify-between mt-3 pt-3 border-t border-border-subtle/50">
-                      <div className="flex flex-col">
-                        <span className="text-[8px] font-bold text-text-muted uppercase tracking-widest mb-0.5">Calif.</span>
-                        <span className={`font-mono text-[15px] font-black leading-none ${visual.gradeColor}`} title="Calificación final obtenida">
-                          {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
-                            audit.calificacion
-                          ) : (
-                            <span className="text-text-muted/40 font-medium text-[12px]">--</span>
-                          )}
-                        </span>
-                      </div>
-
-                      <div className={`flex items-center space-x-1 px-1.5 py-1 rounded-md min-w-0 ${visual.badgeBg}`} title={`Estado: ${audit.estado}`}>
-                        <Icon className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                        <span className="text-[8.5px] font-black uppercase tracking-wider truncate">
+                    <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100">
+                      <span className={`font-mono text-xs ${visual.gradeColor}`}>
+                        {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-slate-300 font-normal">--</span>}
+                      </span>
+                      {!visual.isRegular ? (
+                        <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
                           {visual.label}
                         </span>
+                      ) : (
+                        <span className="text-[9px] text-slate-300 font-mono">AC</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              }) : (
+                <div className="col-span-5 flex items-center justify-center p-2.5 bg-slate-50 border border-slate-200 border-dashed rounded-md text-slate-400 text-xs font-medium">
+                  No aplica en Plan Ejecutivo
+                </div>
+              )}
+
+              {/* 4 Requisitos Co-Curriculares y de Titulación / Egreso (Cols 6 a 9) */}
+              {coCurriculares.filter((cocu) => !debeOcultarseDelMapa(cocu)).map((cocu, index) => {
+                const dimmed = isMateriaDimmed(cocu.estado);
+                const visual = getMateriaVisuals(cocu.estado);
+                return (
+                  <div
+                    key={`cocu-${cocu.clave || index}`}
+                    onClick={() => setSelectedMateriaModal({ materia: { clave: cocu.clave, nombre: cocu.nombre }, audit: cocu })}
+                    className={`p-2 rounded-md border transition-all duration-150 cursor-pointer flex flex-col justify-between min-h-[76px] box-border ${visual.cardStyle} ${
+                      dimmed ? 'opacity-20 grayscale' : 'opacity-100'
+                    }`}
+                    title="Haga clic para ver el detalle de este requisito"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className="font-mono text-[8.5px] text-slate-400">
+                          {cocu.clave}
+                        </span>
+                        <span className="px-1 py-0.2 text-[7.5px] font-bold text-purple-800 bg-purple-50 border border-purple-200 rounded" title="Requisito Co-Curricular / Titulación">
+                          CC
+                        </span>
                       </div>
+                      <div className="text-[10px] font-semibold text-slate-800 leading-tight">
+                        {formatTitle(cocu.nombre)}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100">
+                      <span className={`font-mono text-xs ${visual.gradeColor}`}>
+                        {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
+                          ? cocu.calificacion 
+                          : cocu.calificacion === 'NO CURSÓ' 
+                          ? <span className="text-[9px] text-slate-400">NC</span> 
+                          : <span className="text-slate-300 font-normal">--</span>}
+                      </span>
+                      {!visual.isRegular ? (
+                        <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                          {visual.label}
+                        </span>
+                      ) : (
+                        <span className="text-[9px] text-slate-300 font-mono">AC</span>
+                      )}
                     </div>
                   </div>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      </div>
 
-              {/* Relleno de altura para cuatrimestres con estadía de bloque completo */}
-              {cuat.materias.length === 1 && cuat.materias[0].es_estadia && (
-                <div key={`filler-${cuat.numero}`} className="flex-1 bg-surface-2 border border-dashed border-border rounded-lg p-2 flex flex-col items-center justify-center text-center text-text-muted text-[11px]">
-                  <Award className="w-6 h-6 text-text-muted/50 mb-1" strokeWidth={1.8} />
-                  <span className="font-bold text-text-secondary">Bloque Completo</span>
-                  <span className="text-[10px] text-text-muted">Estadía</span>
+      {/* 5. PARTE INFERIOR: NOMENCLATURA Y ELECTIVAS (COLAPSABLE EN PANTALLA, COMPLETO EN IMPRESIÓN/PDF) */}
+      <div className="pt-2 border-t border-slate-200 select-none text-xs">
+        {/* Barra compacta de control bajo demanda */}
+        <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 print:hidden">
+          <div className="flex items-center space-x-3 text-slate-600">
+            <span className="font-semibold text-xs text-slate-800">Referencias y Catálogo:</span>
+            <span className="text-[11px] text-slate-500">8 criterios de estados · 10 electivas del plan · Normativa</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsAuxiliaryExpanded(!isAuxiliaryExpanded)}
+            className="inline-flex items-center space-x-1 px-2.5 py-0.5 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
+          >
+            <span>{isAuxiliaryExpanded ? 'Ocultar Referencias' : 'Ver Nomenclatura y Electivas'}</span>
+            {isAuxiliaryExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+        </div>
+
+        {/* Paneles de Referencia (Visibles si isAuxiliaryExpanded = true o en impresión/PDF) */}
+        <div className={`${isAuxiliaryExpanded ? 'block' : 'hidden print:block'} mt-2.5`}>
+          <div className="grid grid-cols-12 gap-3 text-xs">
+            {/* Bloque Izquierdo: Nomenclatura de Estados */}
+            <div className="col-span-5 bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
+              <div className="text-[10px] font-bold uppercase text-slate-700 tracking-wider border-b border-slate-200 pb-1 flex items-center justify-between">
+                <span>Criterios Oficiales de Auditoría</span>
+                <span className="text-[9px] font-normal text-slate-400 font-mono">UNID</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">ORD:</span>
+                  <span className="text-slate-600 text-[11px]">Acreditada 1.er intento</span>
+                </div>
+
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#D97706] shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">REC:</span>
+                  <span className="text-slate-600 text-[11px]">Recursamiento</span>
+                </div>
+
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#0284C7] shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">RE:</span>
+                  <span className="text-slate-600 text-[11px]">Regularización</span>
+                </div>
+
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-pink-500 shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">CURS:</span>
+                  <span className="text-slate-600 text-[11px]">En Curso</span>
+                </div>
+
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">ADEUDO:</span>
+                  <span className="text-slate-600 text-[11px]">Reprobada activa</span>
+                </div>
+
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#EA580C] shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">OMITIDA:</span>
+                  <span className="text-slate-600 text-[11px]">No inscrita</span>
+                </div>
+
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#7E22CE] shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">OU:</span>
+                  <span className="text-slate-600 text-[11px]">Oportunidad util.</span>
+                </div>
+
+                <div className="flex items-center space-x-1.5 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
+                  <span className="font-bold text-slate-800 font-mono text-[11px]">PEND:</span>
+                  <span className="text-slate-600 text-[11px]">Por cursar</span>
+                </div>
+              </div>
+
+              {/* Normativa */}
+              <div className="pt-1.5 border-t border-slate-200 text-[10px] text-slate-500 leading-tight">
+                * <strong className="text-slate-800">Normativa:</strong> Asignaturas en <strong className="text-rose-700">ADEUDO</strong> u <strong className="text-orange-700">OMITIDAS</strong> (1.º a 6.º) bloquean la Estadía.
+              </div>
+            </div>
+
+            {/* Bloque Derecho: Asignaturas Electivas Multidisciplinares (10) */}
+            <div className="col-span-7 bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
+              <div className="text-[10px] font-bold uppercase text-slate-700 tracking-wider border-b border-slate-200 pb-1 flex items-center justify-between">
+                <span>Electivas Multidisciplinares</span>
+                <span className="text-[9px] font-normal text-slate-400 font-mono">10 Opciones del Catálogo</span>
+              </div>
+
+              {electivas.length > 0 ? (
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+                  {electivas.map((elec) => (
+                    <div 
+                      key={elec.clave} 
+                      className={`flex items-center justify-between px-2 py-0.5 rounded border text-[10.5px] ${
+                        activeFilter === 'OU' && elec.calificacion !== 'OU' ? 'opacity-20 grayscale' : 'opacity-100'
+                      } ${
+                        elec.calificacion === 'OU'
+                          ? 'bg-purple-50 border-purple-200 text-purple-900 font-bold'
+                          : elec.cursada
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-900 font-bold' 
+                          : elec.cursando
+                          ? 'bg-pink-50 border-pink-200 text-pink-900 font-bold'
+                          : 'bg-white border-slate-200 text-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-1 min-w-0 pr-1">
+                        <span className="font-mono text-slate-400 text-[9px] shrink-0">{elec.subj}-{elec.crse}:</span>
+                        <span className="truncate text-[10px] font-medium">{formatTitle(elec.nombre)}</span>
+                      </div>
+                      <span className={`shrink-0 text-[8px] font-mono font-bold uppercase px-1 py-0.2 rounded ml-1 ${
+                        elec.calificacion === 'OU'
+                          ? 'bg-purple-100 text-purple-800'
+                          : elec.cursada
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : elec.cursando
+                          ? 'bg-pink-100 text-pink-800'
+                          : 'bg-slate-100 text-slate-500'
+                      }`}>
+                        {elec.calificacion === 'OU' ? 'OU' : elec.cursada ? `AC (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disp.'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full pb-2">
+                  <span className="text-slate-400 text-xs">Plan curricular cerrado (Sin electivas)</span>
                 </div>
               )}
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* 4. FILA DE NIVELES DE INGLÉS (COLS 1-5) Y REQUISITOS CO-CURRICULARES / EGRESO (COLS 6-9) */}
-      <div className="pt-2 select-none">
-        <div className="grid grid-cols-9 gap-2 mb-2 text-[11px] font-black uppercase text-text-secondary tracking-wider">
-          <div className="col-span-5 flex items-center space-x-2">
-            <span>Requisito Curricular de Inglés (1.º al 5.º Cuatrimestre):</span>
-            {auditData.exentoIngles && (
-              <span className="text-[10px] font-bold bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 px-2 py-0.5 rounded-md">
-                Exento (LENG-0008 AC)
-              </span>
-            )}
-          </div>
-          <div className="col-span-4 flex items-center space-x-2">
-            <span>Requisitos Co-Curriculares y de Egreso:</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-9 gap-2">
-          {/* Niveles de Inglés (1.º al 5.º Cuatrimestre) */}
-          {ingles.length > 0 ? ingles.map((ing) => {
-            const dimmed = isMateriaDimmed(ing.estado);
-            const visual = getMateriaVisuals(ing.estado);
-            const Icon = visual.icon;
-            return (
-              <div
-                key={`ing-${ing.nivel || ing.clave}`}
-                onClick={() => setSelectedMateriaModal({ materia: { clave: `LENG-${ing.clave}`, nombre: ing.nombre }, audit: ing })}
-                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border ${visual.cardBg || 'bg-surface-1'} ${visual.cardBorder} ${
-                  dimmed ? 'opacity-30 grayscale' : 'opacity-100'
-                }`}
-                title="Haga clic para ver el detalle de intentos de inglés"
-              >
-                <div>
-                  <div className="font-mono font-bold text-[9px] text-text-muted tracking-widest uppercase mb-1">
-                    LENG-{ing.clave}
-                  </div>
-                  <div className="text-[10px] font-black text-text-primary leading-tight whitespace-normal break-normal">
-                    {ing.nombre}
-                  </div>
-                </div>
-
-                <div className="flex items-end justify-between mt-2 pt-2 border-t border-border-subtle/50">
-                  <div className="flex flex-col">
-                    <span className={`font-mono text-[13px] font-black leading-none ${visual.gradeColor}`}>
-                      {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-text-muted/40 text-[11px]">--</span>}
-                    </span>
-                  </div>
-                  <div className={`flex items-center space-x-1 px-1.5 py-0.5 rounded-md min-w-0 ${visual.badgeBg}`}>
-                    <Icon className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                    <span className="text-[8px] font-black uppercase tracking-wider truncate">
-                      {visual.label}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          }) : (
-            <div className="col-span-5 flex items-center justify-center p-3 bg-surface-2 border border-border border-dashed rounded-lg text-text-muted text-[12px] font-semibold">
-              No aplica en Plan Ejecutivo
-            </div>
-          )}
-
-          {/* 4 Requisitos Co-Curriculares y de Titulación / Egreso (Cols 6 a 9) */}
-          {coCurriculares.filter((cocu) => !debeOcultarseDelMapa(cocu)).map((cocu, index) => {
-            const dimmed = isMateriaDimmed(cocu.estado);
-            const visual = getMateriaVisuals(cocu.estado);
-            const Icon = visual.icon;
-            return (
-              <div
-                key={`cocu-${cocu.clave || index}`}
-                onClick={() => setSelectedMateriaModal({ materia: { clave: cocu.clave, nombre: cocu.nombre }, audit: cocu })}
-                className={`p-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between min-h-[90px] box-border ${visual.cardBg || 'bg-surface-1'} ${visual.cardBorder} ${
-                  dimmed ? 'opacity-30 grayscale' : 'opacity-100'
-                }`}
-                title="Haga clic para ver el detalle de este requisito"
-              >
-                <div>
-                  <div className="flex items-start justify-between mb-1">
-                    <span className="font-mono font-bold text-[9px] text-text-muted tracking-widest uppercase">
-                      {cocu.clave}
-                    </span>
-                    <span className="px-1.5 py-0.5 text-[8px] font-black text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/15 border border-purple-200 dark:border-purple-500/20 rounded-sm shadow-sm" title="Requisito Co-Curricular / Titulación">
-                      CC
-                    </span>
-                  </div>
-                  <div className="text-[10px] font-black text-text-primary leading-tight whitespace-normal break-normal">
-                    {cocu.nombre}
-                  </div>
-                </div>
-
-                <div className="flex items-end justify-between mt-2 pt-2 border-t border-border-subtle/50">
-                  <div className="flex flex-col">
-                    <span className={`font-mono text-[13px] font-black leading-none ${visual.gradeColor}`}>
-                      {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
-                        ? cocu.calificacion 
-                        : cocu.calificacion === 'NO CURSÓ' 
-                        ? <span className="text-[9px]">NC</span> 
-                        : <span className="text-text-muted/40 text-[11px]">--</span>}
-                    </span>
-                  </div>
-                  <div className={`flex items-center space-x-1 px-1.5 py-0.5 rounded-md min-w-0 ${visual.badgeBg}`}>
-                    <Icon className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                    <span className="text-[8px] font-black uppercase tracking-wider truncate">
-                      {visual.label}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-        </div>
-      </div>
-      {/* FIN CONTENEDOR RESPONSIVO AL ZOOM */}
-
-      {/* 5. PARTE INFERIOR: NOMENCLATURA (IZQ) Y ELECTIVAS MULTIDISCIPLINARES (DER) */}
-      <div className="grid grid-cols-12 gap-4 pt-4 border-t border-border select-none text-[13px]" style={{ overflow: 'visible' }}>
-        {/* Bloque Izquierdo: Descripción y Nomenclatura de Estados */}
-        <div className="col-span-5 bg-surface-2 border border-border rounded-xl p-4 space-y-3">
-          <div className="text-[12px] font-bold uppercase text-text-primary tracking-wide border-b border-border-subtle pb-1.5 flex items-center justify-between">
-            <span>Nomenclatura y Estados</span>
-            <span className="text-[11px] font-medium text-text-muted normal-case">Criterio UNID</span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[12px] leading-normal">
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-[#059669] shrink-0" />
-              <span className="font-bold text-text-primary">ORD:</span>
-              <span className="text-text-secondary">1.ª Oportunidad</span>
-            </div>
-
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-[#D97706] shrink-0" />
-              <span className="font-bold text-text-primary">REC:</span>
-              <span className="text-text-secondary">Recursamiento</span>
-            </div>
-
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-[#0284C7] shrink-0" />
-              <span className="font-bold text-text-primary">RE:</span>
-              <span className="text-text-secondary">Regularización</span>
-            </div>
-
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-pink-500 shrink-0" />
-              <span className="font-bold text-text-primary">CURS:</span>
-              <span className="text-text-secondary">En Curso</span>
-            </div>
-
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-[#DC2626] shrink-0" />
-              <span className="font-bold text-text-primary">ADEUDO:</span>
-              <span className="text-text-secondary">Reprobada</span>
-            </div>
-
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-[#EA580C] shrink-0" />
-              <span className="font-bold text-text-primary">OMITIDA:</span>
-              <span className="text-text-secondary">No cargada en periodo</span>
-            </div>
-
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-[#7E22CE] shrink-0" />
-              <span className="font-bold text-text-primary">OU:</span>
-              <span className="text-text-secondary">Oportunidad utilizada</span>
-            </div>
-
-            <div className="flex items-center space-x-2 py-1">
-              <span className="w-3 h-3 rounded-full bg-slate-400 shrink-0" />
-              <span className="font-bold text-text-primary">PEND:</span>
-              <span className="text-text-secondary">Por cursar (futura)</span>
-            </div>
-          </div>
-
-          {/* Distinción clara de Tipos de Asignatura e Insignias */}
-          <div className="pt-2 border-t border-border-subtle flex items-center justify-between text-[11px] flex-wrap gap-2">
-            <div className="flex items-center space-x-1.5">
-              <span className="px-1.5 py-0.5 text-[8.5px] font-black text-cyan-700 dark:text-cyan-300 bg-cyan-100 dark:bg-cyan-500/20 border border-cyan-200 dark:border-cyan-500/20 rounded">
-                CONECTA
-              </span>
-              <span className="text-text-secondary font-medium">Clase institucional virtual</span>
-            </div>
-            <div className="flex items-center space-x-1.5">
-              <span className="px-1.5 py-0.5 text-[8.5px] font-black text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/20 border border-purple-200 dark:border-purple-500/20 rounded">
-                CC
-              </span>
-              <span className="text-text-secondary font-medium">Requisito Co-Curricular</span>
-            </div>
-          </div>
-
-          {/* Nota Normativa de Estadía */}
-          <div className="pt-2 border-t border-border-subtle text-[11px] text-text-muted leading-snug">
-            * <strong className="text-text-primary font-bold">Normativa de Estadía:</strong> Asignaturas en <strong className="text-red-700 dark:text-red-400 font-bold">ADEUDO</strong> u <strong className="text-orange-700 dark:text-orange-400 font-bold">OMITIDAS</strong> (1.º a 6.º cuatrimestre) bloquean la Estadía.
-          </div>
-        </div>
-
-        {/* Bloque Derecho: Asignaturas Electivas Multidisciplinares (10) */}
-        <div className="col-span-7 bg-surface-2 border border-border rounded-xl p-4 space-y-3">
-          <div className="text-[12px] font-bold uppercase text-text-primary tracking-wide border-b border-border-subtle pb-1.5 flex items-center justify-between">
-            <span>Electivas Multidisciplinares</span>
-            <span className="text-[11px] font-semibold text-text-muted normal-case">10 Opciones del Catálogo</span>
-          </div>
-
-          {electivas.length > 0 ? (
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-              {electivas.map((elec) => (
-                <div 
-                  key={elec.clave} 
-                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border text-[11px] leading-normal ${
-                    activeFilter === 'OU' && elec.calificacion !== 'OU' ? 'opacity-30 grayscale' : 'opacity-100'
-                  } ${
-                    elec.calificacion === 'OU'
-                      ? 'bg-purple-50 dark:bg-purple-500/10 border-purple-200 dark:border-purple-500/20 text-purple-950 dark:text-purple-300 font-bold'
-                      : elec.cursada
-                      ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-950 dark:text-emerald-300 font-bold' 
-                      : elec.cursando
-                      ? 'bg-pink-50 dark:bg-pink-950/20 border-pink-300 dark:border-pink-500/30 text-pink-950 dark:text-pink-300 font-bold'
-                      : 'bg-surface-1 border-border text-text-secondary font-medium'
-                  }`}
-                  style={{ overflow: 'visible' }}
-                >
-                  <div className="flex items-center space-x-1.5 min-w-0 pr-1 leading-normal" style={{ overflow: 'visible' }}>
-                    <span className="font-mono font-bold text-text-muted text-[10px] shrink-0 leading-normal">{elec.subj}-{elec.crse}:</span>
-                    <span className="leading-normal truncate">{elec.nombre}</span>
-                  </div>
-                  <span className={`shrink-0 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ml-1 leading-normal ${
-                    elec.calificacion === 'OU'
-                      ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300'
-                      : elec.cursada
-                      ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-400'
-                      : elec.cursando
-                      ? 'bg-pink-100 dark:bg-pink-500/20 text-pink-800 dark:text-pink-400'
-                      : 'bg-surface-3 text-text-muted'
-                  }`}>
-                    {elec.calificacion === 'OU' ? 'OU' : elec.cursada ? `AC (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disp.'}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-full pb-4">
-              <span className="text-text-muted text-[13px] font-semibold">Plan curricular cerrado (Sin asignaturas electivas)</span>
-            </div>
-          )}
         </div>
       </div>
 
       {/* MODAL / DETALLE DE INTENTOS DE MATERIA */}
       {selectedMateriaModal && (
         <div 
-          className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in print:hidden"
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 print:hidden"
           onClick={() => setSelectedMateriaModal(null)}
         >
           <div 
-            className="bg-surface-1 rounded-2xl shadow-glass-lg border border-border max-w-lg w-full p-6 space-y-5 animate-scale-in"
+            className="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-5 space-y-3.5"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between border-b border-border-subtle pb-4">
+            <div className="flex items-start justify-between border-b border-slate-100 pb-2.5">
               <div>
-                <span className="text-[11px] font-mono font-bold text-text-muted uppercase tracking-wider">
+                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
                   {selectedMateriaModal.materia.clave}
                 </span>
-                <h3 className="text-[16px] font-bold text-text-primary leading-snug mt-1">
-                  {selectedMateriaModal.materia.nombre}
+                <h3 className="text-sm font-bold text-slate-900 leading-snug mt-0.5">
+                  {formatTitle(selectedMateriaModal.materia.nombre)}
                 </h3>
               </div>
               <span 
-                style={{ color: selectedMateriaModal.audit.color, borderColor: selectedMateriaModal.audit.color }}
-                className="text-[11px] font-extrabold px-3 py-1 rounded-lg border bg-surface-1 shadow-sm mt-1"
+                className="text-xs font-bold px-2 py-0.5 rounded border bg-slate-50 text-slate-700 border-slate-200 shadow-2xs mt-0.5"
               >
                 {selectedMateriaModal.audit.etiquetaCorta}
               </span>
             </div>
 
-            <div className="space-y-3">
-              <div className="text-[12px] font-bold text-text-primary">Trazabilidad de Intentos:</div>
-              <div className="p-4 bg-surface-2 rounded-xl border border-border font-mono text-[12px] text-text-secondary leading-relaxed">
+            <div className="space-y-2">
+              <div className="text-xs font-semibold text-slate-800">Trazabilidad de Intentos:</div>
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 font-mono text-xs text-slate-700 leading-relaxed">
                 {selectedMateriaModal.audit.historialTexto || 'Sin intentos registrados en el kárdex.'}
               </div>
 
               {selectedMateriaModal.audit.motivoIncidencia && (
-                <div className="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl text-amber-900 dark:text-amber-200 text-[12px]">
-                  <strong className="text-amber-700 dark:text-amber-400">Observación de auditoría:</strong> {selectedMateriaModal.audit.motivoIncidencia}
+                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs">
+                  <strong className="text-amber-800">Observación de auditoría:</strong> {selectedMateriaModal.audit.motivoIncidencia}
                 </div>
               )}
             </div>
 
-            <div className="flex justify-end pt-3 border-t border-border-subtle">
+            <div className="flex justify-end pt-2 border-t border-slate-100">
               <button
+                type="button"
                 onClick={() => setSelectedMateriaModal(null)}
-                className="px-5 py-2.5 bg-surface-3 hover:bg-border text-text-primary rounded-xl text-[13px] font-bold transition-all cursor-pointer shadow-sm"
+                className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold transition-colors cursor-pointer shadow-2xs"
               >
                 Cerrar Detalle
               </button>

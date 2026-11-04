@@ -560,35 +560,35 @@ export default function App() {
             ) : (
               <>
                 {/* Tab Switcher + Filters */}
-                <div className="no-print print:hidden bg-surface-1 p-3 rounded-2xl border border-border shadow-card space-y-2.5 transition-theme">
+                <div className="no-print print:hidden bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <div className="bg-surface-2 dark:bg-white/[0.04] p-1 rounded-xl inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full border border-border/50">
+                    <div className="bg-slate-50 p-1 rounded-md inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full border border-slate-200">
                       <button
                         onClick={() => setActiveTab('mapa')}
-                        className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap group ${
+                        className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                           activeTab === 'mapa'
-                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-xs font-bold'
-                            : 'text-text-muted hover:text-text-primary hover:bg-surface-3/50'
+                            ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                         }`}
                       >
-                        <Layers className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
+                        <Layers className="w-3.5 h-3.5" />
                         <span>Mapa de Ejecución</span>
                       </button>
 
                       <button
                         onClick={() => setActiveTab('cedula')}
-                        className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer whitespace-nowrap group ${
+                        className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                           activeTab === 'cedula'
-                            ? 'bg-surface-1 dark:bg-white/[0.08] text-text-primary shadow-xs font-bold'
-                            : 'text-text-muted hover:text-text-primary hover:bg-surface-3/50'
+                            ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                         }`}
                       >
-                        <FileText className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
+                        <FileText className="w-3.5 h-3.5" />
                         <span>Cédula de Auditoría</span>
                       </button>
                     </div>
 
-                    <div className="text-[11px] font-medium text-text-muted uppercase tracking-wider hidden xl:block">
+                    <div className="text-[10px] font-mono font-medium text-slate-400 uppercase tracking-wider hidden xl:block">
                       {activeTab === 'mapa' && 'Validación de Asignaturas'}
                       {activeTab === 'cedula' && 'Cédula Oficial'}
                     </div>
@@ -596,7 +596,7 @@ export default function App() {
 
                   {/* Filters */}
                   {activeTab === 'mapa' && (
-                    <div className="border-t border-border-subtle pt-2.5">
+                    <div className="border-t border-slate-100 pt-2">
                       <FilterPills
                         activeFilter={activeFilter}
                         onFilterChange={setActiveFilter}

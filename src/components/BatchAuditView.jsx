@@ -263,41 +263,41 @@ export default function BatchAuditView({
         </div>
 
         {/* Selector de Pestañas (Hoja 1 y Hoja 2) y Filtros */}
-        <div className="no-print print:hidden bg-surface-1 p-4 rounded-2xl border border-border shadow-sm space-y-3 transition-theme">
+        <div className="no-print print:hidden bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2.5">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="bg-surface-2 p-1 rounded-xl inline-flex items-center space-x-1 select-none border border-border-subtle w-full sm:w-auto overflow-x-auto">
+            <div className="bg-slate-50 p-1 rounded-md inline-flex items-center space-x-1 select-none border border-slate-200 w-full sm:w-auto overflow-x-auto">
               <button
                 onClick={() => setActiveSheetTab('mapa')}
-                className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   activeSheetTab === 'mapa'
-                    ? 'bg-surface-0 border border-border shadow-sm text-text-primary'
-                    : 'text-text-muted hover:text-text-primary hover:bg-surface-3'
+                    ? 'bg-white border border-slate-200 shadow-2xs text-slate-900 font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Layers className="w-4 h-4" strokeWidth={1.8} />
+                <Layers className="w-3.5 h-3.5" />
                 <span>Hoja 1: Mapa de Ejecución</span>
               </button>
 
               <button
                 onClick={() => setActiveSheetTab('cedula')}
-                className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   activeSheetTab === 'cedula'
-                    ? 'bg-surface-0 border border-border shadow-sm text-text-primary'
-                    : 'text-text-muted hover:text-text-primary hover:bg-surface-3'
+                    ? 'bg-white border border-slate-200 shadow-2xs text-slate-900 font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <FileText className="w-4 h-4" strokeWidth={1.8} />
+                <FileText className="w-3.5 h-3.5" />
                 <span>Hoja 2: Cédula y Trazabilidad</span>
               </button>
             </div>
 
-            <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider hidden md:block">
+            <div className="text-[10px] font-mono font-medium text-slate-400 uppercase tracking-wider hidden md:block">
               {activeSheetTab === 'mapa' ? 'Validación Cuatrimestral' : 'Cédula Oficial y Trazabilidad'}
             </div>
           </div>
 
           {activeSheetTab === 'mapa' && (
-            <div className="border-t border-border-subtle pt-3">
+            <div className="border-t border-slate-100 pt-2">
               <FilterPills
                 activeFilter={activeMapFilter}
                 onFilterChange={setActiveMapFilter}
