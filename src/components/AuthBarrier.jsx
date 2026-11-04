@@ -3,6 +3,15 @@ import { useMsal, useIsAuthenticated } from '@azure/msal-react';
 import { isValidUnidEmail, getAccountEmail } from '../authConfig';
 import { useAuth } from '../context/AuthContext';
 import LoginPage from './LoginPage';
+import DevLoginPage from './DevLoginPage';
+
+// Rutas privadas reservadas para acceso exclusivo de desarrolladores
+const DEV_ROUTES = ['/internal-dev-access', '/acceso-dev', '/internal-dev'];
+
+function getNormalizedPath() {
+  if (typeof window === 'undefined') return '/';
+  return window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+}
 
 export default function AuthBarrier({ children }) {
   const { instance, accounts } = useMsal();
@@ -10,6 +19,24 @@ export default function AuthBarrier({ children }) {
   const { isSuperAdmin, loginDevUser } = useAuth();
   const [authError, setAuthError] = useState(null);
   const [isVerifying, setIsVerifying] = useState(true);
+
+  // Escucha activa de cambios en la ruta del navegador para navegación SPA
+  const [currentPath, setCurrentPath] = useState(getNormalizedPath);
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(getNormalizedPath());
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  const navigateTo = (path) => {
+    if (typeof window !== 'undefined') {
+      window.history.pushState({}, '', path);
+      setCurrentPath(getNormalizedPath());
+    }
+  };
 
   const currentAccount = instance.getActiveAccount() || accounts[0] || null;
 
@@ -111,13 +138,30 @@ export default function AuthBarrier({ children }) {
     );
   }
 
+  // Si la ruta actual es una ruta privada de desarrollador (/acceso-dev o /internal-dev)
+  const isDevRoute = DEV_ROUTES.includes(currentPath);
+  if (isDevRoute) {
+    return (
+      <DevLoginPage
+        onDevLoginSuccess={(devUser) => {
+          setAuthError(null);
+          loginDevUser(devUser);
+          navigateTo('/');
+        }}
+        onBackToMain={() => {
+          navigateTo('/');
+        }}
+      />
+    );
+  }
+
   // Autorizado si es Super Admin O si está autenticado en Microsoft con correo @unid.mx
   const isAuthorized = Boolean(
     isSuperAdmin || 
     (isAuthenticated && currentAccount && isValidUnidEmail(currentAccount) && !authError)
   );
 
-  // Si NO está autorizado, muestra EXCLUSIVAMENTE la pantalla de Login
+  // Si NO está autorizado, muestra EXCLUSIVAMENTE la pantalla principal de Login (sin accesos a dev)
   if (!isAuthorized) {
     return (
       <LoginPage 

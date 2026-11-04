@@ -1,6 +1,7 @@
 import { 
   GraduationCap, 
   ShieldCheck, 
+  ShieldAlert,
   Layers, 
   FileText, 
   Award,
@@ -9,6 +10,7 @@ import {
   PanelLeftClose,
   Users
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar({ 
   dbStatus, 
@@ -18,16 +20,49 @@ export default function Sidebar({
   onToggle,
   batchCount = 0
 }) {
+  const { user, isSuperAdmin } = useAuth();
+  const esSuperAdmin = Boolean(
+    isSuperAdmin || 
+    user?.rol === 'super_admin' || 
+    user?.role === 'super_admin' || 
+    user?.rol === 'ADMIN_SISTEMA'
+  );
+
   const navItems = [
     {
       id: 'validador',
       label: 'Validador Académico',
       icon: ShieldCheck,
       isActive: activeTab === 'mapa' || activeTab === 'cedula',
-      onClick: () => setActiveTab('mapa'),
+      onClick: () => {
+        if (window.location.pathname === '/admin/seguridad') {
+          window.history.pushState({}, '', '/');
+        }
+        setActiveTab('mapa');
+      },
       children: [
-        { id: 'mapa', label: 'Mapa Curricular', icon: Layers, onClick: () => setActiveTab('mapa') },
-        { id: 'cedula', label: 'Cédula de Auditoría', icon: FileText, onClick: () => setActiveTab('cedula') },
+        { 
+          id: 'mapa', 
+          label: 'Mapa Curricular', 
+          icon: Layers, 
+          onClick: () => {
+            if (window.location.pathname === '/admin/seguridad') {
+              window.history.pushState({}, '', '/');
+            }
+            setActiveTab('mapa');
+          }
+        },
+        { 
+          id: 'cedula', 
+          label: 'Cédula de Auditoría', 
+          icon: FileText, 
+          onClick: () => {
+            if (window.location.pathname === '/admin/seguridad') {
+              window.history.pushState({}, '', '/');
+            }
+            setActiveTab('cedula');
+          }
+        },
       ]
     },
     {
@@ -35,10 +70,30 @@ export default function Sidebar({
       label: 'Auditoría de Grupo',
       icon: Users,
       isActive: activeTab === 'grupo',
-      onClick: () => setActiveTab('grupo'),
+      onClick: () => {
+        if (window.location.pathname === '/admin/seguridad') {
+          window.history.pushState({}, '', '/');
+        }
+        setActiveTab('grupo');
+      },
       badge: batchCount > 0 ? batchCount : null
     }
   ];
+
+  // REQUERIMIENTO 1: Ocultar enlace si el usuario NO es super_admin
+  if (esSuperAdmin) {
+    navItems.push({
+      id: 'seguridad',
+      label: 'Seguridad y Accesos',
+      icon: ShieldAlert,
+      isActive: activeTab === 'seguridad',
+      onClick: () => {
+        window.history.pushState({}, '', '/admin/seguridad');
+        setActiveTab('seguridad');
+      },
+      badge: 'DEV'
+    });
+  }
 
   const futureItems = [
     { label: 'Validación de Estadía', icon: Award },

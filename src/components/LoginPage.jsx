@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest, isValidUnidEmail, getAccountEmail } from '../authConfig';
-import { ShieldAlert, ShieldCheck, Loader2, ArrowRight, Terminal, X } from 'lucide-react';
-import DevLoginModal from './DevLoginModal';
+import { ShieldAlert, ShieldCheck, Loader2, ArrowRight, X } from 'lucide-react';
 
 export default function LoginPage({ initialError = null, onAuthSuccess = null, onClearError = null }) {
   const { instance } = useMsal();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showWelcomeSpinner, setShowWelcomeSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState(initialError);
-  const [isDevModalOpen, setIsDevModalOpen] = useState(false);
   const timerRef = useRef(null);
 
   // Borra de inmediato el mensaje de error y cancela temporizadores activos
@@ -90,14 +89,18 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null, o
 
       // Cuenta válida autorizada: asignar como activa
       instance.setActiveAccount(account);
-      if (onAuthSuccess) {
-        onAuthSuccess(account, 'DOCENTE');
-      }
 
-      // Recargar la página para abrir por completo el sistema con la sesión activa
+      // Activar pantalla de bienvenida con spinner institucional de al menos 3 segundos
+      setIsLoggingIn(false);
+      setShowWelcomeSpinner(true);
+
       setTimeout(() => {
+        if (onAuthSuccess) {
+          onAuthSuccess(account, 'DOCENTE');
+        }
+        // Recargar la página para abrir por completo el sistema con la sesión activa
         window.location.reload();
-      }, 150);
+      }, 3000);
     } catch (error) {
       console.error('[Auth] Error durante loginPopup:', error);
       const isCancelled = 
@@ -116,6 +119,101 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null, o
       setIsLoggingIn(false);
     }
   };
+
+  // --- OVERLAY INSTITUCIONAL DE BIENVENIDA (3 Segundos) ---
+  if (showWelcomeSpinner) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-[#080C14] flex flex-col items-center justify-center font-sans text-slate-100 selection:bg-amber-400 selection:text-slate-950">
+        {/* Iluminación ambiental suave */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-amber-500/[0.07] rounded-full blur-[180px]" />
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-indigo-950/40 rounded-full blur-[140px]" />
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center space-y-7 animate-fade-in px-4">
+          {/* Logo con anillo giratorio dorado */}
+          <div className="relative">
+            <svg className="w-24 h-24 animate-spin" style={{ animationDuration: '2.5s' }} viewBox="0 0 96 96" fill="none">
+              <circle cx="48" cy="48" r="44" stroke="currentColor" strokeWidth="1.5" className="text-slate-800" />
+              <path
+                d="M48 4 A44 44 0 0 1 92 48"
+                stroke="url(#goldArcWelcome)"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <defs>
+                <linearGradient id="goldArcWelcome" x1="48" y1="4" x2="92" y2="48">
+                  <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="#fbbf24" />
+                </linearGradient>
+              </defs>
+            </svg>
+            {/* Logo UNID en el centro con relieve */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="p-3 rounded-2xl bg-white/[0.05] border border-white/[0.1] shadow-2xl backdrop-blur-md">
+                <img 
+                  src="/unid-logo.png" 
+                  alt="UNID" 
+                  className="w-10 h-10 object-contain drop-shadow" 
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Saludo y Texto de Progreso */}
+          <div className="text-center space-y-2">
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-[10px] font-mono font-bold tracking-widest uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Autenticación Exitosa</span>
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              HOLA, BIENVENIDO
+            </h2>
+            <p className="text-xs text-slate-400 max-w-xs leading-relaxed mx-auto">
+              Iniciando tu sesión en la plataforma de Coordinación Académica con Microsoft 365…
+            </p>
+          </div>
+
+          {/* Barra de progreso de 3 segundos */}
+          <div className="w-64 h-1.5 bg-slate-800/90 rounded-full overflow-hidden p-[1px]">
+            <div 
+              className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 rounded-full shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+              style={{ 
+                animation: 'welcomeProgressBar 3s ease-in-out forwards' 
+              }}
+            />
+          </div>
+
+          {/* Indicadores institucionales discretos */}
+          <div className="flex items-center space-x-5 text-[10px] text-slate-400">
+            <span className="flex items-center space-x-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Cuenta @unid.mx</span>
+            </span>
+            <span className="flex items-center space-x-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" style={{ animationDelay: '0.3s' }} />
+              <span>Microsoft Entra ID</span>
+            </span>
+            <span className="flex items-center space-x-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" style={{ animationDelay: '0.6s' }} />
+              <span>Planes de Estudio</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Keyframes CSS para la animación de 3 segundos */}
+        <style>{`
+          @keyframes welcomeProgressBar {
+            0% { width: 0%; }
+            25% { width: 35%; }
+            60% { width: 70%; }
+            85% { width: 90%; }
+            100% { width: 100%; }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-executive-glow flex flex-col items-center justify-between p-4 sm:p-6 relative overflow-y-auto overflow-x-hidden font-sans text-slate-100 selection:bg-amber-400 selection:text-slate-950">
@@ -260,7 +358,7 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null, o
             </button>
           </div>
 
-          {/* Requisitos y directrices con enlace de desarrollador discreto */}
+          {/* Requisitos y directrices */}
           <div className="mt-7 pt-5 border-t border-slate-800/80 text-center space-y-1.5">
             <div className="text-[11px] text-slate-400 font-medium">
               Universidad Interamericana para el Desarrollo
@@ -268,32 +366,8 @@ export default function LoginPage({ initialError = null, onAuthSuccess = null, o
             <div className="text-[10px] text-slate-400">
               Usa tu cuenta institucional de Office 365 / Microsoft Entra.
             </div>
-
-            {/* Enlace discreto Desarrollador con icono sutil */}
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => setIsDevModalOpen(true)}
-                className="inline-flex items-center space-x-1.5 text-[11px] text-slate-400 hover:text-amber-400 transition-colors cursor-pointer bg-transparent border-0 p-0 tracking-wide font-normal group"
-                title="Acceso de mantenimiento y desarrollo"
-              >
-                <Terminal className="w-3 h-3 text-slate-400 group-hover:text-amber-400 transition-colors" strokeWidth={1.8} />
-                <span className="border-b border-transparent group-hover:border-amber-400/50">Desarrollador</span>
-              </button>
-            </div>
           </div>
         </div>
-
-        {/* Modal de Acceso Oculto Super Usuario */}
-        <DevLoginModal
-          isOpen={isDevModalOpen}
-          onClose={() => setIsDevModalOpen(false)}
-          onDevLoginSuccess={(devUser) => {
-            if (onAuthSuccess) {
-              onAuthSuccess(devUser, 'ADMIN_SISTEMA');
-            }
-          }}
-        />
       </main>
 
       {/* Pie de página */}

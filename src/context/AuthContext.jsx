@@ -19,15 +19,28 @@ export function AuthProvider({ children }) {
 
   const activeMsalAccount = instance.getActiveAccount() || accounts[0] || null;
 
-  // Si existe devUser, tiene rol prioritario ADMIN_SISTEMA
-  const isSuperAdmin = Boolean(devUser && devUser.rol === 'ADMIN_SISTEMA');
+  // Si existe devUser, tiene rol prioritario ADMIN_SISTEMA o super_admin
+  const roleNorm = String(devUser?.rol || devUser?.role || '').toLowerCase().trim();
+  const isSuperAdmin = Boolean(
+    devUser && (
+      roleNorm === 'super_admin' || 
+      roleNorm === 'admin_sistema' || 
+      roleNorm === 'superadmin' || 
+      devUser.rol === 'ADMIN_SISTEMA'
+    )
+  );
 
   // Usuario consolidado (DevUser o cuenta institucional Msal)
-  const user = devUser || (activeMsalAccount && isValidUnidEmail(activeMsalAccount) ? {
+  const user = devUser ? {
+    ...devUser,
+    rol: devUser.rol || 'super_admin',
+    role: devUser.role || devUser.rol || 'super_admin'
+  } : (activeMsalAccount && isValidUnidEmail(activeMsalAccount) ? {
     id: activeMsalAccount.homeAccountId,
     nombre: activeMsalAccount.name || getAccountEmail(activeMsalAccount).split('@')[0],
     email: getAccountEmail(activeMsalAccount),
     rol: 'DOCENTE',
+    role: 'DOCENTE',
     coordinacion: 'INSTITUCIONAL',
     isMsal: true
   } : null);
@@ -55,7 +68,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={{
       user,
       isSuperAdmin,
-      userRole: isSuperAdmin ? 'ADMIN_SISTEMA' : (user ? 'DOCENTE' : null),
+      userRole: isSuperAdmin ? 'super_admin' : (user ? (user.rol || 'DOCENTE') : null),
       loginDevUser,
       logout
     }}>

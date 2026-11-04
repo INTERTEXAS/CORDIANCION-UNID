@@ -326,79 +326,77 @@ export default function BatchAuditView({
 
   // Vista de Directorio de la Generación Completa
   return (
-    <div className="space-y-4 animate-fade-in transition-theme">
-      {/* 1. Tarjeta Cabecera de la Generación */}
-      <div className="bg-surface-1 rounded-2xl border border-border p-6 shadow-card print:hidden transition-theme">
-        <div className="flex flex-col gap-5">
+    <div className="space-y-4 animate-fade-in text-slate-800 font-sans">
+      {/* 1. Cabecera Institucional Consolidada de la Generación */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden print:hidden">
+        <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center space-x-2 text-[12px] font-bold text-accent">
-              <Users className="w-4 h-4 text-text-primary" strokeWidth={2} />
-              <span className="uppercase tracking-widest text-text-secondary font-black">
-                Auditoría Consolidada de Generación / Grupo
-              </span>
+            <div className="flex items-center space-x-2 text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-500">
+              <Users className="w-3.5 h-3.5 text-slate-400" />
+              <span>Coordinación Académica UNID</span>
+              <span className="text-slate-300">/</span>
+              <span className="text-amber-700">Auditoría de Grupo</span>
             </div>
-            <h2 className="text-xl md:text-2xl font-extrabold text-text-primary mt-1.5 tracking-tight">
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight mt-1">
               {batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}
-            </h2>
-            <p className="text-[13px] text-text-muted mt-1">
-              Programa: <span className="font-mono font-bold text-text-secondary">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span> ·
-              Reporte oficial de materias acreditadas (Banner UNID).
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Programa: <span className="font-mono font-semibold text-slate-700">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span> ·
+              Reporte oficial de materias acreditadas (Banner UNID) · <span className="font-medium text-slate-700">{alumnos.length} expedientes procesados</span>
             </p>
           </div>
 
-          {/* Grupo de Acciones Estructurado con Jerarquía */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            {/* Base de Datos Neon */}
-            <div className="inline-flex items-center rounded-xl border border-indigo-200 dark:border-indigo-500/30 bg-indigo-50/50 dark:bg-indigo-500/10 p-1">
+          {/* Grupo de Acciones Unificado */}
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {/* Base de Datos Neon (Segmentado) */}
+            <div className="inline-flex items-center rounded-lg border border-slate-200 bg-white p-0.5 shadow-2xs">
               <button
+                type="button"
                 onClick={() => {
                   setNeonModalMode('guardar');
                   setIsNeonModalOpen(true);
                 }}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold rounded-lg shadow-sm transition-all cursor-pointer flex items-center space-x-2"
-                title="Guardar esta auditoría integral en Neon Database organizada por ciclo escolar y carrera"
+                className="px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-md transition-colors cursor-pointer flex items-center space-x-1.5"
+                title="Guardar lote en Neon Database"
               >
-                <Database className="w-4 h-4 text-indigo-200" strokeWidth={2} />
-                <span>Guardar en BD (Neon)</span>
+                <Database className="w-3.5 h-3.5 text-slate-500" />
+                <span>Guardar en BD</span>
               </button>
+              <div className="w-px h-4 bg-slate-200 my-auto" />
               <button
+                type="button"
                 onClick={() => {
                   setNeonModalMode('gestionar');
                   setIsNeonModalOpen(true);
                 }}
-                className="px-4 py-2 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[13px] font-semibold rounded-lg transition-colors cursor-pointer flex items-center space-x-2 ml-1"
-                title="Ver auditorías guardadas en Neon, cargar en pantalla o depurar registros a 5 meses"
+                className="px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-md transition-colors cursor-pointer flex items-center space-x-1.5"
+                title="Historial de auditorías en Neon"
               >
-                <Calendar className="w-4 h-4" strokeWidth={2} />
-                <span>Gestionar Ciclos</span>
+                <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <span>Ciclos</span>
               </button>
             </div>
 
-            {/* Acción Primaria: Imprimir Sábana */}
+            {/* Imprimir Sábana */}
             <button
+              type="button"
               onClick={() => window.print()}
-              className="px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 text-[13px] font-bold rounded-xl shadow-sm hover:shadow-glow-gold transition-all cursor-pointer flex items-center space-x-2"
-              title="Imprimir o guardar como PDF la sábana ejecutiva de toda la generación"
+              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors cursor-pointer flex items-center space-x-1.5"
+              title="Imprimir sábana ejecutiva"
             >
-              <Printer className="w-4 h-4 text-slate-950" strokeWidth={2} />
+              <Printer className="w-3.5 h-3.5 text-slate-300" />
               <span>Imprimir Sábana</span>
             </button>
 
-            {/* Divisor Visual */}
-            <div className="hidden sm:block w-px h-8 bg-border-subtle mx-2"></div>
-
-            {/* Input oculto para subir nuevo reporte PDF */}
+            {/* Input oculto para subir PDF */}
             <input
               type="file"
               ref={fileInputRef}
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
-                  if (onUploadPdf) {
-                    onUploadPdf(file);
-                  } else if (onUploadNewBatch) {
-                    onUploadNewBatch(file);
-                  }
+                  if (onUploadPdf) onUploadPdf(file);
+                  else if (onUploadNewBatch) onUploadNewBatch(file);
                   e.target.value = '';
                 }
               }}
@@ -406,160 +404,161 @@ export default function BatchAuditView({
               className="hidden"
             />
 
-            {/* Acciones Secundarias */}
+            {/* Subir otro Reporte */}
             <button
+              type="button"
               onClick={() => {
-                if (fileInputRef.current) {
-                  fileInputRef.current.click();
-                } else if (onUploadNewBatch) {
-                  onUploadNewBatch();
-                }
+                if (fileInputRef.current) fileInputRef.current.click();
+                else if (onUploadNewBatch) onUploadNewBatch();
               }}
-              className="px-4 py-2.5 bg-surface-2 hover:bg-surface-3 border border-border text-text-primary text-[13px] font-bold rounded-xl transition-all cursor-pointer flex items-center space-x-2"
-              title="Cargar un nuevo archivo PDF de grupo desde su equipo"
+              className="px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center space-x-1.5"
+              title="Cargar nuevo PDF"
             >
-              <SlidersHorizontal className="w-4 h-4 text-accent" strokeWidth={2} />
-              <span>Subir otro Reporte</span>
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400" />
+              <span>Nuevo Reporte</span>
             </button>
             
+            {/* Cerrar Grupo */}
             <button
+              type="button"
               onClick={onClearBatch}
-              className="px-4 py-2.5 bg-surface-1 hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-border hover:border-rose-200 dark:hover:border-rose-500/30 text-text-secondary hover:text-rose-600 dark:hover:text-rose-400 text-[13px] font-bold rounded-xl transition-colors cursor-pointer"
-              title="Cerrar la vista del grupo actual"
+              className="px-3 py-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+              title="Cerrar vista actual"
             >
-              Cerrar Grupo
+              Cerrar
             </button>
           </div>
         </div>
 
-        {/* Métricas Resumen de la Generación - Ribbon Estilo ERP */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 bg-surface-2 border border-border rounded-xl overflow-hidden divide-y sm:divide-y-0 divide-border">
+        {/* Métricas de la Generación: KPI Ribbon Continuo */}
+        <div className="grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-slate-100 bg-slate-50/50">
           {/* Card 1: Total Alumnos */}
-          <div className="p-5 flex flex-col justify-center border-r border-border">
-            <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1.5">
-              Total Alumnos
+          <div className="px-5 py-3.5">
+            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Expedientes Totales</span>
+            <div className="flex items-baseline space-x-1.5">
+              <span className="text-2xl font-bold font-mono text-slate-900">{stats.total}</span>
+              <span className="text-xs text-slate-500 font-mono">alumnos</span>
             </div>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.total}</span>
-              <span className="text-[11px] font-semibold text-text-muted">expedientes</span>
-            </div>
+            <span className="text-[10px] text-slate-500 block mt-0.5">100% procesados</span>
           </div>
 
           {/* Card 2: Aptos para Estadía */}
-          <div className="p-5 flex flex-col justify-center border-r border-border">
-            <div className="flex items-center space-x-2 mb-1.5">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)] dark:shadow-[0_0_0_2px_rgba(16,185,129,0.4)]"></div>
-              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
-                Aptos para Estadía
-              </div>
+          <div className="px-5 py-3.5">
+            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Aptos para Estadía</span>
+            <div className="flex items-baseline space-x-1.5">
+              <span className="text-2xl font-bold font-mono text-slate-900">{stats.elegibles}</span>
+              <span className="text-xs font-semibold text-emerald-600 font-mono">
+                {Math.round((stats.elegibles / Math.max(1, stats.total)) * 100)}%
+              </span>
             </div>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.elegibles}</span>
-              <span className="text-[12px] font-bold text-emerald-600 dark:text-emerald-400">{Math.round((stats.elegibles / Math.max(1, stats.total)) * 100)}%</span>
-            </div>
+            <span className="text-[10px] text-emerald-700 font-medium flex items-center space-x-1 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span>Elegibles para titulación</span>
+            </span>
           </div>
 
           {/* Card 3: Adeudos Previos */}
-          <div className="p-5 flex flex-col justify-center border-r border-border">
-            <div className="flex items-center space-x-2 mb-1.5">
-              <div className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_0_2px_rgba(244,63,94,0.2)] dark:shadow-[0_0_0_2px_rgba(244,63,94,0.4)]"></div>
-              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
-                Adeudos (1.º - 6.º)
-              </div>
+          <div className="px-5 py-3.5">
+            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Adeudos (1.º - 6.º)</span>
+            <div className="flex items-baseline space-x-1.5">
+              <span className="text-2xl font-bold font-mono text-rose-600">{stats.conAdeudos}</span>
+              <span className="text-xs text-slate-400">alumnos</span>
             </div>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.conAdeudos}</span>
-              <span className="text-[12px] font-bold text-rose-600 dark:text-rose-400">en riesgo</span>
-            </div>
+            <span className="text-[10px] text-rose-600 font-medium block mt-0.5">
+              {stats.conAdeudos > 0 ? 'En riesgo académico' : 'Sin adeudos'}
+            </span>
           </div>
 
           {/* Card 4: Omitidas / En Curso */}
-          <div className="p-5 flex flex-col justify-center border-r border-border">
-            <div className="flex items-center space-x-2 mb-1.5">
-              <div className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.2)] dark:shadow-[0_0_0_2px_rgba(251,191,36,0.4)]"></div>
-              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
-                Omitidas / Curso
-              </div>
+          <div className="px-5 py-3.5">
+            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Omitidas / En Curso</span>
+            <div className="flex items-baseline space-x-1.5">
+              <span className="text-2xl font-bold font-mono text-slate-900">{stats.conOmitidas}</span>
+              <span className="text-xs text-slate-400">alumnos</span>
             </div>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-black text-text-primary font-mono tracking-tight">{stats.conOmitidas}</span>
-              <span className="text-[12px] font-bold text-amber-600 dark:text-amber-400">seguimiento</span>
-            </div>
+            <span className="text-[10px] text-slate-500 block mt-0.5">Avance curricular regular</span>
           </div>
 
           {/* Card 5: Promedio Generacional */}
-          <div className="p-5 flex flex-col justify-center bg-amber-50/40 dark:bg-amber-500/5">
-            <div className="flex items-center space-x-2 mb-1.5">
-              <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_0_2px_rgba(245,158,11,0.2)] dark:shadow-[0_0_0_2px_rgba(245,158,11,0.4)]"></div>
-              <div className="text-[10px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-widest">
-                Promedio Grupo
-              </div>
+          <div className="px-5 py-3.5">
+            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Promedio Generacional</span>
+            <div className="flex items-baseline space-x-1.5">
+              <span className="text-2xl font-bold font-mono text-slate-900">{stats.promedioGeneracion}</span>
+              <span className="text-xs text-slate-400 font-mono">/ 10.0</span>
             </div>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-black text-amber-900 dark:text-amber-200 font-mono tracking-tight">
-                {stats.promedioGeneracion}
-              </span>
-              <span className="text-[11px] font-medium text-amber-700/80 dark:text-amber-400/80">
-                {stats.alumnosConPromedio > 0 ? `${stats.alumnosConPromedio} eval.` : 'En curso'}
-              </span>
-            </div>
+            <span className="text-[10px] text-slate-500 block mt-0.5">
+              {stats.alumnosConPromedio > 0 ? `${stats.alumnosConPromedio} evaluados` : 'Sin calificaciones'}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 2. Barra de Búsqueda, Filtros y Ordenamiento */}
-      <div className="bg-surface-1 p-4 rounded-2xl border border-border flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 print:hidden transition-theme shadow-sm">
-        {/* Input de Búsqueda */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={2} />
+      {/* 2. Barra de Búsqueda, Filtros Segmentados y Orden */}
+      <div className="bg-white p-3 rounded-lg border border-slate-200 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-2xs print:hidden">
+        {/* Buscador */}
+        <div className="relative flex-1 max-w-sm">
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
-            placeholder="Buscar por nombre de alumno o matrícula..."
+            placeholder="Buscar por nombre o matrícula…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-surface-2 border border-border rounded-xl pl-10 pr-4 py-2.5 text-[13px] text-text-primary placeholder-text-muted focus:bg-surface-0 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+            className="w-full bg-slate-50 border border-slate-200 rounded-md pl-9 pr-7 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-colors"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          {/* Filtros Rápidos */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 select-none w-full sm:w-auto">
+        {/* Filtros Segmentados Técnicos */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex items-center rounded-md border border-slate-200 bg-slate-50 p-0.5">
             <button
+              type="button"
               onClick={() => setFilterStatus('TODOS')}
-              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'TODOS'
-                  ? 'bg-text-primary text-surface-1 shadow-sm'
-                  : 'bg-surface-2 text-text-secondary hover:bg-surface-3'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Todos ({alumnos.length})
             </button>
             <button
+              type="button"
               onClick={() => setFilterStatus('ELEGIBLE')}
-              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'ELEGIBLE'
-                  ? 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-sm'
-                  : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20'
+                  ? 'bg-white text-emerald-800 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-emerald-700'
               }`}
             >
               Aptos ({stats.elegibles})
             </button>
             <button
+              type="button"
               onClick={() => setFilterStatus('ADEUDOS')}
-              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'ADEUDOS'
-                  ? 'bg-rose-600 dark:bg-rose-500 text-white shadow-sm'
-                  : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20'
+                  ? 'bg-white text-rose-700 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-rose-700'
               }`}
             >
               Con Adeudos ({stats.conAdeudos})
             </button>
             <button
+              type="button"
               onClick={() => setFilterStatus('OMITIDAS')}
-              className={`px-4 py-2 rounded-xl text-[12px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'OMITIDAS'
-                  ? 'bg-amber-600 dark:bg-amber-500 text-white shadow-sm'
-                  : 'bg-amber-50 dark:bg-amber-500/10 text-amber-800 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20'
+                  ? 'bg-white text-amber-800 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-amber-800'
               }`}
             >
               Omitidas ({stats.conOmitidas})
@@ -567,15 +566,15 @@ export default function BatchAuditView({
           </div>
 
           {/* Ordenamiento */}
-          <div className="flex items-center space-x-2 shrink-0">
-            <ArrowUpDown className="w-4 h-4 text-text-muted" strokeWidth={2} />
+          <div className="flex items-center space-x-1.5 shrink-0">
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-surface-2 border border-border text-text-primary text-[12px] font-bold rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent"
+              className="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-md px-2.5 py-1.5 cursor-pointer focus:outline-none focus:border-slate-400"
             >
-              <option value="nombre">Orden: Alfabético (A-Z)</option>
-              <option value="matricula">Orden: Matrícula</option>
+              <option value="nombre">Alfabético (A-Z)</option>
+              <option value="matricula">Por Matrícula</option>
               <option value="avance-desc">Mayor Avance %</option>
               <option value="avance-asc">Menor Avance %</option>
             </select>
@@ -586,29 +585,29 @@ export default function BatchAuditView({
       {/* 3. Directorio de Expedientes de la Generación (Tabla Formal) */}
       <div className="print:hidden">
         {filteredAlumnos.length === 0 ? (
-          <div className="bg-surface-1 rounded-3xl border border-border p-16 text-center shadow-card">
-            <Search className="w-10 h-10 text-text-muted/50 mx-auto mb-3" strokeWidth={1.8} />
-            <p className="text-[15px] font-bold text-text-primary">No se encontraron alumnos con ese criterio</p>
-            <p className="text-[13px] text-text-muted mt-1.5">Prueba cambiando el término de búsqueda o el filtro seleccionado.</p>
+          <div className="bg-white rounded-lg border border-slate-200 p-12 text-center shadow-2xs">
+            <Search className="w-8 h-8 text-slate-300 mx-auto mb-2.5" strokeWidth={1.5} />
+            <p className="text-sm font-semibold text-slate-900">No se encontraron expedientes con ese criterio</p>
+            <p className="text-xs text-slate-500 mt-1">Prueba cambiando el término de búsqueda o el filtro seleccionado.</p>
           </div>
         ) : (
-          <div className="bg-surface-1 rounded-2xl border border-border overflow-hidden shadow-card transition-theme">
+          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-2xs">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-[13px]">
+              <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="bg-surface-2 text-text-secondary text-[11px] uppercase tracking-wider font-bold border-b border-border">
-                    <th className="py-3.5 px-4 w-12 text-center">#</th>
-                    <th className="py-3.5 px-4 w-32">Matrícula</th>
-                    <th className="py-3.5 px-4">Alumno</th>
-                    <th className="py-3.5 px-4 w-36 text-center">Dictamen</th>
-                    <th className="py-3.5 px-4 w-32 text-center">Avance</th>
-                    <th className="py-3.5 px-3 w-24 text-center">Promedio</th>
-                    <th className="py-3.5 px-4 text-center">Desempeño (Intentos)</th>
-                    <th className="py-3.5 px-3 w-20 text-center">Inglés</th>
-                    <th className="py-3.5 px-4 w-32 text-center">Expediente</th>
+                  <tr className="bg-slate-50 text-slate-600 text-[10px] uppercase tracking-wider font-semibold border-b border-slate-200">
+                    <th className="py-2.5 px-3 w-10 text-center font-mono">#</th>
+                    <th className="py-2.5 px-3.5 w-28">Matrícula</th>
+                    <th className="py-2.5 px-3.5">Alumno</th>
+                    <th className="py-2.5 px-3 w-36 text-center">Dictamen</th>
+                    <th className="py-2.5 px-3.5 w-36 text-center">Avance</th>
+                    <th className="py-2.5 px-3 w-24 text-center">Promedio</th>
+                    <th className="py-2.5 px-3 text-center">Desempeño</th>
+                    <th className="py-2.5 px-3 w-20 text-center">Inglés</th>
+                    <th className="py-2.5 px-3.5 w-24 text-center">Expediente</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border-subtle bg-surface-1">
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {filteredAlumnos.map(({ estudiante, auditData, originalIndex }, idx) => {
                     const res = auditData?.resumen;
                     const esElegible = res?.dictamenEstadia?.includes('APROBADO') || res?.dictamenEstadia?.includes('ELEGIBLE');
@@ -620,134 +619,113 @@ export default function BatchAuditView({
                     return (
                       <tr 
                         key={estudiante.matricula} 
-                        className="hover:bg-surface-2/50 transition-colors group"
+                        className="hover:bg-slate-50/75 transition-colors group"
                       >
                         {/* # */}
-                        <td className="py-3 px-4 text-center text-[11px] font-mono font-bold text-text-muted">
+                        <td className="py-2.5 px-3 text-center text-[11px] font-mono text-slate-400">
                           {idx + 1}
                         </td>
 
                         {/* Matrícula */}
-                        <td className="py-3 px-4">
-                          <span className="font-mono text-[12px] font-black text-text-primary">{estudiante.matricula}</span>
+                        <td className="py-2.5 px-3.5">
+                          <span className="font-mono text-xs font-semibold text-slate-900">{estudiante.matricula}</span>
                         </td>
 
                         {/* Nombre */}
-                        <td className="py-3 px-4">
-                          <span className="font-semibold text-text-primary text-[13px] block">{estudiante.nombre}</span>
-                          <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                        <td className="py-2.5 px-3.5">
+                          <span className="font-medium text-slate-900 text-xs block leading-tight">{estudiante.nombre}</span>
+                          <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                             {estudiante.modalidadDetectada && (
-                              <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase border ${
-                                estudiante.modalidadDetectada === 'EJECUTIVO' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20' :
-                                estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20' :
-                                'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20'
-                              }`}>
-                                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'DUAL' : (estudiante.modalidadDetectada === 'EJECUTIVO' ? (
-                                  <span className="flex items-center space-x-1">
-                                    <RefreshCw className="w-3 h-3" />
-                                    <span>Plan Ejecutivo (LIC-EJCO-17)</span>
-                                  </span>
-                                ) : estudiante.modalidadDetectada)}
+                              <span className="text-[10px] font-mono text-slate-500 uppercase">
+                                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'Modalidad Dual' : estudiante.modalidadDetectada === 'EJECUTIVO' ? 'Plan Ejecutivo' : estudiante.modalidadDetectada}
                               </span>
                             )}
                             {auditData?.coherencia?.alertaCarreraAjena && (
-                              <span className="inline-flex items-center space-x-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase">
-                                <AlertTriangle className="w-3 h-3" strokeWidth={2.5} />
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.2 rounded">
+                                <AlertTriangle className="w-2.5 h-2.5" />
                                 <span>Materias de otra Lic. ({auditData.coherencia.alertaCarreraAjena})</span>
                               </span>
                             )}
                           </div>
                         </td>
 
-                        {/* Dictamen Badge */}
-                        <td className="py-3 px-4 text-center">
+                        {/* Dictamen */}
+                        <td className="py-2.5 px-3 text-center">
                           {esElegible ? (
-                            <div className="flex items-center justify-center space-x-2" title="Apto para Estadía">
-                              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)] dark:shadow-[0_0_0_2px_rgba(16,185,129,0.4)]"></div>
-                              <span className="text-[12px] font-semibold text-emerald-700 dark:text-emerald-400">Apto</span>
-                            </div>
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700" title="Apto para Estadía">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              Apto Estadía
+                            </span>
                           ) : tieneAdeudos ? (
-                            <div className="flex items-center justify-center space-x-2" title={`${res.adeudos} materia(s) en adeudo`}>
-                              <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_0_2px_rgba(244,63,94,0.2)] dark:shadow-[0_0_0_2px_rgba(244,63,94,0.4)]"></div>
-                              <span className="text-[12px] font-bold text-rose-700 dark:text-rose-400">{res.adeudos} Adeudo{res.adeudos !== 1 ? 's' : ''}</span>
-                            </div>
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700" title={`${res.adeudos} materia(s) en adeudo`}>
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                              {res.adeudos} Adeudo{res.adeudos !== 1 ? 's' : ''}
+                            </span>
                           ) : (
-                            <div className="flex items-center justify-center space-x-2" title="En seguimiento o con materias en curso">
-                              <div className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.2)] dark:shadow-[0_0_0_2px_rgba(251,191,36,0.4)]"></div>
-                              <span className="text-[12px] font-semibold text-amber-700 dark:text-amber-400">Seguimiento</span>
-                            </div>
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700" title="En seguimiento o con materias en curso">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                              Seguimiento
+                            </span>
                           )}
                         </td>
 
-                        {/* Avance Curricular Circular */}
-                        <td className="py-3 px-4 text-center">
-                          <div className="flex items-center justify-center space-x-3">
-                            {/* Circular Progress */}
-                            <div className="relative w-10 h-10 flex items-center justify-center">
-                              <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
-                                <circle cx="18" cy="18" r="16" fill="none" className="stroke-surface-3" strokeWidth="3" />
-                                <circle 
-                                  cx="18" cy="18" r="16" fill="none" 
-                                  className={`transition-all duration-500 ease-out ${esElegible ? 'stroke-emerald-500' : tieneAdeudos ? 'stroke-rose-500' : 'stroke-accent'}`}
-                                  strokeWidth="3" strokeDasharray="100" strokeDashoffset={100 - porcentaje} strokeLinecap="round" 
-                                />
-                              </svg>
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-[10px] font-black text-text-primary">{porcentaje}%</span>
-                              </div>
+                        {/* Avance Curricular (Barra horizontal limpia + ratio numérico) */}
+                        <td className="py-2.5 px-3.5">
+                          <div className="w-28 mx-auto">
+                            <div className="flex items-center justify-between text-[11px] mb-1 font-mono">
+                              <span className="font-semibold text-slate-800">{porcentaje}%</span>
+                              <span className="text-slate-400 text-[10px]">{totalAprobadas}/{res?.totalMateriasMapa || 37}</span>
                             </div>
-                            <div className="text-left">
-                              <span className="text-[11px] font-bold text-text-secondary block leading-none">
-                                {totalAprobadas}/{res?.totalMateriasMapa || 37}
-                              </span>
-                              <span className="text-[9px] text-text-muted">Aprobadas</span>
+                            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div 
+                                className={`h-full rounded-full transition-all duration-300 ${
+                                  esElegible ? 'bg-emerald-500' : tieneAdeudos ? 'bg-rose-500' : 'bg-amber-500'
+                                }`}
+                                style={{ width: `${Math.min(100, Math.max(0, porcentaje))}%` }}
+                              />
                             </div>
                           </div>
                         </td>
 
-                        {/* Promedio Aprobatorio */}
-                        <td className="py-3 px-3 text-center">
-                          <span className={`inline-block font-mono text-[12px] font-black px-2 py-0.5 rounded border ${
-                            res?.promedio !== null
-                              ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-500/30'
-                              : 'bg-surface-2 text-text-muted border-border'
-                          }`}>
-                            {res?.promedioFormatted || 'S/C'}
+                        {/* Promedio */}
+                        <td className="py-2.5 px-3 text-center">
+                          <span className="font-mono text-xs font-bold text-slate-900">
+                            {res?.promedioFormatted || '—'}
                           </span>
-                          <span className="text-[9.5px] text-text-muted block mt-0.5 whitespace-nowrap">
-                            {res?.materiasConNota > 0 ? `${res.materiasConNota} asig.` : 'En curso'}
+                          <span className="text-[10px] text-slate-400 block mt-0.2">
+                            {res?.materiasConNota > 0 ? `${res.materiasConNota} asig.` : 'Sin calif.'}
                           </span>
                         </td>
 
-                        {/* Desempeño Combinado (ORD / REC) */}
-                        <td className="py-3 px-4">
-                          <div className="flex justify-center space-x-3">
-                            <div className="flex flex-col items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-500/20" title="Materias aprobadas en 1er intento (Ordinario)">
-                              <span className="text-[12px] font-black text-emerald-700 dark:text-emerald-400 leading-none">{res?.aprobadasOrd || 0}</span>
-                              <span className="text-[8px] font-bold text-emerald-600/70 dark:text-emerald-500 uppercase mt-0.5">1er Intento</span>
-                            </div>
-                            <div className="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-100 dark:border-blue-500/20" title="Materias aprobadas en Recuperación">
-                              <span className="text-[12px] font-black text-blue-700 dark:text-blue-400 leading-none">{(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)}</span>
-                              <span className="text-[8px] font-bold text-blue-600/70 dark:text-blue-500 uppercase mt-0.5">Recup.</span>
-                            </div>
+                        {/* Desempeño (Intentos Ordinario / Recuperación) */}
+                        <td className="py-2.5 px-3 text-center">
+                          <div className="flex items-center justify-center space-x-1.5 text-xs font-mono">
+                            <span className="text-slate-800 font-semibold" title="1er Intento (Ordinario)">
+                              {res?.aprobadasOrd || 0} <span className="text-[10px] text-slate-400 font-sans font-normal">ord</span>
+                            </span>
+                            <span className="text-slate-300">/</span>
+                            <span className="text-slate-800 font-semibold" title="Recuperación">
+                              {(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)} <span className="text-[10px] text-slate-400 font-sans font-normal">rec</span>
+                            </span>
                           </div>
                         </td>
 
                         {/* Inglés */}
-                        <td className="py-3 px-3 text-center font-mono font-black text-text-primary text-[13px]">
+                        <td className="py-2.5 px-3 text-center font-mono text-xs text-slate-700">
                           {res?.inglesAcreditados ?? 0}/{totalNivelesIngles}
                         </td>
 
-                        {/* Acción */}
-                        <td className="py-3 px-4 text-center">
+                        {/* Acción / Expediente */}
+                        <td className="py-2.5 px-3.5 text-center">
                           <button
+                            type="button"
                             onClick={() => {
                               setSelectedStudentIndex(originalIndex);
                               setActiveSheetTab('mapa');
                             }}
-                            className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-surface-2 group-hover:bg-accent text-text-primary group-hover:text-slate-950 text-[11px] font-bold rounded-lg transition-all cursor-pointer border border-border group-hover:border-accent"
+                            className="inline-flex items-center space-x-1 px-2.5 py-1 bg-white border border-slate-300 rounded text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-400 transition-colors cursor-pointer shadow-2xs"
                           >
-                            <Layers className="w-3.5 h-3.5 group-hover:text-slate-950 text-accent transition-colors" strokeWidth={2} />
+                            <Layers className="w-3.5 h-3.5 text-slate-400" />
                             <span>Auditar</span>
                           </button>
                         </td>
@@ -759,9 +737,9 @@ export default function BatchAuditView({
             </div>
 
             {/* Pie de tabla con conteo */}
-            <div className="px-5 py-3 bg-surface-2 border-t border-border flex items-center justify-between text-[11px] text-text-muted font-medium">
+            <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
               <span>Mostrando {filteredAlumnos.length} de {alumnos.length} expedientes</span>
-              <span className="font-mono">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span>
+              <span className="font-mono text-[11px] text-slate-400">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span>
             </div>
           </div>
         )}

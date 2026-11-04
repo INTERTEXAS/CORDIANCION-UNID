@@ -27,14 +27,26 @@ import {
 } from 'lucide-react';
 import NeonAuditManagerModal from './components/NeonAuditManagerModal';
 import ErrorBoundary from './components/ErrorBoundary';
+import SecurityAdminPanel from './components/SecurityAdminPanel';
 
 export default function App() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin, user } = useAuth();
+  const esSuperAdmin = Boolean(
+    isSuperAdmin || 
+    user?.rol === 'super_admin' || 
+    user?.role === 'super_admin' || 
+    user?.rol === 'ADMIN_SISTEMA'
+  );
   const [carreras, setCarreras] = useState(CARRERAS_LOCAL);
   const [carreraSeleccionada, setCarreraSeleccionada] = useState(CARRERAS_LOCAL[0]);
   const [dbStatus, setDbStatus] = useState({ fuente: 'local', mensaje: 'Iniciando conexión...' });
 
-  const [activeTab, setActiveTab] = useState('mapa'); // 'mapa' (Hoja 1) | 'cedula' (Hoja 2) | 'grupo' (Auditoría de Grupo)
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.pathname.toLowerCase().replace(/\/+$/, '') === '/admin/seguridad') {
+      return 'seguridad';
+    }
+    return 'mapa';
+  }); // 'mapa' | 'cedula' | 'grupo' | 'seguridad'
   const [activeFilter, setActiveFilter] = useState('TODAS');
 
   const [auditData, setAuditData] = useState(null);
@@ -93,6 +105,26 @@ export default function App() {
       setCarreraSeleccionada(prev => ({ ...prev, activa: true }));
     }
   }, [carreraSeleccionada]);
+
+  // REQUERIMIENTO 1: Role Guard para ruta /admin/seguridad
+  useEffect(() => {
+    const handleRouteGuard = () => {
+      const path = typeof window !== 'undefined' ? window.location.pathname.toLowerCase().replace(/\/+$/, '') : '';
+      if (path === '/admin/seguridad') {
+        if (esSuperAdmin) {
+          setActiveTab('seguridad');
+        } else {
+          console.warn('[RoleGuard] Acceso bloqueado a /admin/seguridad. Rol super_admin requerido.');
+          window.history.replaceState({}, '', '/');
+          setActiveTab('mapa');
+        }
+      }
+    };
+
+    handleRouteGuard();
+    window.addEventListener('popstate', handleRouteGuard);
+    return () => window.removeEventListener('popstate', handleRouteGuard);
+  }, [esSuperAdmin]);
 
   // Agregar al historial reciente (máximo 5 alumnos en memoria)
   const addToHistorial = (newAudit) => {
@@ -481,6 +513,14 @@ export default function App() {
                   setCarreraSeleccionada(activa);
                 }}
               />
+            ) : activeTab === 'seguridad' ? (
+              esSuperAdmin ? (
+                <SecurityAdminPanel />
+              ) : (
+                <div className="py-16 text-center text-rose-400 font-semibold text-xs bg-[#0D121C] border border-slate-800 rounded-2xl p-6">
+                  Acceso restringido: Se requiere el rol de super_admin para visualizar este módulo.
+                </div>
+              )
             ) : activeTab === 'grupo' ? (
               /* Group Audit View */
               batchData ? (
