@@ -439,6 +439,7 @@ export default function App() {
           isOpen={isSidebarOpen}
           onToggle={() => setIsSidebarOpen(prev => !prev)}
           batchCount={batchData?.alumnos?.length || 0}
+          onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
         />
       </div>
 

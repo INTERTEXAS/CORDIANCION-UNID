@@ -8,7 +8,9 @@ import {
   Building2,
   Server,
   PanelLeftClose,
-  Users
+  Users,
+  Database,
+  ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -18,7 +20,8 @@ export default function Sidebar({
   setActiveTab, 
   isOpen = true, 
   onToggle,
-  batchCount = 0
+  batchCount = 0,
+  onOpenNeonManager
 }) {
   const { user, isSuperAdmin } = useAuth();
   const esSuperAdmin = Boolean(
@@ -218,35 +221,78 @@ export default function Sidebar({
           })}
         </nav>
 
-        {/* Footer: System Status */}
-        <div className="p-4 border-t border-white/[0.06] bg-black/20 text-[11px] space-y-2.5">
-          <div className="flex items-center justify-between">
-            <span className="flex items-center space-x-2 text-slate-400 font-medium">
-              <Server className="w-3.5 h-3.5 text-slate-500" strokeWidth={1.8} />
-              <span>Base de datos:</span>
-            </span>
-            <span className={`inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+        {/* Footer: Micro-Cockpit de Telemetría Escolar */}
+        <div className="p-3 border-t border-white/[0.06] bg-black/25 space-y-2">
+          {/* Micro-tarjeta de Servidor & Base de Datos */}
+          <div
+            onClick={onOpenNeonManager}
+            role={onOpenNeonManager ? 'button' : undefined}
+            tabIndex={onOpenNeonManager ? 0 : undefined}
+            onKeyDown={(e) => {
+              if (onOpenNeonManager && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                onOpenNeonManager();
+              }
+            }}
+            title={onOpenNeonManager ? "Clic para abrir el Gestor de Ciclos y Auditorías en Neon DB" : undefined}
+            className={`w-full text-left p-2.5 rounded-xl border transition-all duration-200 select-none ${
+              onOpenNeonManager 
+                ? 'cursor-pointer hover:border-emerald-500/40 hover:bg-white/[0.04] group' 
+                : ''
+            } ${
               dbStatus?.fuente === 'neon'
-                ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/25'
-                : 'bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/25'
-            }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${
-                dbStatus?.fuente === 'neon' ? 'bg-emerald-400' : 'bg-amber-400'
-              }`} />
-              <span>{dbStatus?.fuente === 'neon' ? 'Neon DB' : 'Local'}</span>
-            </span>
+                ? 'bg-emerald-950/20 border-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.06)]'
+                : 'bg-slate-900/60 border-white/[0.06]'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center space-x-2 min-w-0">
+                <span className="relative flex h-2 w-2 flex-shrink-0">
+                  {dbStatus?.fuente === 'neon' && (
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  )}
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                    dbStatus?.fuente === 'neon' ? 'bg-emerald-400' : 'bg-amber-400'
+                  }`} />
+                </span>
+                <span className="text-[11px] font-semibold text-slate-200 tracking-tight truncate">
+                  {dbStatus?.fuente === 'neon' ? 'Neon PostgreSQL' : 'Almacenamiento Local'}
+                </span>
+              </div>
+              <span className={`text-[8.5px] font-mono font-bold px-1.5 py-0.5 rounded tracking-wide ${
+                dbStatus?.fuente === 'neon'
+                  ? 'bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30'
+                  : 'bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30'
+              }`}>
+                {dbStatus?.fuente === 'neon' ? 'ONLINE' : 'LOCAL'}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between text-[10px] text-slate-400">
+              <span className="flex items-center space-x-1.5 truncate text-slate-400">
+                <Database className="w-3 h-3 text-slate-500 flex-shrink-0" strokeWidth={1.8} />
+                <span className="truncate">
+                  {dbStatus?.fuente === 'neon' ? 'Serverless Pooler' : 'Caché navegador'}
+                </span>
+              </span>
+              {onOpenNeonManager && (
+                <span className="text-[9.5px] font-medium text-emerald-400/80 group-hover:text-emerald-300 flex items-center transition-colors">
+                  <span>Gestionar</span>
+                  <ChevronRight className="w-3 h-3 ml-0.5 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="flex items-center space-x-2 text-slate-400 font-medium">
-              <Building2 className="w-3.5 h-3.5 text-slate-500" strokeWidth={1.8} />
-              <span>Campus:</span>
+          {/* Contexto de Sede y Build */}
+          <div className="pt-1 px-1 flex items-center justify-between text-[10.5px]">
+            <span className="flex items-center space-x-1.5 text-slate-400 font-medium">
+              <Building2 className="w-3 h-3 text-slate-500 flex-shrink-0" strokeWidth={1.8} />
+              <span>Sede CAM</span>
             </span>
-            <span className="font-semibold text-slate-200">Sede CAM</span>
-          </div>
-
-          <div className="pt-2 text-[10px] text-slate-600 text-center border-t border-white/[0.04]">
-            v2026.1 · Licenciatura Mixta
+            <span className="font-mono text-[9.5px] text-slate-500 tracking-wider">
+              v2026.1 · MIXTO
+            </span>
           </div>
         </div>
       </div>
