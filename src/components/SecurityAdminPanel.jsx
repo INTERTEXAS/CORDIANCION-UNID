@@ -4,7 +4,12 @@ import {
   fetchDispositivosAutorizados, 
   toggleEstadoDispositivo, 
   eliminarDispositivo, 
-  registrarDispositivoAutorizado 
+  registrarDispositivoAutorizado,
+  fetchUsuarios,
+  registrarUsuario,
+  actualizarUsuario,
+  toggleEstadoUsuario,
+  eliminarUsuario
 } from '../services/neonService';
 import { 
   ShieldCheck, 
@@ -28,13 +33,17 @@ import {
   CheckCircle2,
   Clock,
   Layers,
-  Activity
+  Activity,
+  Users,
+  UserPlus,
+  Edit2
 } from 'lucide-react';
 
 export default function SecurityAdminPanel() {
   // Datos de Neon DB
   const [bitacora, setBitacora] = useState([]);
   const [dispositivos, setDispositivos] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState(null);
@@ -44,13 +53,25 @@ export default function SecurityAdminPanel() {
   // Filtros y vista activa
   const [searchTerm, setSearchTerm] = useState('');
   const [eventoFiltro, setEventoFiltro] = useState('TODOS');
-  const [activeTab, setActiveTab] = useState('bitacora'); // 'bitacora' | 'dispositivos' | 'combinada'
+  const [activeTab, setActiveTab] = useState('bitacora'); // 'bitacora' | 'dispositivos' | 'usuarios' | 'combinada'
 
   // Modal para autorizar equipo
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalDeviceId, setModalDeviceId] = useState('');
   const [modalPropietario, setModalPropietario] = useState('');
   const [isSubmittingModal, setIsSubmittingModal] = useState(false);
+
+  // Modal para colaboradores (usuarios)
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [userNombre, setUserNombre] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userRol, setUserRol] = useState('COORDINADOR');
+  const [userCoord, setUserCoord] = useState('Ciencias Económico-Administrativas (COFI, DAEM, EJCO)');
+  const [customCoord, setCustomCoord] = useState('');
+  const [isCustomCoord, setIsCustomCoord] = useState(false);
+  const [userActivo, setUserActivo] = useState(true);
+  const [isSubmittingUserModal, setIsSubmittingUserModal] = useState(false);
 
   // Copia temporal
   const [copiedId, setCopiedId] = useState(null);
@@ -66,17 +87,19 @@ export default function SecurityAdminPanel() {
     setErrorMsg(null);
 
     try {
-      const [logs, devs] = await Promise.all([
+      const [logs, devs, users] = await Promise.all([
         fetchBitacoraAccesosConDispositivos(100),
-        fetchDispositivosAutorizados()
+        fetchDispositivosAutorizados(),
+        fetchUsuarios()
       ]);
       setBitacora(logs || []);
       setDispositivos(devs || []);
+      setUsuarios(users || []);
       setLastSyncTime(new Date());
-      if (isRefresh) showToast('Telemetría sincronizada con Neon DB.');
+      if (isRefresh) showToast('Telemetría y usuarios sincronizados con Neon DB.');
     } catch (err) {
       console.error('[SecurityPanel] Error cargando datos de seguridad:', err);
-      setErrorMsg('No fue posible sincronizar la telemetría con la base de datos de auditoría.');
+      setErrorMsg('No fue posible sincronizar los datos con la base de datos de auditoría.');
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -162,6 +185,133 @@ export default function SecurityAdminPanel() {
     } catch (_) {}
   };
 
+  // --- Handlers de Gestión de Usuarios y Roles ---
+  const PRESET_COORDS = [
+    'Ciencias Económico-Administrativas (COFI, DAEM, EJCO)',
+    'Arquitectura, Derecho, Educación y Deporte (DERE, ARQU, EJDE, EJED, EDFI)',
+    'Diseño, Administración, Mercadotecnia e Ingeniería (DSGD, EJAD, MEES, SYSC, ADME)',
+    'TODAS (Dirección de Sede / Control Escolar / SysAdmin)'
+  ];
+
+  const abrirModalUsuario = (userToEdit = null) => {
+    if (userToEdit) {
+      setEditingUserId(userToEdit.id);
+      setUserNombre(userToEdit.nombre || '');
+      setUserEmail(userToEdit.email || '');
+      setUserRol(userToEdit.rol || 'COORDINADOR');
+      
+      const rawCoord = (userToEdit.coordinacion || '').trim();
+      const matched = PRESET_COORDS.find(p => 
+        p.toLowerCase() === rawCoord.toLowerCase() ||
+        (rawCoord && (p.toLowerCase().includes(rawCoord.toLowerCase()) || rawCoord.toLowerCase().includes(p.toLowerCase())))
+      );
+
+      if (matched) {
+        setUserCoord(matched);
+        setIsCustomCoord(false);
+        setCustomCoord('');
+      } else if (rawCoord && rawCoord !== 'TODAS') {
+        setUserCoord('OTRA');
+        setIsCustomCoord(true);
+        setCustomCoord(rawCoord);
+      } else {
+        setUserCoord('Ciencias Económico-Administrativas (COFI, DAEM, EJCO)');
+        setIsCustomCoord(false);
+        setCustomCoord('');
+      }
+      setUserActivo(userToEdit.activo ?? true);
+    } else {
+      setEditingUserId(null);
+      setUserNombre('');
+      setUserEmail('');
+      setUserRol('COORDINADOR');
+      setUserCoord('Ciencias Económico-Administrativas (COFI, DAEM, EJCO)');
+      setIsCustomCoord(false);
+      setCustomCoord('');
+      setUserActivo(true);
+    }
+    setIsUserModalOpen(true);
+  };
+
+  const handleSubmitUserModal = async (e) => {
+    e.preventDefault();
+    if (!userEmail.trim()) {
+      alert('Por favor ingresa el correo institucional.');
+      return;
+    }
+
+    const finalCoord = isCustomCoord ? customCoord.trim() : userCoord;
+    if (!finalCoord) {
+      alert('Por favor especifica el área o coordinación asignada.');
+      return;
+    }
+
+    setIsSubmittingUserModal(true);
+    try {
+      if (editingUserId) {
+        await actualizarUsuario(editingUserId, {
+          nombre: userNombre.trim(),
+          email: userEmail.trim(),
+          rol: userRol,
+          coordinacion: finalCoord,
+          activo: userActivo
+        });
+        showToast(`Colaborador "${userNombre || userEmail}" actualizado correctamente.`);
+      } else {
+        await registrarUsuario({
+          nombre: userNombre.trim(),
+          email: userEmail.trim(),
+          rol: userRol,
+          coordinacion: finalCoord,
+          activo: userActivo
+        });
+        showToast(`Colaborador "${userNombre || userEmail}" registrado exitosamente.`);
+      }
+      setIsUserModalOpen(false);
+      await cargarDatos(false);
+    } catch (err) {
+      console.error('[SecurityPanel] Error al guardar colaborador:', err);
+      alert('Error al guardar en Neon DB: ' + err.message);
+    } finally {
+      setIsSubmittingUserModal(false);
+    }
+  };
+
+  const handleToggleUsuarioActivo = async (u) => {
+    const nuevoEstado = !u.activo;
+    setUsuarios(prev => prev.map(item => item.id === u.id ? { ...item, activo: nuevoEstado } : item));
+    try {
+      await toggleEstadoUsuario(u.id, nuevoEstado);
+      showToast(`Usuario "${u.nombre || u.email}" ${nuevoEstado ? 'activado' : 'desactivado'}.`);
+    } catch (err) {
+      console.error('[SecurityPanel] Error al cambiar estado de usuario:', err);
+      setUsuarios(prev => prev.map(item => item.id === u.id ? { ...item, activo: u.activo } : item));
+      setErrorMsg('No se pudo actualizar el estado del usuario.');
+    }
+  };
+
+  const handleEliminarUsuario = async (u) => {
+    if (u.id === 1) {
+      alert('El usuario administrador principal no puede ser eliminado.');
+      return;
+    }
+    if (!window.confirm(`¿Confirmas la revocación del acceso a "${u.nombre || u.email}"?`)) {
+      return;
+    }
+    try {
+      const res = await eliminarUsuario(u.id);
+      if (res.success) {
+        setUsuarios(prev => prev.filter(item => item.id !== u.id));
+        showToast(`Acceso de "${u.nombre || u.email}" eliminado.`);
+      } else {
+        alert(res.error || 'No se pudo eliminar el usuario.');
+      }
+    } catch (err) {
+      console.error('[SecurityPanel] Error al eliminar usuario:', err);
+      setErrorMsg('Error al eliminar usuario en Neon DB.');
+    }
+  };
+
   // Filtrado de la bitácora
   const bitacoraFiltrada = bitacora.filter(item => {
     const matchesSearch = 
@@ -226,6 +376,14 @@ export default function SecurityAdminPanel() {
             >
               <RefreshCw className={`w-3.5 h-3.5 text-slate-400 ${isRefreshing ? 'animate-spin text-amber-600' : ''}`} />
               <span>{isRefreshing ? 'Sincronizando…' : 'Actualizar'}</span>
+            </button>
+
+            <button
+              onClick={() => abrirModalUsuario()}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-semibold transition-colors cursor-pointer"
+            >
+              <UserPlus className="w-3.5 h-3.5 text-amber-700" />
+              <span>+ Colaborador</span>
             </button>
 
             <button
@@ -327,6 +485,22 @@ export default function SecurityAdminPanel() {
             <span>Dispositivos Autorizados</span>
             <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 text-slate-600">
               {dispositivos.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('usuarios')}
+            className={`pb-2.5 text-xs font-semibold border-b-2 transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeTab === 'usuarios'
+                ? 'border-slate-900 text-slate-900 font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>Usuarios & Roles (RBAC)</span>
+            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 text-slate-600">
+              {usuarios.length}
             </span>
           </button>
 
@@ -455,6 +629,172 @@ export default function SecurityAdminPanel() {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* =========================================================================
+          CONTENIDO: USUARIOS Y CONTROL DE ROLES (RBAC)
+          ========================================================================= */}
+      {(activeTab === 'usuarios' || activeTab === 'combinada') && (
+        <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
+            <div>
+              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center space-x-2">
+                <Users className="w-3.5 h-3.5 text-amber-600" />
+                <span>Directorio de Colaboradores & Roles Institucionales</span>
+              </h2>
+              <p className="text-[11px] text-slate-500">
+                Control de Acceso Basado en Roles (RBAC) sincronizado con cuentas Microsoft 365 Entra ID y Neon DB.
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-[11px] font-mono text-slate-500">
+                {usuarios.length} {usuarios.length === 1 ? 'colaborador registrado' : 'colaboradores registrados'}
+              </span>
+              <button
+                type="button"
+                onClick={() => abrirModalUsuario()}
+                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+              >
+                <UserPlus className="w-3 h-3" />
+                <span>Nuevo Colaborador</span>
+              </button>
+            </div>
+          </div>
+
+          {usuarios.length === 0 ? (
+            <div className="py-10 text-center text-slate-400 text-xs space-y-1">
+              <Users className="w-6 h-6 mx-auto text-slate-300" />
+              <p className="font-medium text-slate-600">No hay usuarios registrados en la base de datos Neon.</p>
+              <p className="text-[11px]">Usa el botón "+ Registrar Colaborador" para dar de alta al personal académico.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-100 text-[10px] uppercase tracking-wider text-slate-500 font-bold bg-slate-50/80">
+                    <th className="py-2.5 px-5">Colaborador / Cuenta Institucional</th>
+                    <th className="py-2.5 px-4">Rol en Plataforma</th>
+                    <th className="py-2.5 px-4">Coordinación Asignada</th>
+                    <th className="py-2.5 px-4 text-center">Estado de Acceso</th>
+                    <th className="py-2.5 px-4">Fecha de Alta</th>
+                    <th className="py-2.5 px-5 text-right">Gestión</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {usuarios.map((u) => {
+                    const isSuper = u.id === 1 || u.rol === 'ADMIN_SISTEMA' || u.rol === 'super_admin';
+                    return (
+                      <tr key={u.id} className="hover:bg-slate-50/60 transition-colors">
+                        <td className="py-3 px-5">
+                          <div className="flex items-center space-x-2.5">
+                            <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-xs shrink-0">
+                              {(u.nombre ? u.nombre.charAt(0) : u.email.charAt(0)).toUpperCase()}
+                            </div>
+                            <div>
+                              <div className="font-semibold text-slate-900 flex items-center space-x-1.5">
+                                <span>{u.nombre || 'Sin nombre asignado'}</span>
+                                {isSuper && (
+                                  <span className="px-1.5 py-0.2 bg-rose-50 text-rose-700 border border-rose-200 rounded text-[9px] font-bold font-mono">
+                                    SYSADMIN
+                                  </span>
+                                )}
+                              </div>
+                              <div className="font-mono text-[11px] text-slate-500 truncate max-w-[220px]">
+                                {u.email}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-4">
+                          {u.rol === 'ADMIN_SISTEMA' || u.rol === 'super_admin' ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 font-mono">
+                              ADMINISTRADOR TOTAL
+                            </span>
+                          ) : u.rol === 'COORDINADOR' || u.rol === 'coordinador' ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 font-mono">
+                              COORDINADOR ACADÉMICO
+                            </span>
+                          ) : u.rol === 'CONTROL_ESCOLAR' || u.rol === 'control_escolar' ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 font-mono">
+                              CONTROL ESCOLAR
+                            </span>
+                          ) : u.rol === 'DIRECTOR' || u.rol === 'director' ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+                              DIRECCIÓN DE SEDE
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 font-mono">
+                              CONSULTA / DOCENTE
+                            </span>
+                          )}
+                        </td>
+
+                        <td className="py-3 px-4 text-[11px] text-slate-700 max-w-[220px]">
+                          <div className="truncate font-medium" title={u.coordinacion || 'TODAS'}>
+                            {u.coordinacion || 'TODAS (Sede Campeche)'}
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-4 text-center">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleUsuarioActivo(u)}
+                            disabled={u.id === 1}
+                            className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
+                              u.activo ? 'bg-emerald-600' : 'bg-slate-300'
+                            }`}
+                            title={u.id === 1 ? 'Usuario principal no modificable' : u.activo ? 'Desactivar acceso' : 'Activar acceso'}
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow transition duration-150 ease-in-out ${
+                                u.activo ? 'translate-x-3' : 'translate-x-0'
+                              }`}
+                            />
+                          </button>
+                          <span className={`ml-2 text-[11px] font-medium ${u.activo ? 'text-emerald-700' : 'text-slate-400'}`}>
+                            {u.activo ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </td>
+
+                        <td className="py-3 px-4 text-slate-500 text-[11px] font-mono">
+                          {u.fecha_creacion ? new Date(u.fecha_creacion).toLocaleDateString('es-MX', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          }) : '—'}
+                        </td>
+
+                        <td className="py-3 px-5 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end space-x-1.5">
+                            <button
+                              type="button"
+                              onClick={() => abrirModalUsuario(u)}
+                              className="p-1 text-slate-400 hover:text-slate-800 transition-colors cursor-pointer"
+                              title="Editar rol y coordinación"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            {u.id !== 1 && (
+                              <button
+                                type="button"
+                                onClick={() => handleEliminarUsuario(u)}
+                                className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                                title="Revocar colaborador"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -728,6 +1068,185 @@ export default function SecurityAdminPanel() {
                   className="px-3.5 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {isSubmittingModal ? 'Guardando…' : 'Autorizar Equipo'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL DE REGISTRO / EDICIÓN DE COLABORADORES (RBAC)
+          ========================================================================= */}
+      {isUserModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-fade-in">
+          <div 
+            className="w-full max-w-lg bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                  <Users className="w-4 h-4 text-amber-600" />
+                  <span>{editingUserId ? 'Editar Colaborador & Permisos' : 'Registrar Colaborador Institucional'}</span>
+                </h3>
+                <p className="text-[11px] text-slate-500">
+                  Control de roles RBAC vinculado al login con Microsoft Entra ID
+                </p>
+              </div>
+              <button
+                onClick={() => setIsUserModalOpen(false)}
+                className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitUserModal} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Nombre Completo
+                </label>
+                <input
+                  type="text"
+                  value={userNombre}
+                  onChange={(e) => setUserNombre(e.target.value)}
+                  placeholder="ej. Mtra. Laura Angélica Ara Angulo"
+                  required
+                  autoFocus
+                  className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  Correo Electrónico Institucional (Microsoft 365)
+                </label>
+                <input
+                  type="email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  placeholder="ej. usuario@unid.mx"
+                  required
+                  className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                    Rol en Plataforma (RBAC)
+                  </label>
+                  <select
+                    value={userRol}
+                    onChange={(e) => setUserRol(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-800 focus:outline-none focus:border-slate-400 focus:bg-white cursor-pointer font-medium"
+                  >
+                    <option value="COORDINADOR">Coordinador Académico</option>
+                    <option value="CONTROL_ESCOLAR">Control Escolar</option>
+                    <option value="DIRECTOR">Dirección de Sede</option>
+                    <option value="ADMIN_SISTEMA">Administrador Total</option>
+                    <option value="CONSULTA">Consulta / Docente</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                    Estado de Acceso
+                  </label>
+                  <div className="flex items-center space-x-2.5 pt-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setUserActivo(!userActivo)}
+                      className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus:outline-none ${
+                        userActivo ? 'bg-emerald-600' : 'bg-slate-300'
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow transition duration-150 ease-in-out ${
+                          userActivo ? 'translate-x-3' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                    <span className={`text-xs font-semibold ${userActivo ? 'text-emerald-700' : 'text-slate-400'}`}>
+                      {userActivo ? 'Acceso Autorizado' : 'Acceso Revocado'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1 uppercase tracking-wider">
+                  División / Coordinación Académica Asignada
+                </label>
+                <select
+                  value={isCustomCoord ? 'OTRA' : userCoord}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === 'OTRA') {
+                      setIsCustomCoord(true);
+                      setUserCoord('OTRA');
+                    } else {
+                      setIsCustomCoord(false);
+                      setUserCoord(val);
+                    }
+                  }}
+                  className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-800 focus:outline-none focus:border-slate-400 focus:bg-white cursor-pointer font-medium"
+                >
+                  <option value="Ciencias Económico-Administrativas (COFI, DAEM, EJCO)">
+                    Ciencias Económico-Administrativas (COFI, DAEM, EJCO)
+                  </option>
+                  <option value="Arquitectura, Derecho, Educación y Deporte (DERE, ARQU, EJDE, EJED, EDFI)">
+                    Arquitectura, Derecho, Educación y Deporte (DERE, ARQU, EJDE, EJED, EDFI)
+                  </option>
+                  <option value="Diseño, Administración, Mercadotecnia e Ingeniería (DSGD, EJAD, MEES, SYSC, ADME)">
+                    Diseño, Admin, Mkt e Ingeniería (DSGD, EJAD, MEES, SYSC, ADME)
+                  </option>
+                  <option value="TODAS (Dirección de Sede / Control Escolar / SysAdmin)">
+                    TODAS (Dirección de Sede / Control Escolar / SysAdmin)
+                  </option>
+                  <option value="OTRA">
+                    + Otra Coordinación / Área personalizada (Nueva coordinación)...
+                  </option>
+                </select>
+
+                {isCustomCoord && (
+                  <div className="mt-2 animate-fade-in">
+                    <label className="block text-[10px] font-bold text-amber-700 mb-1 uppercase tracking-wider">
+                      Escribe el nombre de la nueva coordinación o área:
+                    </label>
+                    <input
+                      type="text"
+                      value={customCoord}
+                      onChange={(e) => setCustomCoord(e.target.value)}
+                      placeholder="ej. Coordinación de Ciencias de la Salud / Posgrados / Nueva Titular"
+                      required={isCustomCoord}
+                      autoFocus
+                      className="w-full px-3 py-1.5 bg-amber-50/40 border border-amber-300 rounded text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white"
+                    />
+                  </div>
+                )}
+
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Permite reasignar áreas o dar de alta nuevas coordinaciones en caso de cambios o relevos de personal.
+                </p>
+              </div>
+
+              <div className="pt-3 flex items-center justify-end space-x-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsUserModalOpen(false)}
+                  disabled={isSubmittingUserModal}
+                  className="px-3 py-1.5 rounded text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingUserModal}
+                  className="px-4 py-1.5 rounded bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmittingUserModal ? 'Guardando en Neon…' : editingUserId ? 'Guardar Cambios' : 'Registrar Colaborador'}
                 </button>
               </div>
             </form>

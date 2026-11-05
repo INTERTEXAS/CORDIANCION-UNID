@@ -19,6 +19,7 @@ import {
 } from '../services/neonService';
 import { runAcademicAudit } from '../services/auditEngine';
 import { CARRERAS_LOCAL } from '../data/carrerasData';
+import { useAuth } from '../context/AuthContext';
 
 // Helper de capitalización para nombres de programa
 function formatProgramName(str) {
@@ -43,6 +44,14 @@ export default function NeonAuditManagerModal({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null); // { type: 'success' | 'error', text: '' }
+
+  // Permisos según Rol del usuario
+  const { user, isSuperAdmin } = useAuth();
+  const rolNorm = String(user?.rol || user?.role || '').toLowerCase();
+  const puedeEliminar = Boolean(
+    isSuperAdmin || 
+    ['super_admin', 'admin_sistema', 'control_escolar', 'coordinador', 'director'].includes(rolNorm)
+  );
 
   // Formulario para guardar
   const [cicloInput, setCicloInput] = useState('2026-1');
@@ -408,15 +417,17 @@ export default function NeonAuditManagerModal({
                             </button>
                           )}
 
-                          <button
-                            type="button"
-                            onClick={() => handleEliminarCiclo(item)}
-                            disabled={loading}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded transition-colors cursor-pointer"
-                            title="Eliminar este registro del archivo histórico"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          {puedeEliminar && (
+                            <button
+                              type="button"
+                              onClick={() => handleEliminarCiclo(item)}
+                              disabled={loading}
+                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                              title="Eliminar este registro del archivo histórico"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </div>
                     );
@@ -515,15 +526,19 @@ export default function NeonAuditManagerModal({
         <div className="px-6 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
           <div className="flex items-center space-x-2">
             <span>Retención académica: 5 meses</span>
-            <span>·</span>
-            <button
-              type="button"
-              onClick={handleDepurar5Meses}
-              disabled={loading}
-              className="text-slate-500 hover:text-rose-700 underline cursor-pointer transition-colors"
-            >
-              Depurar registros antiguos
-            </button>
+            {puedeEliminar && (
+              <>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={handleDepurar5Meses}
+                  disabled={loading}
+                  className="text-slate-500 hover:text-rose-700 underline cursor-pointer transition-colors"
+                >
+                  Depurar registros antiguos
+                </button>
+              </>
+            )}
           </div>
 
           <button

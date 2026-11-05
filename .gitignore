@@ -38,3 +38,4 @@ dist-ssr
 # Documentos PDF y datos sensibles
 *.pdf
 catalogo.pdf
+~$*

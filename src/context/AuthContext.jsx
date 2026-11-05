@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { getAccountEmail, isValidUnidEmail } from '../authConfig';
+import { obtenerPerfilUsuarioPorEmail } from '../services/neonService';
 
 const AuthContext = createContext(null);
 
@@ -24,7 +25,27 @@ export function AuthProvider({ children }) {
     }
   });
 
+  const [msalProfile, setMsalProfile] = useState(null);
+
   const activeMsalAccount = instance.getActiveAccount() || accounts[0] || null;
+
+  // Consultar perfil institucional en Neon para cuentas Microsoft
+  useEffect(() => {
+    let isMounted = true;
+    if (activeMsalAccount && isValidUnidEmail(activeMsalAccount)) {
+      const email = getAccountEmail(activeMsalAccount);
+      obtenerPerfilUsuarioPorEmail(email).then(profile => {
+        if (isMounted && profile) {
+          setMsalProfile(profile);
+        }
+      }).catch(err => {
+        console.warn('[AuthContext] No se pudo recuperar perfil de usuario:', err);
+      });
+    } else {
+      setMsalProfile(null);
+    }
+    return () => { isMounted = false; };
+  }, [activeMsalAccount]);
 
   // Si existe devUser, tiene rol prioritario ADMIN_SISTEMA o super_admin
   const roleNorm = String(devUser?.rol || devUser?.role || '').toLowerCase().trim();
@@ -44,11 +65,12 @@ export function AuthProvider({ children }) {
     role: devUser.role || devUser.rol || 'super_admin'
   } : (activeMsalAccount && isValidUnidEmail(activeMsalAccount) ? {
     id: activeMsalAccount.homeAccountId,
-    nombre: activeMsalAccount.name || getAccountEmail(activeMsalAccount).split('@')[0],
+    nombre: msalProfile?.nombre || activeMsalAccount.name || getAccountEmail(activeMsalAccount).split('@')[0],
     email: getAccountEmail(activeMsalAccount),
-    rol: 'DOCENTE',
-    role: 'DOCENTE',
-    coordinacion: 'INSTITUCIONAL',
+    rol: msalProfile?.rol || 'DOCENTE',
+    role: msalProfile?.rol || 'DOCENTE',
+    coordinacion: msalProfile?.coordinacion || 'INSTITUCIONAL',
+    activo: msalProfile ? msalProfile.activo : true,
     isMsal: true
   } : null);
 

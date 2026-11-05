@@ -1134,3 +1134,173 @@ export async function validarCredencialesDev(email, password, options = {}) {
   }
 }
 
+/**
+ * Consulta la lista completa de usuarios y colaboradores en Neon Database.
+ */
+export async function fetchUsuarios() {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) return [];
+
+  try {
+    const sql = neon(databaseUrl);
+    const rows = await sql`
+      SELECT id, nombre, email, rol, coordinacion, COALESCE(activo, true) as activo, fecha_creacion
+      FROM usuarios
+      ORDER BY id ASC
+    `;
+    return rows || [];
+  } catch (err) {
+    console.error('[NeonService] Error al consultar usuarios:', err);
+    return [];
+  }
+}
+
+/**
+ * Registra o da de alta un nuevo usuario / colaborador en Neon Database.
+ */
+export async function registrarUsuario({ nombre, email, rol = 'COORDINADOR', coordinacion = 'TODAS', activo = true }) {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) return null;
+
+  try {
+    const sql = neon(databaseUrl);
+    const emailNorm = String(email || '').trim().toLowerCase();
+    const nombreNorm = String(nombre || emailNorm.split('@')[0]).trim();
+    const rolNorm = String(rol || 'COORDINADOR').trim().toUpperCase();
+    const coordNorm = String(coordinacion || 'TODAS').trim();
+
+    const existing = await sql`SELECT id FROM usuarios WHERE LOWER(TRIM(email)) = ${emailNorm} LIMIT 1;`;
+    if (existing && existing.length > 0) {
+      const updated = await sql`
+        UPDATE usuarios 
+        SET nombre = ${nombreNorm}, rol = ${rolNorm}, coordinacion = ${coordNorm}, activo = ${Boolean(activo)}
+        WHERE id = ${existing[0].id}
+        RETURNING id, nombre, email, rol, coordinacion, activo, fecha_creacion;
+      `;
+      return updated?.[0] || null;
+    } else {
+      const inserted = await sql`
+        INSERT INTO usuarios (nombre, email, rol, coordinacion, activo, fecha_creacion)
+        VALUES (${nombreNorm}, ${emailNorm}, ${rolNorm}, ${coordNorm}, ${Boolean(activo)}, NOW())
+        RETURNING id, nombre, email, rol, coordinacion, activo, fecha_creacion;
+      `;
+      return inserted?.[0] || null;
+    }
+  } catch (err) {
+    console.error('[NeonService] Error al registrar usuario:', err);
+    return null;
+  }
+}
+
+/**
+ * Actualiza los datos de un usuario existente.
+ */
+export async function actualizarUsuario(id, { nombre, email, rol, coordinacion, activo }) {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) return null;
+
+  try {
+    const sql = neon(databaseUrl);
+    const emailNorm = String(email || '').trim().toLowerCase();
+    const nombreNorm = String(nombre || '').trim();
+    const rolNorm = String(rol || 'COORDINADOR').trim().toUpperCase();
+    const coordNorm = String(coordinacion || 'TODAS').trim();
+
+    const rows = await sql`
+      UPDATE usuarios
+      SET 
+        nombre = ${nombreNorm},
+        email = ${emailNorm},
+        rol = ${rolNorm},
+        coordinacion = ${coordNorm},
+        activo = ${Boolean(activo)}
+      WHERE id = ${id}
+      RETURNING id, nombre, email, rol, coordinacion, activo, fecha_creacion;
+    `;
+    return rows?.[0] || null;
+  } catch (err) {
+    console.error('[NeonService] Error al actualizar usuario:', err);
+    return null;
+  }
+}
+
+/**
+ * Activa o desactiva a un usuario con switch en tiempo real.
+ */
+export async function toggleEstadoUsuario(id, nuevoEstado) {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) return null;
+
+  try {
+    const sql = neon(databaseUrl);
+    const rows = await sql`
+      UPDATE usuarios
+      SET activo = ${Boolean(nuevoEstado)}
+      WHERE id = ${id}
+      RETURNING id, nombre, email, rol, coordinacion, activo;
+    `;
+    return rows?.[0] || null;
+  } catch (err) {
+    console.error('[NeonService] Error en toggleEstadoUsuario:', err);
+    return null;
+  }
+}
+
+/**
+ * Elimina un usuario de Neon Database (protegiendo al admin id=1).
+ */
+export async function eliminarUsuario(id) {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) return { success: false, error: 'Sin conexión a base de datos' };
+
+  if (Number(id) === 1) {
+    return { success: false, error: 'No se puede eliminar el usuario administrador principal del sistema.' };
+  }
+
+  try {
+    const sql = neon(databaseUrl);
+    await sql`DELETE FROM usuarios WHERE id = ${id}`;
+    return { success: true };
+  } catch (err) {
+    console.error('[NeonService] Error al eliminar usuario:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Consulta el perfil, rol y coordinación de un usuario por su correo institucional.
+ */
+export async function obtenerPerfilUsuarioPorEmail(email) {
+  const databaseUrl = getDatabaseUrl();
+  const emailNorm = String(email || '').trim().toLowerCase();
+  if (!emailNorm) return null;
+
+  if (emailNorm === 'control_academico.devs@hotmail.com') {
+    return {
+      id: 1,
+      nombre: 'SysAdmin Académico',
+      email: emailNorm,
+      rol: 'ADMIN_SISTEMA',
+      coordinacion: 'TODAS',
+      activo: true
+    };
+  }
+
+  if (!databaseUrl) return null;
+
+  try {
+    const sql = neon(databaseUrl);
+    const rows = await sql`
+      SELECT id, nombre, email, rol, coordinacion, COALESCE(activo, true) as activo
+      FROM usuarios
+      WHERE LOWER(TRIM(email)) = ${emailNorm}
+      LIMIT 1
+    `;
+    return rows?.[0] || null;
+  } catch (err) {
+    console.warn('[NeonService] Error al consultar perfil de usuario por email:', err);
+    return null;
+  }
+}
+
+

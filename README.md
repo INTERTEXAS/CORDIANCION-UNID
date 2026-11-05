@@ -25,13 +25,24 @@ La solución opera tanto en modalidad de **expediente individual** como mediante
 ### 1. Seguridad, Control de Acceso y Sesión Institucional
 - **Autenticación con Microsoft Entra ID (Azure AD)**: Integración oficial mediante `@azure/msal-browser` y `@azure/msal-react` con inquilino institucional único (Single Tenant).
 - **Restricción Estricta de Dominio `@unid.mx`**: La barrera de seguridad (`AuthBarrier`) inspecciona los tokens emitidos y deniega el acceso a cualquier cuenta que no pertenezca explícitamente al dominio institucional `@unid.mx`.
+- **Control de Acceso Basado en Roles (RBAC) y Gestión de Usuarios**:
+  - **Sincronización Transparente con Neon DB**: Cada usuario autenticado mediante Microsoft 365 es verificado dinámicamente contra la tabla `usuarios` en Neon PostgreSQL para determinar sus facultades operativas:
+    - `ADMIN_SISTEMA`: Control total técnico, telemetría, gestión de hardware certificado y administración de colaboradores.
+    - `COORDINADOR`: Dictamen curricular, firma oficial de cédulas y guardado de auditorías en su área académica asignada (con facultad de auditar y consultar cualquier carrera de la sede para soporte en ventanilla).
+    - `CONTROL_ESCOLAR`: Supervisión global de los 14 programas, descarga masiva de sábanas ejecutivas y acceso al archivo histórico de ciclos.
+    - `DIRECTOR`: Supervisión ejecutiva y validación directiva a nivel sede.
+    - `CONSULTA`: Modo lectura para docentes o personal administrativo, con bloqueo estricto de eliminación o depuración de auditorías históricas.
+  - **Ciclo de Vida de Personal (Altas, Bajas y Relevos)**:
+    - *Baja Preventiva Inmediata:* Interruptor toggle (`Activo / Inactivo`) que revoca el acceso en milisegundos en caso de desvinculación o baja laboral, aun si la cuenta Microsoft continúa abierta.
+    - *Baja Definitiva:* Opción de eliminación de registros en Neon DB (protegiendo permanentemente la cuenta de administración raíz `id = 1`).
+    - *Relevo Dinámico de Coordinadoras:* Asignación desacoplada de nombres propios mediante **Divisiones Académicas** y selector con opción abierta (`+ Otra Coordinación / Área personalizada...`), permitiendo incorporar nuevas coordinaciones o sustituir titulares sin modificar el código fuente.
 - **Puente OAuth de Cierre Automático**: Comunicación entre ventana emergente y ventana principal basada en `broadcastResponseToMainFrame` (`BroadcastChannel`), garantizando el cierre instantáneo de la ventana emergente tras seleccionar la cuenta sin montar la aplicación en dicha ventana.
 - **Temporizador de Inactividad Institucional**: Cierre automático de sesión tras 5 minutos de inactividad del usuario para proteger expedientes en computadoras compartidas o de oficina.
 - **Seguridad Avanzada de Super Admin / Desarrollador**:
   - **Huella Digital de Hardware (`deviceFingerprint`)**: Generación de identificador único de terminal combinando Canvas, WebGL, Audio y UserAgent mediante `@fingerprintjs/fingerprintjs`.
   - **Autorización Previa de Equipos**: Solo terminales expresamente registradas y activas en la tabla `dispositivos_autorizados` pueden iniciar sesión técnica.
   - **Geolocalización Forense de Alta Precisión**: Registro de coordenadas GPS reales con geocodificación inversa (Nominatim / OpenStreetMap), dirección legible por humanos, enlace directo a Google Maps e IP de conexión.
-  - **Panel de Control de Seguridad (`SecurityAdminPanel`)**: Interfaz dedicada para Super Administradores con bitácora de accesos en tiempo real (`auditoria_accesos_dev`) con `LEFT JOIN` a equipos, revocación/activación remota de terminales y eliminación de accesos no autorizados.
+  - **Panel de Control de Seguridad (`SecurityAdminPanel`)**: Interfaz dedicada para Super Administradores con bitácora de accesos en tiempo real (`auditoria_accesos_dev`) con `LEFT JOIN` a equipos, revocación/activación remota de terminales, directorio institucional de usuarios y roles RBAC en vivo, y monitoreo de telemetría.
 
 ### 2. Motor de Extracción y Análisis de Kárdex (PDF.js)
 - **Extracción de Coordenadas Espaciales**: Lectura directa de operadores de texto en PDF mediante coordenadas analíticas, sin depender de OCR susceptible a fallos.
