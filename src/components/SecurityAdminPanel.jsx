@@ -349,7 +349,7 @@ export default function SecurityAdminPanel() {
       {/* =========================================================================
           CABECERA INSTITUCIONAL: Control de Acceso y Seguridad
           ========================================================================= */}
-      <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl p-5 shadow-2xs transition-theme">
+      <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-2xs transition-theme">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
@@ -372,7 +372,7 @@ export default function SecurityAdminPanel() {
             <button
               onClick={() => cargarDatos(true)}
               disabled={isLoading || isRefreshing}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-2 hover:bg-slate-50 dark:hover:bg-surface-3 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-400 ${isRefreshing ? 'animate-spin text-amber-600 dark:text-amber-400' : ''}`} />
               <span>{isRefreshing ? 'Sincronizando…' : 'Actualizar'}</span>
@@ -399,7 +399,7 @@ export default function SecurityAdminPanel() {
         {/* =========================================================================
             KPI RIBBON CONTINUO (Limpio, sobrio y tipográfico)
             ========================================================================= */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-border">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
           <div className="space-y-0.5">
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Equipos Autorizados</span>
             <div className="flex items-baseline space-x-1.5">
@@ -454,7 +454,7 @@ export default function SecurityAdminPanel() {
       {/* =========================================================================
           SELECTOR SEGMENTADO DE VISTAS (Pestañas limpias para alta concentración)
           ========================================================================= */}
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-border">
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center space-x-6">
           <button
             type="button"
@@ -467,7 +467,7 @@ export default function SecurityAdminPanel() {
           >
             <Activity className="w-3.5 h-3.5" />
             <span>Bitácora de Telemetría</span>
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-surface-2 text-slate-600 dark:text-slate-300">
+            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-transparent dark:border-slate-700/80">
               {bitacora.length}
             </span>
           </button>
@@ -483,7 +483,7 @@ export default function SecurityAdminPanel() {
           >
             <Laptop className="w-3.5 h-3.5" />
             <span>Dispositivos Autorizados</span>
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-surface-2 text-slate-600 dark:text-slate-300">
+            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-transparent dark:border-slate-700/80">
               {dispositivos.length}
             </span>
           </button>
@@ -499,7 +499,7 @@ export default function SecurityAdminPanel() {
           >
             <Users className="w-3.5 h-3.5" />
             <span>Usuarios & Roles (RBAC)</span>
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-surface-2 text-slate-600 dark:text-slate-300">
+            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-transparent dark:border-slate-700/80">
               {usuarios.length}
             </span>
           </button>
@@ -527,8 +527,8 @@ export default function SecurityAdminPanel() {
           CONTENIDO: DISPOSITIVOS AUTORIZADOS
           ========================================================================= */}
       {(activeTab === 'dispositivos' || activeTab === 'combinada') && (
-        <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl shadow-2xs overflow-hidden transition-theme">
-          <div className="px-5 py-3.5 border-b border-slate-100 dark:border-border flex items-center justify-between bg-slate-50/50 dark:bg-surface-2/60">
+        <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs overflow-hidden transition-theme">
+          <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
             <div>
               <h2 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
                 Dispositivos de Hardware Autorizados
@@ -552,7 +552,7 @@ export default function SecurityAdminPanel() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-100 dark:border-border text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold bg-slate-50/80 dark:bg-surface-2/80">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-950">
                     <th className="py-2.5 px-5">Equipo / Propietario</th>
                     <th className="py-2.5 px-4">Huella Criptográfica (Device ID)</th>
                     <th className="py-2.5 px-4 text-center">Estado</th>
@@ -560,9 +560,9 @@ export default function SecurityAdminPanel() {
                     <th className="py-2.5 px-5 text-right">Gestión</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-border">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                   {dispositivos.map((dev) => (
-                    <tr key={dev.id} className="hover:bg-slate-50/60 dark:hover:bg-surface-2/50 transition-colors">
+                    <tr key={dev.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                       <td className="py-3 px-5 font-semibold text-slate-900 dark:text-white">
                         <div className="flex items-center space-x-2">
                           <span className={`w-1.5 h-1.5 rounded-full ${dev.activo ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
@@ -640,8 +640,8 @@ export default function SecurityAdminPanel() {
           CONTENIDO: USUARIOS Y CONTROL DE ROLES (RBAC)
           ========================================================================= */}
       {(activeTab === 'usuarios' || activeTab === 'combinada') && (
-        <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl shadow-2xs overflow-hidden transition-theme">
-          <div className="px-5 py-3.5 border-b border-slate-100 dark:border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-surface-2/60">
+        <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs overflow-hidden transition-theme">
+          <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900">
             <div>
               <h2 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono flex items-center space-x-2">
                 <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
@@ -676,7 +676,7 @@ export default function SecurityAdminPanel() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-100 dark:border-border text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold bg-slate-50/80 dark:bg-surface-2/80">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-950">
                     <th className="py-2.5 px-5">Colaborador / Cuenta Institucional</th>
                     <th className="py-2.5 px-4">Rol en Plataforma</th>
                     <th className="py-2.5 px-4">Coordinación Asignada</th>
@@ -685,11 +685,11 @@ export default function SecurityAdminPanel() {
                     <th className="py-2.5 px-5 text-right">Gestión</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-border">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                   {usuarios.map((u) => {
                     const isSuper = u.id === 1 || u.rol === 'ADMIN_SISTEMA' || u.rol === 'super_admin';
                     return (
-                      <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-surface-2/50 transition-colors">
+                      <tr key={u.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                         <td className="py-3 px-5">
                           <div className="flex items-center space-x-2.5">
                             <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-surface-2 border border-slate-200 dark:border-border flex items-center justify-center font-bold text-slate-700 dark:text-slate-200 text-xs shrink-0">
@@ -806,9 +806,9 @@ export default function SecurityAdminPanel() {
           CONTENIDO: BITÁCORA DE TELEMETRÍA (Sin stickers ni burbujas saturadas)
           ========================================================================= */}
       {(activeTab === 'bitacora' || activeTab === 'combinada') && (
-        <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl shadow-2xs overflow-hidden transition-theme">
+        <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs overflow-hidden transition-theme">
           {/* Controles integrados de filtrado */}
-          <div className="px-5 py-3 border-b border-slate-100 dark:border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-50/50 dark:bg-surface-2/60">
+          <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-50 dark:bg-slate-900">
             <div className="flex items-center space-x-2">
               <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
                 Registros de Auditoría en Vivo
@@ -826,7 +826,7 @@ export default function SecurityAdminPanel() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Filtrar por IP, correo o equipo…"
-                  className="pl-7 pr-6 py-1 bg-white dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-amber-400 w-48 sm:w-56"
+                  className="pl-7 pr-6 py-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-amber-400 w-48 sm:w-56"
                 />
                 {searchTerm && (
                   <button
@@ -842,12 +842,12 @@ export default function SecurityAdminPanel() {
               <select
                 value={eventoFiltro}
                 onChange={(e) => setEventoFiltro(e.target.value)}
-                className="px-2 py-1 bg-white dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:border-slate-400 dark:focus:border-amber-400 cursor-pointer"
+                className="px-2 py-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:border-slate-400 dark:focus:border-amber-400 cursor-pointer"
               >
-                <option value="TODOS" className="bg-white dark:bg-surface-2 text-slate-800 dark:text-slate-200">Todos los eventos</option>
-                <option value="VISITA_LINK" className="bg-white dark:bg-surface-2 text-slate-800 dark:text-slate-200">Visitas a la ruta</option>
-                <option value="AUTORIZADO" className="bg-white dark:bg-surface-2 text-slate-800 dark:text-slate-200">Accesos concedidos</option>
-                <option value="BLOQUEADO" className="bg-white dark:bg-surface-2 text-slate-800 dark:text-slate-200">Bloqueos preventivos</option>
+                <option value="TODOS" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Todos los eventos</option>
+                <option value="VISITA_LINK" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Visitas a la ruta</option>
+                <option value="AUTORIZADO" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Accesos concedidos</option>
+                <option value="BLOQUEADO" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Bloqueos preventivos</option>
               </select>
             </div>
           </div>
@@ -861,7 +861,7 @@ export default function SecurityAdminPanel() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-100 dark:border-border text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold bg-slate-50/80 dark:bg-surface-2/80">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-950">
                     <th className="py-2.5 px-5">Timestamp</th>
                     <th className="py-2.5 px-4">Estado del Evento</th>
                     <th className="py-2.5 px-4">Dispositivo</th>
@@ -871,14 +871,14 @@ export default function SecurityAdminPanel() {
                     <th className="py-2.5 px-5 text-right">Resolución</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-border">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                   {bitacoraFiltrada.map((item) => {
                     const esVisita = item.evento === 'VISITA_LINK';
                     const esAutorizado = Boolean(item.autorizado);
                     const tieneEquipo = Boolean(item.propietario_equipo);
 
                     return (
-                      <tr key={item.id} className="hover:bg-slate-50/60 dark:hover:bg-surface-2/50 transition-colors">
+                      <tr key={item.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                         {/* Timestamp en tipografía tabular técnica */}
                         <td className="py-3 px-5 whitespace-nowrap text-slate-500 dark:text-slate-400 font-mono text-[11px]">
                           {item.fecha ? new Date(item.fecha).toLocaleString('es-MX', { 
