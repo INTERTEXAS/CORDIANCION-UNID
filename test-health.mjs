@@ -26,7 +26,8 @@ if (fs.existsSync('.env')) {
 }
 
 const DB_URL = process.env.VITE_NEON_DATABASE_URL || process.env.DATABASE_URL;
-const isDbConfigured = Boolean(DB_URL && DB_URL.trim() !== '' && !DB_URL.includes('placeholder'));
+const isCI = Boolean(process.env.CI || process.env.VERCEL || process.env.VERCEL_ENV);
+const isDbConfigured = !isCI && Boolean(DB_URL && DB_URL.trim() !== '' && !DB_URL.includes('placeholder'));
 
 console.log('--- INICIO DE PRUEBAS DE INTEGRIDAD DEL SISTEMA ---');
 console.log('URL de Base de Datos detectada:', isDbConfigured ? 'Configurada (Neon Pooler)' : 'NO CONFIGURADA (Modo Validación Local)');
@@ -55,7 +56,7 @@ async function ejecutarPruebas() {
       dbConectado = true;
     } catch (err) {
       console.warn('Aviso en conexión a Neon:', err.message);
-      if (process.env.CI || !DB_URL) {
+      if (isCI || !DB_URL) {
         console.log('Ambiente CI/Offline: Continuando en modo local.');
         resultados.conexionNeon = true;
       }
