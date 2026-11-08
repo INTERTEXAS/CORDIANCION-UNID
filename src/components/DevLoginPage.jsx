@@ -37,6 +37,7 @@ export default function DevLoginPage({ onDevLoginSuccess, onBackToMain }) {
   // Spinner de acceso exitoso (3 segundos)
   const [showAccessSpinner, setShowAccessSpinner] = useState(false);
   const pendingUserRef = useRef(null);
+  const pendingAssistantTokenRef = useRef(null);
 
   // Estados de telemetría y auditoría de hardware y geolocalización
   const [deviceId, setDeviceId] = useState('');
@@ -202,13 +203,27 @@ export default function DevLoginPage({ onDevLoginSuccess, onBackToMain }) {
       });
 
       if (res.success && res.usuario) {
+        let assistantToken = null;
+        if (!(import.meta.env.DEV && import.meta.env.VITE_LOCAL_AUTH_BYPASS === 'true')) {
+          const tokenResponse = await fetch('/api/academic-assistant-admin-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const tokenResult = await tokenResponse.json();
+          if (!tokenResponse.ok || !tokenResult.token) {
+            throw new Error(tokenResult.error || 'No se pudo habilitar la sesión administrativa del asistente.');
+          }
+          assistantToken = tokenResult.token;
+        }
         // Mostrar spinner profesional de 3 segundos antes de continuar
         pendingUserRef.current = res.usuario;
+        pendingAssistantTokenRef.current = assistantToken;
         setIsLoading(false);
         setShowAccessSpinner(true);
         setTimeout(() => {
           if (onDevLoginSuccess) {
-            onDevLoginSuccess(pendingUserRef.current);
+            onDevLoginSuccess(pendingUserRef.current, pendingAssistantTokenRef.current);
           }
         }, 3000);
       } else {
@@ -217,7 +232,7 @@ export default function DevLoginPage({ onDevLoginSuccess, onBackToMain }) {
       }
     } catch (err) {
       console.error('[DevLogin] Error durante autenticación:', err);
-      setErrorMessage('Error de comunicación con el servicio de auditoría.');
+      setErrorMessage(err.message || 'Error de comunicación con el servicio de auditoría.');
       setIsLoading(false);
     }
   };

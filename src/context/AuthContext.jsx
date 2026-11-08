@@ -16,6 +16,13 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
+  const [devAssistantToken, setDevAssistantToken] = useState(() => {
+    try {
+      return sessionStorage.getItem('unid_dev_assistant_token') || null;
+    } catch (_) {
+      return null;
+    }
+  });
 
   const activeMsalAccount = instance.getActiveAccount() || accounts[0] || null;
 
@@ -45,14 +52,23 @@ export function AuthProvider({ children }) {
     isMsal: true
   } : null);
 
-  const loginDevUser = (usuario) => {
+  const loginDevUser = (usuario, assistantToken) => {
     sessionStorage.setItem('unid_dev_user', JSON.stringify(usuario));
     setDevUser(usuario);
+    if (assistantToken) {
+      sessionStorage.setItem('unid_dev_assistant_token', assistantToken);
+      setDevAssistantToken(assistantToken);
+    } else {
+      sessionStorage.removeItem('unid_dev_assistant_token');
+      setDevAssistantToken(null);
+    }
   };
 
   const logout = async () => {
     sessionStorage.removeItem('unid_dev_user');
+    sessionStorage.removeItem('unid_dev_assistant_token');
     setDevUser(null);
+    setDevAssistantToken(null);
     if (activeMsalAccount) {
       try {
         await instance.logoutPopup({
@@ -68,6 +84,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={{
       user,
       isSuperAdmin,
+      devAssistantToken,
       userRole: isSuperAdmin ? 'super_admin' : (user ? (user.rol || 'DOCENTE') : null),
       loginDevUser,
       logout

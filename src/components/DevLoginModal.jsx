@@ -23,14 +23,27 @@ export default function DevLoginModal({ isOpen, onClose, onDevLoginSuccess }) {
     try {
       const res = await validarCredencialesDev(email, password);
       if (res.success && res.usuario) {
-        onDevLoginSuccess(res.usuario);
+        let assistantToken = null;
+        if (!(import.meta.env.DEV && import.meta.env.VITE_LOCAL_AUTH_BYPASS === 'true')) {
+          const tokenResponse = await fetch('/api/academic-assistant-admin-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const tokenResult = await tokenResponse.json();
+          if (!tokenResponse.ok || !tokenResult.token) {
+            throw new Error(tokenResult.error || 'No se pudo habilitar la sesión administrativa del asistente.');
+          }
+          assistantToken = tokenResult.token;
+        }
+        onDevLoginSuccess(res.usuario, assistantToken);
         onClose();
       } else {
         setErrorMsg(res.error || 'Credenciales no autorizadas.');
       }
     } catch (err) {
       console.error('Error durante validación DEV:', err);
-      setErrorMsg('Error de conexión al validar con Neon DB.');
+      setErrorMsg(err.message || 'Error de conexión al validar con Neon DB.');
     } finally {
       setIsLoading(false);
     }

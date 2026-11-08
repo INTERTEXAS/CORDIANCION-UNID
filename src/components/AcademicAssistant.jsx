@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { Loader2, Send, Sparkles, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const suggestedQuestions = [
   '¿Qué hay en la base de datos?',
@@ -10,6 +11,7 @@ const suggestedQuestions = [
 
 export default function AcademicAssistant({ onClose }) {
   const { instance, accounts } = useMsal();
+  const { isSuperAdmin, devAssistantToken } = useAuth();
   const [messages, setMessages] = useState([{
     role: 'assistant',
     content: 'Hola. Puedo consultar la base de datos de auditorías: buscar alumnos por nombre o matrícula, revisar su resumen académico y mostrar qué carreras y ciclos tienen registros guardados.'
@@ -45,9 +47,15 @@ export default function AcademicAssistant({ onClose }) {
     setIsSending(true);
 
     try {
-      const account = instance.getActiveAccount() || accounts[0];
-      let accessToken;
-      if (!allowLocalBypass) {
+      let authorizationHeader;
+      if (isSuperAdmin) {
+        if (devAssistantToken) {
+          authorizationHeader = `Dev ${devAssistantToken}`;
+        } else if (!allowLocalBypass) {
+          throw new Error('Vuelve a iniciar sesión como administrador para habilitar el asistente.');
+        }
+      } else if (!allowLocalBypass) {
+        const account = instance.getActiveAccount() || accounts[0];
         if (!account) {
           throw new Error('Inicia sesión con tu cuenta institucional para usar el asistente.');
         }
@@ -55,14 +63,14 @@ export default function AcademicAssistant({ onClose }) {
           scopes: ['User.Read'],
           account
         });
-        accessToken = tokenResult.accessToken;
+        authorizationHeader = `Bearer ${tokenResult.accessToken}`;
       }
 
       const response = await fetch('/api/academic-assistant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          ...(authorizationHeader ? { Authorization: authorizationHeader } : {})
         },
         body: JSON.stringify({
           question,

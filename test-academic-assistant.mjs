@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import handler from './api/academic-assistant.js';
+import adminSessionHandler from './api/academic-assistant-admin-session.js';
 
 process.env.DATABASE_URL = 'postgresql://localhost/test';
+process.env.ACADEMIC_ASSISTANT_ADMIN_SECRET = 'test-secret-with-more-than-thirty-two-characters';
 
 const queries = [];
 const student = {
@@ -25,6 +27,14 @@ const sqlClient = async (strings, ...values) => {
   const query = strings.join('$');
   queries.push({ query, values });
 
+  if (query.includes('FROM usuarios')) {
+    const email = values[0];
+    return [{
+      email,
+      password_hash: 'correct-password',
+      rol: email === 'admin@unid.mx' ? 'ADMIN_SISTEMA' : 'DOCENTE'
+    }];
+  }
   if (query.includes('WHERE matricula =')) return [{ ...student }];
   if (query.includes('LEFT JOIN carreras c')) {
     return [{
@@ -141,6 +151,40 @@ await test('responde carreras y resumen de base, y no envía datos de alumnos a 
   ]);
   assert.equal(help.body.reply, 'Respuesta de ayuda');
   assert.doesNotMatch(JSON.stringify(geminiPayload.contents), /ANA PRUEBA|12345678/);
+
+  const adminSession = createResponse();
+  await adminSessionHandler(
+    { method: 'POST', headers: {}, body: { email: 'admin@unid.mx', password: 'correct-password' } },
+    adminSession,
+    { sqlClient }
+  );
+  assert.equal(adminSession.statusCode, 200);
+  assert.ok(adminSession.body.token);
+
+  const adminRequest = createResponse();
+  await handler(
+    { method: 'POST', headers: { authorization: `Dev ${adminSession.body.token}` }, body: { question: 'Busca alumnos' } },
+    adminRequest,
+    { sqlClient }
+  );
+  assert.equal(adminRequest.statusCode, 200);
+  assert.match(adminRequest.body.reply, /ANA PRUEBA/);
+
+  const forgedAdminRequest = createResponse();
+  await handler(
+    { method: 'POST', headers: { authorization: 'Dev admin@unid.mx::ADMIN_SISTEMA' }, body: { question: 'Busca alumnos' } },
+    forgedAdminRequest,
+    { sqlClient }
+  );
+  assert.equal(forgedAdminRequest.statusCode, 403);
+
+  const nonAdminSession = createResponse();
+  await adminSessionHandler(
+    { method: 'POST', headers: {}, body: { email: 'docente@unid.mx', password: 'correct-password' } },
+    nonAdminSession,
+    { sqlClient }
+  );
+  assert.equal(nonAdminSession.statusCode, 403);
 });
 
 assert.equal(passed, 5);

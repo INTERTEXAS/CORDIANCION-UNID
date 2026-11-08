@@ -144,9 +144,9 @@ export default function AuthBarrier({ children }) {
   if (isDevRoute) {
     return (
       <DevLoginPage
-        onDevLoginSuccess={(devUser) => {
+        onDevLoginSuccess={(devUser, assistantToken) => {
           setAuthError(null);
-          loginDevUser(devUser);
+          loginDevUser(devUser, assistantToken);
           navigateTo('/');
         }}
         onBackToMain={() => {

@@ -1,4 +1,5 @@
 import { neon } from '@neondatabase/serverless';
+import { verifyAdminAssistantToken } from './academic-assistant-auth.js';
 
 const MAX_QUESTION_LENGTH = 1000;
 const MAX_HISTORY_MESSAGES = 8;
@@ -377,14 +378,21 @@ export default async function handler(req, res, options = {}) {
 
   const authorization = req.headers.authorization || '';
   const accessToken = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
+  const adminToken = authorization.match(/^Dev\s+(.+)$/i)?.[1];
   const allowLocalAuthBypass = options.allowLocalAuthBypass === true;
-  if (!allowLocalAuthBypass && !accessToken) {
-    return sendJson(res, 401, { error: 'Inicia sesión con tu cuenta institucional para continuar.' });
+  if (!allowLocalAuthBypass && !accessToken && !adminToken) {
+    return sendJson(res, 401, { error: 'Inicia sesión con tu cuenta institucional o de administrador para continuar.' });
   }
 
   try {
-    if (!allowLocalAuthBypass && !await getInstitutionalUser(accessToken)) {
-      return sendJson(res, 403, { error: 'Solo cuentas institucionales @unid.mx pueden usar el asistente.' });
+    if (!allowLocalAuthBypass) {
+      if (adminToken) {
+        if (!verifyAdminAssistantToken(adminToken)) {
+          return sendJson(res, 403, { error: 'La sesión de administrador no es válida o expiró. Vuelve a iniciar sesión.' });
+        }
+      } else if (!await getInstitutionalUser(accessToken)) {
+        return sendJson(res, 403, { error: 'Solo cuentas institucionales @unid.mx o administradores autorizados pueden usar el asistente.' });
+      }
     }
 
     const body = await getRequestBody(req);
@@ -572,6 +580,9 @@ export default async function handler(req, res, options = {}) {
   } catch (error) {
     if (error instanceof SyntaxError) return sendJson(res, 400, { error: 'El cuerpo de la solicitud no es JSON válido.' });
     if (error instanceof RangeError) return sendJson(res, 413, { error: 'La solicitud excede el tamaño permitido.' });
+    if (error.message?.includes('ACADEMIC_ASSISTANT_ADMIN_SECRET')) {
+      return sendJson(res, 503, { error: 'El acceso administrativo del asistente no está configurado en el servidor.' });
+    }
     if (error.message?.includes('GEMINI_API_KEY')) {
       console.error('[AcademicAssistant] Falta configuración de la API key de Gemini.');
       return sendJson(res, 503, { error: 'El asistente aún no está configurado en el servidor.' });

@@ -195,6 +195,10 @@ VITE_AZURE_TENANT_ID="tu_tenant_id_aqui"
 
 El endpoint del asistente valida el acceso con Microsoft Graph y restringe las consultas a cuentas `@unid.mx`. Para una matrícula busca únicamente dentro de la carrera seleccionada y envía a Gemini un resumen académico con campos permitidos, sin nombre ni matrícula. Antes de usar datos reales, la institución debe autorizar su procesamiento mediante el proveedor externo.
 
+### Acceso del asistente para administradores
+
+Configura `ACADEMIC_ASSISTANT_ADMIN_SECRET` como variable privada de servidor en Vercel y en el `.env` local. Debe ser un valor aleatorio de al menos 32 caracteres; no lo expongas con el prefijo `VITE_`. Las cuentas con rol `ADMIN_SISTEMA`, `super_admin` o `superadmin` reciben, tras verificar sus credenciales en Neon, una sesión firmada que expira en una hora. Después de desplegar esta configuración, el administrador debe iniciar sesión nuevamente para habilitar el asistente.
+
 ## Instalación y Comandos de Ejecución
 
 ### Prerrequisitos
