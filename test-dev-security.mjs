@@ -39,7 +39,8 @@ import {
   reverseGeocodeCoords
 } from './src/services/deviceFingerprint.js';
 
-const dbUrl = process.env.DATABASE_URL || process.env.VITE_NEON_DATABASE_URL;
+const isCI = Boolean(process.env.CI || process.env.VERCEL || process.env.VERCEL_ENV);
+const dbUrl = !isCI && (process.env.DATABASE_URL || process.env.VITE_NEON_DATABASE_URL);
 const isDbConfigured = Boolean(dbUrl && dbUrl.trim() !== '' && !dbUrl.includes('placeholder'));
 
 let sql = null;
