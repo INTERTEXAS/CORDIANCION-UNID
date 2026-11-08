@@ -51,7 +51,8 @@ export default function AcademicAssistant({ career, onClose }) {
       if (isSuperAdmin) {
         // Modo Super Admin / Desarrollador autorizado
         const devEmail = authUser?.email || 'control_academico.devs@hotmail.com';
-        authHeader = `Dev ${devEmail}`;
+        const devRole = authUser?.rol || authUser?.role || 'ADMIN_SISTEMA';
+        authHeader = `Dev ${devEmail}::${devRole}`;
       } else {
         const account = instance.getActiveAccount() || accounts[0];
         if (!account) {

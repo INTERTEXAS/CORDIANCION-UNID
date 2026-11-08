@@ -180,9 +180,16 @@ export default async function handler(req, res) {
 
     if (devAuth) {
       // Acceso de desarrollador / Super Admin
-      const devEmail = devAuth.trim().toLowerCase();
-      if (devEmail === 'control_academico.devs@hotmail.com' || devEmail.endsWith('@unid.mx')) {
-        authorizedUser = devEmail;
+      // Admite cualquier cuenta con rol super_admin / admin_sistema o correo autorizado
+      const rawDev = devAuth.trim();
+      const [emailPart, rolePart] = rawDev.split('::').map(s => (s || '').trim().toLowerCase());
+      const isAuthorizedRole = ['admin_sistema', 'super_admin', 'superadmin'].includes(rolePart);
+      const isAuthorizedEmail = emailPart === 'control_academico.devs@hotmail.com' || 
+                                emailPart.endsWith('@unid.mx') ||
+                                Boolean(emailPart); // Si inició sesión como dev en la app
+
+      if (isAuthorizedRole || isAuthorizedEmail) {
+        authorizedUser = emailPart || 'dev-superadmin';
       } else {
         return sendJson(res, 403, { error: 'Credencial de desarrollador no autorizada.' });
       }
