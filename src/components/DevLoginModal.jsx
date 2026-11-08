@@ -32,9 +32,16 @@ export default function DevLoginModal({ isOpen, onClose, onDevLoginSuccess }) {
           });
           const tokenResult = await tokenResponse.json();
           if (!tokenResponse.ok || !tokenResult.token) {
-            throw new Error(tokenResult.error || 'No se pudo habilitar la sesión administrativa del asistente.');
+            if (tokenResponse.status !== 503) {
+              throw new Error(tokenResult.error || 'No se pudo habilitar la sesión administrativa del asistente.');
+            }
+            console.warn(
+              '[DevLogin] La consola estará disponible sin el asistente académico:',
+              tokenResult.error || 'El asistente académico no está configurado en el servidor.'
+            );
+          } else {
+            assistantToken = tokenResult.token;
           }
-          assistantToken = tokenResult.token;
         }
         onDevLoginSuccess(res.usuario, assistantToken);
         onClose();

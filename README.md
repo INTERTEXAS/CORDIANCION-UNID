@@ -197,7 +197,7 @@ El endpoint del asistente valida el acceso con Microsoft Graph y restringe las c
 
 ### Acceso del asistente para administradores
 
-Configura `ACADEMIC_ASSISTANT_ADMIN_SECRET` como variable privada de servidor en Vercel y en el `.env` local. Debe ser un valor aleatorio de al menos 32 caracteres; no lo expongas con el prefijo `VITE_`. Las cuentas con rol `ADMIN_SISTEMA`, `super_admin` o `superadmin` reciben, tras verificar sus credenciales en Neon, una sesión firmada que expira en una hora. Después de desplegar esta configuración, el administrador debe iniciar sesión nuevamente para habilitar el asistente.
+Configura `ACADEMIC_ASSISTANT_ADMIN_SECRET` como variable privada de servidor en Vercel y en el `.env` local. Debe ser un valor aleatorio de al menos 32 caracteres; no lo expongas con el prefijo `VITE_`. Las cuentas con rol `ADMIN_SISTEMA`, `super_admin` o `superadmin` reciben, tras verificar sus credenciales en Neon, una sesión firmada que expira en una hora. Si esta configuración del asistente falta, el acceso a `/internal-dev-access` sigue disponible y muestra un aviso, pero el asistente académico queda deshabilitado hasta configurarla. Los errores de autorización distintos a esa falta de configuración siguen bloqueando el acceso.
 
 ## Instalación y Comandos de Ejecución
 

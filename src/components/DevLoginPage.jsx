@@ -33,6 +33,7 @@ export default function DevLoginPage({ onDevLoginSuccess, onBackToMain }) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [assistantWarningMessage, setAssistantWarningMessage] = useState(null);
 
   // Spinner de acceso exitoso (3 segundos)
   const [showAccessSpinner, setShowAccessSpinner] = useState(false);
@@ -175,6 +176,7 @@ export default function DevLoginPage({ onDevLoginSuccess, onBackToMain }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(null);
+    setAssistantWarningMessage(null);
 
     if (isIpBlocked) {
       setErrorMessage(`Acceso bloqueado: Tu IP (${clientIp}) no está autorizada.`);
@@ -212,9 +214,15 @@ export default function DevLoginPage({ onDevLoginSuccess, onBackToMain }) {
           });
           const tokenResult = await tokenResponse.json();
           if (!tokenResponse.ok || !tokenResult.token) {
-            throw new Error(tokenResult.error || 'No se pudo habilitar la sesión administrativa del asistente.');
+            if (tokenResponse.status !== 503) {
+              throw new Error(tokenResult.error || 'No se pudo habilitar la sesión administrativa del asistente.');
+            }
+            const warning = tokenResult.error || 'El asistente académico no está configurado en el servidor.';
+            console.warn('[DevLogin] La consola estará disponible sin el asistente académico:', warning);
+            setAssistantWarningMessage(`${warning} Puedes entrar a la consola; el asistente no estará disponible.`);
+          } else {
+            assistantToken = tokenResult.token;
           }
-          assistantToken = tokenResult.token;
         }
         // Mostrar spinner profesional de 3 segundos antes de continuar
         pendingUserRef.current = res.usuario;
@@ -293,6 +301,11 @@ export default function DevLoginPage({ onDevLoginSuccess, onBackToMain }) {
             <p className="text-xs text-slate-400 max-w-xs leading-relaxed mx-auto">
               Iniciando consola institucional con privilegios de Super Administrador en Neon DB…
             </p>
+            {assistantWarningMessage && (
+              <p role="status" className="mx-auto max-w-sm rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[11px] leading-relaxed text-amber-200">
+                {assistantWarningMessage}
+              </p>
+            )}
           </div>
 
           {/* Barra de progreso de 3 segundos con resplandor */}
