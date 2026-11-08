@@ -460,7 +460,6 @@ export default function HeaderBar({
       </div>
       {isAssistantOpen && (
         <AcademicAssistant
-          career={carreraSeleccionada}
           onClose={() => setIsAssistantOpen(false)}
         />
       )}

@@ -7,6 +7,7 @@ import DevLoginPage from './DevLoginPage';
 
 // Rutas privadas reservadas para acceso exclusivo de desarrolladores
 const DEV_ROUTES = ['/internal-dev-access', '/acceso-dev', '/internal-dev'];
+const isLocalAuthBypass = import.meta.env.DEV && import.meta.env.VITE_LOCAL_AUTH_BYPASS === 'true';
 
 function getNormalizedPath() {
   if (typeof window === 'undefined') return '/';
@@ -152,6 +153,17 @@ export default function AuthBarrier({ children }) {
           navigateTo('/');
         }}
       />
+    );
+  }
+
+  if (isLocalAuthBypass) {
+    return (
+      <>
+        {children}
+        <div className="fixed bottom-3 left-3 z-[10000] rounded-lg border border-amber-400/40 bg-slate-950/90 px-3 py-1.5 text-[10px] font-bold tracking-wider text-amber-300 shadow-lg">
+          MODO LOCAL · ACCESO DE PRUEBA
+        </div>
+      </>
     );
   }
 

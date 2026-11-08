@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node test-health.mjs && node test-comprehensive.mjs && node test-dev-security.mjs",
+    "prebuild": "node test-health.mjs && node test-comprehensive.mjs && node test-dev-security.mjs && node test-academic-assistant.mjs",
     "build": "vite build",
-    "test": "node test-health.mjs && node test-comprehensive.mjs && node test-dev-security.mjs",
+    "test": "node test-health.mjs && node test-comprehensive.mjs && node test-dev-security.mjs && node test-academic-assistant.mjs",
     "test:health": "node test-health.mjs",
     "test:comprehensive": "node test-comprehensive.mjs",
     "test:security": "node test-dev-security.mjs",
+    "test:assistant": "node test-academic-assistant.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },

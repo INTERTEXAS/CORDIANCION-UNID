@@ -1,26 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { Loader2, Send, Sparkles, X } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 
 const suggestedQuestions = [
-  '¿Qué puede hacer este asistente?',
-  '¿Qué información hay guardada de esta carrera?',
-  '¿Cómo reviso un expediente por matrícula?'
+  '¿Qué hay en la base de datos?',
+  'Busca alumnos',
+  '¿Qué carreras tienen auditorías guardadas?'
 ];
 
-export default function AcademicAssistant({ career, onClose }) {
+export default function AcademicAssistant({ onClose }) {
   const { instance, accounts } = useMsal();
-  const { isSuperAdmin, user: authUser } = useAuth();
   const [messages, setMessages] = useState([{
     role: 'assistant',
-    content: 'Hola. Puedo orientarte sobre el sistema y consultar resúmenes de auditorías guardadas para la carrera seleccionada. Para revisar a un estudiante, incluye su matrícula.'
+    content: 'Hola. Puedo consultar la base de datos de auditorías: buscar alumnos por nombre o matrícula, revisar su resumen académico y mostrar qué carreras y ciclos tienen registros guardados.'
   }]);
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState('');
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const allowLocalBypass = import.meta.env.DEV && import.meta.env.VITE_LOCAL_AUTH_BYPASS === 'true';
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -46,36 +45,28 @@ export default function AcademicAssistant({ career, onClose }) {
     setIsSending(true);
 
     try {
-      let authHeader = '';
-
-      if (isSuperAdmin) {
-        // Modo Super Admin / Desarrollador autorizado
-        const devEmail = authUser?.email || 'control_academico.devs@hotmail.com';
-        const devRole = authUser?.rol || authUser?.role || 'ADMIN_SISTEMA';
-        authHeader = `Dev ${devEmail}::${devRole}`;
-      } else {
-        const account = instance.getActiveAccount() || accounts[0];
+      const account = instance.getActiveAccount() || accounts[0];
+      let accessToken;
+      if (!allowLocalBypass) {
         if (!account) {
           throw new Error('Inicia sesión con tu cuenta institucional para usar el asistente.');
         }
-
         const tokenResult = await instance.acquireTokenSilent({
           scopes: ['User.Read'],
           account
         });
-        authHeader = `Bearer ${tokenResult.accessToken}`;
+        accessToken = tokenResult.accessToken;
       }
 
       const response = await fetch('/api/academic-assistant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authHeader
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
         body: JSON.stringify({
           question,
-          history: previousMessages.slice(-8),
-          careerCode: career?.codigo
+          history: previousMessages.slice(-8)
         })
       });
       const result = await response.json();
@@ -122,7 +113,7 @@ export default function AcademicAssistant({ career, onClose }) {
                 Asistente académico
               </h2>
               <p className="truncate text-[11px] text-text-muted">
-                {career?.codigo || 'UNID'} · Gemini Flash
+                Todas las carreras · Gemini Flash
               </p>
             </div>
           </div>
@@ -138,7 +129,7 @@ export default function AcademicAssistant({ career, onClose }) {
 
         <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4" aria-live="polite">
           <div className="rounded-2xl bg-surface-2 px-3.5 py-3 text-[11px] leading-relaxed text-text-secondary">
-            Consulta solo temas de la plataforma. Al preguntar por un expediente, se comparte con Gemini un resumen académico minimizado del registro guardado; no escribas nombres. Las respuestas son orientativas, no un dictamen oficial.
+            Las búsquedas de alumnos consultan directamente la base institucional; esos resultados no se envían a Gemini. Comparte solo la información necesaria y confirma los dictámenes con el personal autorizado.
           </div>
           {messages.map((message, index) => (
             <div
