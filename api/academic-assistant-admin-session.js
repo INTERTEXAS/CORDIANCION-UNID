@@ -39,7 +39,7 @@ export default async function handler(req, res, options = {}) {
       return sendJson(res, 400, { error: 'Ingresa las credenciales de administrador.' });
     }
 
-    const databaseUrl = process.env.DATABASE_URL;
+    const databaseUrl = process.env.DATABASE_URL || process.env.VITE_NEON_DATABASE_URL;
     if (!databaseUrl) {
       return sendJson(res, 503, { error: 'El acceso administrativo del asistente no está configurado en el servidor.' });
     }

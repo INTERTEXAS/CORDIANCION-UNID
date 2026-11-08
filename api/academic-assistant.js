@@ -430,7 +430,7 @@ export default async function handler(req, res, options = {}) {
     const requestedMatricula = studentMatch?.[0] || previousStudent.matricula;
     let context = null;
     if (studentQuestion || databaseQuestion) {
-      const databaseUrl = process.env.DATABASE_URL;
+      const databaseUrl = process.env.DATABASE_URL || process.env.VITE_NEON_DATABASE_URL;
       if (!databaseUrl) {
         return sendJson(res, 503, { error: 'El asistente no tiene configurada la variable DATABASE_URL en el servidor.' });
       }
