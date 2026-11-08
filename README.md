@@ -191,6 +191,10 @@ VITE_AZURE_TENANT_ID="tu_tenant_id_aqui"
 
 ---
 
+`DATABASE_URL` y `GEMINI_API_KEY` son variables exclusivas del servidor y deben configurarse como secretos en Vercel. No usar el prefijo `VITE_` para credenciales nuevas. `VITE_NEON_DATABASE_URL` sigue utilizándose temporalmente por funcionalidades actuales del navegador; quitarla requiere migrar esas consultas a endpoints server-side para no interrumpirlas.
+
+El endpoint del asistente valida el acceso con Microsoft Graph y restringe las consultas a cuentas `@unid.mx`. Para una matrícula busca únicamente dentro de la carrera seleccionada y envía a Gemini un resumen académico con campos permitidos, sin nombre ni matrícula. Antes de usar datos reales, la institución debe autorizar su procesamiento mediante el proveedor externo.
+
 ## Instalación y Comandos de Ejecución
 
 ### Prerrequisitos

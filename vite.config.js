@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import academicAssistant from './api/academic-assistant.js'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,6 +9,9 @@ export default defineConfig({
     {
       name: 'client-ip-dev-endpoint',
       configureServer(server) {
+        server.middlewares.use('/api/academic-assistant', (req, res, next) => {
+          academicAssistant(req, res).catch(next)
+        })
         server.middlewares.use('/api/client-ip', (req, res) => {
           const forwarded = req.headers['x-forwarded-for'];
           let ip = '127.0.0.1';

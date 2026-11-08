@@ -25,6 +25,7 @@ import { useAuth } from '../context/AuthContext';
 import { ALUMNOS_DEMO } from '../data/demoStudents';
 import { useTheme } from '../context/ThemeContext';
 import { resolverNombreOficialCarrera } from '../data/carrerasData';
+import AcademicAssistant from './AcademicAssistant';
 
 const COORDINADORAS_CONFIG = [
   {
@@ -95,6 +96,7 @@ export default function HeaderBar({
   const fileInputRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user: activeUser, isSuperAdmin, logout } = useAuth();
 
@@ -287,6 +289,18 @@ export default function HeaderBar({
           className="hidden"
         />
 
+        <button
+          type="button"
+          onClick={() => setIsAssistantOpen((open) => !open)}
+          aria-expanded={isAssistantOpen}
+          aria-label="Abrir asistente académico"
+          title="Asistente académico"
+          className="flex items-center gap-1.5 rounded-xl border border-accent/25 bg-gradient-to-r from-accent/10 via-violet-500/10 to-rose-400/10 px-2.5 py-2 text-accent transition-all hover:border-accent/40 hover:shadow-sm"
+        >
+          <Sparkles className="h-4 w-4" strokeWidth={2} />
+          <span className="hidden xl:inline text-[11px] font-semibold">Asistente</span>
+        </button>
+
         {/* Demo dropdown */}
         <div className="relative">
           {isDemoOpen && (
@@ -444,6 +458,12 @@ export default function HeaderBar({
           </div>
         )}
       </div>
+      {isAssistantOpen && (
+        <AcademicAssistant
+          career={carreraSeleccionada}
+          onClose={() => setIsAssistantOpen(false)}
+        />
+      )}
     </header>
   );
 }
