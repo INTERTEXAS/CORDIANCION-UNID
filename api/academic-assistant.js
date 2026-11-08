@@ -2,9 +2,9 @@ import { neon } from '@neondatabase/serverless';
 
 const MAX_QUESTION_LENGTH = 1000;
 const MAX_HISTORY_MESSAGES = 8;
-const APP_TOPIC_PATTERN = /\b(unid|coordinaci[oó]n|sistema|plataforma|auditor[ií]a|k[aá]rdex|curr[ií]cul|carrera|licenciatura|maestr[ií]a|alumn[oa]s?|estudiantes?|matr[ií]cula|expediente|materias?|asignaturas?|adeudos?|elegibilidad|elegible|estad[ií]a|cuatrimestre|ciclo|grupo|generaci[oó]n|c[eé]dula|pdf|reporte|neon|demo|login|iniciar sesi[oó]n|subir|cargar|guardar|consulta|ayuda|hola|qu[eé] puedes hacer)\b/i;
-const STUDENT_TOPIC_PATTERN = /\b(alumn[oa]s?|estudiantes?|matr[ií]cula|expediente|materias?|adeudos?|elegibilidad|elegible|estad[ií]a|auditor[ií]a individual)\b/i;
-const GROUP_TOPIC_PATTERN = /\b(alumn[oa]s?|estudiantes?|grupo|generaci[oó]n|ciclo|registros|guardad[oa]s?|hist[oó]ric[oa]s?|auditor[ií]a|resumen|informaci[oó]n)\b/i;
+const APP_TOPIC_PATTERN = /(unid|coordinaci[oó]n|sistema|plataforma|auditor[ií]a|k[aá]rdex|curr[ií]cul|carreras?|licenciaturas?|maestr[ií]as?|alumn[oa]s?|estudiantes?|matr[ií]culas?|expedientes?|materias?|asignaturas?|adeudos?|elegibilidad|elegible|estad[ií]a|cuatrimestres?|ciclos?|grupos?|generaci[oó]n|c[eé]dulas?|pdf|reportes?|neon|demo|login|iniciar sesi[oó]n|subir|cargar|guardar|consulta|ayuda|hola|base\s+de\s+datos|bd|asistente|qu[eé]\s+(puedes|haces|hay))/i;
+const STUDENT_TOPIC_PATTERN = /(alumn[oa]s?|estudiantes?|matr[ií]cula|expediente|materias?|adeudos?|elegibilidad|elegible|estad[ií]a|auditor[ií]a individual)/i;
+const GROUP_TOPIC_PATTERN = /(alumn[oa]s?|estudiantes?|grupo|generaci[oó]n|ciclo|registros|guardad[oa]s?|hist[oó]ric[oa]s?|auditor[ií]a|resumen|informaci[oó]n|base\s+de\s+datos|bd|carreras?)/i;
 
 function sendJson(res, status, payload) {
   res.statusCode = status;
@@ -233,46 +233,40 @@ export default async function handler(req, res) {
     }
 
     if (studentMatch || GROUP_TOPIC_PATTERN.test(question)) {
-      const databaseUrl = process.env.DATABASE_URL;
-      if (!databaseUrl) {
-        return sendJson(res, 503, { error: 'El acceso a la base de datos del asistente aún no está configurado en el servidor.' });
-      }
-
-      const sql = neon(databaseUrl);
-      if (studentMatch) {
-        const matricula = studentMatch[0];
-        const rows = await sql`
-          SELECT datos_completos, carrera_codigo, ciclo_escolar
-          FROM auditorias_estudiantes
-          WHERE matricula = ${matricula} AND carrera_codigo = ${careerCode}
-          ORDER BY creado_en DESC
-          LIMIT 1
-        `;
-        if (!rows.length) {
-          return sendJson(res, 200, {
-            reply: 'No encontré una auditoría guardada con esa matrícula en la carrera seleccionada. Verifica la matrícula o elige la carrera correspondiente.'
-          });
+      const databaseUrl = process.env.DATABASE_URL || process.env.VITE_NEON_DATABASE_URL;
+      if (databaseUrl) {
+        try {
+          const sql = neon(databaseUrl);
+          if (studentMatch) {
+            const matricula = studentMatch[0];
+            const rows = await sql`
+              SELECT datos_completos, carrera_codigo, ciclo_escolar
+              FROM auditorias_estudiantes
+              WHERE matricula = ${matricula} AND carrera_codigo = ${careerCode}
+              ORDER BY creado_en DESC
+              LIMIT 1
+            `;
+            if (rows.length) {
+              context = getStudentContext(rows[0]);
+            }
+          } else {
+            const rows = await sql`
+              SELECT
+                ciclo_escolar,
+                COUNT(*)::int AS total,
+                COUNT(*) FILTER (WHERE estatus_estadia ILIKE '%APROBADO / ELEGIBLE%')::int AS elegibles,
+                COUNT(*) FILTER (WHERE estatus_estadia NOT ILIKE '%APROBADO / ELEGIBLE%')::int AS requieren_revision
+              FROM auditorias_estudiantes
+              WHERE carrera_codigo = ${careerCode}
+              GROUP BY ciclo_escolar
+              ORDER BY MAX(creado_en) DESC
+              LIMIT 8
+            `;
+            context = { resumenesPorCiclo: rows, carrera: careerCode };
+          }
+        } catch (dbError) {
+          console.warn('[AcademicAssistant] No se pudo consultar la base de datos para el contexto:', dbError.message);
         }
-        context = getStudentContext(rows[0]);
-        if (!context) {
-          return sendJson(res, 200, {
-            reply: 'Encontré el registro, pero no contiene un resumen de auditoría que pueda explicar con seguridad.'
-          });
-        }
-      } else {
-        const rows = await sql`
-          SELECT
-            ciclo_escolar,
-            COUNT(*)::int AS total,
-            COUNT(*) FILTER (WHERE estatus_estadia ILIKE '%APROBADO / ELEGIBLE%')::int AS elegibles,
-            COUNT(*) FILTER (WHERE estatus_estadia NOT ILIKE '%APROBADO / ELEGIBLE%')::int AS requieren_revision
-          FROM auditorias_estudiantes
-          WHERE carrera_codigo = ${careerCode}
-          GROUP BY ciclo_escolar
-          ORDER BY MAX(creado_en) DESC
-          LIMIT 8
-        `;
-        context = { resumenesPorCiclo: rows, carrera: careerCode };
       }
     }
 
