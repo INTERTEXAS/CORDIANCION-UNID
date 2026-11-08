@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { Loader2, Send, Sparkles, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const suggestedQuestions = [
   '¿Qué puede hacer este asistente?',
@@ -10,6 +11,7 @@ const suggestedQuestions = [
 
 export default function AcademicAssistant({ career, onClose }) {
   const { instance, accounts } = useMsal();
+  const { isSuperAdmin, user: authUser } = useAuth();
   const [messages, setMessages] = useState([{
     role: 'assistant',
     content: 'Hola. Puedo orientarte sobre el sistema y consultar resúmenes de auditorías guardadas para la carrera seleccionada. Para revisar a un estudiante, incluye su matrícula.'
@@ -44,20 +46,30 @@ export default function AcademicAssistant({ career, onClose }) {
     setIsSending(true);
 
     try {
-      const account = instance.getActiveAccount() || accounts[0];
-      if (!account) {
-        throw new Error('Inicia sesión con tu cuenta institucional para usar el asistente.');
+      let authHeader = '';
+
+      if (isSuperAdmin) {
+        // Modo Super Admin / Desarrollador autorizado
+        const devEmail = authUser?.email || 'control_academico.devs@hotmail.com';
+        authHeader = `Dev ${devEmail}`;
+      } else {
+        const account = instance.getActiveAccount() || accounts[0];
+        if (!account) {
+          throw new Error('Inicia sesión con tu cuenta institucional para usar el asistente.');
+        }
+
+        const tokenResult = await instance.acquireTokenSilent({
+          scopes: ['User.Read'],
+          account
+        });
+        authHeader = `Bearer ${tokenResult.accessToken}`;
       }
 
-      const tokenResult = await instance.acquireTokenSilent({
-        scopes: ['User.Read'],
-        account
-      });
       const response = await fetch('/api/academic-assistant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${tokenResult.accessToken}`
+          Authorization: authHeader
         },
         body: JSON.stringify({
           question,

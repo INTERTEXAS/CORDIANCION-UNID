@@ -168,12 +168,29 @@ export default async function handler(req, res) {
   }
 
   const authorization = req.headers.authorization || '';
-  const accessToken = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
-  if (!accessToken) return sendJson(res, 401, { error: 'Inicia sesión con tu cuenta institucional para continuar.' });
+  const bearerToken = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
+  const devAuth = authorization.match(/^Dev\s+(.+)$/i)?.[1];
+
+  if (!bearerToken && !devAuth) {
+    return sendJson(res, 401, { error: 'Inicia sesión con tu cuenta institucional o de desarrollador para continuar.' });
+  }
 
   try {
-    if (!await getInstitutionalUser(accessToken)) {
-      return sendJson(res, 403, { error: 'Solo cuentas institucionales @unid.mx pueden usar el asistente.' });
+    let authorizedUser = null;
+
+    if (devAuth) {
+      // Acceso de desarrollador / Super Admin
+      const devEmail = devAuth.trim().toLowerCase();
+      if (devEmail === 'control_academico.devs@hotmail.com' || devEmail.endsWith('@unid.mx')) {
+        authorizedUser = devEmail;
+      } else {
+        return sendJson(res, 403, { error: 'Credencial de desarrollador no autorizada.' });
+      }
+    } else {
+      authorizedUser = await getInstitutionalUser(bearerToken);
+      if (!authorizedUser) {
+        return sendJson(res, 403, { error: 'Solo cuentas institucionales @unid.mx pueden usar el asistente.' });
+      }
     }
 
     const body = await getRequestBody(req);
