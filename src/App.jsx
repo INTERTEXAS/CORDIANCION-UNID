@@ -496,6 +496,45 @@ export default function App() {
                 texto: `Kárdex de ${estudiante?.nombre || 'alumno'} (${estudiante?.matricula}) cargado desde la base de datos.`
               });
             }}
+            onOpenBatchAudit={(batchInfo) => {
+              if (!batchInfo) return;
+              const { carreraCodigo, alumnos, totalAlumnos } = batchInfo;
+              const targetCarrera = (carreras || []).find(c => c.codigo === carreraCodigo || c.clave === carreraCodigo)
+                || { codigo: carreraCodigo, nombre: carreraCodigo, activa: true };
+
+              const freshAlumnos = (alumnos || []).map(item => {
+                const raw = typeof item === 'string' ? JSON.parse(item) : item;
+                const est = raw.estudiante || { matricula: raw.matricula, nombre: raw.nombre, programa: carreraCodigo };
+                const registros = est.registros || raw.auditData?.estudiante?.registros || [];
+                const studentCarrera = (carreras || []).find(c => c.codigo === est.programa || c.clave === est.programa) || targetCarrera;
+                const estToAudit = { ...est };
+                delete estToAudit.modalidadDetectada;
+                if (!estToAudit.programa && studentCarrera?.codigo) {
+                  estToAudit.programa = studentCarrera.codigo;
+                }
+                const freshAudit = runAcademicAudit(estToAudit, registros, studentCarrera);
+                return {
+                  ...raw,
+                  estudiante: freshAudit.estudiante || est,
+                  auditData: freshAudit,
+                  carrera: studentCarrera
+                };
+              });
+
+              setCarreraSeleccionada(targetCarrera);
+              setAuditData(null);
+              setBatchData({
+                totalAlumnos: totalAlumnos || freshAlumnos.length,
+                alumnos: freshAlumnos,
+                carrera: targetCarrera
+              });
+              setSelectedBatchStudentAudit(null);
+              setActiveTab('grupo');
+              setNotification({
+                tipo: 'exito',
+                texto: `Auditoría grupal de ${targetCarrera.codigo} cargada en pantalla (${freshAlumnos.length} expedientes).`
+              });
+            }}
           />
         </div>
 

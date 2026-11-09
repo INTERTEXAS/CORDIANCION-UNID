@@ -92,7 +92,8 @@ export default function HeaderBar({
   onToggleSidebar,
   isWidgetsOpen = true,
   onToggleWidgets,
-  onOpenStudentAudit
+  onOpenStudentAudit,
+  onOpenBatchAudit
 }) {
   const fileInputRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -463,6 +464,7 @@ export default function HeaderBar({
         <AcademicAssistant
           onClose={() => setIsAssistantOpen(false)}
           onOpenStudentAudit={onOpenStudentAudit}
+          onOpenBatchAudit={onOpenBatchAudit}
         />
       )}
     </header>

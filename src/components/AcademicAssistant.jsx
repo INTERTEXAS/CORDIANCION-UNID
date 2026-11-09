@@ -9,7 +9,7 @@ const suggestedQuestions = [
   '¿Qué carreras tienen auditorías guardadas?'
 ];
 
-export default function AcademicAssistant({ onClose, onOpenStudentAudit }) {
+export default function AcademicAssistant({ onClose, onOpenStudentAudit, onOpenBatchAudit }) {
   const { instance, accounts } = useMsal();
   const { isSuperAdmin, devAssistantToken } = useAuth();
   const [messages, setMessages] = useState([{
@@ -84,9 +84,16 @@ export default function AcademicAssistant({ onClose, onOpenStudentAudit }) {
         throw new Error(result.error || 'No se pudo obtener una respuesta del asistente.');
       }
 
-      // Si el servidor detectó la orden de abrir el kárdex en pantalla
+      // Si el servidor detectó la orden de abrir el kárdex individual en pantalla
       if (result.action === 'LOAD_STUDENT_AUDIT' && result.studentData && onOpenStudentAudit) {
         onOpenStudentAudit(result.studentData);
+        onClose();
+        return;
+      }
+
+      // Si el servidor detectó la orden de abrir la auditoría de grupo en pantalla
+      if (result.action === 'LOAD_BATCH_AUDIT' && result.batchData && onOpenBatchAudit) {
+        onOpenBatchAudit(result.batchData);
         onClose();
         return;
       }
@@ -96,7 +103,8 @@ export default function AcademicAssistant({ onClose, onOpenStudentAudit }) {
         { 
           role: 'assistant', 
           content: result.reply,
-          studentAuditSummary: result.studentAuditSummary || null
+          studentAuditSummary: result.studentAuditSummary || null,
+          groupSummary: result.groupSummary || null
         }
       ]);
     } catch (requestError) {
@@ -204,10 +212,58 @@ export default function AcademicAssistant({ onClose, onOpenStudentAudit }) {
                   </button>
                 </div>
 
-                {/* Botones de acción rápida interactivos para cada alumno detectado en la lista */}
-                {studentMatches.length > 0 && (
+                {/* Tarjeta de acción ejecutiva para grupos (evita saturar el chat con 30 botones) */}
+                {message.groupSummary && (
+                  <div className="mt-1.5 w-full max-w-[95%] rounded-2xl border border-border bg-surface-2 p-3 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-text-primary">
+                        Auditoría grupal: {message.groupSummary.carreraCodigo}
+                      </span>
+                      <span className="text-[11px] text-text-muted">
+                        {message.groupSummary.total} expedientes
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => sendMessage(`Abre el grupo de ${message.groupSummary.carreraCodigo}`)}
+                      disabled={isSending}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-accent px-3 py-2 text-xs font-bold text-slate-950 shadow-xs hover:bg-accent-hover transition-all disabled:opacity-50 cursor-pointer"
+                    >
+                      <span>Cargar los {message.groupSummary.total} alumnos en pantalla completa</span>
+                    </button>
+
+                    {message.groupSummary.alumnos?.length > 0 && (
+                      <div className="pt-1">
+                        <select
+                          defaultValue=""
+                          disabled={isSending}
+                          aria-label="Seleccionar alumno del grupo para consultar"
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val) {
+                              sendMessage(`Revisa la información completa de ${val}`);
+                              e.target.value = '';
+                            }
+                          }}
+                          className="w-full rounded-xl border border-border bg-surface-1 px-3 py-1.5 text-xs text-text-primary outline-none focus:border-accent cursor-pointer"
+                        >
+                          <option value="" disabled>Consultar alumno individual del grupo...</option>
+                          {message.groupSummary.alumnos.map((a) => (
+                            <option key={a.matricula} value={a.matricula}>
+                              {a.nombre || 'Alumno'} ({a.matricula})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Acciones para búsquedas individuales de alumnos (máximo 3 botones o selector compacto) */}
+                {!message.groupSummary && studentMatches.length > 0 && studentMatches.length <= 3 && (
                   <div className="flex flex-wrap gap-1.5 max-w-[95%] pt-1">
-                    {studentMatches.slice(0, 10).map((match, mIdx) => {
+                    {studentMatches.map((match, mIdx) => {
                       const nombre = match[1].trim();
                       const mat = match[2];
                       const primerNombre = nombre.split(' ')[0] || nombre;
@@ -235,6 +291,35 @@ export default function AcademicAssistant({ onClose, onOpenStudentAudit }) {
                         </div>
                       );
                     })}
+                  </div>
+                )}
+
+                {!message.groupSummary && studentMatches.length > 3 && (
+                  <div className="w-full max-w-[95%] pt-1">
+                    <select
+                      defaultValue=""
+                      disabled={isSending}
+                      aria-label="Seleccionar alumno encontrado"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val) {
+                          sendMessage(`Revisa la información completa de ${val}`);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="w-full rounded-xl border border-border bg-surface-2 px-3 py-1.5 text-xs text-text-primary outline-none focus:border-accent cursor-pointer"
+                    >
+                      <option value="" disabled>Selecciona un alumno para consultar...</option>
+                      {studentMatches.map((match) => {
+                        const nombre = match[1].trim();
+                        const mat = match[2];
+                        return (
+                          <option key={mat} value={mat}>
+                            {nombre} ({mat})
+                          </option>
+                        );
+                      })}
+                    </select>
                   </div>
                 )}
 
