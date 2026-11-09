@@ -144,20 +144,91 @@ export default function AcademicAssistant({ onClose }) {
               La consola está disponible. El asistente académico no está configurado en el servidor y no podrá responder consultas.
             </div>
           )}
-          {messages.map((message, index) => (
-            <div
-              key={`${message.role}-${index}`}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
-                message.role === 'user'
-                  ? 'rounded-br-md bg-accent text-white'
-                  : 'rounded-bl-md bg-surface-2 text-text-primary'
-              }`}>
-                {message.content}
+          {messages.map((message, index) => {
+            const isAssistant = message.role === 'assistant';
+            
+            // Detectar si el mensaje contiene lista de alumnos con formato "• Nombre (matricula)"
+            const studentMatches = isAssistant ? [...message.content.matchAll(/•\s*([^(]+?)\s*\((\d{5,12})\)/g)] : [];
+            
+            // Detectar si el mensaje es una pregunta de opciones académicas ("¿Qué información necesitas consultar?")
+            const hasOptionsPrompt = isAssistant && message.content.includes('¿Qué información necesitas consultar?');
+            
+            return (
+              <div
+                key={`${message.role}-${index}`}
+                className={`flex flex-col ${message.role === 'user' ? 'items-end' : 'items-start'} space-y-2`}
+              >
+                <div className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                  message.role === 'user'
+                    ? 'rounded-br-md bg-accent text-white'
+                    : 'rounded-bl-md bg-surface-2 text-text-primary'
+                }`}>
+                  {message.content}
+                </div>
+
+                {/* Botones de acción rápida interactivos para cada alumno detectado en la lista */}
+                {studentMatches.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 max-w-[95%] pt-1">
+                    {studentMatches.slice(0, 10).map((match, mIdx) => {
+                      const nombre = match[1].trim();
+                      const mat = match[2];
+                      const primerNombre = nombre.split(' ')[0] || nombre;
+                      return (
+                        <button
+                          key={`${mat}-${mIdx}`}
+                          type="button"
+                          onClick={() => sendMessage(`Revisa la información completa de ${mat}`)}
+                          disabled={isSending}
+                          className="inline-flex items-center gap-1 rounded-xl border border-accent/30 bg-accent/10 px-2.5 py-1 text-[11px] font-medium text-accent hover:bg-accent hover:text-white transition-all disabled:opacity-50"
+                        >
+                          <Sparkles className="w-3 h-3" />
+                          <span>Ver expediente de {primerNombre} ({mat})</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Botones para responder automáticamente a la pregunta de opciones */}
+                {hasOptionsPrompt && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-w-[95%] pt-1 w-full">
+                    <button
+                      type="button"
+                      onClick={() => sendMessage('Resumen general completo')}
+                      disabled={isSending}
+                      className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
+                    >
+                      📄 Resumen general completo
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => sendMessage('Adeudos y materias pendientes')}
+                      disabled={isSending}
+                      className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
+                    >
+                      ⚠️ Adeudos y materias pendientes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => sendMessage('Materias aprobadas')}
+                      disabled={isSending}
+                      className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
+                    >
+                      ✅ Materias aprobadas
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => sendMessage('Estatus y elegibilidad para estadía')}
+                      disabled={isSending}
+                      className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
+                    >
+                      🎓 Elegibilidad para estadía
+                    </button>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
           {isSending && (
             <div className="flex items-center gap-2 text-xs text-text-muted">
               <Loader2 className="h-4 w-4 animate-spin text-accent" />
