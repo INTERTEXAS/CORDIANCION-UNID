@@ -9,7 +9,7 @@ const suggestedQuestions = [
   '¿Qué carreras tienen auditorías guardadas?'
 ];
 
-export default function AcademicAssistant({ onClose }) {
+export default function AcademicAssistant({ onClose, onOpenStudentAudit }) {
   const { instance, accounts } = useMsal();
   const { isSuperAdmin, devAssistantToken } = useAuth();
   const [messages, setMessages] = useState([{
@@ -83,7 +83,22 @@ export default function AcademicAssistant({ onClose }) {
       if (!response.ok) {
         throw new Error(result.error || 'No se pudo obtener una respuesta del asistente.');
       }
-      setMessages((current) => [...current, { role: 'assistant', content: result.reply }]);
+
+      // Si el servidor detectó la orden de abrir el kárdex en pantalla
+      if (result.action === 'LOAD_STUDENT_AUDIT' && result.studentData && onOpenStudentAudit) {
+        onOpenStudentAudit(result.studentData);
+        onClose();
+        return;
+      }
+
+      setMessages((current) => [
+        ...current, 
+        { 
+          role: 'assistant', 
+          content: result.reply,
+          studentAuditSummary: result.studentAuditSummary || null
+        }
+      ]);
     } catch (requestError) {
       console.error('[AcademicAssistant] Error al consultar el asistente:', requestError);
       setError(requestError.message || 'No se pudo conectar con el asistente. Inténtalo de nuevo.');
@@ -197,39 +212,75 @@ export default function AcademicAssistant({ onClose }) {
                       const mat = match[2];
                       const primerNombre = nombre.split(' ')[0] || nombre;
                       return (
-                        <button
-                          key={`${mat}-${mIdx}`}
-                          type="button"
-                          onClick={() => sendMessage(`Revisa la información completa de ${mat}`)}
-                          disabled={isSending}
-                          className="inline-flex items-center gap-1 rounded-xl border border-accent/30 bg-accent/10 px-2.5 py-1 text-[11px] font-medium text-accent hover:bg-accent hover:text-white transition-all disabled:opacity-50"
-                        >
-                          <Sparkles className="w-3 h-3" />
-                          <span>Ver expediente de {primerNombre} ({mat})</span>
-                        </button>
+                        <div key={`${mat}-${mIdx}`} className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => sendMessage(`Revisa la información completa de ${mat}`)}
+                            disabled={isSending}
+                            className="inline-flex items-center gap-1 rounded-xl border border-accent/30 bg-accent/10 px-2.5 py-1 text-[11px] font-medium text-accent hover:bg-accent hover:text-white transition-all disabled:opacity-50"
+                          >
+                            <span>Consultar {primerNombre} ({mat})</span>
+                          </button>
+                          {onOpenStudentAudit && (
+                            <button
+                              type="button"
+                              onClick={() => sendMessage(`Abre el kardex de ${mat}`)}
+                              disabled={isSending}
+                              title="Abrir expediente completo en la pantalla de auditoría"
+                              className="inline-flex items-center rounded-xl border border-border bg-surface-2 px-2 py-1 text-[11px] font-semibold text-text-primary hover:border-accent hover:text-accent transition-all disabled:opacity-50"
+                            >
+                              <span>Ver kárdex</span>
+                            </button>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
                 )}
 
-                {/* Botones para responder automáticamente a la pregunta de opciones */}
+                {/* Si el mensaje incluye el resumen de un estudiante, ofrecer botón de apertura directa */}
+                {message.studentAuditSummary && onOpenStudentAudit && (
+                  <div className="pt-1 max-w-[95%]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const summary = message.studentAuditSummary;
+                        onOpenStudentAudit({
+                          estudiante: {
+                            matricula: summary.matricula,
+                            nombre: summary.nombre,
+                            programa: summary.carreraCodigo
+                          },
+                          auditData: summary.auditData,
+                          carreraCodigo: summary.carreraCodigo
+                        });
+                        onClose();
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-3 py-1.5 text-xs font-bold text-slate-950 shadow-xs hover:bg-accent-hover transition-all"
+                    >
+                      <span>Abrir kárdex interactivo en pantalla</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Botones para responder automáticamente a la pregunta de opciones (sin emojis) */}
                 {hasOptionsPrompt && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-w-[95%] pt-1 w-full">
                     <button
                       type="button"
-                      onClick={() => sendMessage('Resumen general completo')}
+                      onClick={() => sendMessage('Resumen general')}
                       disabled={isSending}
                       className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
                     >
-                      📄 Resumen general completo
+                      Resumen general
                     </button>
                     <button
                       type="button"
-                      onClick={() => sendMessage('Adeudos y materias pendientes')}
+                      onClick={() => sendMessage('Adeudos y pendientes')}
                       disabled={isSending}
                       className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
                     >
-                      ⚠️ Adeudos y materias pendientes
+                      Adeudos y materias pendientes
                     </button>
                     <button
                       type="button"
@@ -237,15 +288,15 @@ export default function AcademicAssistant({ onClose }) {
                       disabled={isSending}
                       className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
                     >
-                      ✅ Materias aprobadas
+                      Materias aprobadas
                     </button>
                     <button
                       type="button"
-                      onClick={() => sendMessage('Estatus y elegibilidad para estadía')}
+                      onClick={() => sendMessage('Estatus y elegibilidad para estadia')}
                       disabled={isSending}
                       className="text-left rounded-xl border border-border bg-surface-2 hover:bg-accent/15 hover:border-accent/40 px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all disabled:opacity-50"
                     >
-                      🎓 Elegibilidad para estadía
+                      Estatus y elegibilidad de estadía
                     </button>
                   </div>
                 )}

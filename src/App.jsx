@@ -474,6 +474,28 @@ export default function App() {
             onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
             isWidgetsOpen={isWidgetsOpen}
             onToggleWidgets={() => setIsWidgetsOpen(prev => !prev)}
+            onOpenStudentAudit={(studentInfo) => {
+              if (!studentInfo) return;
+              const { estudiante, auditData: studentAudit, carreraCodigo } = studentInfo;
+              
+              // 1. Si la carrera es distinta a la activa, cambiarla
+              if (carreraCodigo && carreraCodigo !== carreraSeleccionada?.codigo) {
+                const targetCarrera = (carreras || []).find(c => c.codigo === carreraCodigo || c.clave === carreraCodigo)
+                  || { codigo: carreraCodigo, nombre: carreraCodigo, activa: true };
+                setCarreraSeleccionada(targetCarrera);
+              }
+
+              // 2. Inyectar la auditoría en la plataforma
+              setBatchData(null);
+              setAuditData(studentAudit);
+              addToHistorial(studentAudit);
+              setActiveTab('mapa');
+
+              setNotification({
+                tipo: 'exito',
+                texto: `Kárdex de ${estudiante?.nombre || 'alumno'} (${estudiante?.matricula}) cargado desde la base de datos.`
+              });
+            }}
           />
         </div>
 

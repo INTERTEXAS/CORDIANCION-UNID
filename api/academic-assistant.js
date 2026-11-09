@@ -442,6 +442,8 @@ export default async function handler(req, res, options = {}) {
         });
       }
 
+      const isOpenKardexRequest = /\b(abre|abrir|muestra|mostrar|ver|carga|cargar)\s+(?:el\s+)?(?:k[aá]rdex|expediente|mapa|c[eé]dula)/i.test(question);
+
       if (requestedMatricula) {
         const matricula = requestedMatricula;
         const rows = await sql`
@@ -456,12 +458,51 @@ export default async function handler(req, res, options = {}) {
             reply: 'No encontré una auditoría guardada con esa matrícula. Verifica el número e inténtalo de nuevo.'
           });
         }
+
+        const targetRow = rows[0];
+        let fullAuditData = targetRow.datos_completos;
+        if (typeof fullAuditData === 'string') {
+          try {
+            fullAuditData = JSON.parse(fullAuditData);
+          } catch {
+            fullAuditData = null;
+          }
+        }
+        const studentAudit = fullAuditData?.auditData || fullAuditData?.audit_data || fullAuditData;
+
+        if (isOpenKardexRequest && studentAudit) {
+          return sendJson(res, 200, {
+            reply: `Cargando el kárdex de ${targetRow.nombre || 'estudiante'} (${targetRow.matricula}) en la plataforma...`,
+            action: 'LOAD_STUDENT_AUDIT',
+            studentData: {
+              estudiante: {
+                matricula: targetRow.matricula,
+                nombre: targetRow.nombre,
+                programa: targetRow.carrera_codigo,
+                sede: studentAudit.estudiante?.sede || 'CAMPUS',
+                ciclo: targetRow.ciclo_escolar
+              },
+              auditData: studentAudit,
+              carreraCodigo: targetRow.carrera_codigo
+            }
+          });
+        }
+
         const reply = requestedInfo
           ? rows.map((row) => formatRequestedStudentInfo(row, requestedInfo)).join('\n\n---\n\n')
           : rows.length === 1
             ? formatStudentInfoPrompt(rows[0])
             : `${rows.map(formatStudentReply).join('\n\n---\n\n')}\n\nIndica qué información necesitas y de cuál matrícula.`;
-        return sendJson(res, 200, { reply });
+        
+        return sendJson(res, 200, {
+          reply,
+          studentAuditSummary: rows.length === 1 && studentAudit ? {
+            matricula: targetRow.matricula,
+            nombre: targetRow.nombre,
+            carreraCodigo: targetRow.carrera_codigo,
+            auditData: studentAudit
+          } : null
+        });
       }
 
       if (studentQuestion && !studentSearchRequest && !previousStudent.matricula) {
@@ -512,10 +553,45 @@ export default async function handler(req, res, options = {}) {
           `;
         if (!rows.length) return sendJson(res, 200, { reply: formatStudentList(rows, careerSearchTerm || searchTerm) });
         if (rows.length === 1 && !careerSearchTerm) {
+          const targetRow = rows[0];
+          let fullAuditData = targetRow.datos_completos;
+          if (typeof fullAuditData === 'string') {
+            try {
+              fullAuditData = JSON.parse(fullAuditData);
+            } catch {
+              fullAuditData = null;
+            }
+          }
+          const studentAudit = fullAuditData?.auditData || fullAuditData?.audit_data || fullAuditData;
+
+          if (isOpenKardexRequest && studentAudit) {
+            return sendJson(res, 200, {
+              reply: `Cargando el kárdex de ${targetRow.nombre || 'estudiante'} (${targetRow.matricula}) en la plataforma...`,
+              action: 'LOAD_STUDENT_AUDIT',
+              studentData: {
+                estudiante: {
+                  matricula: targetRow.matricula,
+                  nombre: targetRow.nombre,
+                  programa: targetRow.carrera_codigo,
+                  sede: studentAudit.estudiante?.sede || 'CAMPUS',
+                  ciclo: targetRow.ciclo_escolar
+                },
+                auditData: studentAudit,
+                carreraCodigo: targetRow.carrera_codigo
+              }
+            });
+          }
+
           return sendJson(res, 200, {
             reply: requestedInfo
-              ? formatRequestedStudentInfo(rows[0], requestedInfo)
-              : formatStudentInfoPrompt(rows[0])
+              ? formatRequestedStudentInfo(targetRow, requestedInfo)
+              : formatStudentInfoPrompt(targetRow),
+            studentAuditSummary: studentAudit ? {
+              matricula: targetRow.matricula,
+              nombre: targetRow.nombre,
+              carreraCodigo: targetRow.carrera_codigo,
+              auditData: studentAudit
+            } : null
           });
         }
         return sendJson(res, 200, {
