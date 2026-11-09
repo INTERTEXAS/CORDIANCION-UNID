@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
-import { Loader2, Send, Sparkles, X } from 'lucide-react';
+import { Loader2, Send, Sparkles, X, Copy, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const suggestedQuestions = [
@@ -19,6 +19,7 @@ export default function AcademicAssistant({ onClose }) {
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState('');
+  const [copiedIdx, setCopiedIdx] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const allowLocalBypass = import.meta.env.DEV && import.meta.env.VITE_LOCAL_AUTH_BYPASS === 'true';
@@ -97,6 +98,15 @@ export default function AcademicAssistant({ onClose }) {
     sendMessage(input);
   };
 
+  const copyToClipboard = (text, idx) => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        setCopiedIdx(idx);
+        setTimeout(() => setCopiedIdx(null), 2000);
+      });
+    }
+  };
+
   return (
     <>
       <button
@@ -156,14 +166,27 @@ export default function AcademicAssistant({ onClose }) {
             return (
               <div
                 key={`${message.role}-${index}`}
-                className={`flex flex-col ${message.role === 'user' ? 'items-end' : 'items-start'} space-y-2`}
+                className={`flex flex-col ${message.role === 'user' ? 'items-end' : 'items-start'} space-y-1.5 group/msg`}
               >
-                <div className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                <div className={`relative max-w-[88%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed select-text ${
                   message.role === 'user'
                     ? 'rounded-br-md bg-accent text-white'
                     : 'rounded-bl-md bg-surface-2 text-text-primary'
                 }`}>
                   {message.content}
+                  {/* Botón flotante para copiar texto */}
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(message.content, index)}
+                    title={copiedIdx === index ? 'Copiado al portapapeles' : 'Copiar texto'}
+                    className={`absolute bottom-1.5 right-1.5 p-1 rounded-lg opacity-0 group-hover/msg:opacity-100 transition-opacity ${
+                      message.role === 'user' 
+                        ? 'bg-black/20 text-white hover:bg-black/40' 
+                        : 'bg-surface-3/80 text-text-muted hover:text-text-primary hover:bg-surface-3'
+                    }`}
+                  >
+                    {copiedIdx === index ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  </button>
                 </div>
 
                 {/* Botones de acción rápida interactivos para cada alumno detectado en la lista */}
