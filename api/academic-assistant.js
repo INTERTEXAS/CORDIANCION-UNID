@@ -273,7 +273,7 @@ function formatStudentList(rows, searchTerm = '') {
     ? `Encontré ${rows.length} registro(s) que coinciden con “${searchTerm}”:`
     : `Alumnos con auditorías guardadas (mostrando ${rows.length} registros recientes):`;
   const entries = rows.map((row) =>
-    `• ${row.nombre || 'Nombre no disponible'} — matrícula ${row.matricula} — ${row.carrera_codigo || 'sin carrera'} — ${row.ciclo_escolar || 'sin ciclo'} — ${row.estatus_estadia || 'sin dictamen'}`
+    `• ${row.nombre || 'Nombre no disponible'} (${row.matricula})`
   );
   return [
     title,
