@@ -48,7 +48,21 @@ La solución opera tanto en modalidad de **expediente individual** como mediante
 - **Política de Retención Inteligente (5 Meses)**: Utilidad de mantenimiento colapsable que calcula la antigüedad de los registros conforme al ciclo escolar UNID (4 meses lectivos + 1 mes de trámites/inscripciones) para depurar auditorías obsoletas en un solo paso.
 - **Contingencia Local**: Si la conexión remota no estuviera disponible, el sistema mantiene la operación local en memoria sin interrumpir el trabajo de coordinación.
 
-### 4. Catálogo de Programas Académicos (14 Programas)
+### 4. Asistente Académico Inteligente (Gemini Flash & Neon DB)
+El sistema integra un asistente conversacional de coordinación (`AcademicAssistant`) diseñado bajo arquitectura híbrida y principios de alta usabilidad corporativa:
+- **Arquitectura Híbrida de Privacidad**:
+  - Las consultas de matrículas, alumnos, carreras y ciclos escolares se resuelven en microsegundos directamente sobre la base de datos Neon mediante sentencias SQL optimizadas, **sin exponer datos personales de alumnos a proveedores externos de IA** ni consumir cuota innecesaria.
+  - El modelo **Google Gemini Flash Lite** se invoca de manera selectiva y segura exclusivamente para responder dudas conceptuales, procesos de la plataforma y orientación de normativas institucionales.
+- **Carga Interactiva en Pantalla Completa (Action Execution)**:
+  - **Apertura de Auditoría de Grupo (`LOAD_BATCH_AUDIT`)**: Al solicitar peticiones como *"abre el kardex completo de MAE-MADP-22"*, *"abre el grupo de [Carrera]"* o *"ver sábana de [Carrera]"*, el asistente detecta la clave del programa, carga todos los expedientes del ciclo desde Neon DB y conmuta la pantalla principal directamente a la vista de **Auditoría de Grupo** (`BatchAuditView`).
+  - **Apertura de Kárdex Individual (`LOAD_STUDENT_AUDIT`)**: Al indicar *"abre el kardex de [Matrícula]"* o *"abre el expediente de [Nombre]"*, la interfaz carga la auditoría en el **Mapa Curricular** y en la **Cédula Oficial**.
+- **Diseño Anti-Saturación**:
+  - **Tarjeta Ejecutiva de Grupo**: Sustituye la acumulación masiva de botones en el chat por un componente compacto compuesto por un botón primario de carga general y un selector desplegable (`<select>`) para consultar alumnos individuales sin consumir espacio vertical.
+  - **Fichas Resumen Ejecutivas**: Formato sintético de 6 a 8 líneas (menos de 350 caracteres) con métricas clave (aprobadas, adeudos, omitidas, pendientes y dictamen) condensadas en una sola línea.
+- **Memoria de Contexto Continuo**: Reconoce automáticamente referencias a alumnos previos en el historial de la conversación cuando el usuario selecciona opciones directas como *"Resumen general"*, *"Adeudos y materias pendientes"*, *"Materias aprobadas"* o *"Carrera y ciclo escolar"*.
+- **Directiva Estricta de Cero Emojis**: Todo el asistente (prompts del modelo, respuestas generadas, botones y componentes visuales) opera bajo un estándar sobrio institucional, prescindiendo por completo de emojis y empleando viñetas y tipografía corporativa.
+
+### 5. Catálogo de Programas Académicos (14 Programas)
 El sistema integra y sincroniza 14 programas institucionales organizados por coordinación:
 
 **Coordinación: Laura Angélica Ara Angulo (Ciencias Económico-Administrativas)**
@@ -125,13 +139,13 @@ Cada asignatura identificada en el mapa curricular oficial se dictamina bajo la 
 
 ---
 
-## Suite de Pruebas de Integridad Automatizadas (`prebuild`)
+## Suite de Pruebas de Integridad Automatizadas (`prebuild` y CI)
 
-Antes de cada compilación para producción (`npm run build`), el sistema ejecuta de manera estricta y obligatoria una batería de **más de 208 pruebas automatizadas** dividida en 3 suites:
+Antes de cada compilación para producción (`npm run build`), el sistema ejecuta de manera estricta y obligatoria una batería de **más de 353 pruebas automatizadas** distribuidas en suites de verificación continua:
 
 ```bash
 npm run test
-# Ejecuta: node test-health.mjs && node test-comprehensive.mjs && node test-dev-security.mjs
+# Ejecuta: test-health.mjs, test-comprehensive.mjs, test-dev-security.mjs y test-academic-assistant.mjs
 ```
 
 1. **`test-health.mjs` (8 Pruebas de Salud)**:
@@ -156,8 +170,20 @@ npm run test
    - Activación, desactivación y revocación remota de dispositivos.
    - Geolocalización de alta precisión (GPS, reverse geocoding con Nominatim, enlaces a Google Maps y fallback por IP).
 
+4. **`test-academic-assistant.mjs` (5 Pruebas de Integración de API)**:
+   - Validación de barreras de autenticación y tokens Dev/Super Admin.
+   - Respuestas guiadas por matrícula y encadenamiento contextual de preguntas académicas.
+   - Filtro de carreras y aislamiento de datos personales respecto a Gemini.
+
+5. **`test-assistant-140-benchmark.mjs` (140 Pruebas Exhaustivas de Usabilidad y Calidad)**:
+   - Verificación de 15 tipos de peticiones de apertura de grupo (`LOAD_BATCH_AUDIT`).
+   - Verificación de 15 tipos de peticiones de apertura individual (`LOAD_STUDENT_AUDIT`).
+   - Seguimiento conversacional sin falsos bloqueos.
+   - Validación estricta de no-saturación de texto (<650 caracteres) y eliminación de listas masivas de botones.
+   - Auditoría estricta de Cero Emojis (0 violaciones permitidas).
+
 > [!IMPORTANT]
-> Si una sola prueba de las 208 falla, la compilación de producción se detiene de inmediato, imposibilitando el despliegue de versiones con fallos.
+> Si una sola prueba de las suites obligatorias falla, la compilación de producción se detiene de inmediato, imposibilitando el despliegue de versiones con fallos.
 
 ---
 
@@ -171,6 +197,7 @@ npm run test
 - **Motor PDF**: `pdfjs-dist` con Web Worker integrado localmente.
 - **Generación de Reportes**: `jspdf`, `html2canvas`.
 - **Base de Datos Serverless**: Neon PostgreSQL (`@neondatabase/serverless`).
+- **Servicios de Inteligencia**: Google Gemini Flash Lite (endpoint server-side en Node.js).
 - **Iconografía**: `lucide-react`.
 
 ---
@@ -180,24 +207,34 @@ npm run test
 Crear un archivo `.env` en la raíz del proyecto tomando como base la plantilla `.env.example`:
 
 ```env
-# Conexión a la base de datos Neon PostgreSQL Serverless (Pooler)
+# Neon PostgreSQL para endpoints server-side (Guardar como secreto en Vercel)
 DATABASE_URL="postgresql://usuario:password@ep-ejemplo.us-east-2.aws.neon.tech/neondb?sslmode=require"
+
+# Gemini exclusivo en servidor (Sin prefijo VITE_)
+GEMINI_API_KEY="tu_clave_de_google_ai_studio"
+GEMINI_MODEL="gemini-3.5-flash-lite"
+
+# Firma de sesión para acceso técnico de Super Administrador
+ACADEMIC_ASSISTANT_ADMIN_SECRET="tu_clave_secreta_minimo_32_caracteres"
+
+# Variable usada temporalmente por módulos del frontend (VITE_ la hace pública)
 VITE_NEON_DATABASE_URL="postgresql://usuario:password@ep-ejemplo.us-east-2.aws.neon.tech/neondb?sslmode=require"
 
 # Microsoft Entra ID (Azure AD) - UNID Single Tenant
 VITE_AZURE_CLIENT_ID="tu_client_id_aqui"
 VITE_AZURE_TENANT_ID="tu_tenant_id_aqui"
+
+# Lista blanca opcional de IPs para acceso técnico de desarrollo
+ALLOWED_DEV_IPS=""
+VITE_ALLOWED_DEV_IPS=""
 ```
 
+### Notas de Seguridad sobre Variables de Entorno:
+- `DATABASE_URL`, `GEMINI_API_KEY` y `ACADEMIC_ASSISTANT_ADMIN_SECRET` son **exclusivas del servidor** y deben configurarse como secretos en el panel de Vercel. Nunca deben exponerse con el prefijo `VITE_`.
+- `VITE_NEON_DATABASE_URL` sigue utilizándose temporalmente por componentes cliente que requieren interactuar de forma reactiva con Neon en el navegador (`NeonAuditManagerModal`).
+- Las cuentas con rol `ADMIN_SISTEMA`, `super_admin` o `superadmin` reciben una sesión firmada criptográficamente con vigencia de 1 hora al autenticarse en el módulo técnico.
+
 ---
-
-`DATABASE_URL` y `GEMINI_API_KEY` son variables exclusivas del servidor y deben configurarse como secretos en Vercel. No usar el prefijo `VITE_` para credenciales nuevas. `VITE_NEON_DATABASE_URL` sigue utilizándose temporalmente por funcionalidades actuales del navegador; quitarla requiere migrar esas consultas a endpoints server-side para no interrumpirlas.
-
-El endpoint del asistente valida el acceso con Microsoft Graph y restringe las consultas a cuentas `@unid.mx`. Para una matrícula busca únicamente dentro de la carrera seleccionada y envía a Gemini un resumen académico con campos permitidos, sin nombre ni matrícula. Antes de usar datos reales, la institución debe autorizar su procesamiento mediante el proveedor externo.
-
-### Acceso del asistente para administradores
-
-Configura `ACADEMIC_ASSISTANT_ADMIN_SECRET` como variable privada de servidor en Vercel y en el `.env` local. Debe ser un valor aleatorio de al menos 32 caracteres; no lo expongas con el prefijo `VITE_`. Las cuentas con rol `ADMIN_SISTEMA`, `super_admin` o `superadmin` reciben, tras verificar sus credenciales en Neon, una sesión firmada que expira en una hora. Si esta configuración del asistente falta, el acceso a `/internal-dev-access` sigue disponible y muestra un aviso, pero el asistente académico queda deshabilitado hasta configurarla. Los errores de autorización distintos a esa falta de configuración siguen bloqueando el acceso.
 
 ## Instalación y Comandos de Ejecución
 
@@ -219,13 +256,17 @@ Configura `ACADEMIC_ASSISTANT_ADMIN_SECRET` como variable privada de servidor en
 
 3. Ejecutar las suites de pruebas de forma individual o conjunta:
    ```bash
-   # Suite completa (208+ pruebas)
+   # Suite obligatoria completa
    npm run test
 
    # Suites individuales
    npm run test:health
    npm run test:comprehensive
    npm run test:security
+   npm run test:assistant
+
+   # Benchmark exhaustivo del asistente (140 casos)
+   node test-assistant-140-benchmark.mjs
    ```
 
 4. Iniciar el servidor local de desarrollo:
@@ -233,7 +274,7 @@ Configura `ACADEMIC_ASSISTANT_ADMIN_SECRET` como variable privada de servidor en
    npm run dev
    ```
 
-5. Generar la compilación para producción (ejecuta automáticamente las 208+ pruebas previas):
+5. Generar la compilación para producción (ejecuta automáticamente las pruebas previas en `prebuild`):
    ```bash
    npm run build
    ```
@@ -242,7 +283,7 @@ Configura `ACADEMIC_ASSISTANT_ADMIN_SECRET` como variable privada de servidor en
 
 ## Despliegue en Producción (Vercel)
 
-El proyecto incluye la configuración en `vercel.json` para gestionar el enrutamiento y las cabeceras requeridas para aplicaciones de una sola página (SPA):
+El proyecto incluye la configuración en `vercel.json` para gestionar el enrutamiento y las cabeceras requeridas para aplicaciones de una sola página (SPA) y funciones serverless:
 
 - **Plataforma**: Vercel
 - **Preajuste de Framework**: Vite
