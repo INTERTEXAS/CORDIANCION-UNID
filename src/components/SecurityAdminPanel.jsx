@@ -349,21 +349,21 @@ export default function SecurityAdminPanel() {
       {/* =========================================================================
           CABECERA INSTITUCIONAL: Control de Acceso y Seguridad
           ========================================================================= */}
-      <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-2xs transition-theme">
+      <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl p-5 shadow-2xs transition-theme">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
+            <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-500 dark:text-text-muted font-semibold uppercase tracking-wider">
               <span>UNID Académica</span>
-              <span className="text-slate-300 dark:text-slate-600">/</span>
-              <span className="text-slate-700 dark:text-slate-200">Seguridad & Acceso</span>
+              <span className="text-slate-300 dark:text-border">/</span>
+              <span className="text-slate-700 dark:text-text-secondary">Seguridad & Acceso</span>
               <span className="px-1.5 py-0.2 bg-amber-50 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 rounded text-[10px] font-bold">
                 SUPER ADMIN
               </span>
             </div>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">
+            <h1 className="text-lg font-bold text-slate-900 dark:text-text-primary tracking-tight mt-0.5">
               Consola de Auditoría y Control de Dispositivos
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-text-muted mt-0.5">
               Supervisión de hardware certificado, telemetría de red y bitácora de eventos en tiempo real.
             </p>
           </div>
@@ -372,9 +372,9 @@ export default function SecurityAdminPanel() {
             <button
               onClick={() => cargarDatos(true)}
               disabled={isLoading || isRefreshing}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md border border-slate-200 dark:border-border bg-white dark:bg-surface-2 hover:bg-slate-50 dark:hover:bg-surface-3 text-xs font-semibold text-slate-700 dark:text-text-primary transition-colors cursor-pointer disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-400 ${isRefreshing ? 'animate-spin text-amber-600 dark:text-amber-400' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-slate-400 dark:text-text-muted ${isRefreshing ? 'animate-spin text-amber-600 dark:text-amber-400' : ''}`} />
               <span>{isRefreshing ? 'Sincronizando…' : 'Actualizar'}</span>
             </button>
 
@@ -399,12 +399,12 @@ export default function SecurityAdminPanel() {
         {/* =========================================================================
             KPI RIBBON CONTINUO (Limpio, sobrio y tipográfico)
             ========================================================================= */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-border">
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Equipos Autorizados</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Equipos Autorizados</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-xl font-bold font-mono text-slate-900 dark:text-white">{totalEquiposActivos}</span>
-              <span className="text-xs font-mono text-slate-400 dark:text-slate-500">/ {dispositivos.length} total</span>
+              <span className="text-xl font-bold font-mono text-slate-900 dark:text-text-primary">{totalEquiposActivos}</span>
+              <span className="text-xs font-mono text-slate-400 dark:text-text-muted">/ {dispositivos.length} total</span>
             </div>
             <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium flex items-center space-x-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -413,28 +413,28 @@ export default function SecurityAdminPanel() {
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Sesiones Concedidas</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Sesiones Concedidas</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-xl font-bold font-mono text-slate-900 dark:text-white">{totalLoginsExitosos}</span>
-              <span className="text-xs text-slate-400 dark:text-slate-500">exitosas</span>
+              <span className="text-xl font-bold font-mono text-slate-900 dark:text-text-primary">{totalLoginsExitosos}</span>
+              <span className="text-xs text-slate-400 dark:text-text-muted">exitosas</span>
             </div>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">Credenciales verificadas</span>
+            <span className="text-[10px] text-slate-500 dark:text-text-muted">Credenciales verificadas</span>
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Visitas a la Ruta</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Visitas a la Ruta</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-xl font-bold font-mono text-slate-900 dark:text-white">{totalVisitas}</span>
-              <span className="text-xs text-slate-400 dark:text-slate-500">eventos</span>
+              <span className="text-xl font-bold font-mono text-slate-900 dark:text-text-primary">{totalVisitas}</span>
+              <span className="text-xs text-slate-400 dark:text-text-muted">eventos</span>
             </div>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">Telemetría de red</span>
+            <span className="text-[10px] text-slate-500 dark:text-text-muted">Telemetría de red</span>
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Bloqueos Preventivos</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Bloqueos Preventivos</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-xl font-bold font-mono text-rose-600 dark:text-rose-400">{totalBloqueados}</span>
-              <span className="text-xs text-slate-400 dark:text-slate-500">rechazos</span>
+              <span className="text-xs text-slate-400 dark:text-text-muted">rechazos</span>
             </div>
             <span className="text-[10px] text-rose-600 dark:text-rose-400 font-medium">
               {totalBloqueados > 0 ? 'Hardware no reconocido' : 'Sin incidencias'}
@@ -527,32 +527,32 @@ export default function SecurityAdminPanel() {
           CONTENIDO: DISPOSITIVOS AUTORIZADOS
           ========================================================================= */}
       {(activeTab === 'dispositivos' || activeTab === 'combinada') && (
-        <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs overflow-hidden transition-theme">
-          <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
+        <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl shadow-2xs overflow-hidden transition-theme">
+          <div className="px-5 py-3.5 border-b border-slate-200 dark:border-border flex items-center justify-between bg-slate-50 dark:bg-surface-1">
             <div>
-              <h2 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
+              <h2 className="text-xs font-bold text-slate-900 dark:text-text-primary uppercase tracking-wider font-mono">
                 Dispositivos de Hardware Autorizados
               </h2>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-text-muted">
                 Equipos físicos validados mediante huella digital SHA-256 para operar la consola técnica.
               </p>
             </div>
-            <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+            <span className="text-[11px] font-mono text-slate-500 dark:text-text-muted">
               {dispositivos.length} {dispositivos.length === 1 ? 'equipo registrado' : 'equipos registrados'}
             </span>
           </div>
 
           {dispositivos.length === 0 ? (
-            <div className="py-10 text-center text-slate-400 dark:text-slate-500 text-xs space-y-1">
+            <div className="py-10 text-center text-slate-400 dark:text-text-muted text-xs space-y-1">
               <Cpu className="w-6 h-6 mx-auto text-slate-300 dark:text-slate-600" />
-              <p className="font-medium text-slate-600 dark:text-slate-300">No hay equipos registrados en Neon DB.</p>
+              <p className="font-medium text-slate-600 dark:text-text-secondary">No hay equipos registrados en Neon DB.</p>
               <p className="text-[11px]">Usa el botón "Registrar Dispositivo" para autorizar una computadora.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-950">
+                  <tr className="border-b border-slate-200 dark:border-border text-[10px] uppercase tracking-wider text-slate-700 dark:text-text-secondary font-bold bg-slate-100 dark:bg-surface-2">
                     <th className="py-2.5 px-5">Equipo / Propietario</th>
                     <th className="py-2.5 px-4">Huella Criptográfica (Device ID)</th>
                     <th className="py-2.5 px-4 text-center">Estado</th>
@@ -560,10 +560,10 @@ export default function SecurityAdminPanel() {
                     <th className="py-2.5 px-5 text-right">Gestión</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                <tbody className="divide-y divide-slate-100 dark:divide-border bg-white dark:bg-surface-1">
                   {dispositivos.map((dev) => (
-                    <tr key={dev.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
-                      <td className="py-3 px-5 font-semibold text-slate-900 dark:text-white">
+                    <tr key={dev.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2/60 transition-colors">
+                      <td className="py-3 px-5 font-semibold text-slate-900 dark:text-text-primary">
                         <div className="flex items-center space-x-2">
                           <span className={`w-1.5 h-1.5 rounded-full ${dev.activo ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
                           <span>{dev.propietario}</span>
@@ -571,7 +571,7 @@ export default function SecurityAdminPanel() {
                       </td>
 
                       <td className="py-3 px-4">
-                        <div className="inline-flex items-center space-x-1.5 font-mono text-[11px] text-slate-600 dark:text-slate-300">
+                        <div className="inline-flex items-center space-x-1.5 font-mono text-[11px] text-slate-600 dark:text-text-secondary">
                           <span className="bg-slate-100 dark:bg-surface-2 px-1.5 py-0.5 rounded border border-slate-200 dark:border-border truncate max-w-[240px]" title={dev.device_id}>
                             {dev.device_id}
                           </span>
@@ -605,12 +605,12 @@ export default function SecurityAdminPanel() {
                             }`}
                           />
                         </button>
-                        <span className={`ml-2 text-[11px] font-medium ${dev.activo ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                        <span className={`ml-2 text-[11px] font-medium ${dev.activo ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400 dark:text-text-muted'}`}>
                           {dev.activo ? 'Activo' : 'Inactivo'}
                         </span>
                       </td>
 
-                      <td className="py-3 px-4 text-slate-500 dark:text-slate-400 text-[11px]">
+                      <td className="py-3 px-4 text-slate-500 dark:text-text-muted text-[11px]">
                         {dev.fecha_registro ? new Date(dev.fecha_registro).toLocaleString('es-MX', { 
                           dateStyle: 'medium', 
                           timeStyle: 'short' 
@@ -640,19 +640,19 @@ export default function SecurityAdminPanel() {
           CONTENIDO: USUARIOS Y CONTROL DE ROLES (RBAC)
           ========================================================================= */}
       {(activeTab === 'usuarios' || activeTab === 'combinada') && (
-        <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs overflow-hidden transition-theme">
-          <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900">
+        <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl shadow-2xs overflow-hidden transition-theme">
+          <div className="px-5 py-3.5 border-b border-slate-200 dark:border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 dark:bg-surface-1">
             <div>
-              <h2 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono flex items-center space-x-2">
+              <h2 className="text-xs font-bold text-slate-900 dark:text-text-primary uppercase tracking-wider font-mono flex items-center space-x-2">
                 <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                 <span>Directorio de Colaboradores & Roles Institucionales</span>
               </h2>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-text-muted">
                 Control de Acceso Basado en Roles (RBAC) sincronizado con cuentas Microsoft 365 Entra ID y Neon DB.
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-mono text-slate-500 dark:text-text-muted">
                 {usuarios.length} {usuarios.length === 1 ? 'colaborador registrado' : 'colaboradores registrados'}
               </span>
               <button
@@ -667,16 +667,16 @@ export default function SecurityAdminPanel() {
           </div>
 
           {usuarios.length === 0 ? (
-            <div className="py-10 text-center text-slate-400 dark:text-slate-500 text-xs space-y-1">
+            <div className="py-10 text-center text-slate-400 dark:text-text-muted text-xs space-y-1">
               <Users className="w-6 h-6 mx-auto text-slate-300 dark:text-slate-600" />
-              <p className="font-medium text-slate-600 dark:text-slate-300">No hay usuarios registrados en la base de datos Neon.</p>
+              <p className="font-medium text-slate-600 dark:text-text-secondary">No hay usuarios registrados en la base de datos Neon.</p>
               <p className="text-[11px]">Usa el botón "+ Registrar Colaborador" para dar de alta al personal académico.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-950">
+                  <tr className="border-b border-slate-200 dark:border-border text-[10px] uppercase tracking-wider text-slate-700 dark:text-text-secondary font-bold bg-slate-100 dark:bg-surface-2">
                     <th className="py-2.5 px-5">Colaborador / Cuenta Institucional</th>
                     <th className="py-2.5 px-4">Rol en Plataforma</th>
                     <th className="py-2.5 px-4">Coordinación Asignada</th>
@@ -685,26 +685,26 @@ export default function SecurityAdminPanel() {
                     <th className="py-2.5 px-5 text-right">Gestión</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                <tbody className="divide-y divide-slate-100 dark:divide-border bg-white dark:bg-surface-1">
                   {usuarios.map((u) => {
                     const isSuper = u.id === 1 || u.rol === 'ADMIN_SISTEMA' || u.rol === 'super_admin';
                     return (
-                      <tr key={u.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <tr key={u.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2/60 transition-colors">
                         <td className="py-3 px-5">
                           <div className="flex items-center space-x-2.5">
-                            <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-surface-2 border border-slate-200 dark:border-border flex items-center justify-center font-bold text-slate-700 dark:text-slate-200 text-xs shrink-0">
+                            <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-surface-2 border border-slate-200 dark:border-border flex items-center justify-center font-bold text-slate-700 dark:text-text-primary text-xs shrink-0">
                               {(u.nombre ? u.nombre.charAt(0) : u.email.charAt(0)).toUpperCase()}
                             </div>
                             <div>
-                              <div className="font-semibold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                              <div className="font-semibold text-slate-900 dark:text-text-primary flex items-center space-x-1.5">
                                 <span>{u.nombre || 'Sin nombre asignado'}</span>
                                 {isSuper && (
-                                  <span className="px-1.5 py-0.2 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/40 rounded text-[9px] font-bold font-mono">
+                                  <span className="px-1.5 py-0.2 bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30 rounded text-[9px] font-bold font-mono">
                                     SYSADMIN
                                   </span>
                                 )}
                               </div>
-                              <div className="font-mono text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[220px]">
+                              <div className="font-mono text-[11px] text-slate-500 dark:text-text-muted truncate max-w-[220px]">
                                 {u.email}
                               </div>
                             </div>
@@ -713,29 +713,29 @@ export default function SecurityAdminPanel() {
 
                         <td className="py-3 px-4">
                           {u.rol === 'ADMIN_SISTEMA' || u.rol === 'super_admin' ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40 font-mono">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 dark:bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30 font-mono">
                               ADMINISTRADOR TOTAL
                             </span>
                           ) : u.rol === 'COORDINADOR' || u.rol === 'coordinador' ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 font-mono">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30 font-mono">
                               COORDINADOR ACADÉMICO
                             </span>
                           ) : u.rol === 'CONTROL_ESCOLAR' || u.rol === 'control_escolar' ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 font-mono">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 font-mono">
                               CONTROL ESCOLAR
                             </span>
                           ) : u.rol === 'DIRECTOR' || u.rol === 'director' ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 font-mono">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30 font-mono">
                               DIRECCIÓN DE SEDE
                             </span>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-surface-2 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-border font-mono">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-surface-2 text-slate-600 dark:text-text-secondary border border-slate-200 dark:border-border font-mono">
                               CONSULTA / DOCENTE
                             </span>
                           )}
                         </td>
 
-                        <td className="py-3 px-4 text-[11px] text-slate-700 dark:text-slate-300 max-w-[220px]">
+                        <td className="py-3 px-4 text-[11px] text-slate-700 dark:text-text-secondary max-w-[220px]">
                           <div className="truncate font-medium" title={u.coordinacion || 'TODAS'}>
                             {u.coordinacion || 'TODAS (Sede Campeche)'}
                           </div>
@@ -806,33 +806,33 @@ export default function SecurityAdminPanel() {
           CONTENIDO: BITÁCORA DE TELEMETRÍA (Sin stickers ni burbujas saturadas)
           ========================================================================= */}
       {(activeTab === 'bitacora' || activeTab === 'combinada') && (
-        <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs overflow-hidden transition-theme">
+        <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl shadow-2xs overflow-hidden transition-theme">
           {/* Controles integrados de filtrado */}
-          <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-50 dark:bg-slate-900">
+          <div className="px-5 py-3 border-b border-slate-200 dark:border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-50 dark:bg-surface-1">
             <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
+              <span className="text-xs font-bold text-slate-900 dark:text-text-primary uppercase tracking-wider font-mono">
                 Registros de Auditoría en Vivo
               </span>
-              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-mono text-slate-500 dark:text-text-muted">
                 ({bitacoraFiltrada.length} de {bitacora.length})
               </span>
             </div>
 
             <div className="flex items-center space-x-2">
               <div className="relative">
-                <Search className="w-3 h-3 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3 h-3 text-slate-400 dark:text-text-muted absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Filtrar por IP, correo o equipo…"
-                  className="pl-7 pr-6 py-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-amber-400 w-48 sm:w-56"
+                  className="pl-7 pr-6 py-1 bg-white dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-xs text-slate-800 dark:text-text-primary placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-accent w-48 sm:w-56"
                 />
                 {searchTerm && (
                   <button
                     type="button"
                     onClick={() => setSearchTerm('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-text-muted hover:text-slate-600 dark:hover:text-text-primary"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -842,26 +842,26 @@ export default function SecurityAdminPanel() {
               <select
                 value={eventoFiltro}
                 onChange={(e) => setEventoFiltro(e.target.value)}
-                className="px-2 py-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:border-slate-400 dark:focus:border-amber-400 cursor-pointer"
+                className="px-2 py-1 bg-white dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-xs text-slate-700 dark:text-text-primary focus:outline-none focus:border-slate-400 dark:focus:border-accent cursor-pointer"
               >
-                <option value="TODOS" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Todos los eventos</option>
-                <option value="VISITA_LINK" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Visitas a la ruta</option>
-                <option value="AUTORIZADO" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Accesos concedidos</option>
-                <option value="BLOQUEADO" className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">Bloqueos preventivos</option>
+                <option value="TODOS" className="bg-white dark:bg-surface-1 text-slate-800 dark:text-text-primary">Todos los eventos</option>
+                <option value="VISITA_LINK" className="bg-white dark:bg-surface-1 text-slate-800 dark:text-text-primary">Visitas a la ruta</option>
+                <option value="AUTORIZADO" className="bg-white dark:bg-surface-1 text-slate-800 dark:text-text-primary">Accesos concedidos</option>
+                <option value="BLOQUEADO" className="bg-white dark:bg-surface-1 text-slate-800 dark:text-text-primary">Bloqueos preventivos</option>
               </select>
             </div>
           </div>
 
           {bitacoraFiltrada.length === 0 ? (
-            <div className="py-12 text-center text-slate-500 dark:text-slate-400 text-xs space-y-1">
-              <p className="font-medium text-slate-700 dark:text-slate-200">No se encontraron eventos con los filtros actuales.</p>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500">Restablece la búsqueda o selecciona otro filtro de eventos.</p>
+            <div className="py-12 text-center text-slate-500 dark:text-text-muted text-xs space-y-1">
+              <p className="font-medium text-slate-700 dark:text-text-primary">No se encontraron eventos con los filtros actuales.</p>
+              <p className="text-[11px] text-slate-400 dark:text-text-muted">Restablece la búsqueda o selecciona otro filtro de eventos.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-950">
+                  <tr className="border-b border-slate-200 dark:border-border text-[10px] uppercase tracking-wider text-slate-700 dark:text-text-secondary font-bold bg-slate-100 dark:bg-surface-2">
                     <th className="py-2.5 px-5">Timestamp</th>
                     <th className="py-2.5 px-4">Estado del Evento</th>
                     <th className="py-2.5 px-4">Dispositivo</th>
@@ -871,16 +871,16 @@ export default function SecurityAdminPanel() {
                     <th className="py-2.5 px-5 text-right">Resolución</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                <tbody className="divide-y divide-slate-100 dark:divide-border bg-white dark:bg-surface-1">
                   {bitacoraFiltrada.map((item) => {
                     const esVisita = item.evento === 'VISITA_LINK';
                     const esAutorizado = Boolean(item.autorizado);
                     const tieneEquipo = Boolean(item.propietario_equipo);
 
                     return (
-                      <tr key={item.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                      <tr key={item.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2/60 transition-colors">
                         {/* Timestamp en tipografía tabular técnica */}
-                        <td className="py-3 px-5 whitespace-nowrap text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                        <td className="py-3 px-5 whitespace-nowrap text-slate-500 dark:text-text-muted font-mono text-[11px]">
                           {item.fecha ? new Date(item.fecha).toLocaleString('es-MX', { 
                             dateStyle: 'short', 
                             timeStyle: 'medium' 
@@ -962,11 +962,11 @@ export default function SecurityAdminPanel() {
                         </td>
 
                         {/* Correo */}
-                        <td className="py-3 px-4 text-slate-600 dark:text-slate-300 text-[11px] truncate max-w-[150px]">
+                        <td className="py-3 px-4 text-slate-600 dark:text-text-secondary text-[11px] truncate max-w-[150px]">
                           {item.email_intentado ? (
-                            <span className="font-mono text-slate-800 dark:text-slate-200">{item.email_intentado}</span>
+                            <span className="font-mono text-slate-800 dark:text-text-primary">{item.email_intentado}</span>
                           ) : (
-                            <span className="text-slate-400 dark:text-slate-500">—</span>
+                            <span className="text-slate-400 dark:text-text-muted">—</span>
                           )}
                         </td>
 
@@ -983,7 +983,7 @@ export default function SecurityAdminPanel() {
                               <span>Autorizar</span>
                             </button>
                           ) : (
-                            <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
+                            <span className="text-[11px] text-slate-400 dark:text-text-muted font-mono">
                               ✓ En regla
                             </span>
                           )}
@@ -1009,12 +1009,12 @@ export default function SecurityAdminPanel() {
           >
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-border pb-3 mb-4">
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Registrar Equipo Autorizado</h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">Autorización criptográfica en Neon Database</p>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-text-primary">Registrar Equipo Autorizado</h3>
+                <p className="text-[11px] text-slate-500 dark:text-text-muted">Autorización criptográfica en Neon Database</p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
+                className="p-1 rounded text-slate-400 dark:text-text-muted hover:text-slate-600 dark:hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1022,7 +1022,7 @@ export default function SecurityAdminPanel() {
 
             <form onSubmit={handleSubmitModal} className="space-y-3">
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-text-secondary mb-1 uppercase tracking-wider">
                   Propietario / Nombre del Equipo
                 </label>
                 <input
@@ -1032,12 +1032,12 @@ export default function SecurityAdminPanel() {
                   placeholder="ej. Mac de Miguel (Coordinación)"
                   required
                   autoFocus
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 focus:bg-white dark:focus:bg-surface-2 transition-colors"
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-xs text-slate-900 dark:text-text-primary placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 dark:focus:border-accent focus:bg-white dark:focus:bg-surface-0 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-text-secondary mb-1 uppercase tracking-wider">
                   Huella Criptográfica (Device ID)
                 </label>
                 <input
@@ -1046,7 +1046,7 @@ export default function SecurityAdminPanel() {
                   onChange={(e) => setModalDeviceId(e.target.value)}
                   placeholder="SHA-256 fingerprint (64 caracteres)"
                   required
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-[11px] font-mono text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 focus:bg-white dark:focus:bg-surface-2 transition-colors"
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-[11px] font-mono text-slate-800 dark:text-text-primary placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 dark:focus:border-accent focus:bg-white dark:focus:bg-surface-0 transition-colors"
                 />
               </div>
 
@@ -1055,14 +1055,14 @@ export default function SecurityAdminPanel() {
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   disabled={isSubmittingModal}
-                  className="px-3 py-1.5 rounded text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded text-xs font-semibold text-slate-600 dark:text-text-secondary hover:text-slate-800 dark:hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingModal}
-                  className="px-3.5 py-1.5 rounded bg-slate-900 hover:bg-slate-800 dark:bg-amber-400 dark:hover:bg-amber-300 text-white dark:text-slate-950 font-bold text-xs transition-colors cursor-pointer disabled:opacity-50"
+                  className="px-3.5 py-1.5 rounded bg-slate-900 hover:bg-slate-800 dark:bg-accent dark:hover:bg-accent-hover text-white dark:text-slate-950 font-bold text-xs transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {isSubmittingModal ? 'Guardando…' : 'Autorizar Equipo'}
                 </button>
@@ -1083,17 +1083,17 @@ export default function SecurityAdminPanel() {
           >
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-border pb-3 mb-4">
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-text-primary flex items-center space-x-2">
                   <Users className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   <span>{editingUserId ? 'Editar Colaborador & Permisos' : 'Registrar Colaborador Institucional'}</span>
                 </h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                <p className="text-[11px] text-slate-500 dark:text-text-muted">
                   Control de roles RBAC vinculado al login con Microsoft Entra ID
                 </p>
               </div>
               <button
                 onClick={() => setIsUserModalOpen(false)}
-                className="p-1 rounded text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
+                className="p-1 rounded text-slate-400 dark:text-text-muted hover:text-slate-600 dark:hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1101,7 +1101,7 @@ export default function SecurityAdminPanel() {
 
             <form onSubmit={handleSubmitUserModal} className="space-y-3.5">
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-text-secondary mb-1 uppercase tracking-wider">
                   Nombre Completo
                 </label>
                 <input
@@ -1111,12 +1111,12 @@ export default function SecurityAdminPanel() {
                   placeholder="ej. Mtra. Laura Angélica Ara Angulo"
                   required
                   autoFocus
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:bg-white dark:focus:bg-surface-2 transition-colors"
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-xs text-slate-900 dark:text-text-primary placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 dark:focus:border-accent focus:bg-white dark:focus:bg-surface-0 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-text-secondary mb-1 uppercase tracking-wider">
                   Correo Electrónico Institucional (Microsoft 365)
                 </label>
                 <input
@@ -1125,30 +1125,30 @@ export default function SecurityAdminPanel() {
                   onChange={(e) => setUserEmail(e.target.value)}
                   placeholder="ej. usuario@unid.mx"
                   required
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-xs font-mono text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:bg-white dark:focus:bg-surface-2 transition-colors"
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-xs font-mono text-slate-900 dark:text-text-primary placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-400 dark:focus:border-accent focus:bg-white dark:focus:bg-surface-0 transition-colors"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                  <label className="block text-[11px] font-bold text-slate-700 dark:text-text-secondary mb-1 uppercase tracking-wider">
                     Rol en Plataforma (RBAC)
                   </label>
                   <select
                     value={userRol}
                     onChange={(e) => setUserRol(e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-amber-400 focus:bg-white dark:focus:bg-surface-2 cursor-pointer font-medium"
+                    className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-xs text-slate-800 dark:text-text-primary focus:outline-none focus:border-amber-400 dark:focus:border-accent focus:bg-white dark:focus:bg-surface-0 cursor-pointer font-medium"
                   >
-                    <option value="COORDINADOR" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">Coordinador Académico</option>
-                    <option value="CONTROL_ESCOLAR" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">Control Escolar</option>
-                    <option value="DIRECTOR" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">Dirección de Sede</option>
-                    <option value="ADMIN_SISTEMA" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">Administrador Total</option>
-                    <option value="CONSULTA" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">Consulta / Docente</option>
+                    <option value="COORDINADOR" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">Coordinador Académico</option>
+                    <option value="CONTROL_ESCOLAR" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">Control Escolar</option>
+                    <option value="DIRECTOR" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">Dirección de Sede</option>
+                    <option value="ADMIN_SISTEMA" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">Administrador Total</option>
+                    <option value="CONSULTA" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">Consulta / Docente</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                  <label className="block text-[11px] font-bold text-slate-700 dark:text-text-secondary mb-1 uppercase tracking-wider">
                     Estado de Acceso
                   </label>
                   <div className="flex items-center space-x-2.5 pt-1.5">
@@ -1165,7 +1165,7 @@ export default function SecurityAdminPanel() {
                         }`}
                       />
                     </button>
-                    <span className={`text-xs font-semibold ${userActivo ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                    <span className={`text-xs font-semibold ${userActivo ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400 dark:text-text-muted'}`}>
                       {userActivo ? 'Acceso Autorizado' : 'Acceso Revocado'}
                     </span>
                   </div>
@@ -1173,7 +1173,7 @@ export default function SecurityAdminPanel() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-text-secondary mb-1 uppercase tracking-wider">
                   División / Coordinación Académica Asignada
                 </label>
                 <select
@@ -1188,21 +1188,21 @@ export default function SecurityAdminPanel() {
                       setUserCoord(val);
                     }
                   }}
-                  className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-surface-2 border border-slate-200 dark:border-border rounded text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-amber-400 focus:bg-white dark:focus:bg-surface-2 cursor-pointer font-medium"
+                  className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded text-xs text-slate-800 dark:text-text-primary focus:outline-none focus:border-amber-400 dark:focus:border-accent focus:bg-white dark:focus:bg-surface-0 cursor-pointer font-medium"
                 >
-                  <option value="Ciencias Económico-Administrativas (COFI, DAEM, EJCO)" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">
+                  <option value="Ciencias Económico-Administrativas (COFI, DAEM, EJCO)" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">
                     Ciencias Económico-Administrativas (COFI, DAEM, EJCO)
                   </option>
-                  <option value="Arquitectura, Derecho, Educación y Deporte (DERE, ARQU, EJDE, EJED, EDFI)" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">
+                  <option value="Arquitectura, Derecho, Educación y Deporte (DERE, ARQU, EJDE, EJED, EDFI)" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">
                     Arquitectura, Derecho, Educación y Deporte (DERE, ARQU, EJDE, EJED, EDFI)
                   </option>
-                  <option value="Diseño, Administración, Mercadotecnia e Ingeniería (DSGD, EJAD, MEES, SYSC, ADME)" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">
+                  <option value="Diseño, Administración, Mercadotecnia e Ingeniería (DSGD, EJAD, MEES, SYSC, ADME)" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">
                     Diseño, Admin, Mkt e Ingeniería (DSGD, EJAD, MEES, SYSC, ADME)
                   </option>
-                  <option value="TODAS (Dirección de Sede / Control Escolar / SysAdmin)" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">
+                  <option value="TODAS (Dirección de Sede / Control Escolar / SysAdmin)" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">
                     TODAS (Dirección de Sede / Control Escolar / SysAdmin)
                   </option>
-                  <option value="OTRA" className="bg-white dark:bg-surface-2 text-slate-900 dark:text-slate-100">
+                  <option value="OTRA" className="bg-white dark:bg-surface-1 text-slate-900 dark:text-text-primary">
                     + Otra Coordinación / Área personalizada (Nueva coordinación)...
                   </option>
                 </select>
@@ -1219,12 +1219,12 @@ export default function SecurityAdminPanel() {
                       placeholder="ej. Coordinación de Ciencias de la Salud / Posgrados / Nueva Titular"
                       required={isCustomCoord}
                       autoFocus
-                      className="w-full px-3 py-1.5 bg-amber-50/40 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-500/40 rounded text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:bg-white dark:focus:bg-surface-2"
+                      className="w-full px-3 py-1.5 bg-amber-50/40 dark:bg-surface-0 border border-amber-300 dark:border-border rounded text-xs text-slate-900 dark:text-text-primary placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-500 dark:focus:border-accent focus:bg-white dark:focus:bg-surface-0"
                     />
                   </div>
                 )}
 
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                <p className="text-[10px] text-slate-400 dark:text-text-muted mt-1">
                   Permite reasignar áreas o dar de alta nuevas coordinaciones en caso de cambios o relevos de personal.
                 </p>
               </div>
@@ -1234,14 +1234,14 @@ export default function SecurityAdminPanel() {
                   type="button"
                   onClick={() => setIsUserModalOpen(false)}
                   disabled={isSubmittingUserModal}
-                  className="px-3 py-1.5 rounded text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded text-xs font-semibold text-slate-600 dark:text-text-secondary hover:text-slate-800 dark:hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-2 transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingUserModal}
-                  className="px-4 py-1.5 rounded bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white dark:text-slate-950 font-bold text-xs shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+                  className="px-4 py-1.5 rounded bg-amber-600 hover:bg-amber-700 dark:bg-accent dark:hover:bg-accent-hover text-white dark:text-slate-950 font-bold text-xs shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {isSubmittingUserModal ? 'Guardando en Neon…' : editingUserId ? 'Guardar Cambios' : 'Registrar Colaborador'}
                 </button>

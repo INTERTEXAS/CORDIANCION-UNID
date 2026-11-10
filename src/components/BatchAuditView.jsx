@@ -326,53 +326,53 @@ export default function BatchAuditView({
 
   // Vista de Directorio de la Generación Completa
   return (
-    <div className="space-y-4 animate-fade-in text-slate-800 font-sans">
+    <div className="space-y-4 animate-fade-in text-slate-800 dark:text-text-primary font-sans transition-theme">
       {/* 1. Cabecera Institucional Consolidada de la Generación */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden print:hidden">
-        <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-surface-1 border border-slate-200 dark:border-border rounded-xl shadow-xs overflow-hidden print:hidden transition-theme">
+        <div className="p-5 sm:p-6 border-b border-slate-100 dark:border-border flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center space-x-2 text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-500">
-              <Users className="w-3.5 h-3.5 text-slate-400" />
+            <div className="flex items-center space-x-2 text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-500 dark:text-text-muted">
+              <Users className="w-3.5 h-3.5 text-slate-400 dark:text-text-muted" />
               <span>Coordinación Académica UNID</span>
-              <span className="text-slate-300">/</span>
-              <span className="text-amber-700">Auditoría de Grupo</span>
+              <span className="text-slate-300 dark:text-border">/</span>
+              <span className="text-amber-700 dark:text-amber-400 font-bold">Auditoría de Grupo</span>
             </div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight mt-1">
+            <h1 className="text-xl font-bold text-slate-900 dark:text-text-primary tracking-tight mt-1">
               {batchData.carrera?.nombre || 'Licenciatura en Contabilidad y Finanzas'}
             </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Programa: <span className="font-mono font-semibold text-slate-700">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span> ·
-              Reporte oficial de materias acreditadas (Banner UNID) · <span className="font-medium text-slate-700">{alumnos.length} expedientes procesados</span>
+            <p className="text-xs text-slate-500 dark:text-text-secondary mt-0.5">
+              Programa: <span className="font-mono font-semibold text-slate-700 dark:text-text-primary">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span> ·
+              Reporte oficial de materias acreditadas (Banner UNID) · <span className="font-medium text-slate-700 dark:text-text-primary">{alumnos.length} expedientes procesados</span>
             </p>
           </div>
 
           {/* Grupo de Acciones Unificado */}
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             {/* Base de Datos Neon (Segmentado) */}
-            <div className="inline-flex items-center rounded-lg border border-slate-200 bg-white p-0.5 shadow-2xs">
+            <div className="inline-flex items-center rounded-lg border border-slate-200 dark:border-border bg-white dark:bg-surface-2 p-0.5 shadow-2xs">
               <button
                 type="button"
                 onClick={() => {
                   setNeonModalMode('guardar');
                   setIsNeonModalOpen(true);
                 }}
-                className="px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-md transition-colors cursor-pointer flex items-center space-x-1.5"
+                className="px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-surface-3 text-slate-700 dark:text-text-primary text-xs font-semibold rounded-md transition-colors cursor-pointer flex items-center space-x-1.5"
                 title="Guardar lote en Neon Database"
               >
-                <Database className="w-3.5 h-3.5 text-slate-500" />
+                <Database className="w-3.5 h-3.5 text-slate-500 dark:text-text-muted" />
                 <span>Guardar en BD</span>
               </button>
-              <div className="w-px h-4 bg-slate-200 my-auto" />
+              <div className="w-px h-4 bg-slate-200 dark:bg-border my-auto" />
               <button
                 type="button"
                 onClick={() => {
                   setNeonModalMode('gestionar');
                   setIsNeonModalOpen(true);
                 }}
-                className="px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-md transition-colors cursor-pointer flex items-center space-x-1.5"
+                className="px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-surface-3 text-slate-700 dark:text-text-primary text-xs font-semibold rounded-md transition-colors cursor-pointer flex items-center space-x-1.5"
                 title="Historial de auditorías en Neon"
               >
-                <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <Calendar className="w-3.5 h-3.5 text-slate-500 dark:text-text-muted" />
                 <span>Ciclos</span>
               </button>
             </div>
@@ -381,10 +381,10 @@ export default function BatchAuditView({
             <button
               type="button"
               onClick={() => window.print()}
-              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors cursor-pointer flex items-center space-x-1.5"
+              className="px-3.5 py-1.5 bg-slate-900 dark:bg-accent text-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-accent-hover text-xs font-semibold rounded-lg shadow-2xs transition-colors cursor-pointer flex items-center space-x-1.5"
               title="Imprimir sábana ejecutiva"
             >
-              <Printer className="w-3.5 h-3.5 text-slate-300" />
+              <Printer className="w-3.5 h-3.5 text-slate-300 dark:text-slate-900" />
               <span>Imprimir Sábana</span>
             </button>
 
@@ -411,10 +411,10 @@ export default function BatchAuditView({
                 if (fileInputRef.current) fileInputRef.current.click();
                 else if (onUploadNewBatch) onUploadNewBatch();
               }}
-              className="px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center space-x-1.5"
+              className="px-3 py-1.5 border border-slate-200 dark:border-border bg-white dark:bg-surface-2 hover:bg-slate-50 dark:hover:bg-surface-3 text-slate-700 dark:text-text-primary text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center space-x-1.5"
               title="Cargar nuevo PDF"
             >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400" />
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400 dark:text-text-muted" />
               <span>Nuevo Reporte</span>
             </button>
             
@@ -422,7 +422,7 @@ export default function BatchAuditView({
             <button
               type="button"
               onClick={onClearBatch}
-              className="px-3 py-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+              className="px-3 py-1.5 text-slate-500 dark:text-text-muted hover:text-slate-800 dark:hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
               title="Cerrar vista actual"
             >
               Cerrar
@@ -431,27 +431,27 @@ export default function BatchAuditView({
         </div>
 
         {/* Métricas de la Generación: KPI Ribbon Continuo */}
-        <div className="grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-slate-100 bg-slate-50/50">
+        <div className="grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-slate-100 dark:divide-border bg-slate-50/50 dark:bg-surface-2/40">
           {/* Card 1: Total Alumnos */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Expedientes Totales</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Expedientes Totales</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-bold font-mono text-slate-900">{stats.total}</span>
-              <span className="text-xs text-slate-500 font-mono">alumnos</span>
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.total}</span>
+              <span className="text-xs text-slate-500 dark:text-text-muted font-mono">alumnos</span>
             </div>
-            <span className="text-[10px] text-slate-500 block mt-0.5">100% procesados</span>
+            <span className="text-[10px] text-slate-500 dark:text-text-muted block mt-0.5">100% procesados</span>
           </div>
 
           {/* Card 2: Aptos para Estadía */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Aptos para Estadía</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Aptos para Estadía</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-bold font-mono text-slate-900">{stats.elegibles}</span>
-              <span className="text-xs font-semibold text-emerald-600 font-mono">
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.elegibles}</span>
+              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono">
                 {Math.round((stats.elegibles / Math.max(1, stats.total)) * 100)}%
               </span>
             </div>
-            <span className="text-[10px] text-emerald-700 font-medium flex items-center space-x-1 mt-0.5">
+            <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium flex items-center space-x-1 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               <span>Elegibles para titulación</span>
             </span>
@@ -459,34 +459,34 @@ export default function BatchAuditView({
 
           {/* Card 3: Adeudos Previos */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Adeudos (1.º - 6.º)</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Adeudos (1.º - 6.º)</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-bold font-mono text-rose-600">{stats.conAdeudos}</span>
-              <span className="text-xs text-slate-400">alumnos</span>
+              <span className="text-2xl font-bold font-mono text-rose-600 dark:text-rose-400">{stats.conAdeudos}</span>
+              <span className="text-xs text-slate-400 dark:text-text-muted">alumnos</span>
             </div>
-            <span className="text-[10px] text-rose-600 font-medium block mt-0.5">
+            <span className="text-[10px] text-rose-600 dark:text-rose-400 font-medium block mt-0.5">
               {stats.conAdeudos > 0 ? 'En riesgo académico' : 'Sin adeudos'}
             </span>
           </div>
 
           {/* Card 4: Omitidas / En Curso */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Omitidas / En Curso</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Omitidas / En Curso</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-bold font-mono text-slate-900">{stats.conOmitidas}</span>
-              <span className="text-xs text-slate-400">alumnos</span>
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.conOmitidas}</span>
+              <span className="text-xs text-slate-400 dark:text-text-muted">alumnos</span>
             </div>
-            <span className="text-[10px] text-slate-500 block mt-0.5">Avance curricular regular</span>
+            <span className="text-[10px] text-slate-500 dark:text-text-muted block mt-0.5">Avance curricular regular</span>
           </div>
 
           {/* Card 5: Promedio Generacional */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 block mb-0.5">Promedio Generacional</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Promedio Generacional</span>
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-bold font-mono text-slate-900">{stats.promedioGeneracion}</span>
-              <span className="text-xs text-slate-400 font-mono">/ 10.0</span>
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.promedioGeneracion}</span>
+              <span className="text-xs text-slate-400 dark:text-text-muted font-mono">/ 10.0</span>
             </div>
-            <span className="text-[10px] text-slate-500 block mt-0.5">
+            <span className="text-[10px] text-slate-500 dark:text-text-muted block mt-0.5">
               {stats.alumnosConPromedio > 0 ? `${stats.alumnosConPromedio} evaluados` : 'Sin calificaciones'}
             </span>
           </div>
@@ -494,22 +494,22 @@ export default function BatchAuditView({
       </div>
 
       {/* 2. Barra de Búsqueda, Filtros Segmentados y Orden */}
-      <div className="bg-white p-3 rounded-lg border border-slate-200 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-2xs print:hidden">
+      <div className="bg-white dark:bg-surface-1 p-3 rounded-lg border border-slate-200 dark:border-border flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-2xs print:hidden transition-theme">
         {/* Buscador */}
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 text-slate-400 dark:text-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             placeholder="Buscar por nombre o matrícula…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-md pl-9 pr-7 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition-colors"
+            className="w-full bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded-md pl-9 pr-7 py-1.5 text-xs text-slate-900 dark:text-text-primary placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-accent transition-colors"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-text-muted hover:text-slate-600 dark:hover:text-text-primary"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -518,14 +518,14 @@ export default function BatchAuditView({
 
         {/* Filtros Segmentados Técnicos */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex items-center rounded-md border border-slate-200 bg-slate-50 p-0.5">
+          <div className="inline-flex items-center rounded-md border border-slate-200 dark:border-border bg-slate-50 dark:bg-surface-0 p-0.5">
             <button
               type="button"
               onClick={() => setFilterStatus('TODOS')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'TODOS'
-                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-surface-2 text-slate-900 dark:text-text-primary shadow-2xs font-bold'
+                  : 'text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-text-primary'
               }`}
             >
               Todos ({alumnos.length})
@@ -535,8 +535,8 @@ export default function BatchAuditView({
               onClick={() => setFilterStatus('ELEGIBLE')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'ELEGIBLE'
-                  ? 'bg-white text-emerald-800 shadow-2xs font-bold'
-                  : 'text-slate-600 hover:text-emerald-700'
+                  ? 'bg-white dark:bg-surface-2 text-emerald-800 dark:text-emerald-400 shadow-2xs font-bold'
+                  : 'text-slate-600 dark:text-text-secondary hover:text-emerald-700 dark:hover:text-emerald-400'
               }`}
             >
               Aptos ({stats.elegibles})
@@ -546,8 +546,8 @@ export default function BatchAuditView({
               onClick={() => setFilterStatus('ADEUDOS')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'ADEUDOS'
-                  ? 'bg-white text-rose-700 shadow-2xs font-bold'
-                  : 'text-slate-600 hover:text-rose-700'
+                  ? 'bg-white dark:bg-surface-2 text-rose-700 dark:text-rose-400 shadow-2xs font-bold'
+                  : 'text-slate-600 dark:text-text-secondary hover:text-rose-700 dark:hover:text-rose-400'
               }`}
             >
               Con Adeudos ({stats.conAdeudos})
@@ -557,8 +557,8 @@ export default function BatchAuditView({
               onClick={() => setFilterStatus('OMITIDAS')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
                 filterStatus === 'OMITIDAS'
-                  ? 'bg-white text-amber-800 shadow-2xs font-bold'
-                  : 'text-slate-600 hover:text-amber-800'
+                  ? 'bg-white dark:bg-surface-2 text-amber-800 dark:text-amber-400 shadow-2xs font-bold'
+                  : 'text-slate-600 dark:text-text-secondary hover:text-amber-800 dark:hover:text-amber-400'
               }`}
             >
               Omitidas ({stats.conOmitidas})
@@ -567,16 +567,16 @@ export default function BatchAuditView({
 
           {/* Ordenamiento */}
           <div className="flex items-center space-x-1.5 shrink-0">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 dark:text-text-muted" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-md px-2.5 py-1.5 cursor-pointer focus:outline-none focus:border-slate-400"
+              className="bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border text-slate-700 dark:text-text-primary text-xs font-medium rounded-md px-2.5 py-1.5 cursor-pointer focus:outline-none focus:border-slate-400 dark:focus:border-accent"
             >
-              <option value="nombre">Alfabético (A-Z)</option>
-              <option value="matricula">Por Matrícula</option>
-              <option value="avance-desc">Mayor Avance %</option>
-              <option value="avance-asc">Menor Avance %</option>
+              <option value="nombre" className="bg-white dark:bg-surface-1">Alfabético (A-Z)</option>
+              <option value="matricula" className="bg-white dark:bg-surface-1">Por Matrícula</option>
+              <option value="avance-desc" className="bg-white dark:bg-surface-1">Mayor Avance %</option>
+              <option value="avance-asc" className="bg-white dark:bg-surface-1">Menor Avance %</option>
             </select>
           </div>
         </div>
@@ -585,17 +585,17 @@ export default function BatchAuditView({
       {/* 3. Directorio de Expedientes de la Generación (Tabla Formal) */}
       <div className="print:hidden">
         {filteredAlumnos.length === 0 ? (
-          <div className="bg-white rounded-lg border border-slate-200 p-12 text-center shadow-2xs">
-            <Search className="w-8 h-8 text-slate-300 mx-auto mb-2.5" strokeWidth={1.5} />
-            <p className="text-sm font-semibold text-slate-900">No se encontraron expedientes con ese criterio</p>
-            <p className="text-xs text-slate-500 mt-1">Prueba cambiando el término de búsqueda o el filtro seleccionado.</p>
+          <div className="bg-white dark:bg-surface-1 rounded-lg border border-slate-200 dark:border-border p-12 text-center shadow-2xs">
+            <Search className="w-8 h-8 text-slate-300 dark:text-text-muted mx-auto mb-2.5" strokeWidth={1.5} />
+            <p className="text-sm font-semibold text-slate-900 dark:text-text-primary">No se encontraron expedientes con ese criterio</p>
+            <p className="text-xs text-slate-500 dark:text-text-secondary mt-1">Prueba cambiando el término de búsqueda o el filtro seleccionado.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-2xs">
+          <div className="bg-white dark:bg-surface-1 rounded-lg border border-slate-200 dark:border-border overflow-hidden shadow-2xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="bg-slate-50 text-slate-600 text-[10px] uppercase tracking-wider font-semibold border-b border-slate-200">
+                  <tr className="bg-slate-50 dark:bg-surface-2 text-slate-600 dark:text-text-secondary text-[10px] uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-border">
                     <th className="py-2.5 px-3 w-10 text-center font-mono">#</th>
                     <th className="py-2.5 px-3.5 w-28">Matrícula</th>
                     <th className="py-2.5 px-3.5">Alumno</th>
@@ -607,7 +607,7 @@ export default function BatchAuditView({
                     <th className="py-2.5 px-3.5 w-24 text-center">Expediente</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 bg-white">
+                <tbody className="divide-y divide-slate-100 dark:divide-border bg-white dark:bg-surface-1">
                   {filteredAlumnos.map(({ estudiante, auditData, originalIndex }, idx) => {
                     const res = auditData?.resumen;
                     const esElegible = res?.dictamenEstadia?.includes('APROBADO') || res?.dictamenEstadia?.includes('ELEGIBLE');
@@ -619,29 +619,29 @@ export default function BatchAuditView({
                     return (
                       <tr 
                         key={estudiante.matricula} 
-                        className="hover:bg-slate-50/75 transition-colors group"
+                        className="hover:bg-slate-50/75 dark:hover:bg-surface-2/60 transition-colors group"
                       >
                         {/* # */}
-                        <td className="py-2.5 px-3 text-center text-[11px] font-mono text-slate-400">
+                        <td className="py-2.5 px-3 text-center text-[11px] font-mono text-slate-400 dark:text-text-muted">
                           {idx + 1}
                         </td>
 
                         {/* Matrícula */}
                         <td className="py-2.5 px-3.5">
-                          <span className="font-mono text-xs font-semibold text-slate-900">{estudiante.matricula}</span>
+                          <span className="font-mono text-xs font-semibold text-slate-900 dark:text-text-primary">{estudiante.matricula}</span>
                         </td>
 
                         {/* Nombre */}
                         <td className="py-2.5 px-3.5">
-                          <span className="font-medium text-slate-900 text-xs block leading-tight">{estudiante.nombre}</span>
+                          <span className="font-medium text-slate-900 dark:text-text-primary text-xs block leading-tight">{estudiante.nombre}</span>
                           <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                             {estudiante.modalidadDetectada && (
-                              <span className="text-[10px] font-mono text-slate-500 uppercase">
+                              <span className="text-[10px] font-mono text-slate-500 dark:text-text-muted uppercase">
                                 {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'Modalidad Dual' : estudiante.modalidadDetectada === 'EJECUTIVO' ? 'Plan Ejecutivo' : estudiante.modalidadDetectada}
                               </span>
                             )}
                             {auditData?.coherencia?.alertaCarreraAjena && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.2 rounded">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/15 border border-rose-200 dark:border-rose-500/30 px-1.5 py-0.2 rounded">
                                 <AlertTriangle className="w-2.5 h-2.5" />
                                 <span>Materias de otra Lic. ({auditData.coherencia.alertaCarreraAjena})</span>
                               </span>
@@ -653,38 +653,38 @@ export default function BatchAuditView({
                         <td className="py-2.5 px-3 text-center">
                           {res?.esMaestria ? (
                             res?.esRegularEnCurso ? (
-                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700" title="Avance regular en posgrado">
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 dark:text-blue-400" title="Avance regular en posgrado">
                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                                 Regular Posgrado
                               </span>
                             ) : esElegible ? (
-                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700" title="Elegible para Grado y Titulación">
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400" title="Elegible para Grado y Titulación">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                 100% Aprobado
                               </span>
                             ) : tieneAdeudos ? (
-                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700" title={`${res.adeudos} materia(s) en adeudo`}>
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 dark:text-rose-400" title={`${res.adeudos} materia(s) en adeudo`}>
                                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                                 {res.adeudos} Adeudo{res.adeudos !== 1 ? 's' : ''}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700" title="En seguimiento posgrado">
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400" title="En seguimiento posgrado">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                                 Seguimiento
                               </span>
                             )
                           ) : esElegible ? (
-                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700" title="Apto para Estadía">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400" title="Apto para Estadía">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                               Apto Estadía
                             </span>
                           ) : tieneAdeudos ? (
-                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700" title={`${res.adeudos} materia(s) en adeudo`}>
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 dark:text-rose-400" title={`${res.adeudos} materia(s) en adeudo`}>
                               <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                               {res.adeudos} Adeudo{res.adeudos !== 1 ? 's' : ''}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700" title="En seguimiento o con materias en curso">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400" title="En seguimiento o con materias en curso">
                               <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                               Seguimiento
                             </span>
@@ -695,10 +695,10 @@ export default function BatchAuditView({
                         <td className="py-2.5 px-3.5">
                           <div className="w-28 mx-auto">
                             <div className="flex items-center justify-between text-[11px] mb-1 font-mono">
-                              <span className="font-semibold text-slate-800">{porcentaje}%</span>
-                              <span className="text-slate-400 text-[10px]">{totalAprobadas}/{res?.totalMateriasMapa || 37}</span>
+                              <span className="font-semibold text-slate-800 dark:text-text-primary">{porcentaje}%</span>
+                              <span className="text-slate-400 dark:text-text-muted text-[10px]">{totalAprobadas}/{res?.totalMateriasMapa || 37}</span>
                             </div>
-                            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-slate-100 dark:bg-surface-3 rounded-full overflow-hidden">
                               <div 
                                 className={`h-full rounded-full transition-all duration-300 ${
                                   res?.esMaestria && res?.esRegularEnCurso
@@ -717,10 +717,10 @@ export default function BatchAuditView({
 
                         {/* Promedio */}
                         <td className="py-2.5 px-3 text-center">
-                          <span className="font-mono text-xs font-bold text-slate-900">
+                          <span className="font-mono text-xs font-bold text-slate-900 dark:text-text-primary">
                             {res?.promedioFormatted || '—'}
                           </span>
-                          <span className="text-[10px] text-slate-400 block mt-0.2">
+                          <span className="text-[10px] text-slate-400 dark:text-text-muted block mt-0.2">
                             {res?.materiasConNota > 0 ? `${res.materiasConNota} asig.` : 'Sin calif.'}
                           </span>
                         </td>
@@ -728,20 +728,20 @@ export default function BatchAuditView({
                         {/* Desempeño (Intentos Ordinario / Recuperación) */}
                         <td className="py-2.5 px-3 text-center">
                           <div className="flex items-center justify-center space-x-1.5 text-xs font-mono">
-                            <span className="text-slate-800 font-semibold" title="1er Intento (Ordinario)">
-                              {res?.aprobadasOrd || 0} <span className="text-[10px] text-slate-400 font-sans font-normal">ord</span>
+                            <span className="text-slate-800 dark:text-text-primary font-semibold" title="1er Intento (Ordinario)">
+                              {res?.aprobadasOrd || 0} <span className="text-[10px] text-slate-400 dark:text-text-muted font-sans font-normal">ord</span>
                             </span>
-                            <span className="text-slate-300">/</span>
-                            <span className="text-slate-800 font-semibold" title="Recuperación">
-                              {(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)} <span className="text-[10px] text-slate-400 font-sans font-normal">rec</span>
+                            <span className="text-slate-300 dark:text-border">/</span>
+                            <span className="text-slate-800 dark:text-text-primary font-semibold" title="Recuperación">
+                              {(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)} <span className="text-[10px] text-slate-400 dark:text-text-muted font-sans font-normal">rec</span>
                             </span>
                           </div>
                         </td>
 
                         {/* Inglés */}
-                        <td className="py-2.5 px-3 text-center font-mono text-xs text-slate-700">
+                        <td className="py-2.5 px-3 text-center font-mono text-xs text-slate-700 dark:text-text-secondary">
                           {res?.esMaestria ? (
-                            <span className="text-[11px] text-slate-400 font-sans">N/A</span>
+                            <span className="text-[11px] text-slate-400 dark:text-text-muted font-sans">N/A</span>
                           ) : (
                             `${res?.inglesAcreditados ?? 0}/${totalNivelesIngles}`
                           )}
@@ -755,9 +755,9 @@ export default function BatchAuditView({
                               setSelectedStudentIndex(originalIndex);
                               setActiveSheetTab('mapa');
                             }}
-                            className="inline-flex items-center space-x-1 px-2.5 py-1 bg-white border border-slate-300 rounded text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-400 transition-colors cursor-pointer shadow-2xs"
+                            className="inline-flex items-center space-x-1 px-2.5 py-1 bg-white dark:bg-surface-2 border border-slate-300 dark:border-border rounded text-xs font-medium text-slate-700 dark:text-text-primary hover:bg-slate-50 dark:hover:bg-surface-3 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shadow-2xs"
                           >
-                            <Layers className="w-3.5 h-3.5 text-slate-400" />
+                            <Layers className="w-3.5 h-3.5 text-slate-400 dark:text-text-muted" />
                             <span>Auditar</span>
                           </button>
                         </td>

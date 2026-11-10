@@ -74,64 +74,64 @@ export default function CurriculumMap({
       case 'ORD':
         return { 
           isRegular: true,
-          cardStyle: 'bg-white border-slate-200 border-l-[3px] border-l-emerald-500 hover:border-slate-300 hover:shadow-2xs', 
+          cardStyle: 'bg-white dark:bg-surface-1 border-slate-200 dark:border-border border-l-[3px] border-l-emerald-500 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-2xs', 
           dotColor: 'bg-emerald-500', 
-          gradeColor: 'text-slate-800 font-bold',
-          badgeClass: 'text-emerald-700 font-semibold bg-emerald-50/70 border border-emerald-200/60',
+          gradeColor: 'text-slate-800 dark:text-emerald-400 font-bold',
+          badgeClass: 'text-emerald-700 dark:text-emerald-400 font-semibold bg-emerald-50/70 dark:bg-emerald-500/10 border border-emerald-200/60 dark:border-emerald-500/20',
           label: 'Acreditada' 
         };
       case 'REC':
         return { 
           isRegular: false,
-          cardStyle: 'bg-amber-50/40 border-amber-300 border-l-[3px] border-l-amber-500 hover:border-amber-400', 
+          cardStyle: 'bg-amber-50/40 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30 border-l-[3px] border-l-amber-500 hover:border-amber-400', 
           dotColor: 'bg-amber-500', 
-          gradeColor: 'text-amber-950 font-bold',
-          badgeClass: 'bg-amber-100/80 text-amber-900 border border-amber-200',
+          gradeColor: 'text-amber-950 dark:text-amber-300 font-bold',
+          badgeClass: 'bg-amber-100/80 dark:bg-amber-500/20 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30',
           label: 'Recursamiento' 
         };
       case 'RE':
         return { 
           isRegular: false,
-          cardStyle: 'bg-sky-50/40 border-sky-300 border-l-[3px] border-l-sky-500 hover:border-sky-400', 
+          cardStyle: 'bg-sky-50/40 dark:bg-sky-500/10 border-sky-300 dark:border-sky-500/30 border-l-[3px] border-l-sky-500 hover:border-sky-400', 
           dotColor: 'bg-sky-500', 
-          gradeColor: 'text-sky-950 font-bold',
-          badgeClass: 'bg-sky-100/80 text-sky-900 border border-sky-200',
+          gradeColor: 'text-sky-950 dark:text-sky-300 font-bold',
+          badgeClass: 'bg-sky-100/80 dark:bg-sky-500/20 text-sky-900 dark:text-sky-300 border border-sky-200 dark:border-sky-500/30',
           label: 'Regularización' 
         };
       case 'ADEUDO':
         return { 
           isRegular: false,
-          cardStyle: 'bg-rose-50/60 border-rose-300 border-l-[3px] border-l-rose-600 hover:border-rose-400', 
+          cardStyle: 'bg-rose-50/60 dark:bg-rose-500/10 border-rose-300 dark:border-rose-500/30 border-l-[3px] border-l-rose-600 hover:border-rose-400', 
           dotColor: 'bg-rose-600', 
-          gradeColor: 'text-rose-700 font-bold',
-          badgeClass: 'bg-rose-100 text-rose-800 border border-rose-200',
+          gradeColor: 'text-rose-700 dark:text-rose-400 font-bold',
+          badgeClass: 'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30',
           label: 'Adeudo' 
         };
       case 'OMITIDA':
         return { 
           isRegular: false,
-          cardStyle: 'bg-orange-50/60 border-orange-300 border-l-[3px] border-l-orange-500 hover:border-orange-400', 
+          cardStyle: 'bg-orange-50/60 dark:bg-orange-500/10 border-orange-300 dark:border-orange-500/30 border-l-[3px] border-l-orange-500 hover:border-orange-400', 
           dotColor: 'bg-orange-500', 
-          gradeColor: 'text-orange-700 font-bold',
-          badgeClass: 'bg-orange-100 text-orange-800 border border-orange-200',
+          gradeColor: 'text-orange-700 dark:text-orange-400 font-bold',
+          badgeClass: 'bg-orange-100 dark:bg-orange-500/20 text-orange-800 dark:text-orange-300 border border-orange-200 dark:border-orange-500/30',
           label: 'Omitida' 
         };
       case 'PENDIENTE':
         return { 
           isRegular: false,
-          cardStyle: 'bg-slate-50/40 border-slate-200 border-dashed hover:bg-white', 
-          dotColor: 'bg-slate-400', 
-          gradeColor: 'text-slate-400 font-normal',
-          badgeClass: 'bg-slate-100 text-slate-500',
+          cardStyle: 'bg-slate-50/40 dark:bg-surface-0/60 border-slate-200 dark:border-border border-dashed hover:bg-white dark:hover:bg-surface-1', 
+          dotColor: 'bg-slate-400 dark:bg-slate-600', 
+          gradeColor: 'text-slate-400 dark:text-text-muted font-normal',
+          badgeClass: 'bg-slate-100 dark:bg-surface-2 text-slate-500 dark:text-text-muted border border-transparent dark:border-border/60',
           label: 'Por cursar' 
         };
       case 'OU':
         return {
           isRegular: false,
-          cardStyle: 'bg-purple-50/40 border-purple-300 border-l-[3px] border-l-purple-600 hover:border-purple-400',
+          cardStyle: 'bg-purple-50/40 dark:bg-purple-500/10 border-purple-300 dark:border-purple-500/30 border-l-[3px] border-l-purple-600 hover:border-purple-400',
           dotColor: 'bg-purple-500',
-          gradeColor: 'text-purple-900 font-bold',
-          badgeClass: 'bg-purple-100 text-purple-800 border border-purple-200',
+          gradeColor: 'text-purple-900 dark:text-purple-300 font-bold',
+          badgeClass: 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30',
           label: 'Oport. Utilizada'
         };
       case 'CURS':
@@ -139,19 +139,19 @@ export default function CurriculumMap({
       case 'RECURSANDO':
         return { 
           isRegular: false,
-          cardStyle: 'bg-pink-50/30 border-pink-300 border-l-[3px] border-l-pink-500 hover:border-pink-400', 
+          cardStyle: 'bg-pink-50/30 dark:bg-pink-500/10 border-pink-300 dark:border-pink-500/30 border-l-[3px] border-l-pink-500 hover:border-pink-400', 
           dotColor: 'bg-pink-500', 
-          gradeColor: 'text-pink-900 font-bold',
-          badgeClass: 'bg-pink-100 text-pink-800 border border-pink-200',
+          gradeColor: 'text-pink-900 dark:text-pink-300 font-bold',
+          badgeClass: 'bg-pink-100 dark:bg-pink-500/20 text-pink-800 dark:text-pink-300 border border-pink-200 dark:border-pink-500/30',
           label: estado === 'RECURSANDO' ? 'Recursando' : 'En Curso' 
         };
       default:
         return { 
           isRegular: true,
-          cardStyle: 'bg-white border-slate-200 hover:border-slate-300', 
+          cardStyle: 'bg-white dark:bg-surface-1 border-slate-200 dark:border-border hover:border-slate-300 dark:hover:border-slate-600', 
           dotColor: 'bg-slate-400', 
-          gradeColor: 'text-slate-800 font-bold',
-          badgeClass: 'bg-slate-100 text-slate-700',
+          gradeColor: 'text-slate-800 dark:text-text-primary font-bold',
+          badgeClass: 'bg-slate-100 dark:bg-surface-2 text-slate-700 dark:text-text-secondary',
           label: estado 
         };
     }
@@ -160,51 +160,51 @@ export default function CurriculumMap({
   return (
     <div 
       ref={forwardedRef} 
-      className="bg-white rounded-xl border border-slate-200 p-5 space-y-3.5 w-full max-w-[1400px] mx-auto box-border shadow-2xs print:p-2 print:shadow-none print:border-none print:bg-white print:text-black"
+      className="bg-white dark:bg-surface-1 rounded-xl border border-slate-200 dark:border-border p-5 space-y-3.5 w-full max-w-[1400px] mx-auto box-border shadow-2xs transition-theme print:p-2 print:shadow-none print:border-none print:bg-white print:text-black"
       id="hoja1-mapa-ejecucion"
     >
       {/* 1. ENCABEZADO INSTITUCIONAL OFICIAL UNID */}
-      <div className="flex items-start justify-between border-b border-slate-200 pb-2.5">
+      <div className="flex items-start justify-between border-b border-slate-200 dark:border-border pb-2.5">
         <div className="space-y-0.5">
-          <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+          <div className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-text-muted uppercase">
             UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO
           </div>
-          <div className="text-xs font-semibold text-slate-600 uppercase tracking-tight">
+          <div className="text-xs font-semibold text-slate-600 dark:text-text-secondary uppercase tracking-tight">
             {carrera?.encabezado_plan || 'MAPA DE EJECUCIÓN PARA EL PLAN 2018'}
           </div>
-          <div className="text-sm font-bold text-slate-900 uppercase tracking-normal">
+          <div className="text-sm font-bold text-slate-900 dark:text-text-primary uppercase tracking-normal">
             {carrera?.nombre || 'LICENCIATURA EN CONTABILIDAD Y FINANZAS (MIXTO) - FEDERAL'}
           </div>
-          <div className="flex items-center space-x-3 pt-0.5 text-[10px] text-slate-400 font-mono">
-            <span>Última actualización CPA: <strong className="text-slate-700">{carrera?.ultima_actualizacion_cpa || '31-julio-2026'}</strong></span>
+          <div className="flex items-center space-x-3 pt-0.5 text-[10px] text-slate-400 dark:text-text-muted font-mono">
+            <span>Última actualización CPA: <strong className="text-slate-700 dark:text-text-secondary">{carrera?.ultima_actualizacion_cpa || '31-julio-2026'}</strong></span>
             <span>·</span>
-            <span>Fecha de consulta: <strong className="text-slate-700">{fechaConsulta}</strong></span>
+            <span>Fecha de consulta: <strong className="text-slate-700 dark:text-text-secondary">{fechaConsulta}</strong></span>
           </div>
         </div>
 
         <div className="flex items-center space-x-2.5 text-right">
           <div className="flex flex-col items-end">
-            <span className="text-xs font-bold text-slate-900 tracking-wider">UNID</span>
-            <span className="text-[8px] font-semibold text-slate-400 tracking-widest uppercase">
+            <span className="text-xs font-bold text-slate-900 dark:text-text-primary tracking-wider">UNID</span>
+            <span className="text-[8px] font-semibold text-slate-400 dark:text-text-muted tracking-widest uppercase">
               FORMANDO CON VALORES
             </span>
           </div>
           <img 
             src="/unid-logo.png" 
             alt="UNID" 
-            className="w-9 h-9 rounded-lg object-contain border border-slate-200 flex-shrink-0" 
+            className="w-9 h-9 rounded-lg object-contain border border-slate-200 dark:border-border flex-shrink-0" 
           />
         </div>
       </div>
 
       {/* BANNER DE INCONSISTENCIA DE KÁRDEX */}
       {coherencia?.materiasHuerfanas?.length > 4 && coherencia?.alertaCarreraAjena && (
-        <div className="bg-rose-50 border border-rose-200 rounded-lg p-2.5 text-rose-800 text-xs">
+        <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 rounded-lg p-2.5 text-rose-800 dark:text-rose-300 text-xs">
           <div className="flex items-start space-x-2">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
+            <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
             <div>
-              <p className="font-bold uppercase tracking-wide text-rose-900">Inconsistencia de Kárdex Detectada</p>
-              <p className="mt-0.5 leading-relaxed text-rose-800">
+              <p className="font-bold uppercase tracking-wide text-rose-900 dark:text-rose-200">Inconsistencia de Kárdex Detectada</p>
+              <p className="mt-0.5 leading-relaxed text-rose-800 dark:text-rose-300">
                 El alumno registra <strong className="font-bold">{coherencia.materiasHuerfanas.length}</strong> asignaturas pertenecientes a <strong className="font-bold">Licenciatura en {coherencia.alertaCarreraAjena}</strong> que no corresponden a este mapa curricular.
               </p>
             </div>
@@ -213,35 +213,35 @@ export default function CurriculumMap({
       )}
 
       {/* 2. CINTILLA FORMAL DEL ESTUDIANTE */}
-      <div className="bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none">
+      <div className="bg-slate-50 dark:bg-surface-2/60 border border-slate-200 dark:border-border rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none transition-theme">
         <div className="flex flex-wrap items-center space-x-5 gap-y-1">
           <div>
-            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Matrícula</span>
-            <span className="font-mono font-bold text-slate-900 text-xs block">{estudiante.matricula}</span>
+            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Matrícula</span>
+            <span className="font-mono font-bold text-slate-900 dark:text-text-primary text-xs block">{estudiante.matricula}</span>
           </div>
-          <div className="border-l border-slate-200 pl-4">
-            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Alumno</span>
-            <span className="font-semibold text-slate-900 text-xs block">{estudiante.nombre}</span>
+          <div className="border-l border-slate-200 dark:border-border pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Alumno</span>
+            <span className="font-semibold text-slate-900 dark:text-text-primary text-xs block">{estudiante.nombre}</span>
           </div>
-          <div className="border-l border-slate-200 pl-4">
-            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Sede</span>
-            <span className="font-medium text-slate-700 text-xs block">{estudiante.sede || 'CAM'}</span>
+          <div className="border-l border-slate-200 dark:border-border pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Sede</span>
+            <span className="font-medium text-slate-700 dark:text-text-secondary text-xs block">{estudiante.sede || 'CAM'}</span>
           </div>
           {estudiante.modalidadDetectada && (
-            <div className="border-l border-slate-200 pl-4">
-              <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Modalidad</span>
-              <span className="text-[11px] font-semibold text-slate-700 uppercase">
+            <div className="border-l border-slate-200 dark:border-border pl-4">
+              <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Modalidad</span>
+              <span className="text-[11px] font-semibold text-slate-700 dark:text-text-secondary uppercase">
                 {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'Modalidad Dual' : estudiante.modalidadDetectada === 'EJECUTIVO' ? 'Plan Ejecutivo' : estudiante.modalidadDetectada}
               </span>
             </div>
           )}
-          <div className="border-l border-slate-200 pl-4">
-            <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider block">Promedio</span>
+          <div className="border-l border-slate-200 dark:border-border pl-4">
+            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Promedio</span>
             <div className="flex items-baseline space-x-1">
-              <span className="font-mono font-bold text-xs text-slate-900">
+              <span className="font-mono font-bold text-xs text-slate-900 dark:text-text-primary">
                 {resumen?.promedioFormatted || 'S/C'}
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">
+              <span className="text-[10px] text-slate-400 dark:text-text-muted font-mono">
                 {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : ''}
               </span>
             </div>
@@ -249,21 +249,21 @@ export default function CurriculumMap({
         </div>
 
         {/* Dictamen Compacto de Estadía / Posgrado */}
-        <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 shrink-0">
-          <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">Dictamen:</span>
+        <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 dark:border-border shrink-0">
+          <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider whitespace-nowrap">Dictamen:</span>
           <span className={`px-2.5 py-0.5 rounded text-xs font-semibold border flex items-center space-x-1.5 whitespace-nowrap ${
             resumen?.esRegularEnCurso
-              ? 'bg-blue-50 text-blue-800 border-blue-200'
+              ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-500/30'
               : esElegible 
-              ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
-              : 'bg-rose-50 text-rose-800 border-rose-200'
+              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30' 
+              : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-500/30'
           }`}>
             {resumen?.esRegularEnCurso ? (
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
             ) : esElegible ? (
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             ) : (
-              <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
             )}
             <span>{resumen?.dictamenEstadia}</span>
           </span>
@@ -278,11 +278,11 @@ export default function CurriculumMap({
             {cuatrimestres.map((cuat) => (
               <div key={cuat.numero} className="flex flex-col space-y-1.5">
                 {/* Cabecera del Cuatrimestre */}
-                <div className="bg-slate-900 text-white text-center py-1 px-1 rounded-md shadow-2xs">
+                <div className="bg-slate-900 dark:bg-surface-2 border border-transparent dark:border-border text-white text-center py-1 px-1 rounded-md shadow-2xs">
                   <span className="block text-[11px] font-bold tracking-tight whitespace-nowrap">
                     {cuat.numero}.º Cuat.
                   </span>
-                  <span className="text-[8px] font-mono text-slate-300 block whitespace-nowrap">
+                  <span className="text-[8px] font-mono text-slate-300 dark:text-text-muted block whitespace-nowrap">
                     {cuat.con_ingles ? 'Con Inglés' : (cuatrimestres.length === 5 ? 'Posgrado' : 'Sin Inglés')}
                   </span>
                 </div>
@@ -306,29 +306,29 @@ export default function CurriculumMap({
                         <div>
                           {/* Clave y Conecta */}
                           <div className="flex items-center justify-between mb-0.5">
-                            <span className="font-mono text-[8.5px] text-slate-400 tracking-wider">
+                            <span className="font-mono text-[8.5px] text-slate-400 dark:text-text-muted tracking-wider">
                               {materia.subj}-{materia.crse}
                             </span>
                             {materia.conecta && (
-                              <span className="px-1 py-0.2 text-[7.5px] font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 rounded" title="Asignatura Institucional Virtual (Clase Conecta)">
+                              <span className="px-1 py-0.2 text-[7.5px] font-bold text-cyan-800 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-500/15 border border-cyan-200 dark:border-cyan-500/30 rounded" title="Asignatura Institucional Virtual (Clase Conecta)">
                                 CONECTA
                               </span>
                             )}
                           </div>
 
                           {/* Nombre de la Asignatura en Title Case para descansar la vista */}
-                          <div className="text-[11px] font-semibold text-slate-800 leading-tight">
+                          <div className="text-[11px] font-semibold text-slate-800 dark:text-text-primary leading-tight">
                             {formatTitle(materia.nombre)}
                           </div>
                         </div>
 
                         {/* Calificación y Estado con indicador de color correspondiente */}
-                        <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-100">
+                        <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-100 dark:border-border/60">
                           <span className={`font-mono text-xs ${visual.gradeColor}`}>
                             {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
                               audit.calificacion
                             ) : (
-                              <span className="text-slate-300 font-normal">--</span>
+                              <span className="text-slate-300 dark:text-text-muted font-normal">--</span>
                             )}
                           </span>
 
@@ -597,47 +597,47 @@ export default function CurriculumMap({
       {/* MODAL / DETALLE DE INTENTOS DE MATERIA */}
       {selectedMateriaModal && (
         <div 
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 print:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 print:hidden animate-fade-in"
           onClick={() => setSelectedMateriaModal(null)}
         >
           <div 
-            className="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-5 space-y-3.5"
+            className="bg-white dark:bg-surface-1 rounded-xl shadow-xl border border-slate-200 dark:border-border max-w-md w-full p-5 space-y-3.5 transition-theme"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between border-b border-slate-100 pb-2.5">
+            <div className="flex items-start justify-between border-b border-slate-100 dark:border-border pb-2.5">
               <div>
-                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-text-muted uppercase tracking-wider">
                   {selectedMateriaModal.materia.clave}
                 </span>
-                <h3 className="text-sm font-bold text-slate-900 leading-snug mt-0.5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-text-primary leading-snug mt-0.5">
                   {formatTitle(selectedMateriaModal.materia.nombre)}
                 </h3>
               </div>
               <span 
-                className="text-xs font-bold px-2 py-0.5 rounded border bg-slate-50 text-slate-700 border-slate-200 shadow-2xs mt-0.5"
+                className="text-xs font-bold px-2 py-0.5 rounded border bg-slate-50 dark:bg-surface-2 text-slate-700 dark:text-text-secondary border-slate-200 dark:border-border shadow-2xs mt-0.5"
               >
                 {selectedMateriaModal.audit.etiquetaCorta}
               </span>
             </div>
 
             <div className="space-y-2">
-              <div className="text-xs font-semibold text-slate-800">Trazabilidad de Intentos:</div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 font-mono text-xs text-slate-700 leading-relaxed">
+              <div className="text-xs font-semibold text-slate-800 dark:text-text-primary">Trazabilidad de Intentos:</div>
+              <div className="p-3 bg-slate-50 dark:bg-surface-0 rounded-lg border border-slate-200 dark:border-border font-mono text-xs text-slate-700 dark:text-text-secondary leading-relaxed">
                 {selectedMateriaModal.audit.historialTexto || 'Sin intentos registrados en el kárdex.'}
               </div>
 
               {selectedMateriaModal.audit.motivoIncidencia && (
-                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs">
-                  <strong className="text-amber-800">Observación de auditoría:</strong> {selectedMateriaModal.audit.motivoIncidencia}
+                <div className="p-2.5 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-lg text-amber-900 dark:text-amber-300 text-xs">
+                  <strong className="text-amber-800 dark:text-amber-400">Observación de auditoría:</strong> {selectedMateriaModal.audit.motivoIncidencia}
                 </div>
               )}
             </div>
 
-            <div className="flex justify-end pt-2 border-t border-slate-100">
+            <div className="flex justify-end pt-2 border-t border-slate-100 dark:border-border">
               <button
                 type="button"
                 onClick={() => setSelectedMateriaModal(null)}
-                className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold transition-colors cursor-pointer shadow-2xs"
+                className="px-3.5 py-1.5 bg-slate-900 dark:bg-surface-2 hover:bg-slate-800 dark:hover:bg-surface-3 text-white dark:text-text-primary border border-transparent dark:border-border rounded-md text-xs font-semibold transition-colors cursor-pointer shadow-2xs"
               >
                 Cerrar Detalle
               </button>

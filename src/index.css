@@ -38,29 +38,30 @@
 }
 
 .dark {
-  --surface-0: #0B0F14;
-  --surface-1: #111827;
-  --surface-2: #1E293B;
-  --surface-3: #334155;
+  /* GitHub Dark (Primer Design System) */
+  --surface-0: #0d1117;          /* GitHub canvas.default (fondo principal) */
+  --surface-1: #161b22;          /* GitHub canvas.subtle (tarjetas, paneles, contenedores) */
+  --surface-2: #21262d;          /* GitHub canvas.overlay / filas hover / barras de control */
+  --surface-3: #30363d;          /* GitHub element active / pistas de progreso / selección */
 
-  --border-color: #1E293B;
-  --border-subtle: #1E293B;
+  --border-color: #30363d;       /* GitHub border.default - nítido, definido y de alto contraste */
+  --border-subtle: #21262d;      /* GitHub border.muted - separadores internos */
 
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-primary: #f0f6fc;       /* GitHub fg.default - blanco nítido con tinte sutil */
+  --text-secondary: #8b949e;     /* GitHub fg.muted - gris legible institucional */
+  --text-muted: #6e7681;         /* GitHub fg.subtle - metadatos y secundarios */
 
-  --accent: #FACC15;
-  --accent-hover: #EAB308;
-  --accent-soft: rgba(250, 204, 21, 0.1);
-  --accent-text: #FEF08A;
+  --accent: #f2b705;             /* UNID Institutional Gold */
+  --accent-hover: #e3b341;
+  --accent-soft: rgba(242, 183, 5, 0.12);
+  --accent-text: #f0c030;
 
-  --sidebar-bg: #070A0E;
-  --sidebar-border: rgba(255,255,255,0.04);
+  --sidebar-bg: #010409;         /* GitHub canvas.inset (navegación profunda e inmersiva) */
+  --sidebar-border: #30363d;
 
-  --scrollbar-track: #1E293B;
-  --scrollbar-thumb: #334155;
-  --scrollbar-thumb-hover: #475569;
+  --scrollbar-track: #0d1117;
+  --scrollbar-thumb: #30363d;
+  --scrollbar-thumb-hover: #484f58;
 
   color-scheme: dark;
 }
@@ -71,16 +72,15 @@
   --accent-hover: #EAB308;
   --accent-soft: rgba(250, 204, 21, 0.15);
   --accent-text: #854D0E;
-  --border-color: rgba(234, 179, 8, 0.35);
-  --border-subtle: rgba(16, 185, 129, 0.25);
 }
 
 .dark.theme-super-admin,
 .dark .theme-super-admin,
 .theme-super-admin.dark {
   --accent-text: #FEF08A;
-  --border-color: rgba(234, 179, 8, 0.4);
-  --border-subtle: rgba(16, 185, 129, 0.3);
+  --accent: #FACC15;
+  --accent-hover: #EAB308;
+  --accent-soft: rgba(250, 204, 21, 0.15);
 }
 
 .theme-super-admin .bg-accent {
