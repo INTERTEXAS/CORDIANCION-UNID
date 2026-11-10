@@ -1,15 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { 
   Upload, 
-  RotateCcw, 
-  Download, 
   GraduationCap, 
   ChevronDown,
-  Sparkles,
   Loader2,
   PanelLeftClose,
   PanelLeftOpen,
-  SlidersHorizontal,
   Users,
   Sun,
   Moon,
@@ -17,15 +13,12 @@ import {
   Briefcase,
   Scale,
   Compass,
-  FolderTree,
   LogOut,
   Crown
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { ALUMNOS_DEMO } from '../data/demoStudents';
 import { useTheme } from '../context/ThemeContext';
 import { resolverNombreOficialCarrera } from '../data/carrerasData';
-import AcademicAssistant from './AcademicAssistant';
 
 const COORDINADORAS_CONFIG = [
   {
@@ -81,24 +74,12 @@ export default function HeaderBar({
   carreraSeleccionada, 
   onSelectCarrera, 
   onUploadPdf, 
-  onReset, 
-  onExportPdf,
-  onLoadDemo,
-  onLoadBatchDemo,
   isProcessing,
-  isExporting,
-  hasAuditData,
   isSidebarOpen = true,
-  onToggleSidebar,
-  isWidgetsOpen = true,
-  onToggleWidgets,
-  onOpenStudentAudit,
-  onOpenBatchAudit
+  onToggleSidebar
 }) {
   const fileInputRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isDemoOpen, setIsDemoOpen] = useState(false);
-  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user: activeUser, isSuperAdmin, logout } = useAuth();
 
@@ -281,7 +262,7 @@ export default function HeaderBar({
       </div>
 
       {/* Right: Clean, un-crowded Actions and Compact Profile */}
-      <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
+      <div className="flex items-center space-x-2 shrink-0">
         {/* Hidden file input */}
         <input
           type="file"
@@ -291,67 +272,11 @@ export default function HeaderBar({
           className="hidden"
         />
 
-        <button
-          type="button"
-          onClick={() => setIsAssistantOpen((open) => !open)}
-          aria-expanded={isAssistantOpen}
-          aria-label="Abrir asistente académico"
-          title="Asistente académico"
-          className="flex items-center gap-1.5 rounded-xl border border-accent/25 bg-gradient-to-r from-accent/10 via-violet-500/10 to-rose-400/10 px-2.5 py-2 text-accent transition-all hover:border-accent/40 hover:shadow-sm"
-        >
-          <Sparkles className="h-4 w-4" strokeWidth={2} />
-          <span className="hidden xl:inline text-[11px] font-semibold">Asistente</span>
-        </button>
-
-        {/* Demo dropdown */}
-        <div className="relative">
-          {isDemoOpen && (
-            <div 
-              className="fixed inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-[2px] z-40 transition-opacity"
-              onClick={() => setIsDemoOpen(false)}
-            />
-          )}
-
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setIsDemoOpen(!isDemoOpen)}
-              className="flex items-center space-x-1.5 px-2.5 py-2 text-[12px] font-medium text-text-secondary bg-surface-2 hover:bg-surface-3 rounded-xl border border-border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/40 group hover:shadow-xs"
-              title="Cargar expedientes demo de prueba"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-accent transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" strokeWidth={1.8} />
-              <span className="hidden xl:inline text-[11px] font-semibold">Demo</span>
-              <ChevronDown className={`w-3 h-3 text-text-muted transition-transform duration-200 ${isDemoOpen ? 'rotate-180' : ''}`} strokeWidth={1.8} />
-            </button>
-
-            {isDemoOpen && (
-              <div className="absolute right-0 mt-2 w-72 bg-surface-1 rounded-2xl shadow-glass-lg border border-border py-1 animate-scale-in overflow-hidden z-50">
-                <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.1em] text-text-muted border-b border-border-subtle bg-surface-2/50">
-                  Expedientes de Prueba
-                </div>
-                {ALUMNOS_DEMO.map((demo) => (
-                  <button
-                    key={demo.id}
-                    onClick={() => {
-                      onLoadDemo(demo);
-                      setIsDemoOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-3 text-[12px] text-text-secondary hover:bg-surface-2 hover:text-text-primary flex flex-col transition-colors border-b border-border-subtle last:border-0 cursor-pointer"
-                  >
-                    <span className="font-semibold text-text-primary">{demo.label}</span>
-                    <span className="text-[11px] text-text-muted mt-0.5">{demo.matricula} · {demo.nombre}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Upload button - Primary gold action */}
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isProcessing}
-          className="flex items-center space-x-1.5 px-3 py-2 bg-accent hover:bg-accent-hover text-slate-950 text-[12px] font-bold rounded-xl shadow-xs transition-all disabled:opacity-60 cursor-pointer group active:scale-95"
+          className="flex items-center space-x-1.5 px-3.5 py-2 bg-accent hover:bg-accent-hover text-slate-950 text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-60 cursor-pointer group active:scale-95"
           title="Subir Kárdex oficial en PDF"
         >
           {isProcessing ? (
@@ -367,39 +292,10 @@ export default function HeaderBar({
           )}
         </button>
 
-        {/* Reset button */}
-        <button
-          onClick={onReset}
-          className="p-2 text-text-muted hover:text-text-primary hover:bg-surface-2 rounded-xl border border-border transition-all cursor-pointer group hover:shadow-xs active:scale-95"
-          title="Limpiar consulta"
-        >
-          <RotateCcw className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-45" strokeWidth={1.8} />
-        </button>
-
-        {/* Export button */}
-        <button
-          onClick={onExportPdf}
-          disabled={!hasAuditData || isExporting}
-          className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-2 bg-surface-2 hover:bg-surface-3 text-text-primary text-[12px] font-semibold rounded-xl border border-border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group hover:shadow-xs active:scale-95"
-          title="Exportar dictamen oficial de 2 hojas"
-        >
-          {isExporting ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
-              <span className="hidden xl:inline">Generando…</span>
-            </>
-          ) : (
-            <>
-              <Download className="w-4 h-4 transition-transform duration-200 group-hover:translate-y-0.5" strokeWidth={1.8} />
-              <span className="hidden xl:inline">Exportar PDF</span>
-            </>
-          )}
-        </button>
-
         {/* Dark mode toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-all cursor-pointer group hover:shadow-xs"
+          className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-2 transition-all cursor-pointer group hover:shadow-xs border border-border"
           title={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
         >
           {theme === 'dark' ? (
@@ -409,20 +305,7 @@ export default function HeaderBar({
           )}
         </button>
 
-        {/* Widgets toggle */}
-        <button
-          onClick={onToggleWidgets}
-          className={`p-2 rounded-xl border transition-all cursor-pointer group hover:shadow-xs ${
-            isWidgetsOpen 
-              ? 'bg-accent/10 text-accent border-accent/20' 
-              : 'bg-surface-2 hover:bg-surface-3 text-text-muted border-border'
-          }`}
-          title="Panel de widgets"
-        >
-          <SlidersHorizontal className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.8} />
-        </button>
-
-        {/* Perfil Compacto y Elegante (Sin saturar la barra) */}
+        {/* Perfil Compacto y Elegante */}
         {activeUser && (
           <div className="flex items-center space-x-1.5 pl-1.5 sm:pl-2 border-l border-border/80">
             {isSuperAdmin ? (
@@ -460,13 +343,6 @@ export default function HeaderBar({
           </div>
         )}
       </div>
-      {isAssistantOpen && (
-        <AcademicAssistant
-          onClose={() => setIsAssistantOpen(false)}
-          onOpenStudentAudit={onOpenStudentAudit}
-          onOpenBatchAudit={onOpenBatchAudit}
-        />
-      )}
     </header>
   );
 }

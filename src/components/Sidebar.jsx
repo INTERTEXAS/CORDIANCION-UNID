@@ -10,9 +10,11 @@ import {
   PanelLeftClose,
   Users,
   Database,
-  ChevronRight
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { ALUMNOS_DEMO } from '../data/demoStudents';
 
 export default function Sidebar({ 
   dbStatus, 
@@ -21,7 +23,8 @@ export default function Sidebar({
   isOpen = true, 
   onToggle,
   batchCount = 0,
-  onOpenNeonManager
+  onOpenNeonManager,
+  onLoadDemo
 }) {
   const { user, isSuperAdmin } = useAuth();
   const esSuperAdmin = Boolean(
@@ -203,6 +206,34 @@ export default function Sidebar({
               </div>
             );
           })}
+
+          {/* Expedientes de Prueba / Demo */}
+          {onLoadDemo && (
+            <div className="pt-4 mt-2 border-t border-white/[0.06]">
+              <div className="px-3 pb-2 flex items-center justify-between text-[10px] font-semibold text-slate-500 uppercase tracking-[0.12em]">
+                <span>Expedientes Demo</span>
+                <span className="text-[9px] font-mono text-amber-400/80">3 ALUMNOS</span>
+              </div>
+              <div className="space-y-1">
+                {ALUMNOS_DEMO.map((demo) => (
+                  <button
+                    key={demo.id}
+                    onClick={() => onLoadDemo(demo)}
+                    className="w-full text-left px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.06] flex items-center justify-between transition-colors cursor-pointer group text-xs"
+                    title={`Cargar expediente demo de ${demo.nombre}`}
+                  >
+                    <div className="flex flex-col min-w-0 pr-2">
+                      <span className="font-semibold text-slate-200 group-hover:text-white truncate text-[11.5px]">{demo.label}</span>
+                      <span className="text-[10px] text-slate-500 truncate">{demo.matricula}</span>
+                    </div>
+                    <span className="text-[9px] font-mono font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded shrink-0 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                      Demo
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Future modules (disabled) */}
           <div className="pt-5 px-3 pb-2 text-[10px] font-semibold text-slate-600 uppercase tracking-[0.12em]">

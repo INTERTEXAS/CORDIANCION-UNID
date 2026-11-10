@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import HeaderBar from './components/HeaderBar';
 import FilterPills from './components/FilterPills';
-import WidgetsColumn from './components/WidgetsColumn';
 import CurriculumMap from './components/CurriculumMap';
 import AuditCedula from './components/AuditCedula';
 import CareerInactiveModal from './components/CareerInactiveModal';
@@ -11,6 +10,7 @@ import UploadStudentCard from './components/UploadStudentCard';
 import BatchAuditView from './components/BatchAuditView';
 import AuthBarrier from './components/AuthBarrier';
 import { useAuth } from './context/AuthContext';
+import AcademicAssistant from './components/AcademicAssistant';
 
 import { getCarreras } from './services/neonService';
 import { parsePdfKardex } from './services/pdfParser';
@@ -23,7 +23,8 @@ import {
   Layers, 
   AlertCircle, 
   CheckCircle2,
-  X
+  X,
+  Sparkles
 } from 'lucide-react';
 import NeonAuditManagerModal from './components/NeonAuditManagerModal';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -63,7 +64,7 @@ export default function App() {
 
   // Estados de visibilidad de paneles laterales
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isWidgetsOpen, setIsWidgetsOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   // Referencias para exportación oficial de 2 hojas en PDF
   const hoja1Ref = useRef(null);
@@ -440,6 +441,7 @@ export default function App() {
           onToggle={() => setIsSidebarOpen(prev => !prev)}
           batchCount={batchData?.alumnos?.length || 0}
           onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
+          onLoadDemo={handleLoadDemo}
         />
       </div>
 
@@ -463,78 +465,9 @@ export default function App() {
               }
             }}
             onUploadPdf={handleUploadPdf}
-            onReset={handleReset}
-            onExportPdf={handleExportPdf}
-            onLoadDemo={handleLoadDemo}
-            onLoadBatchDemo={handleLoadBatchDemo}
             isProcessing={isProcessing}
-            isExporting={isExporting}
-            hasAuditData={Boolean(effectiveAuditData)}
             isSidebarOpen={isSidebarOpen}
             onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
-            isWidgetsOpen={isWidgetsOpen}
-            onToggleWidgets={() => setIsWidgetsOpen(prev => !prev)}
-            onOpenStudentAudit={(studentInfo) => {
-              if (!studentInfo) return;
-              const { estudiante, auditData: studentAudit, carreraCodigo } = studentInfo;
-              
-              // 1. Si la carrera es distinta a la activa, cambiarla
-              if (carreraCodigo && carreraCodigo !== carreraSeleccionada?.codigo) {
-                const targetCarrera = (carreras || []).find(c => c.codigo === carreraCodigo || c.clave === carreraCodigo)
-                  || { codigo: carreraCodigo, nombre: carreraCodigo, activa: true };
-                setCarreraSeleccionada(targetCarrera);
-              }
-
-              // 2. Inyectar la auditoría en la plataforma
-              setBatchData(null);
-              setAuditData(studentAudit);
-              addToHistorial(studentAudit);
-              setActiveTab('mapa');
-
-              setNotification({
-                tipo: 'exito',
-                texto: `Kárdex de ${estudiante?.nombre || 'alumno'} (${estudiante?.matricula}) cargado desde la base de datos.`
-              });
-            }}
-            onOpenBatchAudit={(batchInfo) => {
-              if (!batchInfo) return;
-              const { carreraCodigo, alumnos, totalAlumnos } = batchInfo;
-              const targetCarrera = (carreras || []).find(c => c.codigo === carreraCodigo || c.clave === carreraCodigo)
-                || { codigo: carreraCodigo, nombre: carreraCodigo, activa: true };
-
-              const freshAlumnos = (alumnos || []).map(item => {
-                const raw = typeof item === 'string' ? JSON.parse(item) : item;
-                const est = raw.estudiante || { matricula: raw.matricula, nombre: raw.nombre, programa: carreraCodigo };
-                const registros = est.registros || raw.auditData?.estudiante?.registros || [];
-                const studentCarrera = (carreras || []).find(c => c.codigo === est.programa || c.clave === est.programa) || targetCarrera;
-                const estToAudit = { ...est };
-                delete estToAudit.modalidadDetectada;
-                if (!estToAudit.programa && studentCarrera?.codigo) {
-                  estToAudit.programa = studentCarrera.codigo;
-                }
-                const freshAudit = runAcademicAudit(estToAudit, registros, studentCarrera);
-                return {
-                  ...raw,
-                  estudiante: freshAudit.estudiante || est,
-                  auditData: freshAudit,
-                  carrera: studentCarrera
-                };
-              });
-
-              setCarreraSeleccionada(targetCarrera);
-              setAuditData(null);
-              setBatchData({
-                totalAlumnos: totalAlumnos || freshAlumnos.length,
-                alumnos: freshAlumnos,
-                carrera: targetCarrera
-              });
-              setSelectedBatchStudentAudit(null);
-              setActiveTab('grupo');
-              setNotification({
-                tipo: 'exito',
-                texto: `Auditoría grupal de ${targetCarrera.codigo} cargada en pantalla (${freshAlumnos.length} expedientes).`
-              });
-            }}
           />
         </div>
 
@@ -690,16 +623,80 @@ export default function App() {
           </div>
           </ErrorBoundary>
 
-          {/* Widgets Drawer */}
-          <div className="no-print print:hidden">
-            <WidgetsColumn
-              auditData={auditData}
-              historialReciente={historialReciente}
-              onSelectHistorial={(item) => setAuditData(item)}
-              isOpen={isWidgetsOpen}
-              onClose={() => setIsWidgetsOpen(false)}
-            />
+          {/* Botón Flotante (FAB) para Asistente Académico Inteligente */}
+          <div className="fixed bottom-6 right-6 z-40 no-print print:hidden">
+            <button
+              type="button"
+              onClick={() => setIsAssistantOpen(true)}
+              aria-label="Abrir Asistente Académico Inteligente"
+              className="flex items-center space-x-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-300/40 group"
+              title="Abrir Asistente Académico Inteligente (Chatbot)"
+            >
+              <Sparkles className="w-4 h-4 text-slate-950 animate-pulse" />
+              <span className="tracking-tight">Asistente UNID</span>
+            </button>
           </div>
+
+          {/* Modal / Panel del Asistente Académico */}
+          {isAssistantOpen && (
+            <AcademicAssistant
+              onClose={() => setIsAssistantOpen(false)}
+              onOpenStudentAudit={(studentInfo) => {
+                if (!studentInfo) return;
+                const { estudiante, auditData: studentAudit, carreraCodigo } = studentInfo;
+                if (carreraCodigo && carreraCodigo !== carreraSeleccionada?.codigo) {
+                  const targetCarrera = (carreras || []).find(c => c.codigo === carreraCodigo || c.clave === carreraCodigo)
+                    || { codigo: carreraCodigo, nombre: carreraCodigo, activa: true };
+                  setCarreraSeleccionada(targetCarrera);
+                }
+                setBatchData(null);
+                setAuditData(studentAudit);
+                addToHistorial(studentAudit);
+                setActiveTab('mapa');
+                setNotification({
+                  tipo: 'exito',
+                  texto: `Kárdex de ${estudiante?.nombre || 'alumno'} (${estudiante?.matricula}) cargado desde la base de datos.`
+                });
+              }}
+              onOpenBatchAudit={(batchInfo) => {
+                if (!batchInfo) return;
+                const { carreraCodigo, alumnos, totalAlumnos } = batchInfo;
+                const targetCarrera = (carreras || []).find(c => c.codigo === carreraCodigo || c.clave === carreraCodigo)
+                  || { codigo: carreraCodigo, nombre: carreraCodigo, activa: true };
+                const freshAlumnos = (alumnos || []).map(item => {
+                  const raw = typeof item === 'string' ? JSON.parse(item) : item;
+                  const est = raw.estudiante || { matricula: raw.matricula, nombre: raw.nombre, programa: carreraCodigo };
+                  const registros = est.registros || raw.auditData?.estudiante?.registros || [];
+                  const studentCarrera = (carreras || []).find(c => c.codigo === est.programa || c.clave === est.programa) || targetCarrera;
+                  const estToAudit = { ...est };
+                  delete estToAudit.modalidadDetectada;
+                  if (!estToAudit.programa && studentCarrera?.codigo) {
+                    estToAudit.programa = studentCarrera.codigo;
+                  }
+                  const freshAudit = runAcademicAudit(estToAudit, registros, studentCarrera);
+                  return {
+                    ...raw,
+                    estudiante: freshAudit.estudiante || est,
+                    auditData: freshAudit,
+                    carrera: studentCarrera
+                  };
+                });
+                setCarreraSeleccionada(targetCarrera);
+                setAuditData(null);
+                setBatchData({
+                  totalAlumnos: totalAlumnos || freshAlumnos.length,
+                  alumnos: freshAlumnos,
+                  carrera: targetCarrera
+                });
+                setSelectedBatchStudentAudit(null);
+                setActiveTab('grupo');
+                setNotification({
+                  tipo: 'exito',
+                  texto: `Auditoría grupal de ${targetCarrera.codigo} cargada en pantalla (${freshAlumnos.length} expedientes).`
+                });
+              }}
+            />
+          )}
         </main>
       </div>
 
