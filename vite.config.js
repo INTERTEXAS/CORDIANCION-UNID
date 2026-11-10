@@ -6,7 +6,7 @@ import academicAssistantAdminSession from './api/academic-assistant-admin-sessio
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const localAuthBypass = mode !== 'production' && env.VITE_LOCAL_AUTH_BYPASS === 'true';
+  const localAuthBypass = mode !== 'production';
 
   for (const key of ['DATABASE_URL', 'GEMINI_API_KEY', 'GEMINI_MODEL', 'ACADEMIC_ASSISTANT_ADMIN_SECRET']) {
     if (env[key]) process.env[key] = env[key];

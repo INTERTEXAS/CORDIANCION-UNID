@@ -333,7 +333,35 @@ async function getInstitutionalUser(accessToken) {
 
 async function getGeminiReply({ question, history, context }) {
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('El asistente no está configurado: falta GEMINI_API_KEY en el servidor.');
+  if (!apiKey) {
+    if (/\b(ayuda|hola|qu[eé]\s+puedes|funciones|c[oó]mo\s+funciona|qu[eé]\s+hace)\b/i.test(question)) {
+      return [
+        'Soy el Asistente Académico de la plataforma institucional UNID.',
+        'Puedo asistirte en las siguientes tareas:',
+        '• Consultar la base de datos de auditorías y ciclos escolares guardados.',
+        '• Buscar alumnos por nombre o matrícula y revisar su avance o dictamen de estadía.',
+        '• Cargar kárdex individuales o auditorías grupales directamente en tu pantalla.',
+        '• Orientar sobre los requisitos normativos de los planes de estudio.',
+        '',
+        'Puedes probar preguntando: “¿Qué hay en la base de datos?”, “Busca alumnos” o indicando una matrícula como “00112233”.'
+      ].join('\n');
+    }
+    if (/\b(estad[ií]a|requisito|reglamento|normativa)\b/i.test(question)) {
+      return [
+        'Normativa institucional para Estadía Empresarial:',
+        '• El alumno no debe tener adeudos ni asignaturas omitidas en cuatrimestres 1.° a 6.°. Debe contar con el 100% de materias aprobadas en dicho rango.',
+        '• Debe cumplir con los requisitos curriculares de inglés (según el plan y modalidad) y materias co-curriculares de formación integral.',
+        '• Si el alumno tiene asignaturas pendientes en 1.°-6.°, el dictamen se emitirá como: RETENIDO POR ADEUDO ACADÉMICO.'
+      ].join('\n');
+    }
+    return [
+      'Puedo ayudarte a consultar información académica institucional y de expedientes en Neon DB.',
+      'Puedes solicitarme:',
+      '• “¿Qué hay en la base de datos?” para ver ciclos y carreras con auditorías.',
+      '• “Busca alumnos” o ingresar una matrícula directamente.',
+      '• Cargar un expediente específico en pantalla escribiendo “abre el kárdex de [matrícula]”.'
+    ].join('\n');
+  }
   const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
   if (!/^[a-z0-9.-]+$/i.test(model)) throw new Error('El modelo de Gemini configurado no es válido.');
 

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { 
   GraduationCap, 
   ShieldCheck, 
@@ -14,7 +15,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { ALUMNOS_DEMO } from '../data/demoStudents';
+import DemoStudentsModal from './DemoStudentsModal';
 
 export default function Sidebar({ 
   dbStatus, 
@@ -26,6 +27,7 @@ export default function Sidebar({
   onOpenNeonManager,
   onLoadDemo
 }) {
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const { user, isSuperAdmin } = useAuth();
   const esSuperAdmin = Boolean(
     isSuperAdmin || 
@@ -207,31 +209,31 @@ export default function Sidebar({
             );
           })}
 
-          {/* Expedientes de Prueba / Demo */}
+          {/* Botón Profesional de Expedientes Demo */}
           {onLoadDemo && (
-            <div className="pt-4 mt-2 border-t border-white/[0.06]">
-              <div className="px-3 pb-2 flex items-center justify-between text-[10px] font-semibold text-slate-500 uppercase tracking-[0.12em]">
-                <span>Expedientes Demo</span>
-                <span className="text-[9px] font-mono text-amber-400/80">3 ALUMNOS</span>
-              </div>
-              <div className="space-y-1">
-                {ALUMNOS_DEMO.map((demo) => (
-                  <button
-                    key={demo.id}
-                    onClick={() => onLoadDemo(demo)}
-                    className="w-full text-left px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.06] flex items-center justify-between transition-colors cursor-pointer group text-xs"
-                    title={`Cargar expediente demo de ${demo.nombre}`}
-                  >
-                    <div className="flex flex-col min-w-0 pr-2">
-                      <span className="font-semibold text-slate-200 group-hover:text-white truncate text-[11.5px]">{demo.label}</span>
-                      <span className="text-[10px] text-slate-500 truncate">{demo.matricula}</span>
-                    </div>
-                    <span className="text-[9px] font-mono font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded shrink-0 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
-                      Demo
-                    </span>
-                  </button>
-                ))}
-              </div>
+            <div className="pt-3 mt-1 border-t border-white/[0.06]">
+              <button
+                type="button"
+                onClick={() => setIsDemoModalOpen(true)}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent hover:from-amber-500/20 hover:to-amber-500/10 border border-amber-500/25 hover:border-amber-500/40 text-amber-300 hover:text-amber-200 transition-all text-xs font-semibold cursor-pointer group shadow-2xs"
+                title="Cargar expediente institucional de prueba (5 casos disponibles)"
+              >
+                <div className="flex items-center space-x-2.5 min-w-0">
+                  <div className="w-6 h-6 rounded-lg bg-amber-400/15 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  </div>
+                  <span className="truncate">Expedientes Demo</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 group-hover:bg-amber-500/30 shrink-0">
+                  5 casos
+                </span>
+              </button>
+
+              <DemoStudentsModal
+                isOpen={isDemoModalOpen}
+                onClose={() => setIsDemoModalOpen(false)}
+                onSelectStudent={onLoadDemo}
+              />
             </div>
           )}
 

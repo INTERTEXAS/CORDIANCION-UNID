@@ -540,7 +540,7 @@ export default function App() {
                 <UploadStudentCard 
                   carrera={carreraSeleccionada}
                   onUploadPdf={handleUploadPdf}
-                  onLoadBatchDemo={handleLoadBatchDemo}
+                  onLoadDemo={handleLoadDemo}
                   onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
                 />
               )
@@ -549,7 +549,7 @@ export default function App() {
               <UploadStudentCard 
                 carrera={carreraSeleccionada}
                 onUploadPdf={handleUploadPdf}
-                onLoadBatchDemo={handleLoadBatchDemo}
+                onLoadDemo={handleLoadDemo}
                 onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
               />
             ) : (
