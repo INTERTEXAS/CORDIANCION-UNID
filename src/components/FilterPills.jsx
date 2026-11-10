@@ -93,7 +93,7 @@ export default function FilterPills({
 
   return (
     <div className="flex flex-wrap items-center gap-2 select-none w-full text-xs">
-      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold mr-1">
+      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-text-muted font-semibold mr-1">
         Filtros:
       </span>
 
@@ -137,7 +137,7 @@ export default function FilterPills({
                 className={`px-2 py-0.5 rounded text-[11px] border transition-colors inline-flex items-center gap-1 cursor-pointer ${
                   isActive 
                     ? 'bg-slate-800 dark:bg-surface-3 text-white dark:text-text-primary border-slate-800 dark:border-border font-semibold' 
-                    : 'bg-transparent text-slate-400 dark:text-text-muted border-slate-200/70 dark:border-border/60 hover:text-slate-600 dark:hover:text-text-secondary hover:border-slate-300 dark:hover:border-border'
+                    : 'bg-transparent text-slate-400 dark:text-text-muted border-slate-200/70 dark:border-border hover:text-slate-600 dark:hover:text-text-secondary hover:border-slate-300 dark:hover:border-slate-500'
                 }`}
                 title={`${f.label}: 0 asignaturas registradas`}
               >

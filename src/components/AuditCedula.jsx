@@ -85,7 +85,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
       </div>
 
       {/* 2. CINTILLA FORMAL DEL ESTUDIANTE */}
-      <div className="bg-slate-50 dark:bg-surface-2/60 border border-slate-200 dark:border-border rounded-lg px-4 py-2 flex items-center justify-between text-xs select-none transition-theme">
+      <div className="bg-slate-50 dark:bg-surface-1 border border-slate-200 dark:border-border rounded-lg px-4 py-2 flex items-center justify-between text-xs select-none transition-theme">
         <div className="flex items-center space-x-6">
           <div>
             <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Matrícula</span>
@@ -178,7 +178,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
         </div>
 
         {/* Resumen Cuantitativo de Avance Curricular (7 cols) */}
-        <div className="col-span-7 bg-slate-50 dark:bg-surface-2/40 border border-slate-200 dark:border-border rounded-lg p-3.5 flex flex-col justify-between transition-theme">
+        <div className="col-span-7 bg-slate-50 dark:bg-surface-1 border border-slate-200 dark:border-border rounded-lg p-3.5 flex flex-col justify-between transition-theme">
           <div className="text-[10px] font-bold uppercase text-slate-700 dark:text-text-primary tracking-wider flex items-center justify-between border-b border-slate-200 dark:border-border pb-1 mb-2">
             <span>Resumen Cuantitativo de Avance</span>
             <span className="text-[9.5px] font-mono text-slate-400 dark:text-text-muted">
@@ -297,7 +297,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
               <tbody className="divide-y divide-slate-100 dark:divide-border bg-white dark:bg-surface-1">
                 {incidencias.map((inc, index) => {
                   return (
-                    <tr key={index} className="hover:bg-slate-50/70 dark:hover:bg-surface-2/60 transition-colors">
+                    <tr key={index} className="hover:bg-slate-50/70 dark:hover:bg-surface-2 transition-colors">
                       <td className="py-2 px-3 text-center font-mono font-semibold text-slate-500 dark:text-text-muted">
                         {inc.cuatrimestre}.º
                       </td>

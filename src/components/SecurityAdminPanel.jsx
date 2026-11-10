@@ -401,7 +401,7 @@ export default function SecurityAdminPanel() {
             ========================================================================= */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-border">
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Equipos Autorizados</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block">Equipos Autorizados</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-xl font-bold font-mono text-slate-900 dark:text-text-primary">{totalEquiposActivos}</span>
               <span className="text-xs font-mono text-slate-400 dark:text-text-muted">/ {dispositivos.length} total</span>
@@ -413,7 +413,7 @@ export default function SecurityAdminPanel() {
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Sesiones Concedidas</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block">Sesiones Concedidas</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-xl font-bold font-mono text-slate-900 dark:text-text-primary">{totalLoginsExitosos}</span>
               <span className="text-xs text-slate-400 dark:text-text-muted">exitosas</span>
@@ -422,7 +422,7 @@ export default function SecurityAdminPanel() {
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Visitas a la Ruta</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block">Visitas a la Ruta</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-xl font-bold font-mono text-slate-900 dark:text-text-primary">{totalVisitas}</span>
               <span className="text-xs text-slate-400 dark:text-text-muted">eventos</span>
@@ -431,7 +431,7 @@ export default function SecurityAdminPanel() {
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block">Bloqueos Preventivos</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block">Bloqueos Preventivos</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-xl font-bold font-mono text-rose-600 dark:text-rose-400">{totalBloqueados}</span>
               <span className="text-xs text-slate-400 dark:text-text-muted">rechazos</span>
@@ -562,7 +562,7 @@ export default function SecurityAdminPanel() {
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-border bg-white dark:bg-surface-1">
                   {dispositivos.map((dev) => (
-                    <tr key={dev.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2/60 transition-colors">
+                    <tr key={dev.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2 transition-colors">
                       <td className="py-3 px-5 font-semibold text-slate-900 dark:text-text-primary">
                         <div className="flex items-center space-x-2">
                           <span className={`w-1.5 h-1.5 rounded-full ${dev.activo ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
@@ -689,7 +689,7 @@ export default function SecurityAdminPanel() {
                   {usuarios.map((u) => {
                     const isSuper = u.id === 1 || u.rol === 'ADMIN_SISTEMA' || u.rol === 'super_admin';
                     return (
-                      <tr key={u.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2/60 transition-colors">
+                      <tr key={u.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2 transition-colors">
                         <td className="py-3 px-5">
                           <div className="flex items-center space-x-2.5">
                             <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-surface-2 border border-slate-200 dark:border-border flex items-center justify-center font-bold text-slate-700 dark:text-text-primary text-xs shrink-0">
@@ -878,7 +878,7 @@ export default function SecurityAdminPanel() {
                     const tieneEquipo = Boolean(item.propietario_equipo);
 
                     return (
-                      <tr key={item.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2/60 transition-colors">
+                      <tr key={item.id} className="hover:bg-slate-50/70 dark:hover:bg-surface-2 transition-colors">
                         {/* Timestamp en tipografía tabular técnica */}
                         <td className="py-3 px-5 whitespace-nowrap text-slate-500 dark:text-text-muted font-mono text-[11px]">
                           {item.fecha ? new Date(item.fecha).toLocaleString('es-MX', { 

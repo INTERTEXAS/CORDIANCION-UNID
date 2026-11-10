@@ -47,9 +47,9 @@
   --border-color: #30363d;       /* GitHub border.default - nítido, definido y de alto contraste */
   --border-subtle: #21262d;      /* GitHub border.muted - separadores internos */
 
-  --text-primary: #f0f6fc;       /* GitHub fg.default - blanco nítido con tinte sutil */
-  --text-secondary: #8b949e;     /* GitHub fg.muted - gris legible institucional */
-  --text-muted: #6e7681;         /* GitHub fg.subtle - metadatos y secundarios */
+  --text-primary: #f0f6fc;       /* GitHub fg.default - blanco nítido institucional */
+  --text-secondary: #c9d1d9;     /* GitHub fg.muted - gris claro de alta legibilidad (contrast ratio > 11:1) */
+  --text-muted: #8b949e;         /* GitHub fg.subtle - metadatos técnicos (contrast ratio > 5.5:1, cumple WCAG AA) */
 
   --accent: #f2b705;             /* UNID Institutional Gold */
   --accent-hover: #e3b341;

@@ -119,10 +119,10 @@ export default function CurriculumMap({
       case 'PENDIENTE':
         return { 
           isRegular: false,
-          cardStyle: 'bg-slate-50/40 dark:bg-surface-0/60 border-slate-200 dark:border-border border-dashed hover:bg-white dark:hover:bg-surface-1', 
-          dotColor: 'bg-slate-400 dark:bg-slate-600', 
+          cardStyle: 'bg-slate-50/40 dark:bg-surface-0 border-slate-200 dark:border-border border-dashed hover:bg-white dark:hover:bg-surface-2', 
+          dotColor: 'bg-slate-400 dark:bg-slate-500', 
           gradeColor: 'text-slate-400 dark:text-text-muted font-normal',
-          badgeClass: 'bg-slate-100 dark:bg-surface-2 text-slate-500 dark:text-text-muted border border-transparent dark:border-border/60',
+          badgeClass: 'bg-slate-100 dark:bg-surface-2 text-slate-500 dark:text-text-secondary border border-transparent dark:border-border',
           label: 'Por cursar' 
         };
       case 'OU':
@@ -213,7 +213,7 @@ export default function CurriculumMap({
       )}
 
       {/* 2. CINTILLA FORMAL DEL ESTUDIANTE */}
-      <div className="bg-slate-50 dark:bg-surface-2/60 border border-slate-200 dark:border-border rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none transition-theme">
+      <div className="bg-slate-50 dark:bg-surface-1 border border-slate-200 dark:border-border rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none transition-theme">
         <div className="flex flex-wrap items-center space-x-5 gap-y-1">
           <div>
             <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Matrícula</span>
@@ -323,7 +323,7 @@ export default function CurriculumMap({
                         </div>
 
                         {/* Calificación y Estado con indicador de color correspondiente */}
-                        <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-100 dark:border-border/60">
+                        <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-100 dark:border-border">
                           <span className={`font-mono text-xs ${visual.gradeColor}`}>
                             {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
                               audit.calificacion
@@ -343,10 +343,10 @@ export default function CurriculumMap({
 
                   {/* Relleno de altura para cuatrimestres con estadía de bloque completo */}
                   {cuat.materias.length === 1 && cuat.materias[0].es_estadia && (
-                    <div key={`filler-${cuat.numero}`} className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-md p-2 flex flex-col items-center justify-center text-center text-slate-400 text-xs">
-                      <Award className="w-5 h-5 text-slate-300 mb-1" strokeWidth={1.5} />
-                      <span className="font-semibold text-slate-700 text-[11px]">Bloque Completo</span>
-                      <span className="text-[9px] text-slate-400">Estadía Empresarial</span>
+                    <div key={`filler-${cuat.numero}`} className="flex-1 bg-slate-50 dark:bg-surface-0 border border-dashed border-slate-200 dark:border-border rounded-md p-2 flex flex-col items-center justify-center text-center text-slate-400 dark:text-text-muted text-xs">
+                      <Award className="w-5 h-5 text-slate-300 dark:text-text-muted mb-1" strokeWidth={1.5} />
+                      <span className="font-semibold text-slate-700 dark:text-text-primary text-[11px]">Bloque Completo</span>
+                      <span className="text-[9px] text-slate-400 dark:text-text-muted">Estadía Empresarial</span>
                     </div>
                   )}
                 </div>
@@ -355,8 +355,8 @@ export default function CurriculumMap({
           </div>
 
           {/* 4. FILA DE NIVELES DE INGLÉS (COLS 1-5) Y REQUISITOS CO-CURRICULARES / EGRESO (COLS 6-9) */}
-          <div className="pt-2 select-none border-t border-slate-100">
-            <div className="grid grid-cols-9 gap-1.5 mb-1 text-[9.5px] font-bold uppercase text-slate-400 tracking-wider">
+          <div className="pt-2 select-none border-t border-slate-100 dark:border-border">
+            <div className="grid grid-cols-9 gap-1.5 mb-1 text-[9.5px] font-bold uppercase text-slate-400 dark:text-text-muted tracking-wider">
               <div className="col-span-5 flex items-center space-x-2">
                 <span>Requisito de Inglés (1.º al 5.º)</span>
                 {auditData.exentoIngles && (
@@ -385,17 +385,17 @@ export default function CurriculumMap({
                     title="Haga clic para ver el detalle de intentos de inglés"
                   >
                     <div>
-                      <div className="font-mono text-[8.5px] text-slate-400 mb-0.5">
+                      <div className="font-mono text-[8.5px] text-slate-400 dark:text-text-muted mb-0.5">
                         LENG-{ing.clave}
                       </div>
-                      <div className="text-[10px] font-semibold text-slate-800 leading-tight">
+                      <div className="text-[10px] font-semibold text-slate-800 dark:text-text-primary leading-tight">
                         {formatTitle(ing.nombre)}
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100">
+                    <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100 dark:border-border">
                       <span className={`font-mono text-xs ${visual.gradeColor}`}>
-                        {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-slate-300 font-normal">--</span>}
+                        {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-slate-300 dark:text-text-muted font-normal">--</span>}
                       </span>
                       <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
@@ -405,7 +405,7 @@ export default function CurriculumMap({
                   </div>
                 );
               }) : (
-                <div className="col-span-5 flex items-center justify-center p-2.5 bg-slate-50 border border-slate-200 border-dashed rounded-md text-slate-400 text-xs font-medium">
+                <div className="col-span-5 flex items-center justify-center p-2.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border border-dashed rounded-md text-slate-400 dark:text-text-muted text-xs font-medium">
                   No aplica en Plan Ejecutivo
                 </div>
               )}
@@ -425,25 +425,25 @@ export default function CurriculumMap({
                   >
                     <div>
                       <div className="flex items-center justify-between mb-0.5">
-                        <span className="font-mono text-[8.5px] text-slate-400">
+                        <span className="font-mono text-[8.5px] text-slate-400 dark:text-text-muted">
                           {cocu.clave}
                         </span>
-                        <span className="px-1 py-0.2 text-[7.5px] font-bold text-purple-800 bg-purple-50 border border-purple-200 rounded" title="Requisito Co-Curricular / Titulación">
+                        <span className="px-1 py-0.2 text-[7.5px] font-bold text-purple-800 dark:text-purple-300 bg-purple-50 dark:bg-purple-500/20 border border-purple-200 dark:border-purple-500/30 rounded" title="Requisito Co-Curricular / Titulación">
                           CC
                         </span>
                       </div>
-                      <div className="text-[10px] font-semibold text-slate-800 leading-tight">
+                      <div className="text-[10px] font-semibold text-slate-800 dark:text-text-primary leading-tight">
                         {formatTitle(cocu.nombre)}
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100">
+                    <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100 dark:border-border">
                       <span className={`font-mono text-xs ${visual.gradeColor}`}>
                         {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
                           ? cocu.calificacion 
                           : cocu.calificacion === 'NO CURSÓ' 
-                          ? <span className="text-[9px] text-slate-400">NC</span> 
-                          : <span className="text-slate-300 font-normal">--</span>}
+                          ? <span className="text-[9px] text-slate-400 dark:text-text-muted">NC</span> 
+                          : <span className="text-slate-300 dark:text-text-muted font-normal">--</span>}
                       </span>
                       <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
@@ -459,17 +459,17 @@ export default function CurriculumMap({
       </div>
 
       {/* 5. PARTE INFERIOR: NOMENCLATURA Y ELECTIVAS (COLAPSABLE EN PANTALLA, COMPLETO EN IMPRESIÓN/PDF) */}
-      <div className="pt-2 border-t border-slate-200 select-none text-xs">
+      <div className="pt-2 border-t border-slate-200 dark:border-border select-none text-xs">
         {/* Barra compacta de control bajo demanda */}
-        <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 print:hidden">
-          <div className="flex items-center space-x-3 text-slate-600">
-            <span className="font-semibold text-xs text-slate-800">Referencias y Catálogo:</span>
-            <span className="text-[11px] text-slate-500">8 criterios de estados · 10 electivas del plan · Normativa</span>
+        <div className="flex items-center justify-between bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded-lg px-3 py-1.5 print:hidden">
+          <div className="flex items-center space-x-3 text-slate-600 dark:text-text-secondary">
+            <span className="font-semibold text-xs text-slate-800 dark:text-text-primary">Referencias y Catálogo:</span>
+            <span className="text-[11px] text-slate-500 dark:text-text-muted">8 criterios de estados · 10 electivas del plan · Normativa</span>
           </div>
           <button
             type="button"
             onClick={() => setIsAuxiliaryExpanded(!isAuxiliaryExpanded)}
-            className="inline-flex items-center space-x-1 px-2.5 py-0.5 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
+            className="inline-flex items-center space-x-1 px-2.5 py-0.5 bg-white dark:bg-surface-2 border border-slate-300 dark:border-border rounded text-xs font-semibold text-slate-700 dark:text-text-primary hover:bg-slate-50 dark:hover:bg-surface-3 transition-colors cursor-pointer shadow-2xs"
           >
             <span>{isAuxiliaryExpanded ? 'Ocultar Referencias' : 'Ver Nomenclatura y Electivas'}</span>
             {isAuxiliaryExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -480,73 +480,73 @@ export default function CurriculumMap({
         <div className={`${isAuxiliaryExpanded ? 'block' : 'hidden print:block'} mt-2.5`}>
           <div className="grid grid-cols-12 gap-3 text-xs">
             {/* Bloque Izquierdo: Nomenclatura de Estados */}
-            <div className="col-span-5 bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
-              <div className="text-[10px] font-bold uppercase text-slate-700 tracking-wider border-b border-slate-200 pb-1 flex items-center justify-between">
+            <div className="col-span-5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded-lg p-3 space-y-2">
+              <div className="text-[10px] font-bold uppercase text-slate-700 dark:text-text-primary tracking-wider border-b border-slate-200 dark:border-border pb-1 flex items-center justify-between">
                 <span>Criterios Oficiales de Auditoría</span>
-                <span className="text-[9px] font-normal text-slate-400 font-mono">UNID</span>
+                <span className="text-[9px] font-normal text-slate-400 dark:text-text-muted font-mono">UNID</span>
               </div>
 
               <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
                 <div className="flex items-center space-x-1.5 py-0.5">
                   <span className="w-2 h-2 rounded-full bg-[#059669] shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">ORD:</span>
-                  <span className="text-slate-600 text-[11px]">Acreditada 1.er intento</span>
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">ORD:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">Acreditada 1.er intento</span>
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
                   <span className="w-2 h-2 rounded-full bg-[#D97706] shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">REC:</span>
-                  <span className="text-slate-600 text-[11px]">Recursamiento</span>
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">REC:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">Recursamiento</span>
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
                   <span className="w-2 h-2 rounded-full bg-[#0284C7] shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">RE:</span>
-                  <span className="text-slate-600 text-[11px]">Regularización</span>
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">RE:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">Regularización</span>
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
                   <span className="w-2 h-2 rounded-full bg-pink-500 shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">CURS:</span>
-                  <span className="text-slate-600 text-[11px]">En Curso</span>
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">CURS:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">En Curso</span>
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
                   <span className="w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">ADEUDO:</span>
-                  <span className="text-slate-600 text-[11px]">Reprobada activa</span>
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">ADEUDO:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">Reprobada activa</span>
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
                   <span className="w-2 h-2 rounded-full bg-[#EA580C] shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">OMITIDA:</span>
-                  <span className="text-slate-600 text-[11px]">No inscrita</span>
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">OMITIDA:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">No inscrita</span>
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
                   <span className="w-2 h-2 rounded-full bg-[#7E22CE] shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">OU:</span>
-                  <span className="text-slate-600 text-[11px]">Oportunidad util.</span>
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">OU:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">Oportunidad util.</span>
                 </div>
 
                 <div className="flex items-center space-x-1.5 py-0.5">
-                  <span className="w-2 h-2 rounded-full bg-slate-400 border border-slate-300 shrink-0" />
-                  <span className="font-bold text-slate-800 font-mono text-[11px]">PEND:</span>
-                  <span className="text-slate-600 text-[11px]">Por cursar</span>
+                  <span className="w-2 h-2 rounded-full bg-slate-400 border border-slate-300 dark:border-border shrink-0" />
+                  <span className="font-bold text-slate-800 dark:text-text-primary font-mono text-[11px]">PEND:</span>
+                  <span className="text-slate-600 dark:text-text-secondary text-[11px]">Por cursar</span>
                 </div>
               </div>
 
               {/* Normativa */}
-              <div className="pt-1.5 border-t border-slate-200 text-[10px] text-slate-500 leading-tight">
-                * <strong className="text-slate-800">Normativa:</strong> Asignaturas en <strong className="text-rose-700">ADEUDO</strong> u <strong className="text-orange-700">OMITIDAS</strong> (1.º a 6.º) bloquean la Estadía.
+              <div className="pt-1.5 border-t border-slate-200 dark:border-border text-[10px] text-slate-500 dark:text-text-muted leading-tight">
+                * <strong className="text-slate-800 dark:text-text-primary">Normativa:</strong> Asignaturas en <strong className="text-rose-700 dark:text-rose-400">ADEUDO</strong> u <strong className="text-orange-700 dark:text-orange-400">OMITIDAS</strong> (1.º a 6.º) bloquean la Estadía.
               </div>
             </div>
 
             {/* Bloque Derecho: Asignaturas Electivas Multidisciplinares (10) */}
-            <div className="col-span-7 bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
-              <div className="text-[10px] font-bold uppercase text-slate-700 tracking-wider border-b border-slate-200 pb-1 flex items-center justify-between">
+            <div className="col-span-7 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border rounded-lg p-3 space-y-2">
+              <div className="text-[10px] font-bold uppercase text-slate-700 dark:text-text-primary tracking-wider border-b border-slate-200 dark:border-border pb-1 flex items-center justify-between">
                 <span>Electivas Multidisciplinares</span>
-                <span className="text-[9px] font-normal text-slate-400 font-mono">10 Opciones del Catálogo</span>
+                <span className="text-[9px] font-normal text-slate-400 dark:text-text-muted font-mono">10 Opciones del Catálogo</span>
               </div>
 
               {electivas.length > 0 ? (
@@ -558,26 +558,26 @@ export default function CurriculumMap({
                         activeFilter === 'OU' && elec.calificacion !== 'OU' ? 'opacity-20 grayscale' : 'opacity-100'
                       } ${
                         elec.calificacion === 'OU'
-                          ? 'bg-purple-50 border-purple-200 text-purple-900 font-bold'
+                          ? 'bg-purple-50 dark:bg-purple-500/15 border-purple-200 dark:border-purple-500/30 text-purple-900 dark:text-purple-300 font-bold'
                           : elec.cursada
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-900 font-bold' 
+                          ? 'bg-emerald-50 dark:bg-emerald-500/15 border-emerald-200 dark:border-emerald-500/30 text-emerald-900 dark:text-emerald-300 font-bold' 
                           : elec.cursando
-                          ? 'bg-pink-50 border-pink-200 text-pink-900 font-bold'
-                          : 'bg-white border-slate-200 text-slate-700'
+                          ? 'bg-pink-50 dark:bg-pink-500/15 border-pink-200 dark:border-pink-500/30 text-pink-900 dark:text-pink-300 font-bold'
+                          : 'bg-white dark:bg-surface-1 border-slate-200 dark:border-border text-slate-700 dark:text-text-secondary'
                       }`}
                     >
                       <div className="flex items-center space-x-1 min-w-0 pr-1">
-                        <span className="font-mono text-slate-400 text-[9px] shrink-0">{elec.subj}-{elec.crse}:</span>
+                        <span className="font-mono text-slate-400 dark:text-text-muted text-[9px] shrink-0">{elec.subj}-{elec.crse}:</span>
                         <span className="truncate text-[10px] font-medium">{formatTitle(elec.nombre)}</span>
                       </div>
                       <span className={`shrink-0 text-[8px] font-mono font-bold uppercase px-1 py-0.2 rounded ml-1 ${
                         elec.calificacion === 'OU'
-                          ? 'bg-purple-100 text-purple-800'
+                          ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300'
                           : elec.cursada
-                          ? 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300'
                           : elec.cursando
-                          ? 'bg-pink-100 text-pink-800'
-                          : 'bg-slate-100 text-slate-500'
+                          ? 'bg-pink-100 dark:bg-pink-500/20 text-pink-800 dark:text-pink-300'
+                          : 'bg-slate-100 dark:bg-surface-2 text-slate-500 dark:text-text-muted'
                       }`}>
                         {elec.calificacion === 'OU' ? 'OU' : elec.cursada ? `AC (${elec.calificacion})` : elec.cursando ? 'En Curso' : 'Disp.'}
                       </span>

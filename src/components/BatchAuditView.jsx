@@ -263,15 +263,15 @@ export default function BatchAuditView({
         </div>
 
         {/* Selector de Pestañas (Hoja 1 y Hoja 2) y Filtros */}
-        <div className="no-print print:hidden bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2.5">
+        <div className="no-print print:hidden bg-white dark:bg-surface-1 p-3 rounded-lg border border-slate-200 dark:border-border shadow-2xs space-y-2.5 transition-theme">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="bg-slate-50 p-1 rounded-md inline-flex items-center space-x-1 select-none border border-slate-200 w-full sm:w-auto overflow-x-auto">
+            <div className="bg-slate-50 dark:bg-surface-0 p-1 rounded-md inline-flex items-center space-x-1 select-none border border-slate-200 dark:border-border w-full sm:w-auto overflow-x-auto">
               <button
                 onClick={() => setActiveSheetTab('mapa')}
                 className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   activeSheetTab === 'mapa'
-                    ? 'bg-white border border-slate-200 shadow-2xs text-slate-900 font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'bg-white dark:bg-surface-2 border border-slate-200 dark:border-border shadow-2xs text-slate-900 dark:text-text-primary font-bold'
+                    : 'text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-2'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -282,8 +282,8 @@ export default function BatchAuditView({
                 onClick={() => setActiveSheetTab('cedula')}
                 className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   activeSheetTab === 'cedula'
-                    ? 'bg-white border border-slate-200 shadow-2xs text-slate-900 font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'bg-white dark:bg-surface-2 border border-slate-200 dark:border-border shadow-2xs text-slate-900 dark:text-text-primary font-bold'
+                    : 'text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-2'
                 }`}
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -291,13 +291,13 @@ export default function BatchAuditView({
               </button>
             </div>
 
-            <div className="text-[10px] font-mono font-medium text-slate-400 uppercase tracking-wider hidden md:block">
+            <div className="text-[10px] font-mono font-medium text-slate-400 dark:text-text-muted uppercase tracking-wider hidden md:block">
               {activeSheetTab === 'mapa' ? 'Validación Cuatrimestral' : 'Cédula Oficial y Trazabilidad'}
             </div>
           </div>
 
           {activeSheetTab === 'mapa' && (
-            <div className="border-t border-slate-100 pt-2">
+            <div className="border-t border-slate-100 dark:border-border pt-2">
               <FilterPills
                 activeFilter={activeMapFilter}
                 onFilterChange={setActiveMapFilter}
@@ -431,10 +431,10 @@ export default function BatchAuditView({
         </div>
 
         {/* Métricas de la Generación: KPI Ribbon Continuo */}
-        <div className="grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-slate-100 dark:divide-border bg-slate-50/50 dark:bg-surface-2/40">
+        <div className="grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-slate-100 dark:divide-border bg-slate-50/50 dark:bg-surface-1">
           {/* Card 1: Total Alumnos */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Expedientes Totales</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block mb-0.5">Expedientes Totales</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.total}</span>
               <span className="text-xs text-slate-500 dark:text-text-muted font-mono">alumnos</span>
@@ -444,7 +444,7 @@ export default function BatchAuditView({
 
           {/* Card 2: Aptos para Estadía */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Aptos para Estadía</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block mb-0.5">Aptos para Estadía</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.elegibles}</span>
               <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono">
@@ -459,7 +459,7 @@ export default function BatchAuditView({
 
           {/* Card 3: Adeudos Previos */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Adeudos (1.º - 6.º)</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block mb-0.5">Adeudos (1.º - 6.º)</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-2xl font-bold font-mono text-rose-600 dark:text-rose-400">{stats.conAdeudos}</span>
               <span className="text-xs text-slate-400 dark:text-text-muted">alumnos</span>
@@ -471,7 +471,7 @@ export default function BatchAuditView({
 
           {/* Card 4: Omitidas / En Curso */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Omitidas / En Curso</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block mb-0.5">Omitidas / En Curso</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.conOmitidas}</span>
               <span className="text-xs text-slate-400 dark:text-text-muted">alumnos</span>
@@ -481,7 +481,7 @@ export default function BatchAuditView({
 
           {/* Card 5: Promedio Generacional */}
           <div className="px-5 py-3.5">
-            <span className="text-[11px] font-medium text-slate-500 dark:text-text-secondary block mb-0.5">Promedio Generacional</span>
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-text-secondary block mb-0.5">Promedio Generacional</span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-2xl font-bold font-mono text-slate-900 dark:text-text-primary">{stats.promedioGeneracion}</span>
               <span className="text-xs text-slate-400 dark:text-text-muted font-mono">/ 10.0</span>
@@ -619,7 +619,7 @@ export default function BatchAuditView({
                     return (
                       <tr 
                         key={estudiante.matricula} 
-                        className="hover:bg-slate-50/75 dark:hover:bg-surface-2/60 transition-colors group"
+                        className="hover:bg-slate-50/75 dark:hover:bg-surface-2 transition-colors group"
                       >
                         {/* # */}
                         <td className="py-2.5 px-3 text-center text-[11px] font-mono text-slate-400 dark:text-text-muted">
@@ -731,7 +731,7 @@ export default function BatchAuditView({
                             <span className="text-slate-800 dark:text-text-primary font-semibold" title="1er Intento (Ordinario)">
                               {res?.aprobadasOrd || 0} <span className="text-[10px] text-slate-400 dark:text-text-muted font-sans font-normal">ord</span>
                             </span>
-                            <span className="text-slate-300 dark:text-border">/</span>
+                            <span className="text-slate-300 dark:text-slate-600">/</span>
                             <span className="text-slate-800 dark:text-text-primary font-semibold" title="Recuperación">
                               {(res?.aprobadasRec || 0) + (res?.aprobadasRe || 0)} <span className="text-[10px] text-slate-400 dark:text-text-muted font-sans font-normal">rec</span>
                             </span>
@@ -769,9 +769,9 @@ export default function BatchAuditView({
             </div>
 
             {/* Pie de tabla con conteo */}
-            <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+            <div className="px-4 py-2 bg-slate-50 dark:bg-surface-2 border-t border-slate-200 dark:border-border flex items-center justify-between text-xs text-slate-500 dark:text-text-secondary">
               <span>Mostrando {filteredAlumnos.length} de {alumnos.length} expedientes</span>
-              <span className="font-mono text-[11px] text-slate-400">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span>
+              <span className="font-mono text-[11px] text-slate-400 dark:text-text-muted">{batchData.carrera?.codigo || 'LIC-COFI-18'}</span>
             </div>
           </div>
         )}
