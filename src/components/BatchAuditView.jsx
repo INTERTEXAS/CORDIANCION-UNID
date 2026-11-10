@@ -94,7 +94,7 @@ export default function BatchAuditView({
       const audit = getResolvedAudit(item, batchData?.carrera);
       const res = audit?.resumen;
       if (!res) continue;
-      if (res.dictamenEstadia?.includes('APROBADO') || res.dictamenEstadia?.includes('ELEGIBLE')) {
+      if (res.dictamenEstadia?.includes('APROBADO') || res.dictamenEstadia?.includes('ELEGIBLE') || res.dictamenEstadia?.includes('REGULAR')) {
         elegibles++;
       }
       if (res.adeudos > 0) conAdeudos++;
@@ -143,7 +143,7 @@ export default function BatchAuditView({
         if (!res) return true;
 
         if (filterStatus === 'ELEGIBLE') {
-          return res.dictamenEstadia?.includes('APROBADO') || res.dictamenEstadia?.includes('ELEGIBLE');
+          return res.dictamenEstadia?.includes('APROBADO') || res.dictamenEstadia?.includes('ELEGIBLE') || res.dictamenEstadia?.includes('REGULAR');
         }
         if (filterStatus === 'ADEUDOS') {
           return res.adeudos > 0;
@@ -651,7 +651,29 @@ export default function BatchAuditView({
 
                         {/* Dictamen */}
                         <td className="py-2.5 px-3 text-center">
-                          {esElegible ? (
+                          {res?.esMaestria ? (
+                            res?.esRegularEnCurso ? (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700" title="Avance regular en posgrado">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                Regular Posgrado
+                              </span>
+                            ) : esElegible ? (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700" title="Elegible para Grado y Titulación">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                100% Aprobado
+                              </span>
+                            ) : tieneAdeudos ? (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700" title={`${res.adeudos} materia(s) en adeudo`}>
+                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                {res.adeudos} Adeudo{res.adeudos !== 1 ? 's' : ''}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700" title="En seguimiento posgrado">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                Seguimiento
+                              </span>
+                            )
+                          ) : esElegible ? (
                             <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700" title="Apto para Estadía">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                               Apto Estadía
@@ -679,7 +701,13 @@ export default function BatchAuditView({
                             <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                               <div 
                                 className={`h-full rounded-full transition-all duration-300 ${
-                                  esElegible ? 'bg-emerald-500' : tieneAdeudos ? 'bg-rose-500' : 'bg-amber-500'
+                                  res?.esMaestria && res?.esRegularEnCurso
+                                    ? 'bg-blue-500'
+                                    : esElegible 
+                                      ? 'bg-emerald-500' 
+                                      : tieneAdeudos 
+                                        ? 'bg-rose-500' 
+                                        : 'bg-amber-500'
                                 }`}
                                 style={{ width: `${Math.min(100, Math.max(0, porcentaje))}%` }}
                               />
@@ -712,7 +740,11 @@ export default function BatchAuditView({
 
                         {/* Inglés */}
                         <td className="py-2.5 px-3 text-center font-mono text-xs text-slate-700">
-                          {res?.inglesAcreditados ?? 0}/{totalNivelesIngles}
+                          {res?.esMaestria ? (
+                            <span className="text-[11px] text-slate-400 font-sans">N/A</span>
+                          ) : (
+                            `${res?.inglesAcreditados ?? 0}/${totalNivelesIngles}`
+                          )}
                         </td>
 
                         {/* Acción / Expediente */}

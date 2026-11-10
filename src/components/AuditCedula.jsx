@@ -35,10 +35,12 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
   }
 
   const { estudiante, carrera, resumen, incidencias = [], fechaConsulta } = auditData;
+  const esMaestria = Boolean(resumen?.esMaestria || estudiante?.modalidadDetectada === 'MAESTRÍA' || carrera?.codigo?.startsWith('MAE-'));
+  const esRegularEnCurso = Boolean(resumen?.esRegularEnCurso);
   const esElegible = resumen?.esElegibleEstadia;
   const totalMateriasMapa = resumen?.totalMateriasMapa ?? 37;
-  const totalNivelesIngles = resumen?.nivelesIngles ?? 5;
-  const totalRequisitosEgreso = resumen?.requisitosEgresoTotal ?? 4;
+  const totalNivelesIngles = resumen?.nivelesIngles ?? (esMaestria ? 0 : 5);
+  const totalRequisitosEgreso = resumen?.requisitosEgresoTotal ?? (esMaestria ? 0 : 4);
   const totalAprobadas = resumen?.totalAprobadas ?? ((resumen?.aprobadasOrd || 0) + (resumen?.aprobadasRec || 0) + (resumen?.aprobadasRe || 0));
 
   return (
@@ -128,18 +130,22 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
       <div className="grid grid-cols-12 gap-3.5 select-none">
         {/* Recuadro de Dictamen Normativo (5 cols) */}
         <div className={`col-span-5 rounded-lg border p-4 flex flex-col justify-between ${
-          esElegible 
+          esRegularEnCurso
+            ? 'bg-blue-50/80 border-blue-200 text-blue-950'
+            : esElegible 
             ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950' 
             : 'bg-rose-50/70 border-rose-200 text-rose-950'
         }`}>
           <div>
             <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider pb-1">
-              {esElegible ? (
+              {esRegularEnCurso ? (
+                <CheckCircle2 className="w-4 h-4 text-blue-700" />
+              ) : esElegible ? (
                 <ShieldCheck className="w-4 h-4 text-emerald-700" />
               ) : (
                 <ShieldAlert className="w-4 h-4 text-rose-700" />
               )}
-              <span>Dictamen Normativo Institucional</span>
+              <span>{esMaestria ? 'Dictamen Normativo de Posgrado' : 'Dictamen Normativo Institucional'}</span>
             </div>
 
             <div className="text-sm font-bold uppercase tracking-tight mt-1 leading-snug">
@@ -147,18 +153,27 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
             </div>
 
             <p className="text-xs mt-2 leading-relaxed opacity-90">
-              {esElegible 
-                ? 'Expediente académico con 100% de créditos acreditados, idioma inglés y requisitos de egreso completados sin adeudos. Acreditado para inscripción de Estadía Empresarial y Titulación.'
-                : (resumen.adeudosReqEgreso > 0 || resumen.omitidasReqEgreso > 0)
-                ? `Presenta ${resumen.adeudosReqEgreso || 0} adeudo(s) y/o ${resumen.omitidasReqEgreso || 0} omisión(es) en Requisitos Co-Curriculares/Egreso. Requiere solventar para acreditar dictamen.`
-                : `Presenta ${resumen.adeudosQ1toQ6} adeudo(s) y/o ${resumen.omitidasQ1toQ6} asignatura(s) omitida(s) en 1.º a 6.º cuatrimestre. Conforme al reglamento escolar, bloquea Estadía Empresarial.`
-              }
+              {esMaestria ? (
+                esRegularEnCurso
+                  ? `Estudiante de posgrado con avance regular de ${totalAprobadas}/${totalMateriasMapa} asignaturas acreditadas sin adeudos activos (Promedio: ${resumen?.promedioFormatted || 'S/C'}). Pendiente de cursar ciclo final para obtención de grado.`
+                  : esElegible
+                  ? 'Expediente académico de posgrado con 100% de asignaturas acreditadas sin adeudos. Cumple con los requisitos normativos para obtención de Grado Académico y Titulación de Maestría.'
+                  : (resumen.adeudos > 0)
+                  ? `Presenta ${resumen.adeudos} adeudo(s) en maestría con calificación menor a 7.0 reglamentario. Requiere solventar asignaturas no acreditadas.`
+                  : `Presenta ${resumen.omitidas || 0} asignatura(s) no cursada(s) de ciclos previos de posgrado.`
+              ) : (
+                esElegible 
+                  ? 'Expediente académico con 100% de créditos acreditados, idioma inglés y requisitos de egreso completados sin adeudos. Acreditado para inscripción de Estadía Empresarial y Titulación.'
+                  : (resumen.adeudosReqEgreso > 0 || resumen.omitidasReqEgreso > 0)
+                  ? `Presenta ${resumen.adeudosReqEgreso || 0} adeudo(s) y/o ${resumen.omitidasReqEgreso || 0} omisión(es) en Requisitos Co-Curriculares/Egreso. Requiere solventar para acreditar dictamen.`
+                  : `Presenta ${resumen.adeudosQ1toQ6} adeudo(s) y/o ${resumen.omitidasQ1toQ6} asignatura(s) omitida(s) en 1.º a 6.º cuatrimestre. Conforme al reglamento escolar, bloquea Estadía Empresarial.`
+              )}
             </p>
           </div>
 
           <div className="pt-2 mt-2 border-t border-current/15 text-[11px] flex items-center justify-between font-semibold">
-            <span>Validación: Coordinación de Licenciaturas</span>
-            <span>Estatus: {esElegible ? 'AUTORIZADO' : 'BLOQUEADO'}</span>
+            <span>Validación: {esMaestria ? 'Coordinación de Posgrados' : 'Coordinación de Licenciaturas'}</span>
+            <span>Estatus: {esRegularEnCurso ? 'REGULAR (EN CURSO)' : (esElegible ? 'AUTORIZADO' : 'BLOQUEADO')}</span>
           </div>
         </div>
 
@@ -167,7 +182,10 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
           <div className="text-[10px] font-bold uppercase text-slate-700 tracking-wider flex items-center justify-between border-b border-slate-200 pb-1 mb-2">
             <span>Resumen Cuantitativo de Avance</span>
             <span className="text-[9.5px] font-mono text-slate-400">
-              Plan {totalMateriasMapa} Asig. + {totalNivelesIngles} Inglés + {totalRequisitosEgreso} Egreso
+              {esMaestria 
+                ? `Plan ${totalMateriasMapa} Asig. (Posgrado · Sin Inglés ni EGEL requeridos)`
+                : `Plan ${totalMateriasMapa} Asig. + ${totalNivelesIngles} Inglés + ${totalRequisitosEgreso} Egreso`
+              }
             </span>
           </div>
 
@@ -187,20 +205,20 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
             <div className="bg-white p-2 rounded-md border border-slate-200 shadow-2xs">
               <span className="text-[9px] font-semibold text-slate-400 uppercase block mb-0.5">Inglés</span>
               <div className="flex items-baseline space-x-1 font-mono">
-                <span className="text-sm font-bold text-slate-900">{resumen.inglesAcreditados}</span>
-                <span className="text-[11px] text-slate-400">/{totalNivelesIngles}</span>
+                <span className="text-sm font-bold text-slate-900">{esMaestria ? 'N/A' : resumen.inglesAcreditados}</span>
+                <span className="text-[11px] text-slate-400">/{esMaestria ? '0' : totalNivelesIngles}</span>
               </div>
-              <span className="text-[8.5px] text-slate-400 block mt-0.5">Acreditados</span>
+              <span className="text-[8.5px] text-slate-400 block mt-0.5">{esMaestria ? 'No aplica' : 'Acreditados'}</span>
             </div>
 
             {/* 3. Requisitos Egreso */}
             <div className="bg-white p-2 rounded-md border border-slate-200 shadow-2xs">
               <span className="text-[9px] font-semibold text-slate-400 uppercase block mb-0.5">Req. Egreso</span>
               <div className="flex items-baseline space-x-1 font-mono">
-                <span className="text-sm font-bold text-slate-900">{resumen.coCurricularesAcreditados || 0}</span>
-                <span className="text-[11px] text-slate-400">/{totalRequisitosEgreso}</span>
+                <span className="text-sm font-bold text-slate-900">{esMaestria ? 'N/A' : (resumen.coCurricularesAcreditados || 0)}</span>
+                <span className="text-[11px] text-slate-400">/{esMaestria ? '0' : totalRequisitosEgreso}</span>
               </div>
-              <span className="text-[8.5px] text-slate-400 block mt-0.5">Co-curriculares</span>
+              <span className="text-[8.5px] text-slate-400 block mt-0.5">{esMaestria ? 'No aplica' : 'Co-curriculares'}</span>
             </div>
 
             {/* 4. Promedio General */}

@@ -479,6 +479,34 @@ assert(
   auditoriaMaestriaCatalogoAvanceInicial.cuatrimestres[1].materias[0]?.audit?.estado === 'PENDIENTE',
   'El mapa real de maestría omite solo lo anterior al avance y deja periodos futuros PENDIENTES'
 );
+
+// Caso Real: Estudiante de Maestría regular con 12 de 15 materias aprobadas (Cuatris 1 al 4)
+const materiasCuatri1a4 = carreraMaestriaCatalogo.mapa_json.cuatrimestres
+  .slice(0, 4)
+  .flatMap((cuat, idx) => cuat.materias.map(m => ({
+    subj: m.subj,
+    crse: m.crse,
+    periodo: `2024${(idx + 1) * 10}`,
+    grde: '90',
+    modalidad: 'RW'
+  })));
+
+const auditoriaMaestriaRegular = runAcademicAudit(
+  { matricula: '00312175', nombre: 'Aguilar Aguilar Yessica Estefania', programa: 'MAE-MADP-22', estatus: 'AC' },
+  materiasCuatri1a4,
+  carreraMaestriaCatalogo
+);
+
+assert(
+  auditoriaMaestriaRegular.resumen.esMaestria === true &&
+  auditoriaMaestriaRegular.resumen.esRegularEnCurso === true &&
+  auditoriaMaestriaRegular.resumen.dictamenEstadia === 'REGULAR EN CURSO / AVANCE SATISFACTORIO' &&
+  auditoriaMaestriaRegular.resumen.esElegibleEstadia === true &&
+  auditoriaMaestriaRegular.resumen.adeudos === 0 &&
+  auditoriaMaestriaRegular.resumen.omitidas === 0 &&
+  auditoriaMaestriaRegular.resumen.nivelesIngles === 0,
+  'En maestría, estudiante regular en curso no bloquea por omisiones de cuatris futuros ni exige requisitos de licenciatura'
+);
 const auditoriaLicenciatura60 = runAcademicAudit(
   { matricula: 'LIC-001', nombre: 'ALUMNO DE LICENCIATURA', programa: 'LIC-COFI-18' },
   [{ subj: 'LMFM', crse: 'HUS01', periodo: '202210', grde: '60', modalidad: 'RW' }],

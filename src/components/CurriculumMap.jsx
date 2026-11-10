@@ -248,29 +248,33 @@ export default function CurriculumMap({
           </div>
         </div>
 
-        {/* Dictamen Compacto de Estadía */}
+        {/* Dictamen Compacto de Estadía / Posgrado */}
         <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 shrink-0">
           <span className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">Dictamen:</span>
           <span className={`px-2.5 py-0.5 rounded text-xs font-semibold border flex items-center space-x-1.5 whitespace-nowrap ${
-            esElegible 
+            resumen?.esRegularEnCurso
+              ? 'bg-blue-50 text-blue-800 border-blue-200'
+              : esElegible 
               ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
               : 'bg-rose-50 text-rose-800 border-rose-200'
           }`}>
-            {esElegible ? (
+            {resumen?.esRegularEnCurso ? (
+              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+            ) : esElegible ? (
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             ) : (
               <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
             )}
-            <span>{resumen.dictamenEstadia}</span>
+            <span>{resumen?.dictamenEstadia}</span>
           </span>
         </div>
       </div>
 
       {/* CONTENEDOR RESPONSIVO PARA CUADRÍCULA DE CUATRIMESTRES */}
       <div className="overflow-x-auto pb-1 -mx-0.5 px-0.5">
-        <div className="min-w-[880px] space-y-2.5">
+        <div className={`${cuatrimestres.length === 5 ? 'min-w-[650px] max-w-4xl' : 'min-w-[880px]'} space-y-2.5`}>
           {/* 3. CUADRÍCULA DE LOS CUATRIMESTRES */}
-          <div className={`grid gap-1.5 select-none ${cuatrimestres.length === 10 ? 'grid-cols-10' : 'grid-cols-9'}`}>
+          <div className={`grid gap-1.5 select-none ${cuatrimestres.length === 10 ? 'grid-cols-10' : cuatrimestres.length === 5 ? 'grid-cols-5' : 'grid-cols-9'}`}>
             {cuatrimestres.map((cuat) => (
               <div key={cuat.numero} className="flex flex-col space-y-1.5">
                 {/* Cabecera del Cuatrimestre */}
@@ -279,7 +283,7 @@ export default function CurriculumMap({
                     {cuat.numero}.º Cuat.
                   </span>
                   <span className="text-[8px] font-mono text-slate-300 block whitespace-nowrap">
-                    {cuat.con_ingles ? 'Con Inglés' : 'Sin Inglés'}
+                    {cuat.con_ingles ? 'Con Inglés' : (cuatrimestres.length === 5 ? 'Posgrado' : 'Sin Inglés')}
                   </span>
                 </div>
 

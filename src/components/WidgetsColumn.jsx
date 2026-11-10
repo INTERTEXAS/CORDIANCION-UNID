@@ -4,6 +4,7 @@ import {
   UserCheck, 
   ShieldAlert, 
   ShieldCheck, 
+  CheckCircle2,
   History, 
   ChevronRight,
   SlidersHorizontal,
@@ -181,19 +182,31 @@ export default function WidgetsColumn({
             )}
           </div>
 
-          {/* 3. Dictamen de Estadía */}
+          {/* 3. Dictamen de Estadía o Posgrado */}
           <div className="bg-surface-1 rounded-2xl border border-border p-4 shadow-card transition-theme">
             <div className="flex items-center space-x-2.5 pb-3 border-b border-border-subtle">
-              <div className={`p-1.5 rounded-xl ${esElegible ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'}`}>
-                {esElegible ? (
+              <div className={`p-1.5 rounded-xl ${
+                resumen?.esMaestria && resumen?.esRegularEnCurso
+                  ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                  : esElegible 
+                    ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                    : 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'
+              }`}>
+                {resumen?.esMaestria && resumen?.esRegularEnCurso ? (
+                  <CheckCircle2 className="w-4 h-4" strokeWidth={1.8} />
+                ) : esElegible ? (
                   <ShieldCheck className="w-4 h-4" strokeWidth={1.8} />
                 ) : (
                   <ShieldAlert className="w-4 h-4" strokeWidth={1.8} />
                 )}
               </div>
               <div>
-                <h3 className="text-[13px] font-bold text-text-primary">Dictamen de Estadía</h3>
-                <p className="text-[11px] text-text-muted">Criterio normativo UNID</p>
+                <h3 className="text-[13px] font-bold text-text-primary">
+                  {resumen?.esMaestria ? 'Dictamen de Posgrado' : 'Dictamen de Estadía'}
+                </h3>
+                <p className="text-[11px] text-text-muted">
+                  {resumen?.esMaestria ? 'Criterio normativo Posgrados UNID' : 'Criterio normativo UNID'}
+                </p>
               </div>
             </div>
 
@@ -201,17 +214,25 @@ export default function WidgetsColumn({
               {resumen ? (
                 <div>
                   <div className={`p-3.5 rounded-xl text-center ${
-                    esElegible 
-                      ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300' 
-                      : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300'
+                    resumen?.esMaestria && resumen?.esRegularEnCurso
+                      ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-800 dark:text-blue-300'
+                      : esElegible 
+                        ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300' 
+                        : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300'
                   }`}>
                     <div className="text-[11px] font-extrabold uppercase tracking-tight">
                       {resumen.dictamenEstadia}
                     </div>
                     <p className="text-[11px] mt-1.5 opacity-80 leading-relaxed">
-                      {esElegible 
-                        ? 'Cumple con el 100% de asignaturas aprobadas sin adeudos ni omisiones del 1.º al 6.º cuatrimestre.' 
-                        : `Presenta ${resumen.adeudosQ1toQ6} adeudo(s) activo(s) y/o ${resumen.omitidasQ1toQ6} materia(s) omitida(s).`
+                      {resumen?.esMaestria
+                        ? (resumen.esRegularEnCurso
+                            ? `Avance regular de ${resumen.totalAprobadas}/${resumen.totalMateriasMapa} asignaturas sin adeudos activos.`
+                            : (esElegible
+                                ? 'Cumple con el 100% de asignaturas de maestría aprobadas sin adeudos.'
+                                : `Presenta ${resumen.adeudos || 0} adeudo(s) en maestría y/o ${resumen.omitidas || 0} omisión(es).`))
+                        : (esElegible 
+                            ? 'Cumple con el 100% de asignaturas aprobadas sin adeudos ni omisiones del 1.º al 6.º cuatrimestre.' 
+                            : `Presenta ${resumen.adeudosQ1toQ6} adeudo(s) activo(s) y/o ${resumen.omitidasQ1toQ6} materia(s) omitida(s).`)
                       }
                     </p>
                   </div>

@@ -513,7 +513,7 @@ export function extractStudentMetadata(text) {
     }
   }
 
-  const estMatch = text.match(/\)\s*[^\n|]*\|?\s*\b(EG|AC|BA|IN)\b/i) || text.match(/\b(EG|AC|BA|IN)\b/);
+  const estMatch = text.match(/\)\s*[^\n|]*\|?\s*\b(EG|AC|BA|IN)\b/i) || text.match(/(?:ESTATUS|STATUS|SITUACI[OÓ]N)\s*[:.]?\s*\b(EG|AC|BA|IN)\b/i);
   if (estMatch) estatus = estMatch[1].toUpperCase();
 
   return { matricula, nombre, programa, sede, estatus };
@@ -642,7 +642,7 @@ export async function parseBatchGroupPdf(pdf, carreras = CARRERAS_LOCAL) {
           nombre: name || `Estudiante ${expItem.str}`,
           programa: '',
           sede: 'CAM',
-          estatus: 'EG',
+          estatus: 'AC',
           registros: []
         };
         students.push(currentStudent);

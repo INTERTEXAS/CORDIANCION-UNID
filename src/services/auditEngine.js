@@ -389,7 +389,9 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     maxCuatrimestreAlcanzado = Math.max(maxCuatrimestreAlcanzado, 6);
   }
   if (estudiante.estatus === 'EG') {
-    maxCuatrimestreAlcanzado = cuatrimestres.length;
+    if (!esProgramaMaestria || maxCuatrimestreAlcanzado >= cuatrimestres.length) {
+      maxCuatrimestreAlcanzado = cuatrimestres.length;
+    }
   }
 
   // 4. Evaluar cada asignatura del mapa curricular oficial
@@ -604,9 +606,11 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
   });
 
   // 7. Evaluar Requisitos Co-Curriculares y de Titulación / Egreso (excluyendo materias ignoradas)
-  const reqEgresoBase = Array.isArray(carreraEfectiva?.requisitos_egreso) && carreraEfectiva.requisitos_egreso.length > 0
-    ? carreraEfectiva.requisitos_egreso
-    : (REQUISITOS_EGRESO || []);
+  const reqEgresoBase = esProgramaMaestria
+    ? (Array.isArray(carreraEfectiva?.requisitos_egreso) ? carreraEfectiva.requisitos_egreso : [])
+    : (Array.isArray(carreraEfectiva?.requisitos_egreso) && carreraEfectiva.requisitos_egreso.length > 0
+        ? carreraEfectiva.requisitos_egreso
+        : (REQUISITOS_EGRESO || []));
   const reqEgresoFiltrados = reqEgresoBase.filter(req => !esMateriaIgnorada(req));
 
   const auditedCoCurriculares = [];
@@ -717,36 +721,81 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
     }
   }
 
-  // 8. Dictamen Normativo Institucional y de Estadía
+  // 8. Dictamen Normativo Institucional y de Estadía / Grado de Posgrado
   const tieneAdeudosQ1toQ6 = (adeudosQ1toQ6.length > 0 || omitidasQ1toQ6.length > 0);
   const tieneAdeudosEgreso = (adeudosReqEgreso.length > 0 || omitidasReqEgreso.length > 0);
 
   let esElegibleEstadia = false;
   let dictamenEstadia = '';
+  let esRegularEnCurso = false;
 
-  if (tieneAdeudosEgreso) {
-    dictamenEstadia = 'NO ACREDITADO / ADEUDO EN REQUISITOS DE EGRESO (EGEL / CO-CURRICULAR)';
-    esElegibleEstadia = false;
-  } else if (tieneAdeudosQ1toQ6) {
-    dictamenEstadia = 'RETENIDO POR ADEUDO ACADÉMICO';
-    esElegibleEstadia = false;
+  if (esProgramaMaestria) {
+    const totalMateriasPlan = cuatrimestres.reduce((acc, cuat) => acc + cuat.materias.length, 0);
+    const totalAprobadas = totalAprobadasOrd + totalAprobadasRec + totalAprobadasRe;
+    const planCompletado = totalAprobadas >= totalMateriasPlan;
+    const tieneAdeudosPosgrado = totalAdeudos > 0;
+    const tieneOmitidasPosgrado = totalOmitidas > 0;
+
+    if (tieneAdeudosPosgrado) {
+      dictamenEstadia = 'RETENIDO POR ADEUDO EN POSGRADO';
+      esElegibleEstadia = false;
+      esRegularEnCurso = false;
+    } else if (tieneOmitidasPosgrado) {
+      dictamenEstadia = 'ASIGNATURAS OMITIDAS EN POSGRADO';
+      esElegibleEstadia = false;
+      esRegularEnCurso = false;
+    } else if (planCompletado) {
+      dictamenEstadia = '100% APROBADO / ELEGIBLE PARA GRADO Y TITULACIÓN';
+      esElegibleEstadia = true;
+      esRegularEnCurso = false;
+    } else {
+      // Estudiante en curso regular con avance satisfactorio y sin adeudos
+      dictamenEstadia = 'REGULAR EN CURSO / AVANCE SATISFACTORIO';
+      esElegibleEstadia = true;
+      esRegularEnCurso = true;
+    }
   } else {
-    dictamenEstadia = '100% APROBADO / ELEGIBLE PARA ESTADÍA Y TITULACIÓN';
-    esElegibleEstadia = true;
+    if (tieneAdeudosEgreso) {
+      dictamenEstadia = 'NO ACREDITADO / ADEUDO EN REQUISITOS DE EGRESO (EGEL / CO-CURRICULAR)';
+      esElegibleEstadia = false;
+    } else if (tieneAdeudosQ1toQ6) {
+      dictamenEstadia = 'RETENIDO POR ADEUDO ACADÉMICO';
+      esElegibleEstadia = false;
+    } else {
+      dictamenEstadia = '100% APROBADO / ELEGIBLE PARA ESTADÍA Y TITULACIÓN';
+      esElegibleEstadia = true;
+    }
   }
 
-  const materiasPrioritarias = [
-    ...adeudosQ1toQ6,
-    ...omitidasQ1toQ6,
-    ...adeudosReqEgreso,
-    ...omitidasReqEgreso
-  ].map(m => ({
-    clave: m.clave,
-    nombre: m.nombre,
-    cuatrimestre: m.cuatrimestre,
-    tipo: m.estado === 'ADEUDO' ? 'Adeudo Activo' : 'Materia Omitida',
-    conecta: Boolean(m.conecta)
-  }));
+  const materiasPrioritarias = esProgramaMaestria
+    ? [
+        ...cuatrimestres.flatMap(c => c.materias.filter(m => m.audit?.estado === 'ADEUDO').map(m => ({
+          clave: m.clave,
+          nombre: m.nombre,
+          cuatrimestre: c.numero,
+          tipo: 'Adeudo Activo',
+          conecta: Boolean(m.conecta)
+        }))),
+        ...cuatrimestres.flatMap(c => c.materias.filter(m => m.audit?.estado === 'OMITIDA').map(m => ({
+          clave: m.clave,
+          nombre: m.nombre,
+          cuatrimestre: c.numero,
+          tipo: 'Materia Omitida',
+          conecta: Boolean(m.conecta)
+        })))
+      ]
+    : [
+        ...adeudosQ1toQ6,
+        ...omitidasQ1toQ6,
+        ...adeudosReqEgreso,
+        ...omitidasReqEgreso
+      ].map(m => ({
+        clave: m.clave,
+        nombre: m.nombre,
+        cuatrimestre: m.cuatrimestre,
+        tipo: m.estado === 'ADEUDO' ? 'Adeudo Activo' : 'Materia Omitida',
+        conecta: Boolean(m.conecta)
+      }));
 
   // === ANÁLISIS DE COHERENCIA CURRICULAR ===
   const excludeClavesComunes = [
@@ -881,6 +930,8 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
       omitidasReqEgreso: omitidasReqEgreso.length,
       esElegibleEstadia,
       dictamenEstadia,
+      esMaestria: esProgramaMaestria,
+      esRegularEnCurso,
       promedio,
       promedioFormatted,
       materiasConNota,
