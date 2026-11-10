@@ -14,7 +14,8 @@ import {
   Scale,
   Compass,
   LogOut,
-  Crown
+  Crown,
+  FolderTree
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
