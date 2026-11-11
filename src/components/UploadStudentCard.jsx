@@ -133,10 +133,10 @@ export default function UploadStudentCard({ carrera, onUploadPdf, onLoadDemo, on
                 <button
                   type="button"
                   onClick={() => setIsDemoModalOpen(true)}
-                  className="inline-flex items-center space-x-1.5 text-xs text-text-muted hover:text-amber-400 font-medium transition-colors cursor-pointer group"
+                  className="inline-flex items-center space-x-1.5 text-xs text-text-muted hover:text-[#F2B705] font-medium transition-colors cursor-pointer group"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
-                  <span>¿No tienes un PDF a mano? <strong className="underline underline-offset-2 text-text-secondary group-hover:text-amber-400">Probar con un expediente demo</strong></span>
+                  <Sparkles className="w-3.5 h-3.5 text-[#F2B705] group-hover:rotate-12 transition-transform" />
+                  <span>¿No tienes un PDF a mano? <strong className="underline underline-offset-2 text-text-secondary group-hover:text-[#F2B705]">Probar con un expediente demo</strong></span>
                 </button>
               </div>
             )}

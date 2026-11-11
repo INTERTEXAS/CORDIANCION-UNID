@@ -629,7 +629,7 @@ export default function App() {
               type="button"
               onClick={() => setIsAssistantOpen(true)}
               aria-label="Abrir Asistente Académico Inteligente"
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-300/40 group"
+              className="flex items-center space-x-2 px-4 py-2.5 rounded-full bg-[#F2B705] hover:bg-[#d9a404] text-slate-950 font-bold text-xs shadow-lg shadow-[#F2B705]/25 hover:shadow-[#F2B705]/40 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-[#F2B705] group"
               title="Abrir Asistente Académico Inteligente (Chatbot)"
             >
               <Sparkles className="w-4 h-4 text-slate-950 animate-pulse" />

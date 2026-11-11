@@ -35,7 +35,7 @@ const SCENARIO_TAGS = {
   },
   'demo-2': {
     badge: 'Retenido en 1.º-6.º',
-    badgeClass: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    badgeClass: 'bg-[#F2B705]/10 text-[#F2B705] border-[#F2B705]/30',
     icon: ShieldAlert,
     color: 'amber',
     description: 'Presenta adeudo en materia troncal (CFT08) y Conecta omitida en cuatrimestre inicial.'
@@ -78,8 +78,8 @@ export default function DemoStudentsModal({ isOpen, onClose, onSelectStudent }) 
         {/* Encabezado */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface-2/40">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/20">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-[#F2B705]/15 border border-[#F2B705]/30 flex items-center justify-center text-[#F2B705] shadow-sm">
+              <Sparkles className="w-5 h-5 text-[#F2B705]" />
             </div>
             <div>
               <h2 id="demo-modal-title" className="text-base font-bold text-text-primary">
@@ -105,7 +105,7 @@ export default function DemoStudentsModal({ isOpen, onClose, onSelectStudent }) 
           {ALUMNOS_DEMO.map((demo, idx) => {
             const meta = SCENARIO_TAGS[demo.id] || {
               badge: 'Caso Demo',
-              badgeClass: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+              badgeClass: 'bg-[#F2B705]/10 text-[#F2B705] border-[#F2B705]/30',
               icon: GraduationCap,
               description: 'Expediente académico de prueba institucional.'
             };
@@ -118,16 +118,16 @@ export default function DemoStudentsModal({ isOpen, onClose, onSelectStudent }) 
                   onSelectStudent(demo);
                   onClose();
                 }}
-                className="w-full text-left p-4 rounded-2xl bg-surface-2/50 hover:bg-surface-2 border border-border hover:border-amber-500/40 transition-all duration-200 cursor-pointer group hover:shadow-lg hover:shadow-amber-500/5 relative overflow-hidden flex items-center justify-between gap-4"
+                className="w-full text-left p-4 rounded-2xl bg-surface-2/50 hover:bg-surface-2 border border-border hover:border-[#F2B705]/50 transition-all duration-200 cursor-pointer group hover:shadow-lg hover:shadow-[#F2B705]/5 relative overflow-hidden flex items-center justify-between gap-4"
               >
                 <div className="flex items-start space-x-3.5 min-w-0">
                   <div className="w-9 h-9 rounded-xl bg-surface-3 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
-                    <Icon className="w-4 h-4 text-text-secondary group-hover:text-amber-400 transition-colors" />
+                    <Icon className="w-4 h-4 text-text-secondary group-hover:text-[#F2B705] transition-colors" />
                   </div>
                   
                   <div className="min-w-0 space-y-1">
                     <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-                      <span className="text-xs font-mono font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono font-bold text-[#F2B705] bg-[#F2B705]/10 border border-[#F2B705]/20 px-2 py-0.5 rounded-md">
                         {demo.matricula}
                       </span>
                       <span className="text-sm font-bold text-text-primary truncate">
@@ -148,7 +148,7 @@ export default function DemoStudentsModal({ isOpen, onClose, onSelectStudent }) 
                   <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${meta.badgeClass} whitespace-nowrap`}>
                     {meta.badge}
                   </span>
-                  <div className="w-7 h-7 rounded-lg bg-surface-3/80 flex items-center justify-center text-text-muted group-hover:text-amber-400 group-hover:bg-amber-400/10 transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-surface-3/80 flex items-center justify-center text-text-muted group-hover:text-[#F2B705] group-hover:bg-[#F2B705]/10 transition-colors">
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
@@ -171,3 +171,4 @@ export default function DemoStudentsModal({ isOpen, onClose, onSelectStudent }) 
     </div>
   );
 }
+

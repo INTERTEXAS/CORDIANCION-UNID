@@ -144,15 +144,15 @@ export default function AcademicAssistant({ onClose, onOpenStudentAudit, onOpenB
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-violet-500 to-rose-400 text-white shadow-sm">
-              <Sparkles className="h-5 w-5" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#F2B705]/15 border border-[#F2B705]/30 text-[#F2B705] shadow-sm">
+              <Sparkles className="h-5 w-5 text-[#F2B705]" />
             </div>
             <div className="min-w-0">
-              <h2 id="academic-assistant-title" className="truncate text-sm font-bold">
-                Asistente académico
+              <h2 id="academic-assistant-title" className="truncate text-sm font-bold text-text-primary">
+                Asistente Académico UNID
               </h2>
               <p className="truncate text-[11px] text-text-muted">
-                Todas las carreras · Gemini Flash
+                Control y Auditoría Escolar
               </p>
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function AcademicAssistant({ onClose, onOpenStudentAudit, onOpenB
               >
                 <div className={`relative max-w-[88%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed select-text ${
                   message.role === 'user'
-                    ? 'rounded-br-md bg-accent text-white'
+                    ? 'rounded-br-md bg-[#F2B705] text-slate-950 font-medium shadow-xs'
                     : 'rounded-bl-md bg-surface-2 text-text-primary'
                 }`}>
                   {message.content}
@@ -434,7 +434,7 @@ export default function AcademicAssistant({ onClose, onOpenStudentAudit, onOpenB
               type="submit"
               disabled={!input.trim() || isSending}
               aria-label="Enviar mensaje"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F2B705] hover:bg-[#d9a404] text-slate-950 font-bold transition-all disabled:cursor-not-allowed disabled:opacity-40 shadow-xs"
             >
               {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>

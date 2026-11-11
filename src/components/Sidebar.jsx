@@ -215,16 +215,16 @@ export default function Sidebar({
               <button
                 type="button"
                 onClick={() => setIsDemoModalOpen(true)}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent hover:from-amber-500/20 hover:to-amber-500/10 border border-amber-500/25 hover:border-amber-500/40 text-amber-300 hover:text-amber-200 transition-all text-xs font-semibold cursor-pointer group shadow-2xs"
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#F2B705]/10 hover:bg-[#F2B705]/15 border border-[#F2B705]/25 hover:border-[#F2B705]/40 text-[#F2B705] transition-all text-xs font-semibold cursor-pointer group shadow-2xs"
                 title="Cargar expediente institucional de prueba (5 casos disponibles)"
               >
                 <div className="flex items-center space-x-2.5 min-w-0">
-                  <div className="w-6 h-6 rounded-lg bg-amber-400/15 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <div className="w-6 h-6 rounded-lg bg-[#F2B705]/15 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-3.5 h-3.5 text-[#F2B705]" />
                   </div>
                   <span className="truncate">Expedientes Demo</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 group-hover:bg-amber-500/30 shrink-0">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#F2B705]/20 text-[#F2B705] group-hover:bg-[#F2B705]/30 shrink-0">
                   5 casos
                 </span>
               </button>
