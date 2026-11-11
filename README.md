@@ -15,7 +15,7 @@ La solución opera tanto en modalidad de **expediente individual** como mediante
 - Elegibilidad para Estadía Empresarial (7.º y 9.º cuatrimestres).
 - Verificación de avance crediticio y asignaturas acreditadas vs. adeudadas.
 - Cumplimiento de los 5 niveles obligatorios de idioma inglés o acreditación global.
-- Requisitos co-curriculares, talleres de titulación y examen EGEL.
+- Validación de requisitos curriculares oficiales (con exclusión de cursos co-curriculares obsoletos no requeridos para titulación).
 - Trazabilidad forense de recursamientos, regularizaciones y regularidad académica.
 
 ---
@@ -73,30 +73,34 @@ El sistema integra un asistente conversacional de coordinación (`AcademicAssist
 - **Memoria de Contexto Continuo**: Reconoce automáticamente referencias a alumnos previos en el historial de la conversación cuando el usuario selecciona opciones directas como *"Resumen general"*, *"Adeudos y materias pendientes"*, *"Materias aprobadas"* o *"Carrera y ciclo escolar"*.
 - **Directiva Estricta de Cero Emojis**: Todo el asistente (prompts del modelo, respuestas generadas, botones y componentes visuales) opera bajo un estándar sobrio institucional, prescindiendo por completo de emojis y empleando viñetas y tipografía corporativa.
 
-### 5. Catálogo de Programas Académicos (14 Programas)
-El sistema integra y sincroniza 14 programas institucionales organizados por coordinación:
+### 5. Catálogo Oficial de Programas Académicos (18 Programas)
+El sistema integra y sincroniza 18 programas institucionales (14 Licenciaturas y 4 Maestrías PAC) organizados por coordinación académica mediante distintivos de color semánticos en el menú desplegable:
 
-**Coordinación: Laura Angélica Ara Angulo (Ciencias Económico-Administrativas)**
-1. **LIC-COFI-18**: Licenciatura en Contabilidad y Finanzas (Mixto) - Federal
-2. **LIC-DAEM-18**: Licenciatura en Administración y Dirección Empresarial - Plan 2018 Dual
-3. **LIC-EJCO-17**: Licenciatura en Contabilidad Financiera - Plan 202160 Ejecutivo Modular
+**Coordinación: Laura Angélica Ara Angulo (Ciencias Económico-Administrativas) · Color Púrpura**
+1. **LIC-COFI-18**: Licenciatura en Contabilidad y Finanzas (Mixto) - Federal (37 materias)
+2. **LIC-DAEM-18**: Licenciatura en Administración y Dirección Empresarial - Plan 2018 Dual (46 materias)
+3. **LIC-EJCO-17**: Licenciatura en Contabilidad Financiera - Plan 202160 Ejecutivo Modular (44 materias)
 
-**Coordinación: Yessica Inurreta Pavón (Arquitectura, Derecho, Educación y Deporte)**
-4. **LIC-ARQU-18**: Licenciatura en Arquitectura (Mixto) - Federal
-5. **LIC-DERE-18**: Licenciatura en Derecho y Ciencias Jurídicas (Mixto) - Federal
-6. **LIC-EJDE-17**: Licenciatura Ejecutiva en Derecho (Modular) - Federal
-7. **LIC-EJED-17**: Licenciatura Ejecutiva en Educación y Tecnologías para el Aprendizaje (Modular) - Federal
-8. **LIC-EDFI-18**: Licenciatura en Educación Física, Recreación y Deporte (Mixto) - Federal
+**Coordinación: Yessica Inurreta Pavón (Arquitectura, Derecho, Educación y Deporte) · Color Naranja**
+4. **LIC-ARQU-18**: Licenciatura en Arquitectura (Mixto) - Federal (37 materias)
+5. **LIC-DERE-18**: Licenciatura en Derecho y Ciencias Jurídicas (Mixto) - Federal (37 materias)
+6. **LIC-EJDE-17**: Licenciatura Ejecutiva en Derecho (Modular) - Federal (44 materias)
+7. **LIC-EJED-17**: Licenciatura Ejecutiva en Educación y Tecnologías para el Aprendizaje (Modular) - Federal (44 materias)
+8. **LIC-EDFI-18**: Licenciatura en Educación Física, Recreación y Deporte (Mixto) - Federal (37 materias)
 
-**Coordinación: Avelina García Romeo (Diseño, Administración, Mercadotecnia e Ingeniería)**
-9. **LIC-DSGD-18**: Licenciatura en Diseño Gráfico Digital (Mixto) - Federal
-10. **LIC-EJAD-17**: Licenciatura en Administración de Empresas (Mixto) - Federal
-11. **LIC-MEES-18**: Licenciatura en Mercadotecnia Estratégica (Mixto) - Federal
-12. **LIC-SYSC-18**: Licenciatura en Ingeniería de Software y Sistemas Computacionales (Mixto) - Federal
-13. **LIC-ADME-18**: Licenciatura en Administración Empresarial (Mixto) - Federal
+**Coordinación: Avelina García Romeo (Diseño, Administración, Mercadotecnia e Ingeniería) · Color Rosa**
+9. **LIC-DSGD-18**: Licenciatura en Diseño Gráfico Digital (Mixto) - Federal (37 materias)
+10. **LIC-EJAD-17**: Licenciatura en Administración de Empresas (Mixto) - Federal (49 materias)
+11. **LIC-MEES-18**: Licenciatura en Mercadotecnia Estratégica (Mixto) - Federal (37 materias)
+12. **LIC-SYSC-18**: Licenciatura en Ingeniería de Software y Sistemas Computacionales (Mixto) - Federal (37 materias)
+13. **LIC-ADME-18**: Licenciatura en Administración Empresarial (Mixto) - Federal (37 materias)
+14. **LIC-CTCO-18**: Licenciatura en Ciencias y Técnicas de la Comunicación (Mixto) - Federal (37 materias)
 
-**Programa adicional sin coordinación asignada**
-14. **LIC-CTCO-18**: Licenciatura en Ciencias y Técnicas de la Comunicación (Mixto) - Federal
+**Coordinación de Posgrados y Maestrías (PAC) · Color Verde Esmeralda**
+15. **MAE-EDUP-22**: Maestría en Educación (PAC) - Plan 2022 (15 materias)
+16. **MAE-MADP-22**: Maestría en Administración de Negocios (PAC) - Plan 2022 (15 materias)
+17. **MAE-MDEC-20**: Maestría en Derecho Constitucional y Amparo (Mixta) - Plan 2020 (15 materias)
+18. **MAE-MERP-22**: Maestría en Mercadotecnia y Medios Digitales (PAC) - Plan 2022 (15 materias)
 
 ---
 
@@ -110,7 +114,14 @@ El sistema incorpora un diseño de alta densidad de información (*Swiss High-De
 - **Buscador en Tiempo Real**: Filtrado instantáneo por nombre o matrícula.
 - **Generación de Sábana Ejecutiva Oficial en PDF**: Exportación lista para firma de actas o archivo institucional.
 
-### 2. Hoja 1: Mapa Curricular Interactivo (Curriculum Map)
+### 2. Modo Plan Oficial Base y Pestañas Dinámicas
+- **Explorador Curricular Inmediato**: Al ingresar o cambiar de carrera en la barra superior (sin kárdex cargado), el sistema despliega de inmediato la Malla Curricular Oficial completa de la carrera con sus cuatrimestres, claves, créditos y distintivos Conecta.
+- **Pestañas Adaptables por Contexto**:
+  - *Modo Consulta:* Pestañas `Malla Curricular Oficial` y `Auditar Alumno (Subir Kárdex)`.
+  - *Modo Auditoría:* Conmuta automáticamente a `Hoja 1: Mapa de Ejecución` y `Hoja 2: Cédula de Auditoría` una vez cargado el expediente.
+  - *Acción Rápida:* Botón `[ ⬆ Auditar Kárdex ]` en la cintilla superior del mapa para cargar el kárdex sobre ese plan con 1 clic.
+
+### 3. Hoja 1: Mapa Curricular Interactivo (Curriculum Map)
 - **Principio de Diseño por Excepción**: Las asignaturas acreditadas en ordinario presentan un aspecto limpio y armónico sin saturar con insignias innecesarias.
 - **Tipografía Académica en Title Case**: Los nombres de las materias se formatean automáticamente de mayúsculas sostenidas a mayúsculas/minúsculas legibles.
 - **Codificación Visual Semántica**:
@@ -118,15 +129,20 @@ El sistema incorpora un diseño de alta densidad de información (*Swiss High-De
   - Borde punteado en gris frío para materias pendientes (`PEND`).
   - Acentos ámbar para recursamientos acreditados (`REC`).
   - Alerta roja destacada para materias en adeudo activo (`ADEUDO`).
+- **Requisito de Inglés Curricular (1.º al 5.º)**: Fila transversal dedicada que audita los 5 niveles obligatorios de idioma inglés o la exención formal (`LENG-0008`).
 - **Barra de Nomenclatura y Catálogo de Electivas Bajo Demanda**: Se mantiene colapsada durante la consulta cotidiana para maximizar el área de trabajo y se auto-expande automáticamente al imprimir o exportar a PDF.
 
-### 3. Hoja 2: Cédula Oficial de Auditoría y Trazabilidad (Audit Cédula)
-- **Resumen Cuantitativo de 4 KPIs Dominantes**: Avance de Plan, Inglés, Requisitos Co-curriculares y Promedio General ponderado.
+### 4. Hoja 2: Cédula Oficial de Auditoría y Trazabilidad (Audit Cédula)
+- **Resumen Cuantitativo de 3 KPIs Dominantes**: Avance de Plan (aprobadas/total), Inglés Curricular y Promedio General ponderado.
 - **Resumen Técnico en 1 Línea**: Desglose consolidado de 1.ª oportunidad, recursadas, adeudos y materias en curso.
 - **Dictamen Normativo Institucional**: Redacción ejecutiva certificada en 2 renglones concisos con estatus explícito (`AUTORIZADO` / `RETENIDO`).
 - **Bitácora Forense de Incidencias**: Trazabilidad detallada de materias que requirieron múltiples intentos o regularización, indicando periodos y calificaciones.
 
-### 4. Micro-Cockpit de Telemetría Escolar en Sidebar
+### 5. Botón Flotante (FAB) de Asistente Académico Inteligente
+- **Acceso Siempre Visible**: Botón flotante dorado en la esquina inferior derecha (`Asistente UNID`) que abre el chatbot institucional en una ventana emergente limpia y responsive.
+- **Búsquedas Híbridas Seguras**: Consultas directas a Neon PostgreSQL para proteger la privacidad de los estudiantes.
+
+### 6. Micro-Cockpit de Telemetría Escolar en Sidebar
 - **Micro-tarjeta Interactiva**: Ubicada en el pie de la barra lateral con pulso en vivo (`animate-ping`) verde esmeralda para el pooler de Neon PostgreSQL.
 - **Acceso Directo con 1 Clic**: Al presionar la tarjeta, se abre de inmediato el gestor de base de datos sin necesidad de navegar a través de otras pantallas.
 - **Firma de Compilación Institucional**: Muestra el campus activo (`Sede CAM`) y la versión de compilación (`v2026.1 · MIXTO`) en tipografía técnica monospaciada.
