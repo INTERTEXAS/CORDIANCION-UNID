@@ -21,6 +21,8 @@ import { CARRERAS_LOCAL } from './data/carrerasData';
 import { 
   FileText, 
   Layers, 
+  BookOpen,
+  Upload,
   AlertCircle, 
   CheckCircle2,
   X,
@@ -549,35 +551,53 @@ export default function App() {
                 {/* Tab Switcher + Filters */}
                 <div className="no-print print:hidden bg-white dark:bg-[#111827] p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-2.5 transition-theme">
                   <div className="flex items-center justify-between">
-                    <div className="bg-slate-50 dark:bg-slate-900/90 p-1 rounded-lg inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full border border-slate-200 dark:border-slate-800">
+                    <div className="bg-slate-100/90 dark:bg-slate-900/90 p-1 rounded-xl inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full border border-slate-200/80 dark:border-slate-800">
                       <button
                         onClick={() => setActiveTab('mapa')}
-                        className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap outline-hidden focus:outline-hidden focus-visible:ring-2 focus-visible:ring-accent ${
                           activeTab === 'mapa'
-                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-bold'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold border border-slate-200/80 dark:border-slate-700'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/40 border border-transparent'
                         }`}
                       >
-                        <Layers className="w-3.5 h-3.5 text-primary-gold" />
-                        <span>Hoja 1: Mapa Curricular</span>
+                        {auditData ? (
+                          <>
+                            <Layers className="w-3.5 h-3.5 text-primary-gold" />
+                            <span>Hoja 1: Mapa de Ejecución</span>
+                          </>
+                        ) : (
+                          <>
+                            <BookOpen className="w-3.5 h-3.5 text-primary-gold" />
+                            <span>Malla Curricular Oficial</span>
+                          </>
+                        )}
                       </button>
 
                       <button
                         onClick={() => setActiveTab('cedula')}
-                        className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap outline-hidden focus:outline-hidden focus-visible:ring-2 focus-visible:ring-accent ${
                           activeTab === 'cedula'
-                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-bold'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold border border-slate-200/80 dark:border-slate-700'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/40 border border-transparent'
                         }`}
                       >
-                        <FileText className="w-3.5 h-3.5 text-primary-gold" />
-                        <span>Hoja 2: Cédula de Auditoría</span>
+                        {auditData ? (
+                          <>
+                            <FileText className="w-3.5 h-3.5 text-primary-gold" />
+                            <span>Hoja 2: Cédula de Auditoría</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-3.5 h-3.5 text-primary-gold" />
+                            <span>Auditar Alumno (Subir Kárdex)</span>
+                          </>
+                        )}
                       </button>
                     </div>
 
                     <div className="text-[10px] font-mono font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden xl:block">
-                      {activeTab === 'mapa' && (auditData ? 'Validación Cuatrimestral y Asignaturas' : 'Plan Oficial de Estudios (Modo Consulta)')}
-                      {activeTab === 'cedula' && (auditData ? 'Cédula Oficial y Trazabilidad' : 'Auditoría Pendiente de Carga')}
+                      {activeTab === 'mapa' && (auditData ? 'Validación Cuatrimestral y Asignaturas' : 'Plan Vigente Oficial (Modo Consulta)')}
+                      {activeTab === 'cedula' && (auditData ? 'Cédula Oficial y Trazabilidad' : 'Carga de Expediente Académico')}
                     </div>
                   </div>
 

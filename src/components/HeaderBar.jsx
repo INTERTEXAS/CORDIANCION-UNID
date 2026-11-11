@@ -67,6 +67,20 @@ const COORDINADORAS_CONFIG = [
     containerClass: 'bg-orange-50/50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/40',
     headerClass: 'text-orange-700 dark:text-orange-300 font-bold bg-orange-100 dark:bg-orange-900/40',
     itemClass: 'hover:bg-orange-50 dark:hover:bg-orange-900/20 border-orange-200 dark:border-orange-800/40'
+  },
+  {
+    id: 'maestrias',
+    nombreDisplay: 'COORDINACIÓN DE POSGRADOS Y MAESTRÍAS',
+    icon: GraduationCap,
+    areaLabel: 'Programas de Maestría PAC (Educación, Negocios, Derecho, Mercadotecnia)',
+    matches: (carrera) => {
+      const codigo = (carrera?.codigo || '').toUpperCase();
+      const nombre = (carrera?.nombre || '').toUpperCase();
+      return codigo.startsWith('MAE-') || codigo.includes('MAE') || nombre.includes('MAESTRÍA') || nombre.includes('MAESTRIA');
+    },
+    containerClass: 'bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-300/80 dark:border-emerald-700/50',
+    headerClass: 'text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-100/90 dark:bg-emerald-900/50',
+    itemClass: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800/50'
   }
 ];
 
@@ -99,10 +113,10 @@ export default function HeaderBar({
   const carrerasSinCoordinacion = (carreras || []).filter(carrera => !carrerasAgrupadas.has(carrera.codigo));
   if (carrerasSinCoordinacion.length > 0) {
     gruposCoordinadoras.push({
-      id: 'sin-coordinacion',
-      nombreDisplay: 'SIN COORDINACIÓN ASIGNADA',
+      id: 'otros-programas',
+      nombreDisplay: 'PROGRAMAS ADICIONALES DEL CATÁLOGO',
       icon: FolderTree,
-      areaLabel: 'Programas adicionales del catálogo',
+      areaLabel: 'Catálogo Institucional UNID',
       carreras: carrerasSinCoordinacion,
       containerClass: 'bg-slate-50/50 dark:bg-slate-950/20 border-slate-200 dark:border-slate-800/40',
       headerClass: 'text-slate-700 dark:text-slate-300 font-bold bg-slate-100 dark:bg-slate-900/40',
