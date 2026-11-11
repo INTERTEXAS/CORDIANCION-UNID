@@ -29,7 +29,7 @@ La solución opera tanto en modalidad de **expediente individual** como mediante
   - **Sincronización Transparente con Neon DB**: Cada usuario autenticado mediante Microsoft 365 es verificado dinámicamente contra la tabla `usuarios` en Neon PostgreSQL para determinar sus facultades operativas:
     - `ADMIN_SISTEMA`: Control total técnico, telemetría, gestión de hardware certificado y administración de colaboradores.
     - `COORDINADOR`: Dictamen curricular, firma oficial de cédulas y guardado de auditorías en su área académica asignada (con facultad de auditar y consultar cualquier carrera de la sede para soporte en ventanilla).
-    - `CONTROL_ESCOLAR`: Supervisión global de los 14 programas, descarga masiva de sábanas ejecutivas y acceso al archivo histórico de ciclos.
+    - `CONTROL_ESCOLAR`: Supervisión global de los 18 programas (14 Licenciaturas y 4 Maestrías PAC), descarga masiva de sábanas ejecutivas y acceso al archivo histórico de ciclos.
     - `DIRECTOR`: Supervisión ejecutiva y validación directiva a nivel sede.
     - `CONSULTA`: Modo lectura para docentes o personal administrativo, con bloqueo estricto de eliminación o depuración de auditorías históricas.
   - **Ciclo de Vida de Personal (Altas, Bajas y Relevos)**:
@@ -178,7 +178,7 @@ npm run test
 1. **`test-health.mjs` (8 Pruebas de Salud)**:
    - Conexión a Neon PostgreSQL mediante pooler seguro.
    - Verificación de esquema y tablas requeridas (`auditoria_grupal`, `auditorias_estudiantes`, `carreras`, `usuarios`, `dispositivos_autorizados`, `auditoria_accesos_dev`).
-   - Sincronización del catálogo de los 14 programas.
+   - Sincronización del catálogo completo de los 18 programas (14 Licenciaturas y 4 Maestrías PAC).
    - Procesamiento del motor de auditoría con expedientes sintéticos.
    - Ciclo completo de inserción, consulta y depuración de lotes de prueba.
    - Verificación de credenciales de Super Administrador.
