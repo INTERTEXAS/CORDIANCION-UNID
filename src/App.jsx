@@ -441,7 +441,6 @@ export default function App() {
           onToggle={() => setIsSidebarOpen(prev => !prev)}
           batchCount={batchData?.alumnos?.length || 0}
           onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
-          onLoadDemo={handleLoadDemo}
         />
       </div>
 
@@ -540,7 +539,6 @@ export default function App() {
                 <UploadStudentCard 
                   carrera={carreraSeleccionada}
                   onUploadPdf={handleUploadPdf}
-                  onLoadDemo={handleLoadDemo}
                   onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
                 />
               )
@@ -549,7 +547,6 @@ export default function App() {
               <UploadStudentCard 
                 carrera={carreraSeleccionada}
                 onUploadPdf={handleUploadPdf}
-                onLoadDemo={handleLoadDemo}
                 onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
               />
             ) : (

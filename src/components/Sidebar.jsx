@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   GraduationCap, 
   ShieldCheck, 
@@ -11,11 +11,9 @@ import {
   PanelLeftClose,
   Users,
   Database,
-  ChevronRight,
-  Sparkles
+  ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import DemoStudentsModal from './DemoStudentsModal';
 
 export default function Sidebar({ 
   dbStatus, 
@@ -24,10 +22,8 @@ export default function Sidebar({
   isOpen = true, 
   onToggle,
   batchCount = 0,
-  onOpenNeonManager,
-  onLoadDemo
+  onOpenNeonManager
 }) {
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const { user, isSuperAdmin } = useAuth();
   const esSuperAdmin = Boolean(
     isSuperAdmin || 
@@ -209,33 +205,7 @@ export default function Sidebar({
             );
           })}
 
-          {/* Botón Profesional de Expedientes Demo */}
-          {onLoadDemo && (
-            <div className="pt-3 mt-1 border-t border-white/[0.06]">
-              <button
-                type="button"
-                onClick={() => setIsDemoModalOpen(true)}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#F2B705]/10 hover:bg-[#F2B705]/15 border border-[#F2B705]/25 hover:border-[#F2B705]/40 text-[#F2B705] transition-all text-xs font-semibold cursor-pointer group shadow-2xs"
-                title="Cargar expediente institucional de prueba (5 casos disponibles)"
-              >
-                <div className="flex items-center space-x-2.5 min-w-0">
-                  <div className="w-6 h-6 rounded-lg bg-[#F2B705]/15 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <Sparkles className="w-3.5 h-3.5 text-[#F2B705]" />
-                  </div>
-                  <span className="truncate">Expedientes Demo</span>
-                </div>
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#F2B705]/20 text-[#F2B705] group-hover:bg-[#F2B705]/30 shrink-0">
-                  5 casos
-                </span>
-              </button>
 
-              <DemoStudentsModal
-                isOpen={isDemoModalOpen}
-                onClose={() => setIsDemoModalOpen(false)}
-                onSelectStudent={onLoadDemo}
-              />
-            </div>
-          )}
 
           {/* Future modules (disabled) */}
           <div className="pt-5 px-3 pb-2 text-[10px] font-semibold text-slate-600 uppercase tracking-[0.12em]">

@@ -1,11 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { Upload, Database, FileUp, Sparkles } from 'lucide-react';
-import DemoStudentsModal from './DemoStudentsModal';
+import { Upload, Database, FileUp } from 'lucide-react';
 
-export default function UploadStudentCard({ carrera, onUploadPdf, onLoadDemo, onOpenNeonManager }) {
+export default function UploadStudentCard({ carrera, onUploadPdf, onOpenNeonManager }) {
   const fileInputRef = useRef(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -127,28 +125,9 @@ export default function UploadStudentCard({ carrera, onUploadPdf, onLoadDemo, on
                 </button>
               )}
             </div>
-
-            {onLoadDemo && (
-              <div className="pt-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => setIsDemoModalOpen(true)}
-                  className="inline-flex items-center space-x-1.5 text-xs text-text-muted hover:text-[#F2B705] font-medium transition-colors cursor-pointer group"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#F2B705] group-hover:rotate-12 transition-transform" />
-                  <span>¿No tienes un PDF a mano? <strong className="underline underline-offset-2 text-text-secondary group-hover:text-[#F2B705]">Probar con un expediente demo</strong></span>
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
-
-      <DemoStudentsModal
-        isOpen={isDemoModalOpen}
-        onClose={() => setIsDemoModalOpen(false)}
-        onSelectStudent={onLoadDemo}
-      />
     </div>
   );
 }
