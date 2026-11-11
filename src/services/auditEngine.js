@@ -342,9 +342,9 @@ export function runAcademicAudit(estudiante, registros = [], carrera = CARRERAS_
 
   const primerPeriodoAlumno = normalizedRecords.length > 0 ? normalizedRecords[0].periodo : null;
 
-  // 2. Comprobar exención de inglés LENG-0008 (AC)
+  // 2. Comprobar exención de inglés LENG-0008 (AC o EX o nota aprobatoria)
   const exentoIngles = normalizedRecords.some(r =>
-    (r.crse === '0008' || r.crse === 'LENG-0008') && (r.calificacion === 'AC' || parseFloat(r.calificacion) >= 6)
+    (r.crse === '0008' || r.crse === 'LENG-0008') && (r.calificacion === 'AC' || r.calificacion === 'EX' || parseFloat(r.calificacion) >= 6)
   );
 
   // 3. Mapear cada una de las 37 materias del mapa por su CRSE único
