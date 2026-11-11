@@ -441,6 +441,7 @@ export default function App() {
           onToggle={() => setIsSidebarOpen(prev => !prev)}
           batchCount={batchData?.alumnos?.length || 0}
           onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
+          onLoadDemo={handleLoadDemo}
         />
       </div>
 
@@ -539,56 +540,50 @@ export default function App() {
                 <UploadStudentCard 
                   carrera={carreraSeleccionada}
                   onUploadPdf={handleUploadPdf}
+                  onLoadDemo={handleLoadDemo}
                   onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
                 />
               )
-            ) : !auditData ? (
-              /* Empty state */
-              <UploadStudentCard 
-                carrera={carreraSeleccionada}
-                onUploadPdf={handleUploadPdf}
-                onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
-              />
             ) : (
               <>
                 {/* Tab Switcher + Filters */}
-                <div className="no-print print:hidden bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2.5">
+                <div className="no-print print:hidden bg-white dark:bg-[#111827] p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs space-y-2.5 transition-theme">
                   <div className="flex items-center justify-between">
-                    <div className="bg-slate-50 p-1 rounded-md inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full border border-slate-200">
+                    <div className="bg-slate-50 dark:bg-slate-900/90 p-1 rounded-lg inline-flex items-center space-x-1 select-none overflow-x-auto max-w-full border border-slate-200 dark:border-slate-800">
                       <button
                         onClick={() => setActiveTab('mapa')}
-                        className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                           activeTab === 'mapa'
-                            ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-bold'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                         }`}
                       >
-                        <Layers className="w-3.5 h-3.5" />
-                        <span>Mapa de Ejecución</span>
+                        <Layers className="w-3.5 h-3.5 text-primary-gold" />
+                        <span>Hoja 1: Mapa Curricular</span>
                       </button>
 
                       <button
                         onClick={() => setActiveTab('cedula')}
-                        className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                           activeTab === 'cedula'
-                            ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-bold'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                         }`}
                       >
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>Cédula de Auditoría</span>
+                        <FileText className="w-3.5 h-3.5 text-primary-gold" />
+                        <span>Hoja 2: Cédula de Auditoría</span>
                       </button>
                     </div>
 
-                    <div className="text-[10px] font-mono font-medium text-slate-400 uppercase tracking-wider hidden xl:block">
-                      {activeTab === 'mapa' && 'Validación de Asignaturas'}
-                      {activeTab === 'cedula' && 'Cédula Oficial'}
+                    <div className="text-[10px] font-mono font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden xl:block">
+                      {activeTab === 'mapa' && (auditData ? 'Validación Cuatrimestral y Asignaturas' : 'Plan Oficial de Estudios (Modo Consulta)')}
+                      {activeTab === 'cedula' && (auditData ? 'Cédula Oficial y Trazabilidad' : 'Auditoría Pendiente de Carga')}
                     </div>
                   </div>
 
-                  {/* Filters */}
-                  {activeTab === 'mapa' && (
-                    <div className="border-t border-slate-100 pt-2">
+                  {/* Filters only displayed when an active student audit is loaded */}
+                  {activeTab === 'mapa' && auditData && (
+                    <div className="border-t border-slate-100 dark:border-slate-800 pt-2">
                       <FilterPills
                         activeFilter={activeFilter}
                         onFilterChange={setActiveFilter}
@@ -602,18 +597,29 @@ export default function App() {
                 {activeTab === 'mapa' && (
                   <CurriculumMap 
                     auditData={auditData}
+                    carrera={carreraSeleccionada}
                     activeFilter={activeFilter}
                     forwardedRef={hoja1Ref}
-                    onStatusChange={(status) => handleUpdateStatus(status, auditData.estudiante.matricula)}
+                    onStatusChange={(status) => handleUpdateStatus(status, auditData?.estudiante?.matricula)}
+                    onUploadPdf={handleUploadPdf}
                   />
                 )}
 
                 {activeTab === 'cedula' && (
-                  <AuditCedula 
-                    auditData={auditData}
-                    forwardedRef={hoja2Ref}
-                    onStatusChange={(status) => handleUpdateStatus(status, auditData.estudiante.matricula)}
-                  />
+                  auditData ? (
+                    <AuditCedula 
+                      auditData={auditData}
+                      forwardedRef={hoja2Ref}
+                      onStatusChange={(status) => handleUpdateStatus(status, auditData.estudiante.matricula)}
+                    />
+                  ) : (
+                    <UploadStudentCard 
+                      carrera={carreraSeleccionada}
+                      onUploadPdf={handleUploadPdf}
+                      onLoadDemo={handleLoadDemo}
+                      onOpenNeonManager={() => setIsGlobalNeonManagerOpen(true)}
+                    />
+                  )
                 )}
               </>
             )}

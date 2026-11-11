@@ -7,8 +7,11 @@ import {
   AlertTriangle, 
   ChevronDown, 
   ChevronUp,
-  CheckCircle2
+  CheckCircle2,
+  Upload,
+  Sparkles
 } from 'lucide-react';
+import { normalizarMapaCurricular, CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData';
 
 // Formateador inteligente a Title Case institucional
 function formatTitle(str) {
@@ -24,26 +27,85 @@ function formatTitle(str) {
 
 export default function CurriculumMap({ 
   auditData, 
+  carrera: carreraProp,
   activeFilter = 'TODAS',
   forwardedRef,
-  onStatusChange: _onStatusChange
+  onStatusChange: _onStatusChange,
+  onUploadPdf
 }) {
   const [selectedMateriaModal, setSelectedMateriaModal] = useState(null);
   const [isAuxiliaryExpanded, setIsAuxiliaryExpanded] = useState(false);
 
-  if (!auditData) {
+  const isPlanOnlyMode = !auditData;
+  const carrera = auditData?.carrera || carreraProp || CARRERAS_LOCAL[0];
+
+  if (!auditData && !carreraProp && !carrera) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-500 shadow-2xs">
-        <BookOpen className="w-10 h-10 mx-auto text-slate-300 mb-2.5" strokeWidth={1.5} />
-        <h3 className="text-sm font-semibold text-slate-900">Sin datos de auditoría cargados</h3>
-        <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-          Seleccione una licenciatura y cargue el kárdex del alumno en PDF o elija uno de los casos de prueba institucionales para visualizar el mapa curricular oficial.
+      <div className="bg-white dark:bg-surface-1 rounded-xl border border-slate-200 dark:border-border p-12 text-center text-slate-500 shadow-2xs">
+        <BookOpen className="w-10 h-10 mx-auto text-slate-300 dark:text-text-muted mb-2.5" strokeWidth={1.5} />
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-text-primary">Sin programa seleccionado</h3>
+        <p className="text-xs text-slate-500 dark:text-text-muted mt-1 max-w-md mx-auto">
+          Seleccione una licenciatura en el menú superior para visualizar su mapa curricular oficial.
         </p>
       </div>
     );
   }
 
-  const { estudiante, carrera, cuatrimestres, ingles, coCurriculares = [], electivas, resumen, coherencia, fechaConsulta } = auditData;
+  const mapaNormalizado = isPlanOnlyMode ? normalizarMapaCurricular(carrera?.mapa_json) : null;
+  const cuatrimestres = auditData?.cuatrimestres || (mapaNormalizado?.cuatrimestres || []).map(q => ({
+    ...q,
+    materias: (q.materias || []).map(m => ({
+      ...m,
+      audit: {
+        estado: 'PLAN_OFICIAL',
+        calificacion: null,
+        etiquetaCorta: `${m.creditos || 3} Créditos`,
+        historialTexto: `Asignatura curricular oficial del ${q.numero}.º Cuatrimestre.\n• Clave: ${m.subj || ''}-${m.crse || ''} (${m.clave})\n• Créditos: ${m.creditos || 3}\n• Modalidad: ${m.conecta ? 'Virtual Institucional (Conecta)' : 'Presencial / Ordinaria'}\n\nPara validar calificaciones, adeudos o dictamen de un alumno en esta materia, sube su kárdex oficial en PDF.`
+      }
+    }))
+  }));
+
+  const totalMaterias = cuatrimestres.reduce((sum, q) => sum + (q.materias?.length || 0), 0);
+  const esMaestria = cuatrimestres.length === 5 || carrera?.codigo?.startsWith('MAE');
+  const esEjecutivo = Boolean(carrera?.codigo?.includes('EJ') || /EJECUTIVO/i.test(carrera?.nombre || ''));
+
+  const nivelesInglesPlan = esMaestria || esEjecutivo ? 0 : (carrera?.niveles_ingles || 5);
+  const ingles = auditData?.ingles || (nivelesInglesPlan > 0 ? Array.from({ length: nivelesInglesPlan }, (_, i) => ({
+    nivel: i + 1,
+    clave: `F00${i + 1}`,
+    nombre: `Inglés ${['I', 'II', 'III', 'IV', 'V'][i] || i + 1}`,
+    estado: 'PLAN_OFICIAL',
+    calificacion: null,
+    etiquetaCorta: 'Requisito',
+    historialTexto: `Nivel curricular ${i + 1} de Inglés del plan de estudios oficial.`
+  })) : []);
+
+  const coCurriculares = auditData?.coCurriculares || (!esMaestria ? (REQUISITOS_EGRESO || []).map(r => ({
+    ...r,
+    estado: 'PLAN_OFICIAL',
+    calificacion: null,
+    etiquetaCorta: 'Requisito Egreso',
+    historialTexto: `Requisito institucional de egreso: ${r.nombre}`
+  })) : []);
+
+  const electivas = auditData?.electivas || [];
+  const resumen = auditData?.resumen || {
+    totalMateriasMapa: totalMaterias,
+    totalAprobadas: 0,
+    adeudos: 0,
+    omitidas: 0,
+    promedioFormatted: 'N/A',
+    esPlanOnly: true
+  };
+  const coherencia = auditData?.coherencia || null;
+  const fechaConsulta = auditData?.fechaConsulta || new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  const estudiante = auditData?.estudiante || {
+    matricula: carrera?.codigo || 'PLAN-OFICIAL',
+    nombre: 'PLAN DE ESTUDIOS OFICIAL VIGENTE',
+    sede: carrera?.sede || 'CAM',
+    modalidadDetectada: esMaestria ? 'MAESTRÍA' : (esEjecutivo ? 'EJECUTIVO' : 'ESCOLARIZADO')
+  };
+
   const esElegible = resumen?.esElegibleEstadia;
   const esEjad = carrera?.codigo === 'LIC-EJAD-17' || estudiante?.programa === 'LIC-EJAD-17';
   const clavesOcultasEjad = new Set([
@@ -56,7 +118,7 @@ export default function CurriculumMap({
 
   // Función para determinar si una materia debe atenuarse con base en el filtro
   const isMateriaDimmed = (estado) => {
-    if (activeFilter === 'TODAS') return false;
+    if (activeFilter === 'TODAS' || estado === 'PLAN_OFICIAL') return false;
     if (activeFilter === 'ORD' && estado === 'ORD') return false;
     if (activeFilter === 'REC' && estado === 'REC') return false;
     if (activeFilter === 'RE' && estado === 'RE') return false;
@@ -71,6 +133,15 @@ export default function CurriculumMap({
   // Lo ordinario (ORD) es transparente y limpio. Solo la anomalía levanta la mano.
   const getMateriaVisuals = (estado) => {
     switch (estado) {
+      case 'PLAN_OFICIAL':
+        return { 
+          isRegular: true,
+          cardStyle: 'bg-white dark:bg-surface-1 border-slate-200 dark:border-border border-l-[3px] border-l-[#F2B705] hover:border-slate-300 dark:hover:border-[#F2B705]/50 hover:shadow-2xs transition-all', 
+          dotColor: 'bg-[#F2B705]', 
+          gradeColor: 'text-slate-500 dark:text-text-secondary font-mono text-[10px]',
+          badgeClass: 'text-slate-700 dark:text-text-secondary font-medium bg-slate-100 dark:bg-surface-2 border border-slate-200 dark:border-border',
+          label: 'Plan Oficial' 
+        };
       case 'ORD':
         return { 
           isRegular: true,
@@ -212,63 +283,122 @@ export default function CurriculumMap({
         </div>
       )}
 
-      {/* 2. CINTILLA FORMAL DEL ESTUDIANTE */}
-      <div className="bg-slate-50 dark:bg-surface-1 border border-slate-200 dark:border-border rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none transition-theme">
-        <div className="flex flex-wrap items-center space-x-5 gap-y-1">
-          <div>
-            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Matrícula</span>
-            <span className="font-mono font-bold text-slate-900 dark:text-text-primary text-xs block">{estudiante.matricula}</span>
-          </div>
-          <div className="border-l border-slate-200 dark:border-border pl-4">
-            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Alumno</span>
-            <span className="font-semibold text-slate-900 dark:text-text-primary text-xs block">{estudiante.nombre}</span>
-          </div>
-          <div className="border-l border-slate-200 dark:border-border pl-4">
-            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Sede</span>
-            <span className="font-medium text-slate-700 dark:text-text-secondary text-xs block">{estudiante.sede || 'CAM'}</span>
-          </div>
-          {estudiante.modalidadDetectada && (
+      {/* 2. CINTILLA FORMAL: MODO PLAN OFICIAL O MODO AUDITORÍA DE ALUMNO */}
+      {isPlanOnlyMode ? (
+        <div className="bg-slate-50 dark:bg-surface-1 border border-slate-200 dark:border-border rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none transition-theme">
+          <div className="flex flex-wrap items-center space-x-5 gap-y-1">
+            <div>
+              <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Código Plan</span>
+              <span className="font-mono font-bold text-[#F2B705] text-xs block">{carrera.codigo}</span>
+            </div>
             <div className="border-l border-slate-200 dark:border-border pl-4">
               <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Modalidad</span>
-              <span className="text-[11px] font-semibold text-slate-700 dark:text-text-secondary uppercase">
-                {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'Modalidad Dual' : estudiante.modalidadDetectada === 'EJECUTIVO' ? 'Plan Ejecutivo' : estudiante.modalidadDetectada}
+              <span className="font-semibold text-slate-900 dark:text-text-primary text-xs block">
+                {esMaestria ? 'Posgrado / Maestría' : esEjecutivo ? 'Plan Ejecutivo' : 'Escolarizado'}
               </span>
             </div>
-          )}
-          <div className="border-l border-slate-200 dark:border-border pl-4">
-            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Promedio</span>
-            <div className="flex items-baseline space-x-1">
-              <span className="font-mono font-bold text-xs text-slate-900 dark:text-text-primary">
-                {resumen?.promedioFormatted || 'S/C'}
-              </span>
-              <span className="text-[10px] text-slate-400 dark:text-text-muted font-mono">
-                {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : ''}
+            <div className="border-l border-slate-200 dark:border-border pl-4">
+              <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Estructura</span>
+              <span className="font-medium text-slate-700 dark:text-text-secondary text-xs block">
+                {cuatrimestres.length} Cuatrimestres · {totalMaterias} Asignaturas
               </span>
             </div>
+            {carrera.coordinadora && (
+              <div className="border-l border-slate-200 dark:border-border pl-4 hidden md:block">
+                <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Coordinación</span>
+                <span className="font-medium text-slate-700 dark:text-text-secondary text-xs block truncate max-w-[220px]">
+                  {carrera.coordinadora}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-2.5 shrink-0">
+            <span className="px-2.5 py-1 rounded-md text-xs font-semibold border bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30 flex items-center space-x-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span>Plan Vigente Oficial (Consulta)</span>
+            </span>
+
+            {onUploadPdf && (
+              <button
+                type="button"
+                onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'application/pdf';
+                  input.onchange = (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) onUploadPdf(file);
+                  };
+                  input.click();
+                }}
+                className="flex items-center space-x-1.5 px-3 py-1 bg-[#F2B705] hover:bg-[#d9a404] text-slate-950 font-bold text-xs rounded-lg shadow-2xs transition-all cursor-pointer group"
+                title="Subir Kárdex de un alumno para auditar con este plan"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Auditar Kárdex</span>
+              </button>
+            )}
           </div>
         </div>
-
-        {/* Dictamen Compacto de Estadía / Posgrado */}
-        <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 dark:border-border shrink-0">
-          <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider whitespace-nowrap">Dictamen:</span>
-          <span className={`px-2.5 py-0.5 rounded text-xs font-semibold border flex items-center space-x-1.5 whitespace-nowrap ${
-            resumen?.esRegularEnCurso
-              ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-500/30'
-              : esElegible 
-              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30' 
-              : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-500/30'
-          }`}>
-            {resumen?.esRegularEnCurso ? (
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            ) : esElegible ? (
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            ) : (
-              <ShieldAlert className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+      ) : (
+        <div className="bg-slate-50 dark:bg-surface-1 border border-slate-200 dark:border-border rounded-lg px-3.5 py-2 flex flex-wrap items-center justify-between gap-3 text-xs select-none transition-theme">
+          <div className="flex flex-wrap items-center space-x-5 gap-y-1">
+            <div>
+              <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Matrícula</span>
+              <span className="font-mono font-bold text-slate-900 dark:text-text-primary text-xs block">{estudiante.matricula}</span>
+            </div>
+            <div className="border-l border-slate-200 dark:border-border pl-4">
+              <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Alumno</span>
+              <span className="font-semibold text-slate-900 dark:text-text-primary text-xs block">{estudiante.nombre}</span>
+            </div>
+            <div className="border-l border-slate-200 dark:border-border pl-4">
+              <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Sede</span>
+              <span className="font-medium text-slate-700 dark:text-text-secondary text-xs block">{estudiante.sede || 'CAM'}</span>
+            </div>
+            {estudiante.modalidadDetectada && (
+              <div className="border-l border-slate-200 dark:border-border pl-4">
+                <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Modalidad</span>
+                <span className="text-[11px] font-semibold text-slate-700 dark:text-text-secondary uppercase">
+                  {estudiante.modalidadDetectada === 'ESCOLARIZADO DUAL' ? 'Modalidad Dual' : estudiante.modalidadDetectada === 'EJECUTIVO' ? 'Plan Ejecutivo' : estudiante.modalidadDetectada}
+                </span>
+              </div>
             )}
-            <span>{resumen?.dictamenEstadia}</span>
-          </span>
+            <div className="border-l border-slate-200 dark:border-border pl-4">
+              <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider block">Promedio</span>
+              <div className="flex items-baseline space-x-1">
+                <span className="font-mono font-bold text-xs text-slate-900 dark:text-text-primary">
+                  {resumen?.promedioFormatted || 'S/C'}
+                </span>
+                <span className="text-[10px] text-slate-400 dark:text-text-muted font-mono">
+                  {resumen?.materiasConNota > 0 ? `(${resumen.materiasConNota} asig.)` : ''}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Dictamen Compacto de Estadía / Posgrado */}
+          <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 dark:border-border shrink-0">
+            <span className="text-[9.5px] font-semibold text-slate-400 dark:text-text-muted uppercase tracking-wider whitespace-nowrap">Dictamen:</span>
+            <span className={`px-2.5 py-0.5 rounded text-xs font-semibold border flex items-center space-x-1.5 whitespace-nowrap ${
+              resumen?.esRegularEnCurso
+                ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-500/30'
+                : esElegible 
+                ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30' 
+                : 'bg-rose-50 dark:bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-500/30'
+            }`}>
+              {resumen?.esRegularEnCurso ? (
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+              ) : esElegible ? (
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <ShieldAlert className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+              )}
+              <span>{resumen?.dictamenEstadia}</span>
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* CONTENEDOR RESPONSIVO PARA CUADRÍCULA DE CUATRIMESTRES */}
       <div className="overflow-x-auto pb-1 -mx-0.5 px-0.5">
@@ -324,18 +454,32 @@ export default function CurriculumMap({
 
                         {/* Calificación y Estado con indicador de color correspondiente */}
                         <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-100 dark:border-border">
-                          <span className={`font-mono text-xs ${visual.gradeColor}`}>
-                            {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
-                              audit.calificacion
-                            ) : (
-                              <span className="text-slate-300 dark:text-text-muted font-normal">--</span>
-                            )}
-                          </span>
+                          {isPlanOnlyMode ? (
+                            <>
+                              <span className="font-mono text-[10px] text-slate-500 dark:text-text-muted">
+                                {materia.creditos ? `${materia.creditos} cr.` : '3 cr.'}
+                              </span>
+                              <span className="inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-surface-2 text-slate-700 dark:text-text-secondary border border-slate-200 dark:border-border">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#F2B705]" />
+                                Oficial
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className={`font-mono text-xs ${visual.gradeColor}`}>
+                                {audit.calificacion && audit.calificacion !== '--' && audit.calificacion !== 'NO CURSÓ' ? (
+                                  audit.calificacion
+                                ) : (
+                                  <span className="text-slate-300 dark:text-text-muted font-normal">--</span>
+                                )}
+                              </span>
 
-                          <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
-                            {visual.label}
-                          </span>
+                              <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                                {visual.label}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </div>
                     );
@@ -359,7 +503,7 @@ export default function CurriculumMap({
             <div className="grid grid-cols-9 gap-1.5 mb-1 text-[9.5px] font-bold uppercase text-slate-400 dark:text-text-muted tracking-wider">
               <div className="col-span-5 flex items-center space-x-2">
                 <span>Requisito de Inglés (1.º al 5.º)</span>
-                {auditData.exentoIngles && (
+                {auditData?.exentoIngles && (
                   <span className="text-[8.5px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-1 py-0.2 rounded">
                     Exento
                   </span>
@@ -394,19 +538,33 @@ export default function CurriculumMap({
                     </div>
 
                     <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100 dark:border-border">
-                      <span className={`font-mono text-xs ${visual.gradeColor}`}>
-                        {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-slate-300 dark:text-text-muted font-normal">--</span>}
-                      </span>
-                      <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
-                        {visual.label}
-                      </span>
+                      {isPlanOnlyMode ? (
+                        <>
+                          <span className="font-mono text-[9px] text-slate-500 dark:text-text-muted">
+                            Requisito
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-[8px] font-semibold px-1 py-0.2 rounded bg-slate-100 dark:bg-surface-2 text-slate-700 dark:text-text-secondary border border-slate-200 dark:border-border">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#F2B705]" />
+                            Oficial
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={`font-mono text-xs ${visual.gradeColor}`}>
+                            {ing.calificacion && ing.calificacion !== '--' ? ing.calificacion : <span className="text-slate-300 dark:text-text-muted font-normal">--</span>}
+                          </span>
+                          <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                            {visual.label}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 );
               }) : (
                 <div className="col-span-5 flex items-center justify-center p-2.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border border-dashed rounded-md text-slate-400 dark:text-text-muted text-xs font-medium">
-                  No aplica en Plan Ejecutivo
+                  {esMaestria ? 'No aplica en Programas de Posgrado / Maestría' : 'No aplica en Plan Ejecutivo'}
                 </div>
               )}
 
@@ -438,17 +596,31 @@ export default function CurriculumMap({
                     </div>
 
                     <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100 dark:border-border">
-                      <span className={`font-mono text-xs ${visual.gradeColor}`}>
-                        {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
-                          ? cocu.calificacion 
-                          : cocu.calificacion === 'NO CURSÓ' 
-                          ? <span className="text-[9px] text-slate-400 dark:text-text-muted">NC</span> 
-                          : <span className="text-slate-300 dark:text-text-muted font-normal">--</span>}
-                      </span>
-                      <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
-                        {visual.label}
-                      </span>
+                      {isPlanOnlyMode ? (
+                        <>
+                          <span className="font-mono text-[9px] text-slate-500 dark:text-text-muted">
+                            Titulación
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-[8px] font-semibold px-1 py-0.2 rounded bg-purple-50 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                            Requisito
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={`font-mono text-xs ${visual.gradeColor}`}>
+                            {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
+                              ? cocu.calificacion 
+                              : cocu.calificacion === 'NO CURSÓ' 
+                              ? <span className="text-[9px] text-slate-400 dark:text-text-muted">NC</span> 
+                              : <span className="text-slate-300 dark:text-text-muted font-normal">--</span>}
+                          </span>
+                          <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
+                            {visual.label}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 );
