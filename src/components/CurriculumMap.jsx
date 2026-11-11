@@ -11,7 +11,7 @@ import {
   Upload,
   Sparkles
 } from 'lucide-react';
-import { normalizarMapaCurricular, CARRERAS_LOCAL, REQUISITOS_EGRESO } from '../data/carrerasData';
+import { normalizarMapaCurricular, CARRERAS_LOCAL } from '../data/carrerasData';
 
 // Formateador inteligente a Title Case institucional
 function formatTitle(str) {
@@ -78,14 +78,6 @@ export default function CurriculumMap({
     calificacion: null,
     etiquetaCorta: 'Requisito',
     historialTexto: `Nivel curricular ${i + 1} de Inglés del plan de estudios oficial.`
-  })) : []);
-
-  const coCurriculares = auditData?.coCurriculares || (!esMaestria ? (REQUISITOS_EGRESO || []).map(r => ({
-    ...r,
-    estado: 'PLAN_OFICIAL',
-    calificacion: null,
-    etiquetaCorta: 'Requisito Egreso',
-    historialTexto: `Requisito institucional de egreso: ${r.nombre}`
   })) : []);
 
   const electivas = auditData?.electivas || [];
@@ -498,24 +490,19 @@ export default function CurriculumMap({
             ))}
           </div>
 
-          {/* 4. FILA DE NIVELES DE INGLÉS (COLS 1-5) Y REQUISITOS CO-CURRICULARES / EGRESO (COLS 6-9) */}
+          {/* 4. FILA DE NIVELES DE INGLÉS (COLS 1-5) */}
           <div className="pt-2 select-none border-t border-slate-100 dark:border-border">
-            <div className="grid grid-cols-9 gap-1.5 mb-1 text-[9.5px] font-bold uppercase text-slate-400 dark:text-text-muted tracking-wider">
-              <div className="col-span-5 flex items-center space-x-2">
-                <span>Requisito de Inglés (1.º al 5.º)</span>
-                {auditData?.exentoIngles && (
-                  <span className="text-[8.5px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-1 py-0.2 rounded">
-                    Exento
-                  </span>
-                )}
-              </div>
-              <div className="col-span-4 flex items-center space-x-2">
-                <span>Requisitos de Egreso y Titulación</span>
-              </div>
+            <div className="flex items-center space-x-2 mb-1 text-[9.5px] font-bold uppercase text-slate-400 dark:text-text-muted tracking-wider">
+              <span>Requisito de Inglés Curricular (1.º al 5.º Cuatrimestre)</span>
+              {auditData?.exentoIngles && (
+                <span className="text-[8.5px] font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30 px-1 py-0.2 rounded">
+                  Exento
+                </span>
+              )}
             </div>
 
-            <div className="grid grid-cols-9 gap-1.5">
-              {/* Niveles de Inglés (1.º al 5.º Cuatrimestre) */}
+            <div className="grid grid-cols-5 sm:grid-cols-5 lg:grid-cols-9 gap-1.5">
+              {/* Niveles de Inglés (1.º al 5.º Cuatrimestre alineados con columnas 1 a 5) */}
               {ingles.length > 0 ? ingles.map((ing) => {
                 const dimmed = isMateriaDimmed(ing.estado);
                 const visual = getMateriaVisuals(ing.estado);
@@ -563,68 +550,10 @@ export default function CurriculumMap({
                   </div>
                 );
               }) : (
-                <div className="col-span-5 flex items-center justify-center p-2.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border border-dashed rounded-md text-slate-400 dark:text-text-muted text-xs font-medium">
-                  {esMaestria ? 'No aplica en Programas de Posgrado / Maestría' : 'No aplica en Plan Ejecutivo'}
+                <div className="col-span-5 lg:col-span-9 flex items-center justify-center p-2.5 bg-slate-50 dark:bg-surface-0 border border-slate-200 dark:border-border border-dashed rounded-md text-slate-400 dark:text-text-muted text-xs font-medium">
+                  {esMaestria ? 'No aplica requisito de inglés en Programas de Posgrado / Maestría' : 'No aplica requisito de inglés en Plan Ejecutivo'}
                 </div>
               )}
-
-              {/* 4 Requisitos Co-Curriculares y de Titulación / Egreso (Cols 6 a 9) */}
-              {coCurriculares.filter((cocu) => !debeOcultarseDelMapa(cocu)).map((cocu, index) => {
-                const dimmed = isMateriaDimmed(cocu.estado);
-                const visual = getMateriaVisuals(cocu.estado);
-                return (
-                  <div
-                    key={`cocu-${cocu.clave || index}`}
-                    onClick={() => setSelectedMateriaModal({ materia: { clave: cocu.clave, nombre: cocu.nombre }, audit: cocu })}
-                    className={`p-2 rounded-md border transition-all duration-150 cursor-pointer flex flex-col justify-between min-h-[76px] box-border ${visual.cardStyle} ${
-                      dimmed ? 'opacity-20 grayscale' : 'opacity-100'
-                    }`}
-                    title="Haga clic para ver el detalle de este requisito"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-0.5">
-                        <span className="font-mono text-[8.5px] text-slate-400 dark:text-text-muted">
-                          {cocu.clave}
-                        </span>
-                        <span className="px-1 py-0.2 text-[7.5px] font-bold text-purple-800 dark:text-purple-300 bg-purple-50 dark:bg-purple-500/20 border border-purple-200 dark:border-purple-500/30 rounded" title="Requisito Co-Curricular / Titulación">
-                          CC
-                        </span>
-                      </div>
-                      <div className="text-[10px] font-semibold text-slate-800 dark:text-text-primary leading-tight">
-                        {formatTitle(cocu.nombre)}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100 dark:border-border">
-                      {isPlanOnlyMode ? (
-                        <>
-                          <span className="font-mono text-[9px] text-slate-500 dark:text-text-muted">
-                            Titulación
-                          </span>
-                          <span className="inline-flex items-center gap-1 text-[8px] font-semibold px-1 py-0.2 rounded bg-purple-50 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30">
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                            Requisito
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span className={`font-mono text-xs ${visual.gradeColor}`}>
-                            {cocu.calificacion && cocu.calificacion !== '--' && cocu.calificacion !== 'NO CURSÓ' 
-                              ? cocu.calificacion 
-                              : cocu.calificacion === 'NO CURSÓ' 
-                              ? <span className="text-[9px] text-slate-400 dark:text-text-muted">NC</span> 
-                              : <span className="text-slate-300 dark:text-text-muted font-normal">--</span>}
-                          </span>
-                          <span className={`inline-flex items-center gap-1 text-[8.5px] font-semibold px-1.5 py-0.2 rounded leading-none ${visual.badgeClass}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${visual.dotColor}`} />
-                            {visual.label}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
         </div>

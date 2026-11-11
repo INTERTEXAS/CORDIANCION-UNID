@@ -40,7 +40,7 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
   const esElegible = resumen?.esElegibleEstadia;
   const totalMateriasMapa = resumen?.totalMateriasMapa ?? 37;
   const totalNivelesIngles = resumen?.nivelesIngles ?? (esMaestria ? 0 : 5);
-  const totalRequisitosEgreso = resumen?.requisitosEgresoTotal ?? (esMaestria ? 0 : 4);
+  const totalRequisitosEgreso = resumen?.requisitosEgresoTotal ?? 0;
   const totalAprobadas = resumen?.totalAprobadas ?? ((resumen?.aprobadasOrd || 0) + (resumen?.aprobadasRec || 0) + (resumen?.aprobadasRe || 0));
 
   return (
@@ -183,14 +183,16 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
             <span>Resumen Cuantitativo de Avance</span>
             <span className="text-[9.5px] font-mono text-slate-400 dark:text-text-muted">
               {esMaestria 
-                ? `Plan ${totalMateriasMapa} Asig. (Posgrado · Sin Inglés ni EGEL requeridos)`
-                : `Plan ${totalMateriasMapa} Asig. + ${totalNivelesIngles} Inglés + ${totalRequisitosEgreso} Egreso`
+                ? `Plan ${totalMateriasMapa} Asig. (Posgrado · Sin Inglés requerido)`
+                : totalRequisitosEgreso > 0
+                  ? `Plan ${totalMateriasMapa} Asig. + ${totalNivelesIngles} Inglés + ${totalRequisitosEgreso} Egreso`
+                  : `Plan ${totalMateriasMapa} Asig. + ${totalNivelesIngles} Inglés`
               }
             </span>
           </div>
 
-          {/* Nivel 1: 4 KPIs Principales Destacados */}
-          <div className="grid grid-cols-4 gap-2 mb-2">
+          {/* Nivel 1: KPIs Principales Destacados */}
+          <div className={`grid ${totalRequisitosEgreso > 0 ? 'grid-cols-4' : 'grid-cols-3'} gap-2 mb-2`}>
             {/* 1. Avance Mapa */}
             <div className="bg-white dark:bg-surface-1 p-2 rounded-md border border-slate-200 dark:border-border shadow-2xs">
               <span className="text-[9px] font-semibold text-slate-400 dark:text-text-muted uppercase block mb-0.5">Avance Plan</span>
@@ -211,15 +213,17 @@ export default function AuditCedula({ auditData, forwardedRef, onStatusChange })
               <span className="text-[8.5px] text-slate-400 dark:text-text-muted block mt-0.5">{esMaestria ? 'No aplica' : 'Acreditados'}</span>
             </div>
 
-            {/* 3. Requisitos Egreso */}
-            <div className="bg-white dark:bg-surface-1 p-2 rounded-md border border-slate-200 dark:border-border shadow-2xs">
-              <span className="text-[9px] font-semibold text-slate-400 dark:text-text-muted uppercase block mb-0.5">Req. Egreso</span>
-              <div className="flex items-baseline space-x-1 font-mono">
-                <span className="text-sm font-bold text-slate-900 dark:text-text-primary">{esMaestria ? 'N/A' : (resumen.coCurricularesAcreditados || 0)}</span>
-                <span className="text-[11px] text-slate-400 dark:text-text-muted">/{esMaestria ? '0' : totalRequisitosEgreso}</span>
+            {/* 3. Requisitos Egreso (solo si el plan los maneja) */}
+            {totalRequisitosEgreso > 0 && (
+              <div className="bg-white dark:bg-surface-1 p-2 rounded-md border border-slate-200 dark:border-border shadow-2xs">
+                <span className="text-[9px] font-semibold text-slate-400 dark:text-text-muted uppercase block mb-0.5">Req. Egreso</span>
+                <div className="flex items-baseline space-x-1 font-mono">
+                  <span className="text-sm font-bold text-slate-900 dark:text-text-primary">{esMaestria ? 'N/A' : (resumen.coCurricularesAcreditados || 0)}</span>
+                  <span className="text-[11px] text-slate-400 dark:text-text-muted">/{esMaestria ? '0' : totalRequisitosEgreso}</span>
+                </div>
+                <span className="text-[8.5px] text-slate-400 dark:text-text-muted block mt-0.5">{esMaestria ? 'No aplica' : 'Co-curriculares'}</span>
               </div>
-              <span className="text-[8.5px] text-slate-400 dark:text-text-muted block mt-0.5">{esMaestria ? 'No aplica' : 'Co-curriculares'}</span>
-            </div>
+            )}
 
             {/* 4. Promedio General */}
             <div className="bg-white dark:bg-surface-1 p-2 rounded-md border border-slate-200 dark:border-border shadow-2xs">

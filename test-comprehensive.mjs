@@ -205,9 +205,9 @@ assert(
 );
 
 assert(
-  carreraCtco?.requisitos_egreso?.some(req => req.crse === 'EGCC1') &&
+  !carreraCtco?.requisitos_egreso?.some(req => req.crse === 'EGCC1') &&
   !carreraCtco?.requisitos_egreso?.some(req => req.crse === '0001' || req.clave === 'TPEG-0001'),
-  'LIC-CTCO-18 conserva EGEL y excluye Taller de Pre-egreso de requisitos'
+  'LIC-CTCO-18 excluye EGEL y Taller de Pre-egreso al no ser ya requisitos de titulación'
 );
 
 assert(

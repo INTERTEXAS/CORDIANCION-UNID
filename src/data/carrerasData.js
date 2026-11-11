@@ -1886,9 +1886,7 @@ export const CARRERAS_LOCAL = [
         { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
       ]
     },
-    requisitos_egreso: [
-      { clave: 'CUPR-EGDG1', subj: 'CUPR', crse: 'EGDG1', nombre: 'CURSO DE PREPARACIÓN EGEL I - DISEÑO GRÁFICO DIGITAL' }
-    ]
+    requisitos_egreso: []
   },
   {
     id: 10,
@@ -2026,9 +2024,7 @@ export const CARRERAS_LOCAL = [
       niveles_ingles: 0,
       electivas_multidisciplinares: []
     },
-    requisitos_egreso: [
-      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN DE EMPRESAS' }
-    ]
+    requisitos_egreso: []
   },
   {
     id: 11,
@@ -2171,9 +2167,7 @@ export const CARRERAS_LOCAL = [
         { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
       ]
     },
-    requisitos_egreso: [
-      { clave: 'CUPR-EGMK1', subj: 'CUPR', crse: 'EGMK1', nombre: 'CURSO DE PREPARACIÓN EGEL I - MERCADOTECNIA ESTRATÉGICA' }
-    ]
+    requisitos_egreso: []
   },
   {
     id: 12,
@@ -2316,9 +2310,7 @@ export const CARRERAS_LOCAL = [
         { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
       ]
     },
-    requisitos_egreso: [
-      { clave: 'CUPR-EVSS1', subj: 'CUPR', crse: 'EVSS1', nombre: 'CURSO DE PREPARACIÓN EVIPE I - INGENIERÍA DE SOFTWARE' }
-    ]
+    requisitos_egreso: []
   },
   {
     id: 13,
@@ -2459,9 +2451,7 @@ export const CARRERAS_LOCAL = [
         { clave: 'LMAX-FIT15', subj: 'LMAX', crse: 'FIT15', nombre: 'SISTEMA FINANCIERO INTERNACIONAL' }
       ]
     },
-    requisitos_egreso: [
-      { clave: 'CUPR-EGAD1', subj: 'CUPR', crse: 'EGAD1', nombre: 'CURSO DE PREPARACIÓN EGEL I - ADMINISTRACIÓN EMPRESARIAL' }
-    ]
+    requisitos_egreso: []
   },
   {
     id: 14,
@@ -2604,9 +2594,7 @@ export const CARRERAS_LOCAL = [
         { clave: 'LMAX-NET06', subj: 'LMAX', crse: 'NET06', nombre: 'Gest.DeNegociosYAdmDeProyectos', conecta: false, creditos: 7 }
       ]
     },
-    requisitos_egreso: [
-      { clave: 'CUPR-EGCC1', subj: 'CUPR', crse: 'EGCC1', nombre: 'CURSO DE PREPARACIÓN EGEL I - COMUNICACIÓN' }
-    ]
+    requisitos_egreso: []
   },
   {
     codigo: 'MAE-EDUP-22',
@@ -2897,12 +2885,8 @@ export const CARRERAS_LOCAL = [
 // Materias co-curriculares que deben ignorarse totalmente (ninguna de las obligatorias)
 export const MATERIAS_IGNORADAS = ['CMS02', 'LMPD-CMS02', 'MPD-CMS02', 'CMS03', 'LMPD-CMS03', 'MPD-CMS03', 'CUPR-ECCF1', 'CUPR-EGCF1', 'TPEG-0001', 'TPEG'];
 
-// Requisitos Co-Curriculares y de Titulación / Egreso obligatorios UNID
-export const REQUISITOS_EGRESO = [
-  { clave: 'MPD-CMS02', subj: 'MPD', crse: 'CMS02', nombre: 'ORTOGRAFÍA' },
-  { clave: 'MPD-CMS03', subj: 'MPD', crse: 'CMS03', nombre: 'COMPRENSIÓN LECTORA' },
-  { clave: 'CUPR-EGCF1', subj: 'CUPR', crse: 'EGCF1', nombre: 'CURSO DE PREPARACIÓN EGEL I' }
-];
+// Requisitos Co-Curriculares y de Titulación / Egreso (desactivados ya que no se usan para titulación)
+export const REQUISITOS_EGRESO = [];
 
 // Claves de inglés reconocidas
 export const CLAVES_INGLES = ['F001', 'F002', 'F003', 'F004', 'P001', 'LENG-0008', '0008'];
