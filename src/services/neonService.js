@@ -898,8 +898,13 @@ export async function validarCredencialesDev(email, password, options = {}) {
   }
 
   // 3. Verificación si no hay conexión a Neon DB (modo offline/fallback)
+  const fallbackEmail = (typeof process !== 'undefined' && process.env?.DEV_FALLBACK_EMAIL)
+    || (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_DEV_FALLBACK_EMAIL) || '';
+  const fallbackPass = (typeof process !== 'undefined' && process.env?.DEV_FALLBACK_PASSWORD)
+    || (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_DEV_FALLBACK_PASSWORD) || '';
+
   if (!databaseUrl) {
-    if (emailNorm === 'control_academico.devs@hotmail.com' && passNorm === 'XPQMJlh6TWeXzp') {
+    if (fallbackEmail && fallbackPass && emailNorm === fallbackEmail.toLowerCase() && passNorm === fallbackPass) {
       if (deviceId) {
         await registrarEventoAuditoriaDev({
           evento: 'INTENTO_LOGIN',
@@ -930,7 +935,7 @@ export async function validarCredencialesDev(email, password, options = {}) {
         usuario: {
           id: 1,
           nombre: 'SysAdmin Académico',
-          email: 'control_academico.devs@hotmail.com',
+          email: emailNorm,
           rol: 'ADMIN_SISTEMA',
           coordinacion: 'TODAS'
         }
@@ -1069,7 +1074,7 @@ export async function validarCredencialesDev(email, password, options = {}) {
     };
   } catch (error) {
     console.error('[NeonService] Error validando credenciales de usuario:', error);
-    if (emailNorm === 'control_academico.devs@hotmail.com' && passNorm === 'XPQMJlh6TWeXzp') {
+    if (fallbackEmail && fallbackPass && emailNorm === fallbackEmail.toLowerCase() && passNorm === fallbackPass) {
       if (deviceId) {
         await registrarEventoAuditoriaDev({
           evento: 'INTENTO_LOGIN',
@@ -1099,7 +1104,7 @@ export async function validarCredencialesDev(email, password, options = {}) {
         usuario: {
           id: 1,
           nombre: 'SysAdmin Académico',
-          email: 'control_academico.devs@hotmail.com',
+          email: emailNorm,
           rol: 'ADMIN_SISTEMA',
           coordinacion: 'TODAS'
         }
@@ -1275,18 +1280,22 @@ export async function obtenerPerfilUsuarioPorEmail(email) {
   const emailNorm = String(email || '').trim().toLowerCase();
   if (!emailNorm) return null;
 
-  if (emailNorm === 'control_academico.devs@hotmail.com') {
-    return {
-      id: 1,
-      nombre: 'SysAdmin Académico',
-      email: emailNorm,
-      rol: 'ADMIN_SISTEMA',
-      coordinacion: 'TODAS',
-      activo: true
-    };
-  }
+  const fallbackEmail = (typeof process !== 'undefined' && process.env?.DEV_FALLBACK_EMAIL)
+    || (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_DEV_FALLBACK_EMAIL) || '';
 
-  if (!databaseUrl) return null;
+  if (!databaseUrl) {
+    if (fallbackEmail && emailNorm === fallbackEmail.toLowerCase()) {
+      return {
+        id: 1,
+        nombre: 'SysAdmin Académico',
+        email: emailNorm,
+        rol: 'ADMIN_SISTEMA',
+        coordinacion: 'TODAS',
+        activo: true
+      };
+    }
+    return null;
+  }
 
   try {
     const sql = neon(databaseUrl);

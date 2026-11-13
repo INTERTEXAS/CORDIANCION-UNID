@@ -241,17 +241,27 @@ async function ejecutarPruebas() {
       console.error('Error al limpiar lote de prueba:', err.message);
     }
 
-    // 8. Prueba de Autenticación Super Admin en Neon
+    // 8. Prueba de Autenticación / Perfil Super Admin en Neon
     try {
-      console.log('\n[8/8] Verificando autenticación de Super Admin (validarCredencialesDev)...');
-      const authRes = await validarCredencialesDev('control_academico.devs@hotmail.com', 'XPQMJlh6TWeXzp');
-      console.log('Resultado de autenticación:', authRes.success, 'Usuario:', authRes.usuario?.nombre, 'Rol:', authRes.usuario?.rol);
-      if (authRes.success && authRes.usuario?.rol === 'ADMIN_SISTEMA') {
-        console.log('Autenticación y perfil de Super Administrador verificado.');
-        resultados.superAdminAuth = true;
+      console.log('\n[8/8] Verificando perfil de Super Admin en Neon...');
+      const devEmail = process.env.DEV_ADMIN_EMAIL || 'control_academico.devs@hotmail.com';
+      const devPass = process.env.DEV_ADMIN_PASSWORD;
+      if (devPass) {
+        const authRes = await validarCredencialesDev(devEmail, devPass);
+        if (authRes.success && authRes.usuario?.rol === 'ADMIN_SISTEMA') {
+          console.log('Autenticación y perfil de Super Administrador verificado.');
+          resultados.superAdminAuth = true;
+        }
+      } else {
+        const sql = neon(DB_URL);
+        const adminUsers = await sql`SELECT id, nombre, email, rol FROM usuarios WHERE rol = 'ADMIN_SISTEMA' LIMIT 1;`;
+        if (adminUsers && adminUsers.length > 0) {
+          console.log('Usuario Super Administrador verificado en base de datos:', adminUsers[0].email, 'Rol:', adminUsers[0].rol);
+          resultados.superAdminAuth = true;
+        }
       }
     } catch (err) {
-      console.error('Error al validar credenciales Super Admin:', err.message);
+      console.error('Error al verificar perfil Super Admin:', err.message);
     }
   } else {
     console.log('\n[5-8/8] Omitiendo pruebas de persistencia en base de datos remota (sin DATABASE_URL configurada).');

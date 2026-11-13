@@ -4,9 +4,9 @@ const TOKEN_LIFETIME_SECONDS = 60 * 60;
 const ADMIN_ROLES = new Set(['admin_sistema', 'super_admin', 'superadmin']);
 
 function getTokenSecret() {
-  const secret = process.env.ACADEMIC_ASSISTANT_ADMIN_SECRET || 'unid-academic-assistant-default-admin-secret-2026-institutional-key-xyz';
+  const secret = process.env.ACADEMIC_ASSISTANT_ADMIN_SECRET;
   if (!secret || secret.length < 32) {
-    throw new Error('ACADEMIC_ASSISTANT_ADMIN_SECRET debe configurarse con al menos 32 caracteres.');
+    throw new Error('ACADEMIC_ASSISTANT_ADMIN_SECRET debe configurarse con al menos 32 caracteres en las variables de entorno.');
   }
   return secret;
 }

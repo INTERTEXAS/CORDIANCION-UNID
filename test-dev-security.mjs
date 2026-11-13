@@ -66,6 +66,15 @@ let mockFetchBitacoraAccesosConDispositivos = null;
 let mockToggleEstadoDispositivo = null;
 let mockEliminarDispositivo = null;
 
+let testAuthPass = process.env.DEV_ADMIN_PASSWORD;
+if (sql && !testAuthPass) {
+  try {
+    const [u] = await sql`SELECT password_hash FROM usuarios WHERE email = 'control_academico.devs@hotmail.com' LIMIT 1;`;
+    if (u?.password_hash) testAuthPass = u.password_hash;
+  } catch {}
+}
+if (!testAuthPass) testAuthPass = 'mock_dev_test_pass';
+
 if (!sql) {
   console.log('--- AVISO: Entorno CI / Offline detectado (sin DATABASE_URL configurada) ---');
   console.log('--- Activando capa de simulación en memoria para auditoría y hardware ---');
@@ -124,7 +133,7 @@ if (!sql) {
         return { success: false, error: 'Dispositivo no autorizado' };
       }
     }
-    if (password !== 'XPQMJlh6TWeXzp') {
+    if (password !== testAuthPass) {
       await registrarEventoAuditoriaDev({
         evento: 'INTENTO_LOGIN',
         deviceId: devId,
@@ -322,7 +331,7 @@ async function runDevSecurityTests() {
 
   // 5a. Intento con dispositivo NO autorizado
   const unauthorizedDevId = 'unauth_dev_' + Math.random().toString(36).substring(2, 10);
-  const badDevLogin = await validarCredencialesDev('control_academico.devs@hotmail.com', 'XPQMJlh6TWeXzp', {
+  const badDevLogin = await validarCredencialesDev('control_academico.devs@hotmail.com', testAuthPass, {
     deviceId: unauthorizedDevId,
     ip: testIp,
     ubicacion: testUbi,
@@ -366,7 +375,7 @@ async function runDevSecurityTests() {
   if (rowBadPass) await sql`DELETE FROM auditoria_accesos_dev WHERE id = ${rowBadPass.id}`;
 
   // 5c. Intento exitoso con dispositivo autorizado y credenciales correctas
-  const okLogin = await validarCredencialesDev('control_academico.devs@hotmail.com', 'XPQMJlh6TWeXzp', {
+  const okLogin = await validarCredencialesDev('control_academico.devs@hotmail.com', testAuthPass, {
     deviceId: testDevId,
     ip: testIp,
     ubicacion: testUbi,
