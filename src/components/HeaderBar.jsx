@@ -15,8 +15,7 @@ import {
   Compass,
   LogOut,
   Crown,
-  FolderTree,
-  Printer
+  FolderTree
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -92,10 +91,7 @@ export default function HeaderBar({
   onUploadPdf, 
   isProcessing,
   isSidebarOpen = true,
-  onToggleSidebar,
-  onExportPdf,
-  isExporting = false,
-  hasAuditData = false
+  onToggleSidebar
 }) {
   const fileInputRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -310,37 +306,6 @@ export default function HeaderBar({
             </>
           )}
         </button>
-
-        {/* Print / Export Action Button */}
-        {hasAuditData ? (
-          <button
-            onClick={onExportPdf}
-            disabled={isExporting}
-            className="flex items-center space-x-1.5 px-3.5 py-2 bg-surface-2 hover:bg-surface-3 border border-border text-text-primary text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer active:scale-95"
-            title="Exportar e imprimir dictamen oficial en PDF (2 Hojas Horizontales)"
-          >
-            {isExporting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin text-accent" strokeWidth={2} />
-                <span className="hidden sm:inline">Generando PDF...</span>
-              </>
-            ) : (
-              <>
-                <Printer className="w-4 h-4 text-accent" strokeWidth={1.8} />
-                <span className="hidden sm:inline">Imprimir / PDF</span>
-              </>
-            )}
-          </button>
-        ) : (
-          <button
-            onClick={() => window.print()}
-            className="flex items-center space-x-1.5 px-3 py-2 bg-surface-2 hover:bg-surface-3 border border-border text-text-primary text-xs font-semibold rounded-xl shadow-xs transition-all cursor-pointer active:scale-95"
-            title="Imprimir mapa curricular en vista horizontal"
-          >
-            <Printer className="w-4 h-4 text-accent" strokeWidth={1.8} />
-            <span className="hidden sm:inline">Imprimir Malla</span>
-          </button>
-        )}
 
         {/* Dark mode toggle */}
         <button

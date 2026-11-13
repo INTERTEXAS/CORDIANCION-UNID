@@ -473,9 +473,6 @@ export default function App() {
             isProcessing={isProcessing}
             isSidebarOpen={isSidebarOpen}
             onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
-            onExportPdf={handleExportPdf}
-            isExporting={isExporting}
-            hasAuditData={Boolean(auditData)}
           />
         </div>
 
@@ -607,7 +604,7 @@ export default function App() {
                         {activeTab === 'cedula' && (auditData ? 'Cédula Oficial y Trazabilidad' : 'Carga de Expediente Académico')}
                       </div>
 
-                      {auditData ? (
+                      {auditData && (
                         <div className="flex items-center space-x-1.5">
                           {/* Exportar Dictamen Oficial 2 Hojas en PDF */}
                           <button
@@ -639,15 +636,6 @@ export default function App() {
                             <span className="hidden sm:inline">Imprimir</span>
                           </button>
                         </div>
-                      ) : (
-                        <button
-                          onClick={() => window.print()}
-                          className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 transition-all cursor-pointer active:scale-95"
-                          title="Imprimir mapa curricular oficial en formato horizontal"
-                        >
-                          <Printer className="w-3.5 h-3.5 text-accent" strokeWidth={1.8} />
-                          <span>Imprimir Malla Oficial</span>
-                        </button>
                       )}
                     </div>
                   </div>
